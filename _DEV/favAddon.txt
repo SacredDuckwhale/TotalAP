@@ -1,0 +1,56 @@
+Thanks for the list! Found a couple new ones I will be checking out. Here's some of my favourite addons, at least those not mentioned in the OP. Some of them are clearly QOL additions, others I'm not 100% on but decided to mention them anyway.
+
+**Addon Management:**
+
+* [Ease Addon Controller](https://mods.curse.com/addons/wow/easeaddoncontroller) or [ACP - Addon Control Panel](https://mods.curse.com/addons/wow/acp) -- ACP loads addons based on profiles, EAC can also load some addons without requiring a reload of the UI
+
+**Artifact:**
+
+* [ArtifactTab](https://mods.curse.com/addons/wow/artifacttab) -- Adds tabs for all of your specs so you can view them without equipping the artifact (which would require changing specs first)
+* [RelicInspector](https://mods.curse.com/addons/wow/relicinspector) -- Adds information about equipped relics to artifact weapons, even those of other players. Also displays all the specs that can use it and the traits they will gain from equipping it
+* [TotalAP](https://mods.curse.com/addons/wow/totalap) or [ArtifactPowerUser](https://mods.curse.com/addons/wow/artifactpoweruser) -- Both provide a button (and keybind) to use your artifact power items. TAP also calculates how much AP you have in your bags and how many traits you can unlock. APU seems to have some minor bugs but is otherwise usable, although it doesn't display any detailed information information by itself.	
+	
+**Collections:**
+
+* [Collectinator](https://mods.curse.com/addons/wow/collectinator) -- If you like to collect things, this'll show you which are missing (and where to get them) without checking wowhead in many cases
+	
+**Finances:**
+
+* [Accountant](https://mods.curse.com/addons/wow/accountant) -- Tracks expenses and income of any kind, across all characters and with statistics
+	
+**Group content:**
+
+* [Armory Quicklink](https://mods.curse.com/addons/wow/armoryquicklink-wod) -- Want to inspect someone before taking them to a raid/mythic+? Then this one is is a *huge* time-saver
+* [AverageItemLevel](https://mods.curse.com/addons/wow/averageitemlevel) -- Displays a player's average item level (equipped and artifact weapon) in the tooltip. While not always useful, it is a more accurate indicator how well players you end up grouped with are geared compared to just the health value alone
+* [Healers have to die](https://mods.curse.com/addons/wow/healers-have-to-die) --  Obviously useful for PVP, but also (mostly) works in dungeons. Ever lost track of a healer in the fray? Not today! Because, indeed, healers have to die... Horribly.
+* [Call To Arms Tracker](https://mods.curse.com/addons/wow/call-arms-tracker) -- Notifies you when the CTA bonus for a selected role and content is available
+* [MythicPlusLoot](https://mods.curse.com/addons/wow/mythicplusloot) -- Shows the item level for each mythic+ level in the tooltip of the respective items, as well as adding information about the weekly chest to the "Mythic Dungeons" frame
+* [Personal Loot Helper](https://mods.curse.com/search?search=Personal+Loot+Helper) -- Notifies you (or the group) when a tradeable item is an upgrade for someone in it. I know some people hate it, but its usefulness can't be denied... Just make sure the raid-wide notification is disabled or it WILL annoy others
+* [Premade Filter](https://mods.curse.com/addons/wow/premade-filter) -- Adds advanced filtering options to the Premade Groups (LFG) tool
+* [RoleIcons](https://mods.curse.com/addons/wow/roleicons) -- Displays icons indicating a player's role for all group members everywhere you could possibly want them
+* [RSA - Raeli's Spell Announcer](https://mods.curse.com/addons/wow/rsa) -- Needs to be configured properly or it'll end up annoying others, but it can help with coordinating interrupts, CC, and cooldown management in PUGs or casual PVP
+* [World Quest Group Finder](https://mods.curse.com/addons/wow/worldquestgroupfinder) -- You might've heard of it, but in case you haven't, you will absolutely want this to do world quests faster
+
+**Items:**
+
+* [BuyEmAll](https://mods.curse.com/addons/wow/project-2590) -- Bulk purchasing options for vendor items that normally require an individual confirmation, restocking up to the next stack size and more
+* [Improved Loot Frame](https://mods.curse.com/addons/wow/improved-loot-frame) -- Replaces the fixed and multi-page loot window with one window that fits just right
+* [Scrap (Junk Seller)](https://mods.curse.com/addons/wow/scrap) -- Auto-sell junk and everything marked as such to vendors. There are several addons like it, but this I liked best
+	
+**Interface:**
+
+* [ColorPickerPlus](https://mods.curse.com/addons/wow/colorpickerplus) -- Enhanced colour picker allowing you to use RBG and Hex values to define colours more accurately. Mostly useful when using with other addons, as it doesn't do much by itself
+* [DialogKey](https://mods.curse.com/addons/wow/dialogkey) -- With this you may use keys to interact with NPCs and even UI elements (buttons, confirmation windows, you name it). You will never want to go back to clicking everything
+* [InFlight Taxi Timer](https://mods.curse.com/addons/wow/inflight-taxi-timer) -- Adds a timer to flight paths and allows to customize how it looks
+* [MicroPlates](https://mods.curse.com/addons/wow/microplates) -- This has quickly become my favourite nameplates addon. It colours them based on threat status and even has a separate colour for those annoying guards in Suramar. "An illusion?" Never again!
+* [RETabBinder](https://mods.curse.com/search?search=RETabBinder) -- PVP mostly. Changes the TAB targetting keybind automatically to ignore non-players (pets, totems, etc.) in PVP and returns it to normal when you return to do PVE content
+
+**Guilds:**
+
+* [GuildRosterButtons](https://mods.curse.com/addons/wow/guildrosterbuttons) -- Allows switching between the different views for the guild interface with a single button
+	
+**Keybinds:**
+
+* [BindPad](https://mods.curse.com/addons/wow/bind-pad) -- Perfectly complements the default keybinding options, allowing different ones for each spec, macro keybinds, mixing global and character-wide bindings etc
+* [Clique](https://mods.curse.com/addons/wow/clique) -- With this, you can use spells and macros as mouse(over) actions in addition to regular keybinds
+* [OPie](https://mods.curse.com/addons/wow/opie) -- Allows you to move situationally useful stuff from your action bars to one or several ring menus, which can then be keybound. Works well for raid markers, profession items/cooldowns and similar things

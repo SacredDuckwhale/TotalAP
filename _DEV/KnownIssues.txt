@@ -1,0 +1,8 @@
+	
+	When an error prevents the addon from loading, the layout cache will remove it -> position and size will be lost
+	
+	No localisation exists (yet). Be the first to help! Check on the current translation status here: <CurseForge project site>
+	
+	When using Masque: While resizing with glow effect enabled  (Masque loaded, but styling set to "disabled"), the icon gets inset and it looks weird.
+		Possibly fixable by unregistering from masque or adding a "Enable Masque" setting, and unregister when that is changed?
+		When resizing without masque, the size won't update? Glow effect and size are correct, but the texture isn't displayed right?

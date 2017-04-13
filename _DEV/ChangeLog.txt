@@ -1,0 +1,108 @@
+------------------------------------------------------------------------
+## v1.2
+------------------------------------------------------------------------
+
+??:
+	Added configuration GUI (in addition to slash commands, which are still supported) under Interface > Addons > TotalAP
+------------------------------------------------------------------------
+## v1.2
+------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------
+Known issues (as of the latest revision):
+------------------------------------------------------------------------
+
+	AP items are always scanned and displayed at the highest (current) available Artifact Knowledge level, even when some might be snapshotted with lower values by the game itself:
+		There isn't an easy solution for this problem, so it will take a while to be fixed properly. In the meantime, inaccuracies can be fixed by using up the remaining items after reaching a new AK level
+		
+	AP items that award vast amounts of AP (we're talking millions or even billions) could potentially break the display in some locales and display inaccurate values:
+		This will have to be fixed and tested for each locale separately once those higher AK levels are available - please report any issues you might have :)
+------------------------------------------------------------------------
+		
+r16:
+	Fixed an oversight that could break the scanning algorithm on nonstandard locales
+		
+r15:
+	Improved scanning for empowered traits (artifact tiers). They should now always be read, and cached, properly as long as the artifact has been equipped at least once
+	AP items that award higher than previously available amounts (> 1 million) thanks to new AK levels should now be scanned properly for all locales (experimental for ruRU, zhCN, zhTW clients)
+	Reworked scanning of AP items to work correctly with nonstandard locales... hopefully ;)
+	Added keybind and slash command to hide the entire display, not just its components individually
+	Updated translation for the German (deDE) locale - thanks for contributing!
+
+r14:
+	Updated database to include 7.2 AP items
+	Fixed remaining sources of LUA errors caused by 7.2's artifact API changes
+	Added support for empowered traits (artifact tiers). However, this is somewhat experimental for the time being
+
+r13:
+	[Removed] Maxed artifact weapons (read: 54 traits purchased) will now be indicated by the display. This is temporary (for the remainder of 7.1.5, basically)
+	Fixed a bug that could cause the panels to be displayed when engaging in vehicular combat, which is inconsistent and, ultimately, unintended
+	Temporary (quick 'n' dirty) update for 7.2 that should fix the LUA errors at least. Some other issues exist, but will unfortunately have to wait
+
+r12:
+	Fixed a bug that could cause the number of available traits to be replaced by an (erroneous) percentage text if glow effects were disabled
+	Fixed a scanning issue where AP rewards from world bosses (and, to some extent, world quests) wouldn't always update artifact progress as intended
+	Fixed a minor issue with the client's combat lockdown restrictions that caused the addon to be blocked from interacting with them under certain circumstances
+	Spec icon animations should now always display properly, even if new traits were already available on logging in/reloading the UI
+	Updated German translation and fixed an issue with special characters (affecting all nonstandard locales)
+	Changed the minimum level required to display the addon panel to 98 (was 100), as that is when Legion content actually becomes available. Also fixed the display to properly hide in its entirety before that point
+
+r11:
+	Cached artifact progress is now being saved between sessions and will be available without changing specs. Please note that there is no guarantee this is accurate unless the spec was recently activated
+	Added an option to prevent the displays from hiding when entering combat. Vehicles are unaffected, as using items while inside one is impossible. Pet battles remain unaffected as well, for now
+	Included translation for the German (deDE) locale - courtesy of pas06
+	The panel will now be hidden for characters lower than level 100. They can't wield artifact weapons, after all
+	All displays will now remain in their fixed position unless the others are disabled manually (Most notably, the button being hidden from having no additional AP items available will no longer shift everything to the left)
+
+r10:
+	Changed slash command to disable all glow effects instead of just the action button
+
+r9:
+	Updated DB to include new 7.1.5 artifact power items and their spell effects
+
+r8:
+	Fixed a typo that prevented some of the newly-added slash commands from running properly
+	Fixed an issue that could cause the saved variables verification routine to spam debug messages in the chat window on loading/reloading the UI
+
+r7:
+    Fixed a bug that would cause the Underlight Angler (fishing artifact) to be considered a valid target for regular AP items
+    Added support for Artifact Research Notes (will be considered with the highest priority if available).
+	[Note: There can be inaccuracies if artifact knowledge updates while AP items from previous levels remain unused as they are snapshotted; using or banking them fixes this until a better solution has been implemented]
+    Added bar and spec icon displays to complement the tooltip and action button features
+    Additional settings to change the information that is to be displayed are now available via slash command
+    Additional keybind settings to toggle the individual displays are now available under Interface > Keybinds in Blizzard's Keybind UI
+    Reworked the startup verification routine. Version updates should no longer cause issues with outdated saved variables from past versions (which sometimes required a manual reset before), but instead load the new default values
+   
+------------------------------------------------------------------------
+## v1.1
+------------------------------------------------------------------------
+r6:
+	* Fixed an oversight that caused the login message to not be displayed
+	* Fixed a bug that caused the spell overlay (glow effect) to flicker while updating under certain conditions
+	* Minor changes to the saved variables verification routine. This shouldn't be noticeable in any event
+
+r5:
+	* Fixed a bug that could cause the action button (and keybind) to temporarily stop working when entering combat without any AP items in the player's inventory
+	* Removed obsolete code and some of the debugging parts that were no longer deemed necessary
+
+r4:
+	* Fixed a bug that caused the spell overlay (glow effect) to not be reapplied correctly when the button's size was changed manually
+
+r3:
+	* Fixed TOC load order (broken after reformatting, apparently)
+
+r2:
+	* Fixed missing keybinds header
+
+r1:
+	* Added button and keybindings to use the displayed artifact power token and toggle button display
+	* Introduced spell overlay (glow effect) as notification when new traits are available
+	* Extended slash commands to provide added functionality
+
+------------------------------------------------------------------------
+## v1.0
+------------------------------------------------------------------------
+
+r0:
+	* Initial release: Basic tooltip functionality, slash commands, and functionable but incomplete localisation table

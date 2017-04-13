@@ -1,0 +1,28 @@
+Features
+
+Adds tooltip information for artifact power items. Currently, the following can be displayed:
+
+    Number of artifact power tokens in the player's inventory
+    Total artifact power in bags
+    Progress towards next trait
+    Available number of traits (if applicable)
+
+The tooltip can be customized somewhat, allowing users to decide which parts they want to include.
+
+TotalAP also displays a button whenever artifact power items are in the player's inventory:
+
+    Indicates that new traits are available via spell overlay (glow effect similar to that of spell procs)
+    Includes keybinds (via Blizzard's KeybindUI) to use AP items, or hide the button manually
+    Button can be skinned using the Masque (formerly ButtonFacade) addon library
+    Hold ALT-Click while dragging to move the button, or SHIFT-Click while dragging to change its size
+
+Slash commands
+
+The following slash commands are provided: /totalap and /ap (alias)
+
+A more detailed list will be printed ingame (see screenshots).
+Localisation
+
+Localisation is fully implemented, but no actual translation exists (yet). If you can help out, it will be appreciated! You can check on the current translation progress here: Project site
+
+ 
