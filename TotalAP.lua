@@ -1587,7 +1587,7 @@ local function SlashCommandHandler(msg)
 		TotalAP.ChatMsg(slashCommand .. " progress - " .. L["Toggle display of the progress report"]);
 		
 		TotalAP.ChatMsg(slashCommand .. " glow - " .. L["Toggle spell overlay notification (glow effect) when new traits are available"]);
-		TotalAP.ChatMsg(slashCommand .. " buttontext - " .. L["Toggle text that displays the tooltip information next to the button"]);
+		TotalAP.ChatMsg(slashCommand .. " buttontext - " .. L["Toggle additional display of the tooltip information next to the button"]);
 		
 		
 		TotalAP.ChatMsg(slashCommand .. " hide - " .. L["Toggle all displays (will override the individual display's settings)"]);
