@@ -22,6 +22,7 @@ L["Toggle bar display for artifact power progress"] = true;
 L["Toggle tooltip display for artifact power items"] = true;
 L["Toggle icon and text display for artifact power progress"] = true;
 L["Toggle visibility in combat"] = true;
+L["Toggle text that displays the tooltip information next to the button"] = true
 
 L["Item counter enabled."] = true;
 L["Item counter disabled."] = true;
@@ -48,6 +49,8 @@ L["Tooltip display is now hidden."] = true;
 L["Tooltip display is now shown."] = true;
 L["Icons are now shown."] = true;
 L["Icons are now hidden."] = true;
+L["Action button text enabled."] = true;
+L["Action button text disabled."] = true
 
 
 

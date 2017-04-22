@@ -38,7 +38,7 @@ local addonVersion = GetAddOnMetadata(addonName, "Version");
 
 -- Internal vars - TODO: Move these to the appropriate modules
 local itemEffects, artifacts; -- Loaded from TotalArtifactPowerDB in LoadSettings(), for now
-local tempItemLink, tempItemID, currentItemLink, currentItemID, currentItemTexture; -- used for bag scanning and tooltip display
+local tempItemLink, tempItemID, currentItemLink, currentItemID, currentItemTexture, currentItemAP; -- used for bag scanning and tooltip display
 local numItems, inBagsTotalAP, numTraitsAvailable, artifactProgressPercent = 0, 0, 0, 0; -- used for tooltip text
 local numTraitsFontString, specIconFontStrings = nil, {}; -- Used for the InfoFrame
 local infoFrameStyle = 0; -- Indicates the way HUD info will be displayed (used for the InfroFrame -> presets)
@@ -72,6 +72,7 @@ local defaultSettings =	{
 													showGlowEffect = true,
 													minResize = 20,
 													maxResize = 100,
+													showText = true
 												},
 
 												-- Display options for the spec icons
@@ -230,7 +231,7 @@ end
  local function CheckBags()
  
 	local bag, slot;
-	numItems, inBagsTotalAP = 0, 0; -- Each scan has to reset the (global) counter used by the tooltip and update handlers
+	numItems, inBagsTotalAP, currentItemAP = 0, 0, 0; -- Each scan has to reset the (global) counter used by the tooltip and update handlers
 	
 	-- Check all the items in bag against AP token LUT (via their respective spell effect = itemEffectsDB)to find matches
 	for bag = 0, NUM_BAG_SLOTS do
@@ -263,7 +264,7 @@ end
 					currentItemTexture = GetItemIcon(currentItemID);
 				
 					TotalAP.Debug(format("Set currentItemTexture to %s", currentItemTexture));
-					numItems = 1; -- TODO: This is technically wrong! But it will update to the correct amount once research notes have been used, anyway
+					numItems = 1; -- TODO: This is technically wrong! But it will update to the correct amount once research notes have been used, anyway (and is used by other displays at times, which might not be the best practice...)
 					return true; -- Stop scanning and display this item instead
 				end
 				
@@ -277,6 +278,8 @@ end
 					local n = TotalAP.Scanner.ParseSpellDesc(spellDescription) -- Scans spell description and extracts AP amount based on locale (as they use slightly different formats to display the numbers)
 
 					inBagsTotalAP = inBagsTotalAP + tonumber(n);
+					
+					currentItemAP = n;
 					
 					-- Store current AP item in globals (to display in button, use via keybind, etc.)
 					currentItemLink = tempItemLink;
@@ -810,11 +813,7 @@ local function UpdateActionButton()
 		MasqueUpdate(TotalAPButton, "itemUseButton");
 		
 		
-		TotalAPButton:ClearAllPoints();
-	--	TotalAPButton:SetPoint("TOPLEFT", TotalAPAnchorFrame, "TOPLEFT", 0, - math.abs(TotalAPButton:GetHeight() - TotalAPAnchorFrame:GetHeight()) / 2);
-		TotalAPButton:SetPoint("BOTTOMLEFT", TotalAPAnchorFrame, "TOPLEFT", 0, math.abs(settings.actionButton.maxResize - TotalAPButton:GetHeight()) / 2);
-		
-		
+	
 		-- Transfer cooldown animation to the button (would otherwise remain static when items are used, which feels artificial)
 		local start, duration, enabled = GetItemCooldown(currentItemID)
 		if duration > 0 then
@@ -851,6 +850,28 @@ local function UpdateActionButton()
 			FlashActionButton(TotalAPButton, false);
 			TotalAP.Debug("Deactivating button glow effect while processing UpdateActionButton...");
 		end
+		
+		-- Add current item's AP value as text (if enabled)
+		if settings.actionButton.showText and inBagsTotalAP > 0 then
+			
+			if numItems > 1 then -- Display total AP in bags
+				TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(currentItemAP, true) .. "\n(" .. TotalAP.Utils.FormatShort(inBagsTotalAP, true) .. ")") -- TODO: More options/HUD setup - planned once advanced config is implemented via AceConfig
+			else
+				TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(currentItemAP, true))
+			end
+				
+		else
+			TotalAPButtonFontString:SetText("")
+		end
+		
+		-- Reposition button (and attached frames) AFTER updating their contents, so that the size will be corrected
+		TotalAPButtonFontString:ClearAllPoints()
+		TotalAPButtonFontString:SetPoint("TOPLEFT", TotalAPButton, "BOTTOMLEFT", math.ceil(TotalAPButton:GetWidth() - (TotalAPButtonFontString:GetWidth())) / 2 , -5) -- TODO: hardcoded border and spacing (padding on the inside, via settings later), ditto for spacing -5
+			
+		TotalAPButton:ClearAllPoints();
+		TotalAPButton:SetPoint("BOTTOMLEFT", TotalAPAnchorFrame, "TOPLEFT", 0, math.abs(settings.actionButton.maxResize + TotalAPButtonFontString:GetHeight() + 5 - TotalAPButton:GetHeight()) / 2); -- TODO: 3 = distance should not be hardcoded -> save for advanced HUD config (later)
+	
+			
 		
 		-- Show after everything is done, so the spell overlay doesn't "flicker" visibly
 		TotalAPButton:Show();
@@ -1201,6 +1222,11 @@ local function CreateActionButton()
 			-- TODO: Updates should be done by event frame, not button... but alas
 		end)
 
+		
+		--- Will display the currently mapped item's AP amount (if enabled) later
+		TotalAPButtonFontString = TotalAPButton:CreateFontString("TotalAPButtonFontString", "OVERLAY", "GameFontNormal");
+		--TotalAPButtonFontString:SetTextColor(0x00/255,0xCC/255,0x80/255,1) -- TODO. via settings
+		
 		-- Register action button with Masque to allow it being skinned
 		MasqueRegister(TotalAPButton, "itemUseButton");
 	end	
@@ -1479,7 +1505,7 @@ local function SlashCommandHandler(msg)
 	settings.showLoginMessage = not settings.showLoginMessage;
 	
 	
-	elseif command == "combat" then -- Toggle notification when loading/logging in (effective after next login, obviously)
+	elseif command == "combat" then -- Toggle automatic hiding of the display while player is in combat (also: vehicle/pet battle but those can't be turned off here)
 		
 		if settings.hideInCombat then
 			TotalAP.ChatMsg(L["Display will now remain visible in combat."]);
@@ -1488,6 +1514,18 @@ local function SlashCommandHandler(msg)
 		end
 		
 	settings.hideInCombat = not settings.hideInCombat;
+	
+		elseif command == "buttontext" then -- Toggle an additional display of the (originally tooltip-only) current item's AP value / total AP in bags
+		
+		if settings.actionButton.showText then
+			TotalAP.ChatMsg(L["Action button text disabled."]);
+		else
+			TotalAP.ChatMsg(L["Action button text enabled."]);
+		end
+		
+	settings.actionButton.showText = not settings.actionButton.showText;
+	
+	
 	
 	-- [[ For testing and debugging purposes only]] --
 	
@@ -1549,6 +1587,8 @@ local function SlashCommandHandler(msg)
 		TotalAP.ChatMsg(slashCommand .. " progress - " .. L["Toggle display of the progress report"]);
 		
 		TotalAP.ChatMsg(slashCommand .. " glow - " .. L["Toggle spell overlay notification (glow effect) when new traits are available"]);
+		TotalAP.ChatMsg(slashCommand .. " buttontext - " .. L["Toggle text that displays the tooltip information next to the button"]);
+		
 		
 		TotalAP.ChatMsg(slashCommand .. " hide - " .. L["Toggle all displays (will override the individual display's settings)"]);
 		TotalAP.ChatMsg(slashCommand .. " button - " .. L["Toggle button visibility (tooltip visibility is unaffected)"]);
