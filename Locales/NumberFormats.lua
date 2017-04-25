@@ -17,87 +17,173 @@ local addonName, T = ...
 
 	-- Format styles used by the client for different locales (in the spell descriptions of AP "Empowering" spells)
 	-- Separators as usual, million/billion are used to detect numbers that are displayed like "1.5 million" = 1500000 = 1,5000,000 etc. as those are sometimes abbreviated by the client
+	-- leading/trailing spaces are only for zhCN/zhTW and koKR and SHOULD work now
+	-- unitsTable is only relevant for locales that use them in their number formats (koKR), but the order is important because the plural terms need to be checked first for some locales that use similar wordings (e.g., mil millones > millones to make sure billions are matched and not millions)
 	-- TODO: Unable to test ruRU, zhCN, zhTW locales, as well as properly test the "billions" parts (until more AK is available)
+	-- TODO: Differences between zhTW and zhCN?
 	local LocaleNumberFormats = {
 		
 		-- enUS: English (United States)
 		["enUS"] = {	
 			["thousandsSeparator"] = ",",
 			["decimalSeparator"] = ".",
-			["million"] = "million",
-			["millions"] = "millions",
-			["billion"] = "billion",
-			["billions"] = "billions"
+			["leadingSpace"] = " ",
+			["trailingSpace"] = " ",
+			["unitsTable"] = {
+				[1] = {
+					["million"] = 1000000,
+				},
+				[2] = {
+					["millions"] = 1000000,
+				},
+				[3] = {
+					["billion"] =  1000000000,
+				},
+				[4] = {
+					["billions"] = 1000000000,
+				}
+			},
 		},
 		
 		-- deDE: German (Germany)
 		["deDE"] = {	
 			["thousandsSeparator"] = ".",
 			["decimalSeparator"] = ",",
-			["million"] = "Million",
-			["millions"] = "Millionen",
-			["billion"] = "Milliarde",
-			["billions"] = "Milliarden"
+			["leadingSpace"] = " ",
+			["trailingSpace"] = " ",
+			["unitsTable"] = {
+				[1] = {
+					["Millionen"] = 1000000,
+				},
+				[2] = {
+					["Million"] = 1000000,
+				},
+				[3] = {
+					["Milliarden"] = 1000000000,
+				},
+				[4] = {
+					["Milliarde"] = 1000000000,
+				},
+			},
 		},
 		 
 		-- esES: Spanish (Spain)
 		["esES"] = {	
-			["thousandsSeparator"] = ".",
-			["decimalSeparator"] = ",",
-			["million"] = "millón", -- TODO
-			["millions"] = "millones", -- TODO
-			["billion"] = "mil millones", -- TODO
-			["billions"] = "miles de millones" -- TODO
+			["thousandsSeparator"] = ",",
+			["decimalSeparator"] = ".",
+			["leadingSpace"] = " ",
+			["trailingSpace"] = " ",
+			["unitsTable"] = {
+					[1] = {
+						["millón"] = 1000000
+					},
+					[2] = {
+						["mil millones"] =  1000000000
+					},
+					[3] = {
+						["millones"] = 1000000
+					},
+			},
 		},
 	
 		-- frFR: French (France
 		["frFR"] = {	
 			["thousandsSeparator"] = " ",
 			["decimalSeparator"] = ",",
-			["million"] = "million", -- TODO
-			["millions"] = "des millions", -- TODO
-			["billion"] = "milliard", -- TODO
-			["billions"] = "des milliards" -- TODO
+			["leadingSpace"] = " ",
+			["trailingSpace"] = " ",
+			["unitsTable"] = {
+				[1] = {
+					["million"] = 1000000,
+				},
+				[2] = {
+					["milliard"] = 1000000000,
+				},
+			},
 		},
 	
 		-- itIT: Italian (Italy)
 		["itIT"] = {	
 			["thousandsSeparator"] = ".",
 			["decimalSeparator"] = ",",
-			["million"] = "milione", -- TODO
-			["millions"] = "milioni", -- TODO
-			["billion"] = "miliardo", -- TODO
-			["billions"] = "miliardi" -- TODO
+			["leadingSpace"] = " ",
+			["trailingSpace"] = " ",
+			["unitsTable"] = {
+				[1] = {
+					["milioni"] = 1000000,
+				},
+				[2] = {
+					["milione"] = 1000000,
+				},
+				[3] = {
+					["milardi"] =  1000000000,
+				},
+				[4] = {
+					["miliardo"] = 1000000000,
+				}
+			},
 		},
 	
 		-- koKR: Korean (Korea)
+		-- 7.2 format: <text><whitespace><integer number><unit multiplier><whitespace><text>
 		["koKR"] = {	
-			["thousandsSeparator"] = ",",
-			["decimalSeparator"] = ".",
-			["million"] = "백만", -- TODO
-			["millions"] = "수백만", -- TODO
-			["billion"] = "십억", -- TODO
-			["billions"] = "수십억" -- TODO
+			["thousandsSeparator"] = ",",  -- not actually used 
+			["decimalSeparator"] = ".", -- not actually used
+			["leadingSpace"] = " ",
+			["trailingSpace"] = "",
+			["unitsTable"] = {
+				[1] = {
+					["만의"] = 10000,
+				},
+				[2] = {
+					["억의"] = 100000000,
+				},
+				[3] = {
+					["조의"] = 1000000000000,
+				},
+			},
 		},
 	
 		-- ptBR: Portuguese (Brazil)
 		["ptBR"] = {	
-			["thousandsSeparator"] = ".",
+			["thousandsSeparator"] = ",",
 			["decimalSeparator"] = ".",
-			["million"] = "milhão", -- TODO
-			["millions"] = "milhões", -- TODO
-			["billion"] = "bilhão", -- TODO
-			["billions"] = "bilhões" -- TODO
+			["leadingSpace"] = " ",
+			["trailingSpace"] = " ",
+			["unitsTable"] = {
+				[1] = {
+					["milhões"] = 1000000,
+				},
+				[2] = {
+					["milhão"] = 1000000,
+				},
+				[3] = {
+					["bilhões"] = 1000000000,
+				},
+				[4] = {
+					["bilhão"] = 1000000000,
+				},
+			},
 		},
 	
 		-- ruRU: Russian (Russia) - UI AddOn
 		["ruRU"] = {	
 			["thousandsSeparator"] = " ",
-			["decimalSeparator"] = ",",
+			["decimalSeparator"] = ".",
 			["million"] = "Миллионов", -- TODO
 			["millions"] = "Миллионов", -- TODO
 			["billion"] = "Миллиард", -- TODO
-			["billions"] = "Миллиарды" -- TODO
+			["billions"] = "Миллиарды", -- TODO
+			["leadingSpace"] = " ",
+			["trailingSpace"] = " ",
+			["unitsTable"] = {
+				[1] = {
+					["млрд"] = 1000000000,
+				},
+				[2] = {
+					["млн"] =  1000000,
+				},
+			},
 		},
 	
 		-- zhCN: Chinese (Simplified, PRC)
@@ -107,7 +193,9 @@ local addonName, T = ...
 			["million"] = "百万", -- TODO
 			["millions"] = "百万", -- TODO
 			["billion"] = "十亿", -- TODO
-			["billions"] = "数十亿" -- TODO
+			["billions"] = "数十亿", -- TODO
+			["leadingSpace"] = "",
+			["trailingSpace"] = "",
 		},
 		
 		-- zhTW: Chinese (Traditional, Taiwan)
@@ -117,7 +205,9 @@ local addonName, T = ...
 			["million"] = "百萬", -- TODO
 			["millions"] = "百萬", -- TODO
 			["billion"] = "十億", -- TODO
-			["billions"] = "數十億" -- TODO
+			["billions"] = "數十億", -- TODO
+			["leadingSpace"] = "",
+			["trailingSpace"] = "",
 		}
 	}
 

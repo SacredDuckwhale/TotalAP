@@ -26,7 +26,7 @@ local function RegexEscapeChar(c)
 		[" "] = "%s"
 	}
 	
-	if not esc[c] then return c end
+	if not esc[c] then return c end -- Also works for "empty space" as used by zhCN/zhTW and koKR locales in leading/trailingSpace, respectively
 	
 	return esc[c]
 
@@ -34,7 +34,7 @@ end
 
 
 -- Scans spell description and extracts AP amount based on locale (as they use slightly different formats to display the numbers)
-local function ParseSpellDesc(spellDescription)
+local function ParseSpellDesc(spellDescription, localeString)
 	
 	----------------------------------------------------------------------------------------------------------------------
 	-- Obsolete 7.1 AP item detection (doesn't work for >1 million and some locales)
@@ -46,28 +46,42 @@ local function ParseSpellDesc(spellDescription)
 	-- 7.2 AP item detection (should work for > 1 billion and all locales)
 	
 	-- Obtain locale-specific details such as separators and the words used to indicate the textual format (> 1 mil)
-	local l = TotalAP.GetLocaleNumberFormat(GetLocale())
-	local thousandsSeparator, decimalSeparator, million, millions, billion, billions = l["thousandsSeparator"], l["decimalSeparator"], l["million"], l["millions"], l["billion"], l["billions"]
+	local l = TotalAP.GetLocaleNumberFormat(localeString or GetLocale())
+	local thousandsSeparator, decimalSeparator, unitsTable, leadingSpace, trailingSpace = l["thousandsSeparator"], l["decimalSeparator"], l["unitsTable"], l["leadingSpace"], l["trailingSpace"]
 
 	-- Find integer values
-	local m = spellDescription:match("%s(%d+".. RegexEscapeChar(thousandsSeparator) .. "?%d*)%s") -- Used for numbers < 1 million and the numeric part of millions/billions: 100,000 (could also be 10 million, but that doesn't matter for this part)
+	local m = spellDescription:match(RegexEscapeChar(leadingSpace) .. "(%d+" .. RegexEscapeChar(thousandsSeparator) .. "?%d+)" .. RegexEscapeChar(trailingSpace)) -- Used for numbers < 1 million and the numeric part of millions/billions: 100,000 (could also be 10 million, but that doesn't matter for this part)
 
 	-- Find decimal values
 	if not m then
-	   m = spellDescription:match("%s(%d+".. RegexEscapeChar(decimalSeparator) .. "?%d*)%s") -- Used for > 1 million (since AP numbers are always integers, a decimal number indicates the abbreviated textual format: 1.5 million)
+	   m = spellDescription:match(RegexEscapeChar(leadingSpace) .. "(%d+".. RegexEscapeChar(decimalSeparator) .. "?%d*)" .. RegexEscapeChar(trailingSpace)) -- Used for > 1 million (since AP numbers are always integers, a decimal number indicates the abbreviated textual format: 1.5 million)
 	end
 
-	m = m:gsub(RegexEscapeChar(thousandsSeparator), "") -- Remove commas, points etc. so the numbers can be parsed
+	
+	m = m:gsub(RegexEscapeChar(thousandsSeparator), "") -- Remove commas, points etc. so the numbers can be parsed (leave decimals though, as they're required for multiplication)
+	m = m:gsub(RegexEscapeChar(decimalSeparator), ".") -- Only decimal points can be read by tonumber, apparently
+	
 	local n = tonumber(m) -- Making sure arithmetic can be done no matter which format was used
 
 	-- For abbreviated / textual format: Multiply to get the true value
-	if spellDescription:match(million) or spellDescription:match(millions) then -- format: X million 
-	   n = n * 1000000
+	if unitsTable then
+		for i in ipairs(unitsTable) do -- Search for unit suffix
+			for key in pairs(unitsTable[i]) do
+				if spellDescription:match(key) then 
+					n = n * unitsTable[i][key]
+					return n
+				end
+			end
+		end
 	end
+	
+	-- if spellDescription:match(million) or spellDescription:match(millions) then -- format: X million 
+	   -- n = n * 1000000
+	-- end
 
-	if spellDescription:match(billion) or spellDescription:match(billions) then -- format: X billion
-	   n = n * 1000000000
-	end
+	-- if spellDescription:match(billion) or spellDescription:match(billions) then -- format: X billion
+	   -- n = n * 1000000000
+	-- end
 	
 	return n
 end				
