@@ -20,9 +20,11 @@
 local addonName, T = ...
 
 
- -- Format number as short (15365 = 15.3k etc.) -> All credit goes to Google and whoever wrote it on wowinterface (I think?). I did NOT reinvent the wheel here!
+ -- Format number as short (15365 = 15.3k etc.)
  local function FormatShort(value,format) 
+ 
 	if type(value) == "number" then
+	
 		local fmt
 		if value >= 1000000000 or value <= -1000000000 then
 			fmt = "%.1fb"
@@ -43,56 +45,27 @@ local addonName, T = ...
 			fmt = "%d"
 			value = math.floor(value + 0.5)
 		end
+		
 		if format then
-			return fmt:format(value)
+			fmt = fmt:format(value)
+			
+			local r, f, u = fmt:match("^(%d+)%.([1-9]?)0+([k|m|b])") -- to remove trailing 0 (e.g., 4.00 m => 4m, 13.0k => 13k
+         
+			if r and u then
+				if f and tonumber(f) then
+					return r .. "." .. f .. u
+				end
+            return r .. u
+         end
+			return fmt	
 		end
+		
 		return fmt, value
-	else
-		local fmt_a, fmt_b
-		local a, b = value:match("^(%d+)/(%d+)$")
-		if a then
-			a, b = tonumber(a), tonumber(b)
-			if a >= 1000000000 or a <= -1000000000 then
-				fmt_a = "%.1fb"
-				a = a / 1000000000
-			elseif a >= 10000000 or a <= -10000000 then
-				fmt_a = "%.1fm"
-				a = a / 1000000
-			elseif a >= 1000000 or a <= -1000000 then
-				fmt_a = "%.2fm"
-				a = a / 1000000
-			elseif a >= 100000 or a <= -100000 then
-				fmt_a = "%.0fk"
-				a = a / 1000
-			elseif a >= 10000 or a <= -10000 then
-				fmt_a = "%.1fk"
-				a = a / 1000
-			end
-			if b >= 1000000000 or b <= -1000000000 then
-				fmt_b = "%.1fb"
-				b = b / 1000000000
-			elseif b >= 10000000 or b <= -10000000 then
-				fmt_b = "%.1fm"
-				b = b / 1000000
-			elseif b >= 1000000 or b <= -1000000 then
-				fmt_b = "%.2fm"
-				b = b / 1000000
-			elseif b >= 100000 or b <= -100000 then
-				fmt_b = "%.0fk"
-				b = b / 1000
-			elseif b >= 10000 or b <= -10000 then
-				fmt_b = "%.1fk"
-				b = b / 1000
-			end
-			local fmt = ("%s/%s"):format(fmt_a, fmt_b)
-			if format then
-				return fmt:format(a, b)
-			end
-			return fmt, a, b
-		else
-			return value
-		end
+		
+	else -- Only numbers are supported
+		return	
 	end
+	
 end
 
 
