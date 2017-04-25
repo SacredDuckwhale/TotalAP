@@ -4,6 +4,7 @@
 ## Author: Cakechart
 
 ## Notes: Summarizes and displays artifact power-related information in a variety of ways
+## Notes-DE: Fasst Artefaktmacht-bezogene Informationen zusammen und zeigt sie auf verschiedene Weise an.
 
 ## SavedVariables: TotalArtifactPowerSettings, TotalArtifactPowerCache
 
