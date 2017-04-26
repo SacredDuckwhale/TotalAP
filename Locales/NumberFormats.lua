@@ -86,7 +86,7 @@ local addonName, T = ...
 			},
 		},
 	
-		-- frFR: French (France
+		-- frFR: French (France)
 		["frFR"] = {	
 			["thousandsSeparator"] = " ",
 			["decimalSeparator"] = ",",
@@ -125,7 +125,7 @@ local addonName, T = ...
 		},
 	
 		-- koKR: Korean (Korea)
-		-- 7.2 format: <text><whitespace><integer number><unit multiplier><whitespace><text>
+		-- Special format: <text><whitespace><integer number><unit multiplier><whitespace><text>
 		["koKR"] = {	
 			["thousandsSeparator"] = ",",  -- not actually used 
 			["decimalSeparator"] = ".", -- not actually used
@@ -166,7 +166,7 @@ local addonName, T = ...
 			},
 		},
 	
-		-- ruRU: Russian (Russia) - UI AddOn
+		-- ruRU: Russian (Russia) 
 		["ruRU"] = {	
 			["thousandsSeparator"] = " ",
 			["decimalSeparator"] = ".",

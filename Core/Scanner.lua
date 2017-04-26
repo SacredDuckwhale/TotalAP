@@ -16,8 +16,8 @@
 local addonName, TotalAP = ...
 
 
--- Helper function (TODO: Probably unnecessary as it is)
--- Look up string-characters and return their regexp pattern string (purely for ease of use)
+-- Helper function
+-- Look up string-characters and return their regexp pattern string (purely for ease of use and readability)
 local function RegexEscapeChar(c)
 	
 	local esc = {
@@ -33,7 +33,7 @@ local function RegexEscapeChar(c)
 end
 
 
--- Scans spell description and extracts AP amount based on locale (as they use slightly different formats to display the numbers)
+-- Scans spell description and extracts AP amount based on locale (as they use different formats to display the numbers)
 local function ParseSpellDesc(spellDescription, localeString)
 	
 	----------------------------------------------------------------------------------------------------------------------
