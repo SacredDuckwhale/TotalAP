@@ -1144,6 +1144,7 @@ local function CreateActionButton()
 		
 		TotalAPButton = CreateFrame("Button", "TotalAPButton", TotalAPAnchorFrame, "ActionButtonTemplate, SecureActionButtonTemplate");
 		TotalAPButton:SetFrameStrata("HIGH");
+		TotalAPButton:SetFrameStrata("MEDIUM");
 		TotalAPButton:SetClampedToScreen(true);
 		
 		-- TotalAPButton:SetSize(settings.actionButtonSize, settings.actionButtonSize); 
