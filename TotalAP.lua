@@ -23,17 +23,19 @@ local itemEffects; -- loaded on init from separate (script-generated) file: DB\I
 local AceAddon = LibStub("AceAddon-3.0"):NewAddon("TotalAP", "AceConsole-3.0"); -- AceAddon object -> local because it's not really needed elsewhere
 local L = LibStub("AceLocale-3.0"):GetLocale("TotalAP", false); -- Localization table; default locale is enGB (=enUS). false to show an error if locale not found (via AceLocale)
 local SharedMedia = LibStub("LibSharedMedia-3.0");  -- TODO: Not implemented yet... But "soon" (TM) -> allow styling of bars and font strings (I'm really just waiting until the config/options are done properly for this -> AceConfig)
-local Masque = LibStub("Masque", true); -- optional (will use default client style if not found
+local Masque = LibStub("Masque", true); -- optional (will use default client style if not found)
 
 
 -- Shorthands: Those don't do anything except save me work :P
 local aUI = C_ArtifactUI
 
+
 -- Addon metadata (used for messages/output, primarily)
 local addonName, T = ...;
 TotalAP = T -- Global container for modularised functions and library instance objects -> contains the addonTable to exchange information between modules
 
-local slashCommand = "/ap"; -- This is the alias; /totalap also works
+
+
 local addonVersion = GetAddOnMetadata(addonName, "Version");
 
 -- Internal vars - TODO: Move these to the appropriate modules
@@ -48,84 +50,12 @@ local artifactProgressCache = {} -- Used to calculate offspec artifact progress
 
 local maxArtifactTraits = 999; -- TODO: Temporary (before 7.2) - allow it to be set manually (to ignore specs above 35 or 54) - In 7.2 this might be entirely useless as AP will continue to increase exponentially at those levels and beyond - 7.2 TODO: Change to option and allow the user to manually set it (feature request to ignore "inefficient" specs)
 
--- SavedVars defaults (to check against, and load if corrupted/rendered invalid by version updates)
--- TODO: Use AceDB for this
-local defaultSettings =	{	
-												-- General options
-												
-												-- controls what output will be printed in the chat frame
-												debugMode = false,
-												verbose = true,
-												showLoginMessage = true,
-												enabled = true,		-- This controls the entire display, but NOT the individual parts (which will be hidden, but their settings won't be overridden)
-												hideInCombat = true,
-												
-											--	showNumItems = true, -- TODO: Deprecated
-												--showProgressReport = true, -- TODO: Deprecated
-												
-												--showActionButton = true, -- TODO: Toggles everything. That should be changed
-												
-												--showButtonGlowEffect = true, -- TODO: actionButton
-												
-												actionButton = {
-													enabled = true,
-													showGlowEffect = true,
-													minResize = 20,
-													maxResize = 100,
-													showText = true
-												},
-
-												-- Display options for the spec icons
-												specIcons = {
-													enabled = true,
-													showGlowEffect = true,
-													size = 18,
-													border = 1,
-													inset = 1
-												},
-												
-												-- Controls what information is displayed in the tooltip
-												tooltip = {
-													enabled = true, 
-													showProgressReport = true,
-													showNumItems = true
-												},
-												
-												-- Display options for the bar displays
-												infoFrame = {
-													enabled = true,
-													barTexture = "Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar.blp", -- Default texture. TODO. SharedMedia
-													barHeight = 16,
-													border = 1,
-													inset = 1,
-													
-													progressBar = {
-														red = 250,
-														green = 250,
-														blue = 250,
-														alpha = 0.2
-													},
-													
-													unspentBar = {
-														red = 50,
-														green = 150,
-														blue = 250,
-														alpha = 1
-													},
-													
-													inBagsBar = {
-														red = 50,
-														green = 95,
-														blue = 150,
-														alpha = 1
-													}
-												}
-												
-											};
 
 --local TotalAPFrame, TotalAPInfoFrame, TotalAPButton, TotalAPSpec1IconButton, TotalAPSpec2conButton, TotalAPSpec3IconButton, TotalAPSpec4IconButton; -- UI elements/frames
 local settings, cache = {}, {}; -- will be loaded from savedVars later
 
+
+local defaultSettings = TotalAP.DBHandler.GetDefaults() -- TODO: remove (crutch while in migration)
 
 -- Calculate the total number of purchaseable traits (using AP from both the equipped artifact and from AP tokens in the player's inventory)
 local function GetNumAvailableTraits()
@@ -170,8 +100,8 @@ end
 -- Load default settings (will overwrite SavedVars)
 local function RestoreDefaultSettings()
 
-	TotalArtifactPowerSettings = defaultSettings;
-	settings = TotalArtifactPowerSettings;
+	TotalAP.DBHandler.RestoreDefaults() -- TODO: remove
+
 end
 
 
@@ -242,6 +172,7 @@ end
 					tempItemID = GetItemInfoInstant(tempItemLink);
 					local spellID = itemEffects[tempItemID];
 				
+				-- TODO: Move this to DB\ResearchTomes or something, and access via helper function (similar to artifacts)
 				if tempItemID == 139390 		-- Artifact Research Notes (max. AK 25) TODO: obsolete? Seem to be replaced by the AK 50 version entirely
 					or tempItemID == 146745	-- Artifact Research Notes (max. AK 50)
 					or tempItemID == 147860 	-- Empowered Elven Tome (7.2)
@@ -272,7 +203,6 @@ end
 					numItems = numItems + 1
 					
 					-- Extract AP amount (after AK) from the description
-					--TODO: BUG when applying AK -> spell description already updated, but items are actually snapshotted
 					local spellDescription = GetSpellDescription(spellID); -- Always contains the AP number, as only AP tokens are in the LUT 
 					
 					local n = TotalAP.Scanner.ParseSpellDesc(spellDescription) -- Scans spell description and extracts AP amount based on locale (as they use slightly different formats to display the numbers)
@@ -302,8 +232,8 @@ local function FlashActionButton(button, showGlowEffect, showAnts)
 	if showAnts == nil then showAnts = false; end -- Default = Disable ants (moving animation) on glow effect if no arg was passed
 	
 	-- TODO: Hide ants?
-	if not button then
-		TotalAP.Debug("Called FlashActionButton, but button is nil. Abort, abort!");
+	if not button or InCombatLockdown() then
+		TotalAP.Debug("Called FlashActionButton, but button is nil or combat lockdown is active. Abort, abort!");
 		return false
 	else
 		if showGlowEffect then
@@ -784,7 +714,7 @@ end
 local function UpdateActionButton()
 
 	-- Hide button if artifact is already maxed (TODO: 7.1 only?)
-	if artifactProgressCache[GetSpecialization()] ~= nil and artifactProgressCache[GetSpecialization()]["numTraitsPurchased"] >= maxArtifactTraits then
+	if artifactProgressCache[GetSpecialization()] ~= nil and artifactProgressCache[GetSpecialization()]["numTraitsPurchased"] >= maxArtifactTraits and not InCombatLockdown() then
 		TotalAP.Debug("Hiding action button due to maxed out artifact weapon");
 		TotalAPButton:Hide();
 	end
@@ -898,13 +828,12 @@ end
 -- Update ALL the info! It should still be possible to only update individual parts (for later options/features), hence the separation here
 local function UpdateEverything()
 	
-	if InCombatLockdown() then -- Frames can't be shown, hidden, or modified -> events are not a reliable way to detect this, sadly
+	if InCombatLockdown() then -- Frames can't be shown, hidden, or modified -> events are not a reliable way to detect this
 		TotalAP.Debug("Skipping update due to  combat lockdown");
 		return;
 	end
 	
 	-- Proceed as usual
-	--if not InCombatLockdown() and aUI and (HasArtifactEquipped()  and not IsEquippedItem(133755)) then  -- TODO: Proper support for the Underlight Angler artifact (rare fish instead of AP . Also remove individual check from the button?
 		UpdateAnchorFrame();
 		UpdateActionButton();
 	
@@ -1143,7 +1072,6 @@ local function CreateActionButton()
 	if not TotalAPButton then -- if button already exists, this was called before -> Skip initialisation
 		
 		TotalAPButton = CreateFrame("Button", "TotalAPButton", TotalAPAnchorFrame, "ActionButtonTemplate, SecureActionButtonTemplate");
-		TotalAPButton:SetFrameStrata("HIGH");
 		TotalAPButton:SetFrameStrata("MEDIUM");
 		TotalAPButton:SetClampedToScreen(true);
 		
@@ -1294,6 +1222,10 @@ local function CreateAnchorFrame()
 	
 		TotalAPAnchorFrame:SetScript("OnEvent", function(self, event, unit) --  (to update and show/hide the button when entering or leaving combat/pet battles)
 
+			if InCombatLockdown() then -- Prevent taint by accidentally trying to hide/show button or even glow effects
+				return
+			end
+		
 			if event == "BAG_UPDATE_DELAYED" then  -- inventory has changed -> recheck bags for AP items and update button display
 
 				TotalAP.Debug("Scanning bags and updating action button after BAG_UPDATE_DELAYED...");
@@ -1313,8 +1245,13 @@ local function CreateAnchorFrame()
 			
 				--if numItems > 0 and not InCombatLockdown() and settings.showActionButton then 
 				TotalAP.Debug("Player left combat , vehicle, or pet battle... Updating action button!");
-				self:Show(); 
-					--TotalAP.Debug("Player left combat , vehicle, or pet battle... Showing button!");
+				if not InCombatLockdown() then
+					self:Show(); 
+				else
+					TotalAP.Debug("Not showing AnchorFrame to prevent taint, as UI is still in combat lockdown")
+				end
+				
+				--TotalAP.Debug("Player left combat , vehicle, or pet battle... Showing button!");
 				-- end
 				TotalAP.Debug("Scanning bags and updating action button after combat/pet battle/vehicle status ended...");
 				CheckBags();	-- TODO: Fixes the issue with WQ / world bosses that complete, but lock the player in combat for a longer period -> needs to be tested with AP reward WQ at a world boss still, but it should suffice
@@ -1418,197 +1355,6 @@ function TotalAP_ToggleAllDisplays()
 end
 	
 	
-	
--- Slash command handling
--- TODO: Switch / LUT 
-
--- TODO: Slash command handling (via AceConsole)
--- For output: Simply call TotalAP:Print([ChatFrameName], "Text")
--- For slash commands: TotalAP:RegisterChatCommand("CommandNameWithoutSlash", "SlashHandlerFunctionName")
--- TODO: Use AceConfig to create slash commands automatically for simplicity?
-
-
-local function SlashCommandHandler(msg)
-
-	-- Preprocessing of user input
-	msg = string.lower(msg);
-	local command, param = msg:match("^(%S*)%s*(.-)$");
-	
-	if command == "counter" then -- Toggle counter display in tooltip
-	
-		if not settings.tooltip.showNumItems then TotalAP.ChatMsg(L["Item counter enabled."]);
-		else TotalAP.ChatMsg(L["Item counter disabled."]);
-		end
-		
-		settings.tooltip.showNumItems = not settings.tooltip.showNumItems;
-	
-	elseif command == "progress" then -- Enable progress report in tooltip
-	
-		if not settings.tooltip.showProgressReport then TotalAP.ChatMsg(L["Progress report enabled."]);
-		else TotalAP.ChatMsg(L["Progress report disabled."]);
-		end
-		
-		settings.tooltip.showProgressReport = not settings.tooltip.showProgressReport;
-	
-	elseif command == "glow" then -- Toggle button spell overlay effect -> Notification when new traits are available
-		
-		if not settings.actionButton.showGlowEffect then
-			settings.actionButton.showGlowEffect = true; 
-			TotalAP.ChatMsg(L["Button glow effect enabled."]);
-		else
-			settings.actionButton.showGlowEffect = false;
-			TotalAP.ChatMsg(L["Button glow effect disabled."]);
-		end
-		
-		if not settings.specIcons.showGlowEffect then
-			settings.specIcons.showGlowEffect = true; 
-			TotalAP.ChatMsg(L["Spec icons glow effect enabled."]);
-		else
-			settings.specIcons.showGlowEffect = false;
-			TotalAP.ChatMsg(L["Spec icons glow effect disabled."]);
-		end
-		
-	elseif command == "hide" then
-	
-		if settings.enabled then
-			TotalAP.ChatMsg(L["All displays are now being hidden."])
-		else
-			TotalAP.ChatMsg(L["All displays are now being shown."])
-		end
-		
-		TotalAP_ToggleAllDisplays()
-
-		
-	elseif command == "button" then -- Toggle button visibility (tooltip functionality remains)
-
-		TotalAP_ToggleActionButton();
-		
-	elseif command == "bars" then -- Toggle infoFrame (bar display)
-
-		TotalAP_ToggleBarDisplay();	
-		
-	elseif command == "tooltip" then
-	
-		TotalAP.ToggleTooltipDisplay();
-	
-	elseif command == "icons" then
-	
-		TotalAP_ToggleSpecIcons();	
-
-	elseif command == "loginmsg" then -- Toggle notification when loading/logging in (effective after next login, obviously)
-		
-		if settings.showLoginMessage then
-			TotalAP.ChatMsg(L["Login message is now hidden."]);
-		else
-			TotalAP.ChatMsg(L["Login message is now shown."]);
-		end
-		
-	settings.showLoginMessage = not settings.showLoginMessage;
-	
-	
-	elseif command == "combat" then -- Toggle automatic hiding of the display while player is in combat (also: vehicle/pet battle but those can't be turned off here)
-		
-		if settings.hideInCombat then
-			TotalAP.ChatMsg(L["Display will now remain visible in combat."]);
-		else
-			TotalAP.ChatMsg(L["Display will now be hidden in combat."]);
-		end
-		
-	settings.hideInCombat = not settings.hideInCombat;
-	
-		elseif command == "buttontext" then -- Toggle an additional display of the (originally tooltip-only) current item's AP value / total AP in bags
-		
-		if settings.actionButton.showText then
-			TotalAP.ChatMsg(L["Action button text disabled."]);
-		else
-			TotalAP.ChatMsg(L["Action button text enabled."]);
-		end
-		
-	settings.actionButton.showText = not settings.actionButton.showText;
-	
-	
-	
-	-- [[ For testing and debugging purposes only]] --
-	
-	elseif command == "flash" then --  Add spell overlay to action button (for debugging/testing purposes only -> undocumented)
-	
-		FlashActionButton(TotalAPButton, true);
-		for i = 0, GetNumSpecializations() do
-			FlashActionButton(TotalAPSpecIconButtons[i], true);
-		end
-		
-	
-	elseif command == "unflash" then -- Remove spell overlay from all buttons (for debugging/testing purposes only -> undocumented)
-	
-		FlashActionButton(TotalAPButton, false);
-		for i = 0, GetNumSpecializations() do
-				FlashActionButton(TotalAPSpecIconButtons[i], false);
-		end
-		
-	elseif command == "reset" then -- Load default values for all settings
-		
-		RestoreDefaultSettings();
-		TotalAP.ChatMsg(L["Default settings loaded."]);
-		
-		TotalAPAnchorFrame:ClearAllPoints();
-		TotalAPAnchorFrame:SetPoint("CENTER", UIParent, "CENTER");
-		
-	elseif command == "anchor" then -- Show anchor frame
-	
-		--TotalAPAnchorFrame:SetShown(TotalAPAnchorFrame:IsShown());
-		TotalAPAnchorFrame:SetBackdrop(
-			{
-				bgFile = "Interface\\GLUES\\COMMON\\Glue-Tooltip-Background.blp",
-												-- edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
-												-- tile = true, tileSize = 16, edgeSize = 16, 
-													-- insets = { left = 4, right = 4, top = 4, bottom = 4 }
-			}
-		); 
-		
-		
-	elseif command == "debug" then -- Toggle debug mode (for debugging/testing purposes only -> undocumented)
-	
-		if settings.debugMode then
-			TotalAP.ChatMsg(L["Debug mode disabled."]);
-		else
-			TotalAP.ChatMsg(L["Debug mode enabled."]);
-		end
-		
-		settings.debugMode = not settings.debugMode;
-		
-	elseif command == "load" then -- Load settings manually (including verification of SavedVars)  (for debugging purposes only)-> undocumented 	
-		LoadSettings();
-		
-	-- TODO: Better way to list all available commands, especially as functionality is extended (GUI?)
-	else -- Display help / list of commands
-		
-		TotalAP.ChatMsg(L["[List of available commands]"]);
-		
-		TotalAP.ChatMsg(slashCommand .. " counter - " .. L["Toggle display of the item counter"]);
-		TotalAP.ChatMsg(slashCommand .. " progress - " .. L["Toggle display of the progress report"]);
-		
-		TotalAP.ChatMsg(slashCommand .. " glow - " .. L["Toggle spell overlay notification (glow effect) when new traits are available"]);
-		TotalAP.ChatMsg(slashCommand .. " buttontext - " .. L["Toggle additional display of the tooltip information next to the button"]);
-		
-		
-		TotalAP.ChatMsg(slashCommand .. " hide - " .. L["Toggle all displays (will override the individual display's settings)"]);
-		TotalAP.ChatMsg(slashCommand .. " button - " .. L["Toggle button visibility (tooltip visibility is unaffected)"]);
-		TotalAP.ChatMsg(slashCommand .. " bars - " .. L["Toggle bar display for artifact power progress"]);
-		TotalAP.ChatMsg(slashCommand .. " tooltip - " .. L["Toggle tooltip display for artifact power items"]);
-		TotalAP.ChatMsg(slashCommand .. " icons - " .. L["Toggle icon and text display for artifact power progress"]);
-		
-		-- TODO: Toggle InfoFrame, specIcons (separately from button) -> keybinds?
-		TotalAP.ChatMsg(slashCommand .. " loginmsg - " .. L["Toggle login message on load"]);
-		TotalAP.ChatMsg(slashCommand .. " combat - " .. L["Toggle visibility in combat"]);
-		TotalAP.ChatMsg(slashCommand .. " reset - " .. L["Load default settings (will overwrite any changes made)"]);
-		TotalAP.ChatMsg(slashCommand .. " debug - " .. L["Toggle debug mode (not particularly useful as long as everything is working as expected)"]);
-	
-	end
-	
-	-- Always update displays to make sure any changes will be displayed immediately
-	UpdateEverything()
-end
-
 -- Display tooltip when hovering over an AP item
 GameTooltip:HookScript('OnTooltipSetItem', function(self)
 	
@@ -1667,15 +1413,19 @@ end);
 
  
 -- Standard methods (via AceAddon) -> They use the local object and not the shared container variable (which are for the modularised functions in other lua files)
--- TODO: Migrate existing startup routine here
+-- TODO: Use AceConfig to create slash commands automatically for simplicity?
 function AceAddon:OnInitialize() -- Called on ADDON_LOADED
 	
 	LoadSettings();  -- from saved vars
 	CreateAnchorFrame(); -- anchor for all other frames -> needs to be loaded before PLAYER_LOGIN to have the game save its position and size
-			
+
+	-- Register slash commands
+	AceAddon:RegisterChatCommand(TotalAP.Controller.GetSlashCommand(), TotalAP.Controller.SlashCommandHandler)
+	AceAddon:RegisterChatCommand(TotalAP.Controller.GetSlashCommandAlias(), TotalAP.Controller.SlashCommandHandler) -- alias is /ap instead of /totalap - with the latter providing a fallback mechanism in case some other addon chose to use /ap as well or for lazy people (like me)
+	
 	-- Add slash command to global command list
-	SLASH_TOTALAP1, SLASH_TOTALAP2 = "/totalap", slashCommand;
-	SlashCmdList["TOTALAP"] = SlashCommandHandler;
+	-- SLASH_TOTALAP1, SLASH_TOTALAP2 = cmd, alias;
+	-- SlashCmdList["TOTALAP"] = T.Controller.SlashCommandHandler;
 	
 	-- Add keybinds to Blizzard's KeybindUI
 	BINDING_HEADER_TOTALAP = L["TotalAP - Artifact Power Tracker"];

@@ -29,7 +29,10 @@ Locales\NumberFormats.lua
 
 Core\Init.lua
 Core\ChatMsg.lua
+Core\DBHandler.lua
 Core\Scanner.lua
+Core\GUI\Views.lua
+Core\Controller\SlashCommands.lua
 #Core\Utils\Colours.lua
 Core\Utils\Format.lua
 #Core\Utils\ItemLink.lua
