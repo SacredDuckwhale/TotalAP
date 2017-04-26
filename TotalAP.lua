@@ -64,6 +64,21 @@ local function GetNumAvailableTraits()
 		TotalAP.Debug("Called GetNumAvailableTraits, but the artifact UI is unavailable... Is an artifact equipped?");
 		return 0;
 	end
+	
+	-- TODO: 
+	-- function MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(pointsSpent, artifactXP, artifactTier)
+	-- local numPoints = 0;
+	-- local xpForNextPoint = C_ArtifactUI.GetCostForPointAtRank(pointsSpent, artifactTier);
+	-- while artifactXP >= xpForNextPoint and xpForNextPoint > 0 do
+		-- artifactXP = artifactXP - xpForNextPoint;
+
+		-- pointsSpent = pointsSpent + 1;
+		-- numPoints = numPoints + 1;
+
+		-- xpForNextPoint = C_ArtifactUI.GetCostForPointAtRank(pointsSpent, artifactTier);
+	-- end
+	-- return numPoints, artifactXP, xpForNextPoint;
+-- end
 		
 	local thisLevelUnspentAP, numTraitsPurchased, _, _, _, _, _, _, tier = select(5, aUI.GetEquippedArtifactInfo());	
 	--local tier = aUI.GetArtifactTier() or 2; -- Assuming 2 as per usual (see other calls and comments for GetArtifactTier) - only defaults to this when artifact is not available/opened?
@@ -1356,6 +1371,7 @@ end
 	
 	
 -- Display tooltip when hovering over an AP item
+-- TODO: Secure hook (if possible) to avoid taint? Haven't seen any issues but it could become one later
 GameTooltip:HookScript('OnTooltipSetItem', function(self)
 	
 	local _, tempItemLink = self:GetItem();
@@ -1419,13 +1435,12 @@ function AceAddon:OnInitialize() -- Called on ADDON_LOADED
 	LoadSettings();  -- from saved vars
 	CreateAnchorFrame(); -- anchor for all other frames -> needs to be loaded before PLAYER_LOGIN to have the game save its position and size
 
+	TotalAP.GUI.CreateView() -- Create frames that will later be rendered (shown) and updated
+	
+	
 	-- Register slash commands
 	AceAddon:RegisterChatCommand(TotalAP.Controller.GetSlashCommand(), TotalAP.Controller.SlashCommandHandler)
 	AceAddon:RegisterChatCommand(TotalAP.Controller.GetSlashCommandAlias(), TotalAP.Controller.SlashCommandHandler) -- alias is /ap instead of /totalap - with the latter providing a fallback mechanism in case some other addon chose to use /ap as well or for lazy people (like me)
-	
-	-- Add slash command to global command list
-	-- SLASH_TOTALAP1, SLASH_TOTALAP2 = cmd, alias;
-	-- SlashCmdList["TOTALAP"] = T.Controller.SlashCommandHandler;
 	
 	-- Add keybinds to Blizzard's KeybindUI
 	BINDING_HEADER_TOTALAP = L["TotalAP - Artifact Power Tracker"];
@@ -1459,36 +1474,3 @@ function AceAddon:OnDisable()
 	-- Shed a tear because the addon was disabled ;'(
 	
 end
-
- 
- -- TODO. Remove this once the startup routine is migrated to the AceAddon loader functio
- -- One-time execution on load -> Piece everything together
- -- do
-	
-	-- local f = CreateFrame("Frame", "TotalAPStartupEventFrame");
-
-	-- f:RegisterEvent("ADDON_LOADED");
-	-- f:RegisterEvent("PLAYER_LOGIN");
-	-- f:RegisterEvent("PLAYER_ENTERING_WORLD");
-	
-	-- f:SetScript("OnEvent", function(self, event, ...) -- This frame is for initial event handling only
-	
-		-- local loadedAddonName = ...;
-	
-		-- if event == "ADDON_LOADED" and loadedAddonName == addonName then -- addon has been loaded, savedVars are available -> Create frames before PLAYER_LOGIN to have the game save their position automatically
-		
-		
-				
-			
-		-- elseif event == "PLAYER_LOGIN" then -- Frames have been created, everything is ready for use -> Display login message (if enabled)
-		
-			
-		
-		-- elseif event == "PLAYER_ENTERING_WORLD" then -- Register for events required to update
-		
-	
-
-		-- end
-	-- end);
-	
--- end
