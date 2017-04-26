@@ -40,7 +40,7 @@ local slashCommands = {
 	["counter"] = "Toggle display of the item counter",
 	["progress"] = "Toggle spell overlay notification (glow effect) when new traits are available",
 	["glow"] = "Toggle spell overlay notification (glow effect) when new traits are available",
-	["buttontext"] = "Toggle additional display of the tooltip information next to the button",
+	["buttontext"] = "Toggle short summary of the tooltip information as an additional display next to the action button",
 	
 	["hide"] = "Toggle all displays (will override the individual display's settings)",
 	["button"] = "Toggle button visibility (tooltip visibility is unaffected)",
@@ -248,22 +248,6 @@ local function PrintSlashCommands()
 		for cmd in pairs(slashCommands) do -- print description saved in localisation table - TODO: Order could be set via index/ipairs if it matters?
 			TotalAP.ChatMsg(cmd .. " - " .. L[slashCommands[cmd]])
 		end
-		
--- TotalAP.ChatMsg(slashCommand .. " counter - " .. ;
--- TotalAP.ChatMsg(slashCommand .. " progress - " .. L["Toggle display of the progress report"]);
--- TotalAP.ChatMsg(slashCommand .. " glow - " .. L["Toggle spell overlay notification (glow effect) when new traits are available"]);
--- TotalAP.ChatMsg(slashCommand .. " buttontext - " .. L["Toggle additional display of the tooltip information next to the button"]);
--- TotalAP.ChatMsg(slashCommand .. " hide - " .. L["Toggle all displays (will override the individual display's settings)"]);
--- TotalAP.ChatMsg(slashCommand .. " button - " .. L["Toggle button visibility (tooltip visibility is unaffected)"]);
--- TotalAP.ChatMsg(slashCommand .. " bars - " .. L["Toggle bar display for artifact power progress"]);
--- TotalAP.ChatMsg(slashCommand .. " tooltip - " .. L["Toggle tooltip display for artifact power items"]);
--- TotalAP.ChatMsg(slashCommand .. " icons - " .. L["Toggle icon and text display for artifact power progress"]);
--- TODO: Toggle InfoFrame, specIcons (separately from button) -> keybinds?
--- TotalAP.ChatMsg(slashCommand .. " loginmsg - " .. L["Toggle login message on load"]);
--- TotalAP.ChatMsg(slashCommand .. " combat - " .. L["Toggle visibility in combat"]);
--- TotalAP.ChatMsg(slashCommand .. " reset - " .. L["Load default settings (will overwrite any changes made)"]);
--- TotalAP.ChatMsg(slashCommand .. " debug - " .. L["Toggle debug mode (not particularly useful as long as everything is working as expected)"]);
-
 end
 
 
@@ -294,7 +278,6 @@ local function SlashCommandHandler(input)
 	
 	-- Always update displays to make sure any changes will be displayed immediately (if possible/not locked)
 	TotalAP.GUI.UpdateView()
-	--UpdateEverything() TODO: Actually, this will be part of the GUI module soon
 end
 
 

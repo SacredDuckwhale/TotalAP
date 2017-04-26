@@ -22,7 +22,8 @@ L["Toggle bar display for artifact power progress"] = true;
 L["Toggle tooltip display for artifact power items"] = true;
 L["Toggle icon and text display for artifact power progress"] = true;
 L["Toggle visibility in combat"] = true;
-L["Toggle additional display of the tooltip information next to the button"] = true
+-- L["Toggle additional display of the tooltip information next to the button"] = true -- Such terrible wording, will be replaced with:
+L["Toggle short summary of the tooltip information as an additional display next to the action button"] = true
 
 L["Item counter enabled."] = true;
 L["Item counter disabled."] = true;
