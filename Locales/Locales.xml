@@ -5,6 +5,7 @@
 	 <Script file="enGB.lua"/>
 	 <Script file="deDE.lua"/>
 	 <Script file="koKR.lua"/>
+	 <Script file="zhTW.lua"/>
+	 
     <Script file="Locales.lua"/>
-	
 </Ui>

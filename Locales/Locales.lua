@@ -29,11 +29,6 @@ if L then
 
 end
 
-L = LibStub("AceLocale-3.0"):NewLocale("TotalAP", "zhTW"); 
-if L then
-
-end
-
 L = LibStub("AceLocale-3.0"):NewLocale("TotalAP", "ptBR"); 
 if L then
 

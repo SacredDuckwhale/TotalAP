@@ -4,7 +4,8 @@
 ## Author: Cakechart
 
 ## Notes: Summarizes and displays artifact power-related information in a variety of ways
-## Notes-DE: Fasst Artefaktmacht-bezogene Informationen zusammen und zeigt sie auf verschiedene Weise an.
+## Notes-deDE: Fasst Artefaktmacht-bezogene Informationen zusammen und zeigt sie auf verschiedene Weise an.
+## Notes-zhTW: 只要按一個鍵或按鈕就能使用背包中所有的神兵之力，並且會顯示每個專精的神兵之力進度。
 
 ## SavedVariables: TotalArtifactPowerSettings, TotalArtifactPowerCache
 
