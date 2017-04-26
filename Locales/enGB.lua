@@ -64,7 +64,7 @@ L["Progress towards next trait: %d%%"] = true;
 L["Specialization: %s"] = true;
 L["This spec is currently active"] = true;
 L["Click to activate"] = true;
-L["This artifact is currently equipped"] = true;
+L["This artifact is currently equipped"] = true; -- This seems to be unused? Might as well delete it...
 
 
 -- Keybind UI
