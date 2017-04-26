@@ -17,11 +17,33 @@ local addonName, TotalAP = ...
 
 if not TotalAP then return end
 
--- TODO. Not here / just a prototype to get the other modules working
+
+-- Create a GUI (view) to display the information according to the view settings
+local function CreateView()
+
+	-- Create frames and store them in addon table (for later use)
+	
+	-- Make GUI interactive (by attaching event handling as specified in GUI\Interaction.lua)
+
+end
+
+
+-- Display the currently active view (this is NOT an update, but an initialisation routine)
+local function RenderView()
+
+end
+
+
+-- Update the existing (and already rendered!) view to display correct information
 local function UpdateView()
 
 end
 
+
+
+
+TotalAP.GUI.CreateView = CreateView
 TotalAP.GUI.UpdateView = UpdateView -- TODO: All views?
+
 
 return TotalAP.GUI
