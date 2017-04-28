@@ -16,8 +16,8 @@
 local addonName, T = ...
 
 	-- Format styles used by the client for different locales (in the spell descriptions of AP "Empowering" spells)
-	-- Separators as usual, million/billion are used to detect numbers that are displayed like "1.5 million" = 1500000 = 1,5000,000 etc. as those are sometimes abbreviated by the client
-	-- leading/trailing spaces are only for zhCN/zhTW and koKR and SHOULD work now
+	-- Separators as usual; million/billion are used to detect numbers that are displayed like "1.5 million" = 1500000 = 1,5000,000 etc. as those are abbreviated by the client
+	-- leading/trailing spaces are only for zhCN/zhTW/koKR and SHOULD work now
 	-- unitsTable is only relevant for locales that use them in their number formats (koKR), but the order is important because the plural terms need to be checked first for some locales that use similar wordings (e.g., mil millones > millones to make sure billions are matched and not millions)
 	-- TODO: Unable to test ruRU, zhCN, zhTW locales, as well as properly test the "billions" parts (until more AK is available)
 	-- TODO: Differences between zhTW and zhCN?
@@ -170,10 +170,6 @@ local addonName, T = ...
 		["ruRU"] = {	
 			["thousandsSeparator"] = " ",
 			["decimalSeparator"] = ".",
-			["million"] = "Миллионов", -- TODO
-			["millions"] = "Миллионов", -- TODO
-			["billion"] = "Миллиард", -- TODO
-			["billions"] = "Миллиарды", -- TODO
 			["leadingSpace"] = " ",
 			["trailingSpace"] = " ",
 			["unitsTable"] = {
@@ -199,16 +195,25 @@ local addonName, T = ...
 		},
 		
 		-- zhTW: Chinese (Traditional, Taiwan)
-		["zhTW"] = {	
-			["thousandsSeparator"] = ".",
-			["decimalSeparator"] = ".",
-			["million"] = "百萬", -- TODO
-			["millions"] = "百萬", -- TODO
-			["billion"] = "十億", -- TODO
-			["billions"] = "數十億", -- TODO
-			["leadingSpace"] = "",
-			["trailingSpace"] = "",
-		}
+		 ["zhTW"] = { 
+			 ["thousandsSeparator"] = ",",
+			 ["decimalSeparator"] = ".",
+			 ["leadingSpace"] = "",
+			 ["trailingSpace"] = "",
+			 ["unitsTable"] = {
+				 [1] = {
+					 ["萬"] = 10000,
+				 },
+				 [2] = {
+					 ["億"] = 100000000,
+				 },
+				 [3] = {
+					 ["兆"] = 1000000000000,
+				 },
+			 },
+		 },
+	
+	
 	}
 
 	 -- enGB: English (United Kingdom) - enGB clients return enUS
