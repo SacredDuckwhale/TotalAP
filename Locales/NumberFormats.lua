@@ -15,12 +15,10 @@
 
 local addonName, T = ...
 
-	-- Format styles used by the client for different locales (in the spell descriptions of AP "Empowering" spells)
-	-- Separators as usual; million/billion are used to detect numbers that are displayed like "1.5 million" = 1500000 = 1,5000,000 etc. as those are abbreviated by the client
-	-- leading/trailing spaces are only for zhCN/zhTW/koKR and SHOULD work now
-	-- unitsTable is only relevant for locales that use them in their number formats (koKR), but the order is important because the plural terms need to be checked first for some locales that use similar wordings (e.g., mil millones > millones to make sure billions are matched and not millions)
-	-- TODO: Unable to test ruRU, zhCN, zhTW locales, as well as properly test the "billions" parts (until more AK is available)
-	-- TODO: Differences between zhTW and zhCN?
+	-- Format styles used by the client for different locales (in the spell descriptions of AP "Empowering" spells, and elsewhere after 7.2)
+	-- koKR / zhTW / zhCN: <text><whitespace><integer number><unit multiplier><whitespace><text>
+	-- All other locales: <text><whitespace><integer or decimal number><whitespace><unit multiplier><whitespace><text>
+	-- For the unit tables, indexes matters, as the plural terms need to be checked first for some locales that use similar wordings (e.g., mil millones > millones) to match properly
 	local LocaleNumberFormats = {
 		
 		-- enUS: English (United States)
@@ -125,7 +123,6 @@ local addonName, T = ...
 		},
 	
 		-- koKR: Korean (Korea)
-		-- Special format: <text><whitespace><integer number><unit multiplier><whitespace><text>
 		["koKR"] = {	
 			["thousandsSeparator"] = ",",  -- not actually used 
 			["decimalSeparator"] = ".", -- not actually used
@@ -186,12 +183,16 @@ local addonName, T = ...
 		["zhCN"] = {	
 			["thousandsSeparator"] = ",",
 			["decimalSeparator"] = ".",
-			["million"] = "百万", -- TODO
-			["millions"] = "百万", -- TODO
-			["billion"] = "十亿", -- TODO
-			["billions"] = "数十亿", -- TODO
 			["leadingSpace"] = "",
 			["trailingSpace"] = "",
+			["unitsTable"] = {
+				[1] = {
+					["万"] = 10000,
+				},
+				[2] = {
+					["亿"] = 100000000,
+				},
+			},
 		},
 		
 		-- zhTW: Chinese (Traditional, Taiwan)
@@ -213,12 +214,11 @@ local addonName, T = ...
 			 },
 		 },
 	
-	
 	}
 
 	 -- enGB: English (United Kingdom) - enGB clients return enUS
 	LocaleNumberFormats["enGB"] = LocaleNumberFormats["enUS"] -- Not sure if necessary, but it's better to be safe than sorry (in case enGB is indexed which seems unlikely due to the enGB client returning enUS via GetLocale())
-	-- enMX: Spanish (Mexico) - should use similar format to Spanish (Spain)
+	-- enMX: Spanish (Mexico) - should use similar format to Spanish (Spain).... Should.... Ihopethisisntwrong :P
 	LocaleNumberFormats["esMX"] = LocaleNumberFormats["esES"]
 	
 	
