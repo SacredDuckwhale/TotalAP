@@ -30,8 +30,9 @@ local slashCommandAlias = "ap"
 local L = LibStub("AceLocale-3.0"):GetLocale("TotalAP", false); -- Localization table
 
 -- TODO: Use AceDB for this
-local settings = TotalAP.DBHandler.GetDB()
+--local settings = TotalAP.DBHandler.GetDB() -- TODO: Upvalue / LUA Error
 
+-- TODO: settings in slashHandlers is a workaround from incomplete migration issues -> it's not final and should probably be reworked after migration is complete
 
 -- Match commands to locale table keys (the actual strings are NOT used, except to look up the correct translation)
 -- TODO: Slash commands themselves aren't localised yet. Maybe they could be?
@@ -58,7 +59,7 @@ local slashCommands = {
 -- Actual handling of slash commands (TODO: Not fully migrated yet -> most won't work until it is done)
 local slashHandlers = {
 
-	["counter"] = function() -- Toggle counter display in tooltip
+	["counter"] = function(settings) -- Toggle counter display in tooltip
 
 		if not settings.tooltip.showNumItems then
 			TotalAP.ChatMsg(L["Item counter enabled."])
@@ -70,7 +71,7 @@ local slashHandlers = {
 	
 	end,
 	
-	["progress"] = function() -- Enable progress report in tooltip
+	["progress"] = function(settings) -- Enable progress report in tooltip
 	
 		if not settings.tooltip.showProgressReport then
 			TotalAP.ChatMsg(L["Progress report enabled."]);
@@ -81,7 +82,7 @@ local slashHandlers = {
 		settings.tooltip.showProgressReport = not settings.tooltip.showProgressReport;
 	end,
 	
-	["glow"] = function() -- Toggle button spell overlay effect -> Notification when new traits are available
+	["glow"] = function(settings) -- Toggle button spell overlay effect -> Notification when new traits are available
 		
 		if not settings.actionButton.showGlowEffect then
 			settings.actionButton.showGlowEffect = true; 
@@ -101,7 +102,7 @@ local slashHandlers = {
 		
 	end,
 	
-	["buttontext"] = function() -- Toggle an additional display of the (originally tooltip-only) current item's AP value / total AP in bags
+	["buttontext"] = function(settings) -- Toggle an additional display of the (originally tooltip-only) current item's AP value / total AP in bags
 		
 		if settings.actionButton.showText then
 			TotalAP.ChatMsg(L["Action button text disabled."]);
@@ -113,7 +114,7 @@ local slashHandlers = {
 
 	end,
 	
-	["hide"] = function()  -- Toggle all displays
+	["hide"] = function(settings)  -- Toggle all displays
 		
 	
 		if settings.enabled then
@@ -126,33 +127,33 @@ local slashHandlers = {
 
 	end,
 	
-	["button"] = function() -- Toggle button visibility (tooltip functionality remains)
+	["button"] = function(settings) -- Toggle button visibility (tooltip functionality remains)
 				
 
 		TotalAP_ToggleActionButton();
 		
 	end,
 	
-	["tooltip"] = function() -- Toggle tooltip additions for AP items
+	["tooltip"] = function(settings) -- Toggle tooltip additions for AP items
 	
-		TotalAP.ToggleTooltipDisplay();
+		TotalAP.Controllers.KeybindHandler("TooltipToggle", false)
 
 	end,
 	
-	["bars"] = function() -- Toggle infoFrame (bar display)
+	["bars"] = function(settings) -- Toggle infoFrame (bar display)
 
 
 		TotalAP_ToggleBarDisplay();	
 		
 	end,
 	
-	["icons"] = function() -- Toggle spec icons
+	["icons"] = function(settings) -- Toggle spec icons
 
 		TotalAP_ToggleSpecIcons();	
 
 	end,
 	
-	["loginmsg"] = function() -- Toggle notification when loading/logging in (effective on next login)
+	["loginmsg"] = function(settings) -- Toggle notification when loading/logging in (effective on next login)
 		
 		if settings.showLoginMessage then
 			TotalAP.ChatMsg(L["Login message is now hidden."]);
@@ -164,7 +165,7 @@ local slashHandlers = {
 	
 	end,
 	
-	["combat"] =  function() -- Toggle automatic hiding of the display while player is in combat (also: vehicle/pet battle but those can't be turned off here)
+	["combat"] =  function(settings) -- Toggle automatic hiding of the display while player is in combat (also: vehicle/pet battle but those can't be turned off here)
 		if settings.hideInCombat then
 			TotalAP.ChatMsg(L["Display will now remain visible in combat."]);
 		else
@@ -175,7 +176,7 @@ local slashHandlers = {
 
 	end,
 	
-	["reset"] =  function() -- Load default values for all settings
+	["reset"] =  function(settings) -- Load default values for all settings
 
 		TotalAP.DBHandler.RestoreDefaults()
 		--RestoreDefaultSettings();
@@ -186,7 +187,7 @@ local slashHandlers = {
 
 	end,
 	
-	["debug"] = function() -- Toggle debug mode (for debugging/testing purposes only -> undocumented)
+	["debug"] = function(settings) -- Toggle debug mode (for debugging/testing purposes only -> undocumented)
 				
 		if settings.debugMode then
 			TotalAP.ChatMsg(L["Debug mode disabled."]);
@@ -259,8 +260,8 @@ local function SlashCommandHandler(input)
 	-- input = string.lower(input);
 	-- local command, param = input:match("^(%S*)%s*(.-)$");
 	
-	local AceAddon = LibStub("AceAddon-3.0"):GetAddon("TotalAP") -- should be loaded by the main chunk earlier, otherwise it will error out
-	local command = AceAddon:GetArgs(input)
+	local addonObject = LibStub("AceAddon-3.0"):GetAddon("TotalAP") -- should be loaded by the main chunk earlier, otherwise it will error out
+	local command = addonObject:GetArgs(input)
 	
 	-- Lists all available commands as chat output
 	-- TODO: Better way to list all available commands, especially as functionality is extended (GUI?)
@@ -268,7 +269,9 @@ local function SlashCommandHandler(input)
 		if command == validCommand then -- Execute individual handler function for this slash command
 			local slashHandlerFunction = slashHandlers[command]
 			TotalAP.Debug("Recognized slash command: " .. command .. " - executing handler function..." )
-			slashHandlerFunction()
+			
+			local db = TotalAP.DBHandler.GetDB() -- settings from SavedVars
+			slashHandlerFunction(db)
 			return -- to skip the "help" being displayed
 		end
 	end
@@ -282,9 +285,9 @@ end
 
 
 -- Make functions available in the addon namespace
-TotalAP.Controller.GetSlashCommand = GetSlashCommand
-TotalAP.Controller.GetSlashCommandAlias = GetSlashCommandAlias
-TotalAP.Controller.PrintSlashCommands = PrintSlashCommands
-TotalAP.Controller.SlashCommandHandler = SlashCommandHandler
+TotalAP.Controllers.GetSlashCommand = GetSlashCommand
+TotalAP.Controllers.GetSlashCommandAlias = GetSlashCommandAlias
+TotalAP.Controllers.PrintSlashCommands = PrintSlashCommands
+TotalAP.Controllers.SlashCommandHandler = SlashCommandHandler
 
 return TotalAP.Controller
