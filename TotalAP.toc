@@ -31,7 +31,6 @@ Locales\Locales.xml
 Locales\NumberFormats.lua
 
 Core\Init.lua
-Core\ChatMsg.lua
 Core\DBHandler.lua
 Core\Scanner.lua
 
