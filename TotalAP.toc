@@ -37,9 +37,14 @@ Core\Init.lua
 Core\DBHandler.lua
 Core\Scanner.lua
 
-Core\GUI\Display.lua
-Core\GUI\Interaction.lua
-Core\GUI\Views.lua
+Core\GUI\Views\Prototype.lua
+Core\GUI\Views\CompactView.lua
+Core\GUI\Views\DefaultView.lua
+Core\GUI\Views\MinimalisticView.lua
+Core\GUI\Views\PrimarySpecView.lua
+Core\GUI\Views\TabbedView.lua
+
+Core\GUI\Config.lua
 
 Core\Controllers\Keybinds.lua
 Core\Controllers\SlashCommands.lua
