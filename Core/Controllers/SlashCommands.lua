@@ -22,7 +22,8 @@ local addonName, TotalAP = ...
 if not TotalAP then return end
 
 
--- TODO: Localised versions (especially for non-Latin characters) - they would be optional, of course
+-- TODO: Localised versions (especially for non-Latin characters) - they would be optional, of course // -- TODO: Slash commands themselves aren't localised yet. Maybe they should be?
+-- TODO: Set this somewhere else?
 local slashCommand = "totalap"
 local slashCommandAlias = "ap"
 
@@ -34,8 +35,8 @@ local L = LibStub("AceLocale-3.0"):GetLocale("TotalAP", false); -- Localization 
 
 -- TODO: settings in slashHandlers is a workaround from incomplete migration issues -> it's not final and should probably be reworked after migration is complete
 
+
 -- Match commands to locale table keys (the actual strings are NOT used, except to look up the correct translation)
--- TODO: Slash commands themselves aren't localised yet. Maybe they could be?
 local slashCommands = {
 	
 	["counter"] = "Toggle display of the item counter",
@@ -55,6 +56,7 @@ local slashCommands = {
 	["debug"] = "Toggle debug mode (not particularly useful as long as everything is working as expected)",
 	
 }
+
 
 -- Actual handling of slash commands (TODO: Not fully migrated yet -> most won't work until it is done)
 local slashHandlers = {
@@ -233,61 +235,102 @@ local slashHandlers = {
 }
 
 
+-- Returns handler function for a given slash command (if it exists) -- TODO: It's private, as it's only used in here currently - does it need to be exposed for something?
+local function GetSlashHandlerFunction(command)
+	return slashHandlers[command]
+end
+
+-- Returns the currently used (main) slash command
 local function GetSlashCommand()
 	return slashCommand
 end
 
+
+-- Returns shorthand (alias) for the currently used slash command
 local function GetSlashCommandAlias()
 	return slashCommandAlias
 end
 
+
 -- Prints a list of all available slash commands to the DEFAULT_CHAT_FRAME (using the addon-specific print methods with colour-coding)
-local function PrintSlashCommands()
+local function PrintSlashCommands(usedAlias)
 
 		-- TODO: Could use AceConsole:print(f) for this, but... meh. It would have to format the output manually to adhere to the addon's standards (as set in Core\ChatMsg), and who has time for that?
 		TotalAP.ChatMsg(L["[List of available commands]"]);
 		for cmd in pairs(slashCommands) do -- print description saved in localisation table - TODO: Order could be set via index/ipairs if it matters?
-			TotalAP.ChatMsg(cmd .. " - " .. L[slashCommands[cmd]])
+			
+			local usedCmd = GetSlashCommand()
+			if usedAlias then
+				usedCmd = GetSlashCommandAlias()
+			end
+		
+			TotalAP.ChatMsg("/" .. usedCmd .. " " .. cmd .. " - " .. L[slashCommands[cmd]])
+		
 		end
 end
 
 
 -- Handles console input (slash commands)
 -- TODO: Only one argument is supported currently (use AceConsole:GetArgs to parse them more easily)
-local function SlashCommandHandler(input)
+local function SlashCommandHandler(input, usedAlias)
 
-	-- Preprocessing of user input
-	-- input = string.lower(input);
-	-- local command, param = input:match("^(%S*)%s*(.-)$");
-	
 	local addonObject = LibStub("AceAddon-3.0"):GetAddon("TotalAP") -- should be loaded by the main chunk earlier, otherwise it will error out
 	local command = addonObject:GetArgs(input)
 	
 	-- Lists all available commands as chat output
 	-- TODO: Better way to list all available commands, especially as functionality is extended (GUI?)
 	for validCommand in pairs(slashCommands) do
-		if command == validCommand then -- Execute individual handler function for this slash command
+	
+		-- Undocumented: These command are for testing purposes only (and won't be listed by the regular chat window output)
+		if command == "cmdtest" then 	-- Run all possible chat commands once, with some delay to make sure they are working properly
+		
+			-- TODO: Duplicate code - and also, do you really want to test /reset and similar commands!? Should be replaced by a proper selective testing routine
+			-- TotalAP.Debug("Running slash command test for command = " .. validCommand)
+			-- local slashHandlerFunction = slashHandlers[validCommand]
+			-- local db = TotalAP.DBHandler.GetDB() 
+			-- slashHandlerFunction(db)
+			
+		elseif command == "guitest" then -- Perform various GUI operations to make sure everything is working properly
+		
+		-- TODO once GUI/migration is complete
+		
+		elseif command == "dbtest" then -- Simulate DB operations to test functionality, without actually changing the savedVars in the process	
+		
+		-- TODO once AceDB handles vars (current db handling should work fine for the time being)
+			
+		elseif command == validCommand then -- Execute individual handler function for this slash command
+			
 			local slashHandlerFunction = slashHandlers[command]
 			TotalAP.Debug("Recognized slash command: " .. command .. " - executing handler function..." )
-			
-			local db = TotalAP.DBHandler.GetDB() -- settings from SavedVars
+			local db = TotalAP.DBHandler.GetDB() 
 			slashHandlerFunction(db)
-			return -- to skip the "help" being displayed
-		end
+			
+			-- Always update displays to make sure any changes will be displayed immediately (if possible/not locked)
+			TotalAP.Controllers.UpdateGUI()
+			
+			return
+	
+		end	
+
 	end
 	
-	-- Display help / list of commands
-	PrintSlashCommands()
+		-- Display help / list of commands
+	PrintSlashCommands(usedAlias)
+	return
 	
-	-- Always update displays to make sure any changes will be displayed immediately (if possible/not locked)
-	TotalAP.GUI.UpdateView()
 end
 
+-- Notify slash command handler that the alias slash command was used instead of the regular one before calling it
+-- TODO: I don't like this, but since AceConsole doesn't allow the option of differentiating between commands via parameters this should get the job done
+local function SlashCommandHandler_UsedAlias(input)
+	SlashCommandHandler(input, true)
+end
 
 -- Make functions available in the addon namespace
 TotalAP.Controllers.GetSlashCommand = GetSlashCommand
 TotalAP.Controllers.GetSlashCommandAlias = GetSlashCommandAlias
 TotalAP.Controllers.PrintSlashCommands = PrintSlashCommands
 TotalAP.Controllers.SlashCommandHandler = SlashCommandHandler
+TotalAP.Controllers.SlashCommandHandler_UsedAlias = SlashCommandHandler_UsedAlias
 
-return TotalAP.Controller
+return TotalAP.Controllers
