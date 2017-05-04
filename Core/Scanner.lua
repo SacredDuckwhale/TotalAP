@@ -16,7 +16,8 @@
 local addonName, TotalAP = ...
 
 
--- Helper function
+-- TODO: This and some other modules are probably misplaced (Scanner = Utils, DBHandler = ??, ... if there's even a point in reusing their functionality)
+
 -- Look up string-characters and return their regexp pattern string (purely for ease of use and readability)
 local function RegexEscapeChar(c)
 	
@@ -36,14 +37,7 @@ end
 -- Scans spell description and extracts AP amount based on locale (as they use different formats to display the numbers)
 local function ParseSpellDesc(spellDescription, localeString)
 	
-	----------------------------------------------------------------------------------------------------------------------
-	-- Obsolete 7.1 AP item detection (doesn't work for >1 million and some locales)
-	-- TODO: Remove once the replacement (below) works properly
-	-- local m = spellDescription:match("%s?(%d+%,?%.?%s?%d*)%s?");  -- Match pattern: <optional space><number | number separated by comma, point, or space> <optional space> (Should work for all locales due to BreakUpLargeNumbers being used in the UI)		
-	-- m = string.gsub(string.gsub(m, "%,", ""), "%.", ""); -- Remove commas and points (to convert the value to an actual number)
-	----------------------------------------------------------------------------------------------------------------------
-
-	-- 7.2 AP item detection (should work for > 1 billion and all locales)
+	-- 7.2 AP number format detection (should work for > 1 billion and all locales)
 	
 	-- Obtain locale-specific details such as separators and the words used to indicate the textual format (> 1 mil)
 	local l = TotalAP.GetLocaleNumberFormat(localeString or GetLocale())
@@ -74,16 +68,9 @@ local function ParseSpellDesc(spellDescription, localeString)
 			end
 		end
 	end
-	
-	-- if spellDescription:match(million) or spellDescription:match(millions) then -- format: X million 
-	   -- n = n * 1000000
-	-- end
 
-	-- if spellDescription:match(billion) or spellDescription:match(billions) then -- format: X billion
-	   -- n = n * 1000000000
-	-- end
-	
 	return n
+	
 end				
 				
 				
