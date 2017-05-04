@@ -23,19 +23,42 @@ if not T then return end
 
 -- TODO: DB\Init -> rename from global var TotalArtifactPowerDB and put this here (right now, both parts are separate but they could easily be combined)
 
+T.version = GetAddOnMetadata("TotalAP", "Version")
 
 -- Core modules
-if not T.Scanner then T.Scanner = {} end
-if not T.DBHandler then T.DBHandler = {} end
+T.Scanner = {}
+T.DBHandler = {} 
 
--- Controller / Input handling
-if not T.Controller then T.Controller = {} end
+-- Controllers & Input handling
+T.Controllers = {}
 
--- User Interface/Views
-if not T.GUI then T.GUI = {} end
+-- User Interface & Views
+T.GUI = {}
+T.GUI.frameCounter = 0 -- Used for automatically naming new frames if no specific name was provided, i.e., TotalAPAnonymousFrame<No> -> TotalAPAnonymousFrame1 (avoiding name clashes)
 
 -- Utility and helper functions
-if not T.Utils then T.Utils = {} end
+T.Utils = {}
 
 
-return
+-- Global functions (TODO: Move to separate file if there will be more?)
+-- TODO: Custom colour codes (in Utils) -> not added yet
+-- Print debug messages (if enabled)
+local function Debug(msg)
+	if TotalArtifactPowerSettings.debugMode then
+		print(format("|c000072CA" .. "%s-Debug: " .. "|c00E6CC80%s", addonName, msg)); 
+	end
+end
+
+	
+-- Print regular addon messages (if enabled)
+local function ChatMsg(msg)
+	if TotalArtifactPowerSettings.verbose then
+		print(format("|c00CC5500" .. "%s: " .. "|c00E6CC80%s", addonName, msg)); 
+	end
+end
+
+
+T.Debug = Debug
+T.ChatMsg = ChatMsg
+
+return T
