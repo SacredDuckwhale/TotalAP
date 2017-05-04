@@ -1,37 +1,38 @@
-<Bindings>
+	<Bindings>
 
 	<Binding category="ADDONS" name="CLICK TotalAPButton:LeftButtonUp" header="TOTALAP">
-	
+		
 	</Binding>
 	
 	<Binding category="ADDONS" name="TOTALAPALLDISPLAYSTOGGLE" header="TOTALAP">
 	
-		TotalAP_ToggleAllDisplays()
+		TotalAP.Controllers.KeybindHandler("AllDisplaysToggle", true)
 		
 	</Binding>
 	
 	<Binding category="ADDONS" name="TOTALAPBUTTONTOGGLE" header="TOTALAP">
 	
-		TotalAP_ToggleActionButton()
+		TotalAP.Controllers.KeybindHandler("ActionButtonToggle", true)
 		
 	</Binding>
 	
 	<Binding category="ADDONS" name="TOTALAPBARDISPLAYTOGGLE" header="TOTALAP">
 	
-		TotalAP_ToggleBarDisplay()
+		TotalAP.Controllers.KeybindHandler("BarDisplayToggle", true)
 		
 	</Binding>
 	
 	<Binding category="ADDONS" name="TOTALAPICONSTOGGLE" header="TOTALAP">
 	
-		TotalAP_ToggleSpecIcons()
+		TotalAP.Controllers.KeybindHandler("SpecIconsToggle", true)
 		
 	</Binding>
 	
 	<Binding category="ADDONS" name="TOTALAPTOOLTIPTOGGLE" header="TOTALAP">
 	
-		TotalAP_ToggleTooltipDisplay()
-		
+		TotalAP.Controllers.KeybindHandler("TooltipToggle", true)
+
 	</Binding>
+	
 	
 </Bindings>
