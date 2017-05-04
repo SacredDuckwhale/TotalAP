@@ -7,10 +7,13 @@
 ## Notes-deDE: Fasst Artefaktmacht-bezogene Informationen zusammen und zeigt sie auf verschiedene Weise an.
 ## Notes-zhTW: 只要按一個鍵或按鈕就能使用背包中所有的神兵之力，並且會顯示每個專精的神兵之力進度。
 
+## DefaultState: Enabled
+## LoadOnDemand: 0
 ## SavedVariables: TotalArtifactPowerSettings, TotalArtifactPowerCache
 
 ## OptionalDeps:LibStub, AceAddon-3.0, AceConsole-3.0, AceLocale-3.0, LibSharedMedia-3.0
 ## X-Embeds: LibStub, AceAddon-3.0, AceConsole-3.0, AceLocale-3.0, LibSharedMedia-3.0
+## X-Website: http://www.curse.com/addons/wow/totalap
 
 #@no-lib-strip@
 Libs\LibStub\LibStub.lua
