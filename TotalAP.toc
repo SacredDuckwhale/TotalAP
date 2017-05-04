@@ -1,7 +1,10 @@
 ## Interface: 70200
-## Title: TotalAP - Artifact Power Tracker
 ## Version: 1.2
 ## Author: Cakechart
+## Title: TotalAP - Artifact Power Tracker
+## Title-deDE: TotalAP – Artefaktmachtverfolgung
+## Title-zhTW: TotalAP - 一鍵使用神兵之力
+
 
 ## Notes: Summarizes and displays artifact power-related information in a variety of ways
 ## Notes-deDE: Fasst Artefaktmacht-bezogene Informationen zusammen und zeigt sie auf verschiedene Weise an.
