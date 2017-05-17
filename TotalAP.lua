@@ -1454,14 +1454,7 @@ function AceAddon:OnInitialize() -- Called on ADDON_LOADED
 	self:RegisterChatCommand(TotalAP.Controllers.GetSlashCommandAlias(), TotalAP.Controllers.SlashCommandHandler_UsedAlias) -- alias is /ap instead of /totalap - with the latter providing a fallback mechanism in case some other addon chose to use /ap as well or for lazy people (like me)
 	
 	-- Add keybinds to Blizzard's KeybindUI
-	BINDING_HEADER_TOTALAP = L["TotalAP - Artifact Power Tracker"];
-	_G["BINDING_NAME_CLICK TotalAPButton:LeftButtonUp"] = L["Use Next AP Token"];
-	_G["BINDING_NAME_TOTALAPALLDISPLAYSTOGGLE"] = L["Show/Hide All Displays"];
-	_G["BINDING_NAME_TOTALAPBUTTONTOGGLE"] = L["Show/Hide Button"];
-	_G["BINDING_NAME_TOTALAPTOOLTIPTOGGLE"] = L["Show/Hide Tooltip Info"];
-	_G["BINDING_NAME_TOTALAPBARDISPLAYTOGGLE"] = L["Show/Hide Bar Display"];
-	_G["BINDING_NAME_TOTALAPICONSTOGGLE"] = L["Show/Hide Icons"];
-	
+	TotalAP.Controllers.RegisterKeybinds()
 end
 
 function AceAddon:OnEnable()	-- Called on PLAYER_LOGIN or ADDON_LOADED (if addon is loaded-on-demand)
