@@ -50,6 +50,8 @@ local slashCommands = {
 	["tooltip"] = "Toggle tooltip display for artifact power items",
 	["icons"] = "Toggle icon and text display for artifact power progress",
 	
+	["unignore"] = "Resets ignored specs for the currently active character",
+	
 	["loginmsg"] = "Toggle login message on load",
 	["combat"] = "Toggle visibility in combat",
 	["reset"] =  "Load default settings (will overwrite any changes made)",
@@ -125,14 +127,13 @@ local slashHandlers = {
 			TotalAP.ChatMsg(L["All displays are now being shown."])
 		end
 		
-		TotalAP_ToggleAllDisplays()
+		TotalAP.Controllers.KeybindHandler("AllDisplaysToggle", false)
 
 	end,
 	
 	["button"] = function(settings) -- Toggle button visibility (tooltip functionality remains)
 				
-
-		TotalAP_ToggleActionButton();
+		TotalAP.Controllers.KeybindHandler("ActionButtonToggle", false)
 		
 	end,
 	
@@ -145,13 +146,13 @@ local slashHandlers = {
 	["bars"] = function(settings) -- Toggle infoFrame (bar display)
 
 
-		TotalAP_ToggleBarDisplay();	
+		TotalAP.Controllers.KeybindHandler("BarDisplayToggle", false);	
 		
 	end,
 	
 	["icons"] = function(settings) -- Toggle spec icons
 
-		TotalAP_ToggleSpecIcons();	
+		TotalAP.Controllers.KeybindHandler("SpecIconsToggle", false);	
 
 	end,
 	

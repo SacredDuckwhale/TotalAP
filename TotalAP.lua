@@ -867,6 +867,10 @@ local function UpdateEverything()
 
 end
 
+-- TODO: Temp crutch for the migration process
+TotalAP.Controllers.UpdateGUI = UpdateEverything
+
+
 -- Initialise spec icons and active/inactive spec indicators
 local function CreateSpecIcons()
 	
