@@ -1450,8 +1450,8 @@ function AceAddon:OnInitialize() -- Called on ADDON_LOADED
 	
 	
 	-- Register slash commands
-	AceAddon:RegisterChatCommand(TotalAP.Controller.GetSlashCommand(), TotalAP.Controller.SlashCommandHandler)
-	AceAddon:RegisterChatCommand(TotalAP.Controller.GetSlashCommandAlias(), TotalAP.Controller.SlashCommandHandler) -- alias is /ap instead of /totalap - with the latter providing a fallback mechanism in case some other addon chose to use /ap as well or for lazy people (like me)
+	self:RegisterChatCommand(TotalAP.Controllers.GetSlashCommand(), TotalAP.Controllers.SlashCommandHandler)
+	self:RegisterChatCommand(TotalAP.Controllers.GetSlashCommandAlias(), TotalAP.Controllers.SlashCommandHandler_UsedAlias) -- alias is /ap instead of /totalap - with the latter providing a fallback mechanism in case some other addon chose to use /ap as well or for lazy people (like me)
 	
 	-- Add keybinds to Blizzard's KeybindUI
 	BINDING_HEADER_TOTALAP = L["TotalAP - Artifact Power Tracker"];
