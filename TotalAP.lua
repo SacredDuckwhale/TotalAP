@@ -924,6 +924,13 @@ local function CreateSpecIcons()
 		
 			-- Change spec as per the player's selection (if it isn't active already)
 			if GetSpecialization() ~= i then
+			
+				-- Dismount if not flying (wouldn't want to kill the player, now would we?) / SHOULD also cancel shapeshifts of any kind, at least out of combat -- TODO: Setting to allow forced dismount even if flying/Test with chakras and other "weird" shapeshifts
+				if (IsMounted() or GetShapeshiftForm() > 0) and not (IsFlying() or InCombatLockdown() or UnitAffectingCombat("player")) then
+					Dismount()
+					CancelShapeshiftForm() -- TODO: Protected -> may cause issues if called in combat? (Not sure if InCombatLockdown is enough to detect this reliably)
+				end
+				
 				TotalAP.Debug(format("Current spec: %s - Changing spec to: %d (%s)", GetSpecialization(), i, specName)); -- not in combat etc
 				SetSpecialization(i);
 			end
