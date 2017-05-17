@@ -156,6 +156,12 @@ local slashHandlers = {
 
 	end,
 	
+	["unignore"] = function(settings) -- Reset this character's ignored specs list
+
+		TotalAP.DBHandler.UnignoreAllSpecs()
+	
+	end,
+	
 	["loginmsg"] = function(settings) -- Toggle notification when loading/logging in (effective on next login)
 		
 		if settings.showLoginMessage then
@@ -184,7 +190,7 @@ local slashHandlers = {
 		TotalAP.DBHandler.RestoreDefaults()
 		--RestoreDefaultSettings();
 		TotalAP.ChatMsg(L["Default settings loaded."]);
-		
+		-- TODO: Run UnignoreAllSpecs() also?
 		TotalAPAnchorFrame:ClearAllPoints();
 		TotalAPAnchorFrame:SetPoint("CENTER", UIParent, "CENTER");
 

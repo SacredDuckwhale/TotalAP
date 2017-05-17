@@ -24,7 +24,7 @@ L["Toggle icon and text display for artifact power progress"] = true;
 L["Toggle visibility in combat"] = true;
 -- L["Toggle additional display of the tooltip information next to the button"] = true -- Such terrible wording, will be replaced with:
 L["Toggle short summary of the tooltip information as an additional display next to the action button"] = true
-
+L["Resets ignored specs for the currently active character"] = true
 L["Item counter enabled."] = true;
 L["Item counter disabled."] = true;
 L["Progress report enabled."] = true;
@@ -65,6 +65,7 @@ L["Progress towards next trait: %d%%"] = true;
 L["Specialization: %s"] = true;
 L["This spec is currently active"] = true;
 L["Click to activate"] = true;
+L["Right-click to ignore this spec"] = true
 L["This artifact is currently equipped"] = true; -- This seems to be unused? Might as well delete it...
 
 
@@ -77,3 +78,7 @@ L["Show/Hide Tooltip Info"] = true;
 L["Show/Hide Bar Display"] = true;
 L["Show/Hide Icons"] = true;
 
+-- One-time warnings and notices
+L["Ignoring spec %d for character %s"] = true
+L["Type %s unignore to reset all currently ignored specs for this character"] = true
+L["All specs are set to being ignored for this character. Type %s unignore to reset them if this is unintended."] = true

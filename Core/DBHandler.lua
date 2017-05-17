@@ -13,13 +13,16 @@
     -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------------------------------------------------
 
+-- Core\DBHandler.lua
+-- Interface for the addon's DB (SavedVars) -- TODO: Let AceDB handle this, and repurpose the DBHandler for the "actual" DB (itemEffects and such), also split into DBHandler and CacheHandler (in Core\Controllers?)
+
 local addonName, TotalAP = ...
 
 if not TotalAP then return end
 
 -- SavedVars defaults (to check against, and load if corrupted/rendered invalid by version updates)
 -- TODO: Use AceDB for this
--- TODO: Doesn't belong here. Maybe put it in Core\DefaultSettings.lua?
+-- TODO: Doesn't belong here. Maybe put it in Core\DefaultSettings.lua? - or not. AceDB will handle it soon enough
 local defaultSettings =	{	
 												-- General options
 												
@@ -95,16 +98,15 @@ local defaultSettings =	{
 
 
 
-local db = TotalArtifactPowerSettings
-
+-- Returns a reference to the currently used SavedVars (DB) object
 local function GetDB()
 	-- TODO: LoadAddonMetadata("TotalAP", "SavedVars") ?
 	-- TODO: provide interface for AceDB via this handler
 	
-	return db
+	return TotalArtifactPowerSettings
 end
 
--- TODO: Remove/crutch or actually useful later?
+-- TODO: Remove/crutch for migration or actually useful later?
 local function GetDefaults()
 	return defaultSettings
 end
@@ -114,10 +116,79 @@ local function RestoreDefaults()
 	--settings = TotalArtifactPowerSettings;
 end
 
+-- Returns the number of ignored specs for a given character (defaults to currently used character if none is given)
+local function GetNumIgnoredSpecs(fqCharName)
+	
+	local characterName, realm
+	
+	if fqCharName then 
+		characterName, realm = fqCharName:match("(%.+)%s-%s(%.)+")
+	end
+	
+	if not characterName or not realm then -- Use currently active character
+		
+		characterName = UnitName("player")
+		realm = GetRealmName()
+		
+	end
+		 
+	key = format("%s - %s", characterName, realm)	 
+	--TotalAP.Debug("Counting ignored specs for character " .. key)
+	
+	local numIgnoredSpecs = 0
+	
+	for i = 1, GetNumSpecializations() do
+	
+		if TotalArtifactPowerCache[key] and TotalArtifactPowerCache[key][i]["isIgnored"] then
+			
+			--TotalAP.Debug("Spec " .. i .. " was found to be ignored")
+			numIgnoredSpecs = numIgnoredSpecs + 1
+			
+		end
+		
+	end
+	
+	return numIgnoredSpecs
+	
+end
+
+-- Removes all specs from the ignored specs list for a given character (defaults to currently used character if none is given)
+local function UnignoreAllSpecs(fqCharName)
+	
+	-- TODO: DRY
+	local characterName, realm
+	
+	if fqCharName then 
+		characterName, realm = fqCharName:match("(%.+)%s-%s(%.)+")
+	end
+	
+	if not characterName or not realm then -- Use currently active character
+		
+		characterName = UnitName("player")
+		realm = GetRealmName()
+		
+	end
+		 
+	key = format("%s - %s", characterName, realm)	 
+	
+	for i = 1, GetNumSpecializations() do -- Remove spec from "ignore list" (more precisely, remove "marked as ignored" flag)
+	
+		if TotalArtifactPowerCache[key] then TotalArtifactPowerCache[key][i]["isIgnored"] = false end
+	
+	end
+	
+end
+
+-- TODO: Unignore only one (current) spec
+
+local function SaveDB()
+end
 
 TotalAP.DBHandler.GetDB = GetDB
 TotalAP.DBHandler.RestoreDefaults = RestoreDefaults
 TotalAP.DBHandler.GetDefaults = GetDefaults
+TotalAP.DBHandler.GetNumIgnoredSpecs = GetNumIgnoredSpecs
+TotalAP.DBHandler.UnignoreAllSpecs = UnignoreAllSpecs
 
 return TotalAP.DBHandler
 

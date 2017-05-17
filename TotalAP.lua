@@ -46,6 +46,8 @@ local foundKnowledgeTome -- buttonText (TODO -> workaround for display inconsist
 local numTraitsFontString, specIconFontStrings = nil, {}; -- Used for the InfoFrame
 local infoFrameStyle = 0; -- Indicates the way HUD info will be displayed (used for the InfroFrame -> presets)
 
+-- One-time checks (per login... not stored otherwise)
+local allSpecsIgnoredWarningGiven = false 
 
 local artifactProgressCache = {} -- Used to calculate offspec artifact progress
 
@@ -361,8 +363,10 @@ local numSpecs = GetNumSpecializations();
 				["numTraitsPurchased"] = select(6, aUI.GetEquippedArtifactInfo()) or 0, -- 0 -> artifact UI not loaded yet? TODO (first login = lua error, but couldn't reproduce)
 				["artifactTier"] = select(13, aUI.GetEquippedArtifactInfo()) or 2, --  Assume 2 (for 7.2) as a default until it is cached next, if it hasn't been cached before, as most people are going to have the empowered traits unlocked ASAP
 				
+				["isIgnored"] = TotalArtifactPowerCache[key][i]["isIgnored"] or false, -- All specs are enabled by default (until they're disabled manually)
 			};
 	
+			
 			TotalAP.Debug(format("Updated artifactProgressCache for spec %d: %s traits purchased - %s unspent AP already applied - artifact tier = %d", i, artifactProgressCache[i]["numTraitsPurchased"], artifactProgressCache[i]["thisLevelUnspentAP"], artifactProgressCache[i]["artifactTier"]));
 
 				-- Update the character's AP cache (to make sure the displayed info is no longer outdated... if it was loaded from savedVars earlier)
@@ -390,11 +394,31 @@ local numSpecs = GetNumSpecializations();
 			
 		end
 		
-
    end
    
 end
 
+
+-- TODO: Helper function
+local function GetSpecDisplayOrder()
+
+	local displayOrder = {}
+	local order = 1 -- 0 is used to indicate ignored displays
+	
+	for i = 1, GetNumSpecializations() do 
+	
+		if artifactProgressCache[i] ~= nil and artifactProgressCache[i]["isIgnored"] then -- ignored spec -> order is 0 (hidden)
+			displayOrder[i] = 0
+		else -- proceed with the order as if there were no hidden displays
+			displayOrder[i] = order
+			order = order + 1
+		end
+	
+	end
+
+	return displayOrder
+	
+end
 
 -- Update currently active specIcon, as well as the progress bar % fontStrings
 local function UpdateSpecIcons()
@@ -402,10 +426,21 @@ local function UpdateSpecIcons()
 	if IsEquippedItem(133755) then return end -- TODO: UpdateEverything? Also, why just spec icons but not the rest?
 	
 	local numSpecs = GetNumSpecializations();
+	local numIgnoredSpecs = TotalAP.DBHandler.GetNumIgnoredSpecs()
+	local displayOrder = GetSpecDisplayOrder() -- TODO: DRY
+	
+	
+	
+	
+	if numSpecs == numIgnoredSpecs then
+		TotalAP.Debug("Hiding spec icons because all currently specs are being ignored")
+		TotalAPSpecIconsBackgroundFrame:Hide()
+		return
+	end
 	
 	-- Align background for spec icons
 	local inset, border = settings.specIcons.inset or 1, settings.specIcons.border or 1; -- TODO
-	TotalAPSpecIconsBackgroundFrame:SetSize(settings.specIcons.size + 2 * border + 2* inset, numSpecs * (settings.specIcons.size + 2 * border + 2 * inset) + border);
+	TotalAPSpecIconsBackgroundFrame:SetSize(settings.specIcons.size + 2 * border + 2* inset, (numSpecs - numIgnoredSpecs) * (settings.specIcons.size + 2 * border + 2 * inset) + border);
 	TotalAPSpecIconsBackgroundFrame:ClearAllPoints();
 	
 	
@@ -420,18 +455,32 @@ local function UpdateSpecIcons()
 		reservedButtonWidth = TotalAPButton:GetWidth() + 5; -- No longer reposition them to the left unless button is actually disabled entirely, since the button can be hidden temporarily without being set to invisible (if no items are in the player's inventory)
 	end
 		
-	TotalAPSpecIconsBackgroundFrame:SetPoint("BOTTOMLEFT", TotalAPAnchorFrame, "TOPLEFT", reservedButtonWidth + reservedInfoFrameWidth, math.abs( max(settings.actionButton.maxResize, numSpecs * (settings.specIcons.size + 2 * border + 2 * inset) + border) -  TotalAPSpecIconsBackgroundFrame:GetHeight()) / 2);
+	TotalAPSpecIconsBackgroundFrame:SetPoint("BOTTOMLEFT", TotalAPAnchorFrame, "TOPLEFT", reservedButtonWidth + reservedInfoFrameWidth, math.abs( max(settings.actionButton.maxResize, (numSpecs - numIgnoredSpecs)  * (settings.specIcons.size + 2 * border + 2 * inset) + border) -  TotalAPSpecIconsBackgroundFrame:GetHeight()) / 2);
 	TotalAPSpecIconsBackgroundFrame:SetBackdropColor(0/255, 0/255, 0/255, 0.25); -- TODO
 	
 	for i = 1, numSpecs do
 
+		-- Hide button if spec is being ignored
+		if artifactProgressCache[i] ~= nil and artifactProgressCache[i]["isIgnored"] then  -- Hide obsolete indicator (obsolete because the current spec is being ignored)
+		
+		TotalAP.Debug("Hiding spec icon button for spec " .. i .. " because the spec is set to being ignored")
+			TotalAPSpecIconButtons[i]:Hide();
+			TotalAPSpecHighlightFrames[i]:Hide()
+				
+		else
+		
+			TotalAPSpecHighlightFrames[i]:Show()
+			TotalAPSpecIconButtons[i]:Show()
+			
+		end 
+	
 	   -- TODO: When pushed, the border still shows? Weird behaviour, and it looks ugly (but is gone while using Masque...)
 	   --TotalAPSpecIconButtons[i].NormalTexture(nil)
 	  
 		-- TODO: BG for text and settings for font/size/alignment/sharedmedia
 		TotalAPSpecHighlightFrames[i]:SetSize(settings.specIcons.size + 2 * inset, settings.specIcons.size + 2 * inset); -- TODO 4x or 2x?
 		TotalAPSpecHighlightFrames[i]:ClearAllPoints();
-		TotalAPSpecHighlightFrames[i]:SetPoint("TOPLEFT", TotalAPSpecIconsBackgroundFrame, "TOPLEFT", border, - (border + (i - 1) * (settings.specIcons.size + 3 * inset + border)));
+		TotalAPSpecHighlightFrames[i]:SetPoint("TOPLEFT", TotalAPSpecIconsBackgroundFrame, "TOPLEFT", border, - (border + (displayOrder[i] - 1) * (settings.specIcons.size + 3 * inset + border)));
 	  
 		-- Reposition spec icons
 		TotalAPSpecIconButtons[i]:SetSize(settings.specIcons.size, settings.specIcons.size); -- TODO: settings.specIconSize. Also, 16 is too small for this?
@@ -587,12 +636,59 @@ local function UpdateInfoFrame()
 	-- if IsEquippedItem(133755) then return end -- TODO: This should be unnecessary after HasCorrectSpecArtifactEquipped() checks the equipped weapon
 	
 	-- Display bars for cached specs only (not cached -> invisible/hidden)
-	for k, v in pairs(artifactProgressCache) do
+	local numIgnoredSpecs = TotalAP.DBHandler.GetNumIgnoredSpecs()
+	
 	
 	
 		-- TODO: Not sure what "tier" exactly represents, as it was added in 7.2
 	--	local tier = aUI.GetArtifactTier() or 1;
+	-- TODO: Whoops. I made a mess - got to clean it up later
+	for k, v in pairs(artifactProgressCache) do -- Display InfoFrame
+			-- Intial pass to allow the InfoFrame to be sized correctly (size depends on number of ignored specs)
+		if artifactProgressCache[k]["isIgnored"] then -- Hide progress bars for this particular spec
+			TotalAP.Debug("Hiding bar display for spec " .. k .. " because it is set to being ignored")
+			
+			-- ... and move existing progress bars to align properly with the now-smaller InfoFrame height
+			--numIgnoredSpecs = numIgnoredSpecs + 1 -- TODO: DBHandler or something so I can skip all this nonsense?
+			TotalAPProgressBars[k]:Hide()
+			TotalAPUnspentBars[k]:Hide()
+			TotalAPInBagsBars[k]:Hide()
+		else
 		
+			TotalAPProgressBars[k]:Show()
+			TotalAPUnspentBars[k]:Show()
+			TotalAPInBagsBars[k]:Show()
+		
+		end
+	
+	end
+	
+	-- Align info frame so that it always stays next to the action button (particularly important during resize and scaling operations)
+	local border, inset = settings.infoFrame.border or 1, settings.infoFrame.inset or 1; -- TODO
+	TotalAPInfoFrame:SetSize(100 + 2 * border + 2 * inset, 2 * border + (settings.infoFrame.barHeight + 2 * inset + border) * (GetNumSpecializations() - numIgnoredSpecs)); -- info frame height = info frame border + (spec icon height + spec icon spacing) * numSpecs. TODO: arbitrary width/height (scaling) vs 
+	--arbitrary width/height (scaling) vs fixed, settings?
+	
+		-- Move bars to the left, but only if action button is actually disabled (and not hidden temporarily from not having any AP items in the player's inventory)
+	local reservedButtonWidth = 0;
+	if settings.actionButton.enabled then
+		reservedButtonWidth = TotalAPButton:GetWidth() + 5;  -- TODO: 5 = spacing? (settings)
+	end
+	
+	TotalAPInfoFrame:ClearAllPoints(); 
+	TotalAPInfoFrame:SetPoint("BOTTOMLEFT", TotalAPAnchorFrame, "TOPLEFT", reservedButtonWidth,  math.abs(TotalAPInfoFrame:GetHeight() - settings.actionButton.maxResize) / 2); 
+	
+		--  Only show when settings allow it
+	if settings.infoFrame.enabled and not ( numIgnoredSpecs == GetNumSpecializations() ) then TotalAPInfoFrame:Show();
+	else TotalAPInfoFrame:Hide(); end
+	 
+	
+	
+	local displayOrder = GetSpecDisplayOrder() -- TODO: Only necessary if numIgnoredSpecs > 0 (and it should only be called once -> local to addon scope instead)
+	
+	
+	
+	for k, v in pairs(artifactProgressCache) do -- Display progress bars
+	
 		local percentageUnspentAP = min(100, math.floor(v["thisLevelUnspentAP"] / aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100)); -- cap at 100 or bar will overflow
 		local percentageInBagsAP = min(math.floor(inBagsTotalAP / aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100), 100 - percentageUnspentAP); -- AP from bags should fill up the bar, but not overflow it
 		TotalAP.Debug(format("Updating percentage for bar display... spec %d: unspentAP = %s, inBags = %s" , k, percentageUnspentAP, percentageInBagsAP));
@@ -655,7 +751,9 @@ local function UpdateInfoFrame()
 		TotalAPProgressBars[k].texture:SetVertexColor(settings.infoFrame.progressBar.red/255, settings.infoFrame.progressBar.green/255, settings.infoFrame.progressBar.blue/255, settings.infoFrame.progressBar.alpha);
 		TotalAPProgressBars[k]:SetSize(100, settings.infoFrame.barHeight); -- TODO: Variable height! Should be adjustable independent from specIcons (and resizable via shift/drag, while specIcons center automatically)
 		TotalAPProgressBars[k]:ClearAllPoints();
-		TotalAPProgressBars[k]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPLEFT", 1 + inset, - ( (2 * k - 1)  * inset + k * border + (k - 1) * settings.infoFrame.barHeight));
+		TotalAPProgressBars[k]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPLEFT", 1 + inset, - ( (2 * displayOrder[k] - 1)  * inset + displayOrder[k] * border + (displayOrder[k] - 1)  * settings.infoFrame.barHeight))
+--TotalAP.ChatMsg(k .. ", " .. displayOrder[k])
+--TempTAPDisplayOrder = displayOrder
 		
 		-- Bar 1 -> Displays AP used on artifact but not yet spent on any traits
 		if not TotalAPUnspentBars[k].texture then   
@@ -672,7 +770,7 @@ local function UpdateInfoFrame()
 		
 		TotalAPUnspentBars[k]:SetSize(percentageUnspentAP, settings.infoFrame.barHeight);
 		TotalAPUnspentBars[k]:ClearAllPoints();
-		TotalAPUnspentBars[k]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPLEFT", 1 + inset, - ( (2 * k - 1)  * inset + k * border + (k - 1) * settings.infoFrame.barHeight)) ;
+		TotalAPUnspentBars[k]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPLEFT", 1 + inset, - ( (2 * displayOrder[k] - 1)  * inset + displayOrder[k] * border + (displayOrder[k] - 1) * settings.infoFrame.barHeight));
 		
 		-- Bar 2 -> Displays AP available in bags
 		-- TODO: Better naming of these things, TotalAP_InBagsBar? TotalAP.InBagsBar? inBagsBar?  etc
@@ -691,7 +789,7 @@ local function UpdateInfoFrame()
 		
 		TotalAPInBagsBars[k]:SetSize(percentageInBagsAP, settings.infoFrame.barHeight);
 		TotalAPInBagsBars[k]:ClearAllPoints();
-		TotalAPInBagsBars[k]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPLEFT", 1 + inset + TotalAPUnspentBars[k]:GetWidth(), - ( (2 * k - 1)  * inset + k * border + (k - 1) * settings.infoFrame.barHeight));
+		TotalAPInBagsBars[k]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPLEFT", 1 + inset + TotalAPUnspentBars[k]:GetWidth(), - ( (2 * displayOrder[k] - 1)  * inset + displayOrder[k] * border + (displayOrder[k] - 1) * settings.infoFrame.barHeight))
 
 		-- If artifact is maxed, replace overlay bars with a white one to indicate that fact
 		if v["numTraitsPurchased"] >= maxArtifactTraits then
@@ -699,22 +797,10 @@ local function UpdateInfoFrame()
 			TotalAPUnspentBars[k].texture:SetVertexColor(239/255, 229/255, 176/255, 1); -- turns it white; TODO: settings.infoFrame.progressBar.maxRed etc to allow setting a custom colour for maxed artifacts (later on)
 			TotalAPInBagsBars[k].texture:SetVertexColor(settings.infoFrame.progressBar.red/255, settings.infoFrame.progressBar.green/255, settings.infoFrame.progressBar.blue/255, 0); -- turns it invisible (alpha = 0%)
 		end
-		
+			
 	end
 	
-	-- Align info frame so that it always stays next to the action button (particularly important during resize and scaling operations)
-	local border, inset = settings.infoFrame.border or 1, settings.infoFrame.inset or 1; -- TODO
-	TotalAPInfoFrame:SetSize(100 + 2 * border + 2 * inset, 2 * border + (settings.infoFrame.barHeight + 2 * inset + border) * GetNumSpecializations()); -- info frame height = info frame border + (spec icon height + spec icon spacing) * numSpecs. TODO: arbitrary width/height (scaling) vs 
-	--arbitrary width/height (scaling) vs fixed, settings?
-	
-	
-	TotalAPInfoFrame:ClearAllPoints(); 
-	
-	-- Move bars to the left, but only if action button is actually disabled (and not hidden temporarily from not having any AP items in the player's inventory)
-	local reservedButtonWidth = 0;
-	if settings.actionButton.enabled then
-		reservedButtonWidth = TotalAPButton:GetWidth() + 5;  -- TODO: 5 = spacing? (settings)
-	end
+
 	
 	--TotalAPInfoFrame:SetPoint("TOPLEFT", TotalAPButton, "TOPRIGHT", 5,  (TotalAPInfoFrame:GetHeight() - TotalAPButton:GetHeight()) / 2); 
 		TotalAPInfoFrame:SetPoint("BOTTOMLEFT", TotalAPAnchorFrame, "TOPLEFT", reservedButtonWidth,  math.abs(TotalAPInfoFrame:GetHeight() - settings.actionButton.maxResize) / 2); 
@@ -725,11 +811,10 @@ local function UpdateInfoFrame()
 	
 	-- TODO: Show AP amount as well as any other tooltip information, all optional via settings
 
-		
-	--  Only show when button is shown and settings allow it
-	if settings.infoFrame.enabled then TotalAPInfoFrame:Show();
-	 else TotalAPInfoFrame:Hide(); end
-	 
+	
+
+	
+
 end
 
 -- Updates the action button whenever necessary to re-scan for AP items
@@ -740,8 +825,16 @@ local function UpdateActionButton()
 	if artifactProgressCache[GetSpecialization()] ~= nil and artifactProgressCache[GetSpecialization()]["numTraitsPurchased"] >= maxArtifactTraits and not InCombatLockdown() then
 		TotalAP.Debug("Hiding action button due to maxed out artifact weapon");
 		TotalAPButton:Hide();
+		return
 	end
 
+	-- Hide button if spec is being ignored
+	if artifactProgressCache[GetSpecialization()] ~= nil and artifactProgressCache[GetSpecialization()]["isIgnored"] then
+		TotalAP.Debug("Hiding action button because the current spec is set to being ignored")
+		TotalAPButton:Hide();
+		return
+	end
+	
 	-- Also only show button if AP items were found, an artifact weapon is equipped in the first place, settings allow it, addons aren't locked from the player being in combat, and the artifact UI is available
 	if (numItems > 0 or foundKnowledgeTome) and TotalAPButton and not InCombatLockdown() and settings.actionButton.enabled and currentItemID and aUI and HasCorrectSpecArtifactEquipped() then
 	--and (HasArtifactEquipped()  and not IsEquippedItem(133755)) then  -- TODO: Proper support for the Underlight Angler artifact (rare fish instead of AP items)
@@ -857,6 +950,13 @@ local function UpdateEverything()
 		return;
 	end
 	
+	if ( TotalAP.DBHandler.GetNumIgnoredSpecs() == GetNumSpecializations() ) and not allSpecsIgnoredWarningGiven then -- Print warning and instructions on how to reset ignored specs... just in case -- TODO: use verbose setting for optional warnings/notices like this?
+	
+		TotalAP.ChatMsg(format(L["All specs are set to being ignored for this character. Type %s unignore to reset them if this is unintended."], "/" .. TotalAP.Controllers.GetSlashCommandAlias()))
+		allSpecsIgnoredWarningGiven = true -- TODO: Lame, but whatever
+	
+	end
+	
 	-- Proceed as usual
 		UpdateAnchorFrame();
 		UpdateActionButton();
@@ -949,12 +1049,52 @@ local function CreateSpecIcons()
 				else
 					GameTooltip:AddLine(L["Click to activate"],  0/255, 255/255, 0/255);
 				end	
+				
+				--GameTooltip:AddLine(L["Right-click to ignore this spec"],  204/255, 85/255, 0/255);
+				--GameTooltip:AddLine(L["Right-click to ignore this spec"],  0/255, 114/255, 202/255);
+				--GameTooltip:AddLine(L["Right-click to ignore this spec"],  202/255, 0/255, 5/255);
+				GameTooltip:AddLine(L["Right-click to ignore this spec"],  255/255, 0/255, 0/255);
+				
 				GameTooltip:Show();
 		end)
 		
-		TotalAPSpecIconButtons[i]:SetScript("OnLeave", function(self, button)
+		TotalAPSpecIconButtons[i]:SetScript("OnLeave", function(self, button) -- on mouseout, hide tooltip
 			GameTooltip:Hide();
 		end);
+		
+	   TotalAPSpecIconButtons[i]:SetScript("OnMouseUp", function(self, button) -- right clicked ->
+			
+			--print("Clicked SpecIcon button " .. i .. " with " .. button)
+			 if button ~= "RightButton" then return end
+
+			 -- Add spec to ignored specs (actually, it is flagged as "ignored" for the current character only)
+			 local characterName = UnitName("player")
+			 local realm = GetRealmName()
+			 local key = format("%s - %s", characterName, realm)
+			 -- It is safe to assume that the key exists, as the cache has been updated at least once (when logging in) = tables have been created
+			 
+			 local slashCmdAlias = "ap"
+			 
+			local cache = TotalArtifactPowerCache -- TODO: This can be removed later (as cache is available in the addon itself)
+			 
+			 if cache[key][i]["isIgnored"] then  -- Spec is already being ignored
+				TotalAP.Debug("Attempting to ignore spec, but spec " .. i .. " is already ignored for character " .. key)
+				return
+			 end
+			 
+			 -- TODO: L[] /loc table
+			 
+			 TotalAP.ChatMsg(format(L["Ignoring spec %d for character %s"], i, key))
+			 --TotalAP.ChatMsg(format(L["Type %s unignore to reset all currently ignored specs for this character"], "/" .. TotalAP.Controllers.GetSlashCommandAlias()))
+			 
+			 cache[key][i]["isIgnored"] = true
+			 
+			 UpdateEverything() -- TODO
+			 
+		  end
+	   )
+ 
+		
 		
 		-- TODO: Ordering so that main spec (active) is first? Hmm. Maybe an option to consider only some specs / set a main spec?
 		
