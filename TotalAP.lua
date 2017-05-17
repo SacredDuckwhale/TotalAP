@@ -362,10 +362,8 @@ local numSpecs = GetNumSpecializations();
 				["thisLevelUnspentAP"] =  select(5, aUI.GetEquippedArtifactInfo()) or 0, 
 				["numTraitsPurchased"] = select(6, aUI.GetEquippedArtifactInfo()) or 0, -- 0 -> artifact UI not loaded yet? TODO (first login = lua error, but couldn't reproduce)
 				["artifactTier"] = select(13, aUI.GetEquippedArtifactInfo()) or 2, --  Assume 2 (for 7.2) as a default until it is cached next, if it hasn't been cached before, as most people are going to have the empowered traits unlocked ASAP
-				
 				["isIgnored"] = TotalArtifactPowerCache[key][i]["isIgnored"] or false, -- All specs are enabled by default (until they're disabled manually)
 			};
-	
 			
 			TotalAP.Debug(format("Updated artifactProgressCache for spec %d: %s traits purchased - %s unspent AP already applied - artifact tier = %d", i, artifactProgressCache[i]["numTraitsPurchased"], artifactProgressCache[i]["thisLevelUnspentAP"], artifactProgressCache[i]["artifactTier"]));
 
@@ -640,8 +638,6 @@ local function UpdateInfoFrame()
 	
 	
 	
-		-- TODO: Not sure what "tier" exactly represents, as it was added in 7.2
-	--	local tier = aUI.GetArtifactTier() or 1;
 	-- TODO: Whoops. I made a mess - got to clean it up later
 	for k, v in pairs(artifactProgressCache) do -- Display InfoFrame
 			-- Intial pass to allow the InfoFrame to be sized correctly (size depends on number of ignored specs)
@@ -1527,9 +1523,8 @@ end);
 function AceAddon:OnInitialize() -- Called on ADDON_LOADED
 	
 	LoadSettings();  -- from saved vars
-	CreateAnchorFrame(); -- anchor for all other frames -> needs to be loaded before PLAYER_LOGIN to have the game save its position and size
+	CreateAnchorFrame(); -- anchor for all other frames -> needs to be loaded before PLAYER_LOGIN to have the game save its position and size -- TODO: move to GUI/AceGUI
 
-	TotalAP.GUI.CreateView() -- Create frames that will later be rendered (shown) and updated
 	
 	
 	-- Register slash commands
