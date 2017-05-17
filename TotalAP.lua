@@ -954,10 +954,12 @@ local function UpdateEverything()
 	end
 	
 	-- Proceed as usual
+		UpdateArtifactProgressCache();
+	
 		UpdateAnchorFrame();
 		UpdateActionButton();
 	
-		UpdateArtifactProgressCache();
+	
 		UpdateInfoFrame();
 		UpdateSpecIcons();
 
