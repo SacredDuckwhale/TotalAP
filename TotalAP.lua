@@ -212,8 +212,6 @@ end
 					currentItemTexture = GetItemIcon(currentItemID);
 				
 					TotalAP.Debug(format("Set currentItemTexture to %s", currentItemTexture));
-					numItems = 1; -- TODO: This is technically wrong! But it will update to the correct amount once research notes have been used, anyway (and is used by other displays at times, which might not be the best practice...)
-					return true; -- Stop scanning and display this item instead
 					foundKnowledgeTome = true
 					--numItems = 1; -- TODO: This is technically wrong! But it will update to the correct amount once research notes have been used, anyway (and is used by other displays at times, which might not be the best practice...)
 					--currentItemAP = 0 -- to overwrite the last item's amount (would be displayed as the research tome's AP value instead, which is misleading --  TODO: Proper handling of tomes -> resume scan but flag for display only (so that the tooltip info remains correct)
@@ -1321,72 +1319,6 @@ local function RegisterUpdateEvents()
 		-- TODO: Only one event handler frame (and perhaps one UpdateEverything method) that updates all the indicators as well as the action button? (tricky if events like dragging are only given to the button by WOW?)
 end
 
--- Toggle action button via keybind or slash command
-function TotalAP_ToggleActionButton()
-	
-		if settings.actionButton.enabled then
-			TotalAP.ChatMsg(L["Action button is now hidden."]);
-		else
-			TotalAP.ChatMsg(L["Action button is now shown."]);
-		end
-	
-	settings.actionButton.enabled = not settings.actionButton.enabled;
-	
-	UpdateEverything(); -- TODO: Hide other frames as well?
-end
-
--- Toggle the spec icons (and text) via keybind or slash command
-function TotalAP_ToggleSpecIcons()
-	
-	if settings.specIcons.enabled then
-			TotalAP.ChatMsg(L["Icons are now hidden."] );
-	else
-			TotalAP.ChatMsg(L["Icons are now shown."] );
-	end
-	
-	settings.specIcons.enabled = not settings.specIcons.enabled;
-	
-	UpdateEverything();
-end
-
--- Toggle the InfoFrame (bar display) via keybind or slash command
-function TotalAP_ToggleBarDisplay()
-		
-	if settings.infoFrame.enabled then
-		TotalAP.ChatMsg(L["Bar display is now hidden."]);
-	else
-		TotalAP.ChatMsg(L["Bar display is now shown."]);
-	end
-	
-	settings.infoFrame.enabled = not settings.infoFrame.enabled;
-	
-	UpdateEverything();
-end
-
--- Toggle the tooltip display via keybind or slash command
--- TODO: Show/hide tooltip when toggling this? Which way feels most intuititive?
-function TotalAP_ToggleTooltipDisplay()
-		if settings.tooltip.enabled then
-			TotalAP.ChatMsg(L["Tooltip display is now hidden."]);
-		else
-			TotalAP.ChatMsg(L["Tooltip display is now shown."]);
-		end
-		
-	settings.tooltip.enabled = not settings.tooltip.enabled;
-	
-	UpdateEverything();
-end
-
-
--- Toggle the entire display via keybind or slash command (will override individual components' settings, but not overwrite them)
-function TotalAP_ToggleAllDisplays()
-	
-		TotalAPAnchorFrame:SetShown(not TotalAPAnchorFrame:IsShown())
-		TotalAP.Debug("Toggled display manually - individual components are unaffected, but won't be checked for as long as this is active")
-		settings.enabled = not settings.enabled;
-		
-end
-	
 	
 -- Display tooltip when hovering over an AP item
 -- TODO: Secure hook (if possible) to avoid taint? Haven't seen any issues but it could become one later
