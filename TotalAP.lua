@@ -42,6 +42,7 @@ local addonVersion = GetAddOnMetadata(addonName, "Version");
 local itemEffects, artifacts; -- Loaded from TotalArtifactPowerDB in LoadSettings(), for now
 local tempItemLink, tempItemID, currentItemLink, currentItemID, currentItemTexture, currentItemAP; -- used for bag scanning and tooltip display
 local numItems, inBagsTotalAP, numTraitsAvailable, artifactProgressPercent = 0, 0, 0, 0; -- used for tooltip text
+local foundKnowledgeTome -- buttonText (TODO -> workaround for display inconsistencies)
 local numTraitsFontString, specIconFontStrings = nil, {}; -- Used for the InfoFrame
 local infoFrameStyle = 0; -- Indicates the way HUD info will be displayed (used for the InfroFrame -> presets)
 
@@ -177,6 +178,7 @@ end
  
 	local bag, slot;
 	numItems, inBagsTotalAP, currentItemAP = 0, 0, 0; -- Each scan has to reset the (global) counter used by the tooltip and update handlers
+	foundKnowledgeTome = false -- AK tomes will later overwrite the AP progress in some displays, but not prevent it from being saved and used for others (tooltip display/bars)
 	
 	-- Check all the items in bag against AP token LUT (via their respective spell effect = itemEffectsDB)to find matches
 	for bag = 0, NUM_BAG_SLOTS do
@@ -212,6 +214,10 @@ end
 					TotalAP.Debug(format("Set currentItemTexture to %s", currentItemTexture));
 					numItems = 1; -- TODO: This is technically wrong! But it will update to the correct amount once research notes have been used, anyway (and is used by other displays at times, which might not be the best practice...)
 					return true; -- Stop scanning and display this item instead
+					foundKnowledgeTome = true
+					--numItems = 1; -- TODO: This is technically wrong! But it will update to the correct amount once research notes have been used, anyway (and is used by other displays at times, which might not be the best practice...)
+					--currentItemAP = 0 -- to overwrite the last item's amount (would be displayed as the research tome's AP value instead, which is misleading --  TODO: Proper handling of tomes -> resume scan but flag for display only (so that the tooltip info remains correct)
+					--return true; -- Stop scanning and display this item instead
 				end
 				
 				if spellID then	-- Found AP token :D	
@@ -224,16 +230,20 @@ end
 
 					inBagsTotalAP = inBagsTotalAP + tonumber(n);
 					
-					currentItemAP = n;
+					-- AK Tomes should override button display/button text
+					if not foundKnowledgeTome then -- Set button to current AP item
+						currentItemAP = n;
+						
+						-- Store current AP item in globals (to display in button, use via keybind, etc.)
+						currentItemLink = tempItemLink;
+						currentItemID = tempItemID;
+						currentItemTexture = GetItemIcon(currentItemID);
+						
+						TotalAP.Debug(format("Set currentItemTexture to %s", currentItemTexture));
+						
+						TotalAP.Debug(format("Found item: %s (%d) with texture %d",	currentItemLink, currentItemID, currentItemTexture)); 
+					end
 					
-					-- Store current AP item in globals (to display in button, use via keybind, etc.)
-					currentItemLink = tempItemLink;
-					currentItemID = tempItemID;
-					currentItemTexture = GetItemIcon(currentItemID);
-					
-					TotalAP.Debug(format("Set currentItemTexture to %s", currentItemTexture));
-					
-					TotalAP.Debug(format("Found item: %s (%d) with texture %d",	currentItemLink, currentItemID, currentItemTexture)); 
 				end
 			end
 		end
@@ -735,7 +745,7 @@ local function UpdateActionButton()
 	end
 
 	-- Also only show button if AP items were found, an artifact weapon is equipped in the first place, settings allow it, addons aren't locked from the player being in combat, and the artifact UI is available
-	if numItems > 0 and TotalAPButton and not InCombatLockdown() and settings.actionButton.enabled and currentItemID and aUI and HasCorrectSpecArtifactEquipped() then
+	if (numItems > 0 or foundKnowledgeTome) and TotalAPButton and not InCombatLockdown() and settings.actionButton.enabled and currentItemID and aUI and HasCorrectSpecArtifactEquipped() then
 	--and (HasArtifactEquipped()  and not IsEquippedItem(133755)) then  -- TODO: Proper support for the Underlight Angler artifact (rare fish instead of AP items)
 		
 		currentItemTexture = GetItemIcon(currentItemID) or "";
@@ -797,7 +807,8 @@ local function UpdateActionButton()
 		end
 		
 		-- Add current item's AP value as text (if enabled)
-		if settings.actionButton.showText and inBagsTotalAP > 0 then
+		if settings.actionButton.showText and not foundKnowledgeTome then
+		--if settings.actionButton.showText and inBagsTotalAP > 0 and currentItemAP > 0 then
 			
 			if numItems > 1 then -- Display total AP in bags
 				TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(currentItemAP, true) .. "\n(" .. TotalAP.Utils.FormatShort(inBagsTotalAP, true) .. ")") -- TODO: More options/HUD setup - planned once advanced config is implemented via AceConfig
