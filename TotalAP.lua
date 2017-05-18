@@ -1058,30 +1058,11 @@ local function CreateSpecIcons()
 			end
 	end);
 		
-		TotalAPSpecIconButtons[i]:SetScript("OnEnter", function(self, button) -- On mouseover, show message that spec can be changed by clicking (unless it's the currently active spec)
+		TotalAPSpecIconButtons[i]:SetScript("OnEnter", TotalAP.GUI.Tooltips.ShowSpecIconTooltip)
 		
-			-- Show tooltip "Click to change spec" or sth. TODO
-			GameTooltip:SetOwner(self, "ANCHOR_CURSOR");
-				local _, specName = GetSpecializationInfo(i);
-				GameTooltip:SetText(format(L["Specialization: %s"], specName), nil, nil, nil, nil, true);
-				if i == GetSpecialization() then 
-					GameTooltip:AddLine(L["This spec is currently active"], 0/255, 255/255, 0/255);
-				else
-					GameTooltip:AddLine(L["Click to activate"],  0/255, 255/255, 0/255);
-				end	
-				
-				--GameTooltip:AddLine(L["Right-click to ignore this spec"],  204/255, 85/255, 0/255);
-				--GameTooltip:AddLine(L["Right-click to ignore this spec"],  0/255, 114/255, 202/255);
-				--GameTooltip:AddLine(L["Right-click to ignore this spec"],  202/255, 0/255, 5/255);
-				GameTooltip:AddLine(L["Right-click to ignore this spec"],  255/255, 32/255, 32/255) -- This is RED_FONT_COLOR_CODE from FrameXML, basically
-				
-				GameTooltip:Show();
-		end)
+		TotalAPSpecIconButtons[i]:SetScript("OnLeave", TotalAP.GUI.Tooltips.HideSpecIconTooltip)
 		
-		TotalAPSpecIconButtons[i]:SetScript("OnLeave", function(self, button) -- on mouseout, hide tooltip
-			GameTooltip:Hide();
-		end);
-		
+		-- TODO: Button script handlers in separate file
 	   TotalAPSpecIconButtons[i]:SetScript("OnMouseUp", function(self, button) -- right clicked ->
 			
 			--print("Clicked SpecIcon button " .. i .. " with " .. button)
@@ -1101,7 +1082,7 @@ local function CreateSpecIcons()
 			 end
 			 
 			 TotalAP.ChatMsg(format(L["Ignoring spec %d for character %s"], i, key))
-			 TotalAP.ChatMsg(format(L["Type %s unignore to reset all currently ignored specs for this character"], "/" .. TotalAP.Controllers.GetSlashCommandAlias())) -- TODO: Only show this once?
+			 TotalAP.ChatMsg(format(L["Type %s to reset all currently ignored specs for this character"], "/" .. TotalAP.Controllers.GetSlashCommandAlias() .. " unignore")) -- TODO: Only show this once?
 
 			 -- Specs might not have been initialised (if they haven't been switched to, ever)
 			if not cache[key][i] then cache[key][i] = { isIgnored = true }  -- TODO: InitialiseCache(specNo) function
@@ -1182,6 +1163,12 @@ local function CreateInfoFrame()
 		-- AP in bags 
 		TotalAPInBagsBars[i] = CreateFrame("Frame", "TotalAPInBagsBar" .. i, TotalAPProgressBars[i]);
 
+		-- Tooltip script handlers
+		TotalAPProgressBars[i]:SetScript("OnEnter", TotalAP.GUI.Tooltips.ShowArtifactKnowledgeTooltip)
+		--function(self, button) TotalAP.ChatMsg(self:GetName() .. " " .. button) end)
+		
+		TotalAPProgressBars[i]:SetScript("OnLeave", TotalAP.GUI.Tooltips.HideArtifactKnowledgeTooltip)
+		
 	end
 	
 	TotalAPInfoFrame:SetBackdrop(

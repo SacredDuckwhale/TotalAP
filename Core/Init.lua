@@ -15,6 +15,7 @@
 
 -- Init.lua
 -- Build table structure for modules to rely on no matter when they are loaded or used
+-- Build table structure for modules to rely on
 
 local addonName, T = ...
 
@@ -26,6 +27,7 @@ if not T then return end
 T.version = GetAddOnMetadata("TotalAP", "Version")
 
 -- Core modules
+T.ArtifactInterface = {}
 T.Scanner = {}
 T.DBHandler = {} 
 
