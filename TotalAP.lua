@@ -799,7 +799,6 @@ local function UpdateInfoFrame()
 
 	
 	--TotalAPInfoFrame:SetPoint("TOPLEFT", TotalAPButton, "TOPRIGHT", 5,  (TotalAPInfoFrame:GetHeight() - TotalAPButton:GetHeight()) / 2); 
-		TotalAPInfoFrame:SetPoint("BOTTOMLEFT", TotalAPAnchorFrame, "TOPLEFT", reservedButtonWidth,  math.abs(TotalAPInfoFrame:GetHeight() - settings.actionButton.maxResize) / 2); 
 	
 	--TotalAPInfoFrame:SetPoint("LEFT", TotalAPButton, "RIGHT", 5, 0); 
 	--TotalAPInfoFrame:SetPoint("BOTTOMRIGHT", TotalAPButton, 2 * TotalAPButton:GetWidth() + 5, 0);
@@ -1079,8 +1078,6 @@ local function CreateSpecIcons()
 				TotalAP.Debug("Attempting to ignore spec, but spec " .. i .. " is already ignored for character " .. key)
 				return
 			 end
-			 
-			 -- TODO: L[] /loc table
 			 
 			 TotalAP.ChatMsg(format(L["Ignoring spec %d for character %s"], i, key))
 			 --TotalAP.ChatMsg(format(L["Type %s unignore to reset all currently ignored specs for this character"], "/" .. TotalAP.Controllers.GetSlashCommandAlias()))
