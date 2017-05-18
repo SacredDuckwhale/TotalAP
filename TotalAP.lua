@@ -1050,7 +1050,7 @@ local function CreateSpecIcons()
 				--GameTooltip:AddLine(L["Right-click to ignore this spec"],  204/255, 85/255, 0/255);
 				--GameTooltip:AddLine(L["Right-click to ignore this spec"],  0/255, 114/255, 202/255);
 				--GameTooltip:AddLine(L["Right-click to ignore this spec"],  202/255, 0/255, 5/255);
-				GameTooltip:AddLine(L["Right-click to ignore this spec"],  255/255, 0/255, 0/255);
+				GameTooltip:AddLine(L["Right-click to ignore this spec"],  255/255, 32/255, 32/255) -- This is RED_FONT_COLOR_CODE from FrameXML, basically
 				
 				GameTooltip:Show();
 		end)
