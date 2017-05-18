@@ -1068,19 +1068,17 @@ local function CreateSpecIcons()
 			 local characterName = UnitName("player")
 			 local realm = GetRealmName()
 			 local key = format("%s - %s", characterName, realm)
+
+			 
+			local cache = TotalArtifactPowerCache -- TODO: This can be removed later (as cache is available in the addon itself) -> Needs better handling as cache won't always be updated properly? (DBHandler -> CacheHandler)
 			 -- It is safe to assume that the key exists, as the cache has been updated at least once (when logging in) = tables have been created
-			 
-			 local slashCmdAlias = "ap"
-			 
-			local cache = TotalArtifactPowerCache -- TODO: This can be removed later (as cache is available in the addon itself)
-			 
 			 if cache[key][i]["isIgnored"] then  -- Spec is already being ignored
 				TotalAP.Debug("Attempting to ignore spec, but spec " .. i .. " is already ignored for character " .. key)
 				return
 			 end
 			 
 			 TotalAP.ChatMsg(format(L["Ignoring spec %d for character %s"], i, key))
-			 --TotalAP.ChatMsg(format(L["Type %s unignore to reset all currently ignored specs for this character"], "/" .. TotalAP.Controllers.GetSlashCommandAlias()))
+			 TotalAP.ChatMsg(format(L["Type %s unignore to reset all currently ignored specs for this character"], "/" .. TotalAP.Controllers.GetSlashCommandAlias())) -- TODO: Only show this once?
 			 
 			 cache[key][i]["isIgnored"] = true
 			 
