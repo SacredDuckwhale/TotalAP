@@ -44,7 +44,6 @@ local tempItemLink, tempItemID, currentItemLink, currentItemID, currentItemTextu
 local numItems, inBagsTotalAP, numTraitsAvailable, artifactProgressPercent = 0, 0, 0, 0; -- used for tooltip text
 local foundKnowledgeTome -- buttonText (TODO -> workaround for display inconsistencies)
 local numTraitsFontString, specIconFontStrings = nil, {}; -- Used for the InfoFrame
-local infoFrameStyle = 0; -- Indicates the way HUD info will be displayed (used for the InfroFrame -> presets)
 
 -- One-time checks (per login... not stored otherwise)
 local allSpecsIgnoredWarningGiven = false 
@@ -385,13 +384,23 @@ local numSpecs = GetNumSpecializations();
 				
 				artifactProgressCache[i] = cache[key][i];
 				TotalAP.Debug(format("Cached data exists from a previous session: spec = %i - traits = %i - AP = %i, tier = %i", i, cache[key][i]["numTraitsPurchased"], cache[key][i]["thisLevelUnspentAP"]), cache[key][i]["artifactTier"]);
-			else
-				TotalAP.Debug(format("No cached data exists for spec %d!", i));
+			else  -- Initialise empty cache (for specs that have never been used) -> Necessary to allow them to be ignored/unignored without breaking everything
+					TotalAP.Debug(format("No cached data exists for spec %d!", i));
 		--		cache[key][i] = {}; -- TODO: This is pretty useless, except that it indicates which specs have been recognized but not yet scanned? - ACTUALLY it 
-			end
+				
 			
-		end
+			
+			
+				-- cache[key][i] = {
+					-- ["thisLevelUnspentAP"] =  0, -- TODO: Maybe use 100 (default AP) if artifact has been unlocked? Shouldn't really matter, though 
+					-- ["numTraitsPurchased"] = 1, -- Rank 0 would break the API functions
+					-- ["artifactTier"] = 1, --  Assume 1, because it hasn't been equipped and it won't change anything
+					-- ["isIgnored"] = false, -- All specs are enabled by default (until they're disabled manually)
+				-- } -- TODO: InitialiseCache(specNo) function
+
+			end
 		
+	end
    end
    
 end
@@ -506,108 +515,115 @@ local function UpdateSpecIcons()
    
 	-- Update font strings to display the latest info
 	for k, v in pairs(artifactProgressCache) do
-	
-	TotalAP.Debug(format("Updating spec icons for spec %i from cached data"), i);
-		-- Calculate available traits and progress using the cached data
-		local numTraitsAvailable = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(v["numTraitsPurchased"],  v["thisLevelUnspentAP"] + inBagsTotalAP, v["artifactTier"]);
-		local nextLevelRequiredAP = aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]); 
-		local percentageOfCurrentLevelUp = (v["thisLevelUnspentAP"]  + inBagsTotalAP) / nextLevelRequiredAP*100;
 		
-		TotalAP.Debug(format("Calculated progress using cached data for spec %s: %d traits available - %d%% towards next trait using AP from bags", k, numTraitsAvailable, percentageOfCurrentLevelUp)); -- TODO: > 100% becomes inaccurate due to only using cost for THIS level, not next etc?
-	
-	local fontStringText = "---"; -- TODO: For specs where no artifact data was available only
-		-- TODO: Identical names, local vs addon namespace -> this is confusing, change it
-		if numTraitsAvailable > 0  then
-			fontStringText = format("x%d", numTraitsAvailable);
-		else
-			fontStringText = format("%d%%", percentageOfCurrentLevelUp);
-		end
+		-- TODO: DRY
+		if v["thisLevelUnspentAP"] and v["numTraitsPurchased"] then -- spec has been scanned, not just  ignored (so actual data exists) 
+				
+			
 		
-		TotalAPSpecIconButtons[i]:SetSize(settings.specIcons.size, settings.specIcons.size);
-		-- Well, I guess they need to be reskinned = updated if Masque is used
-	   MasqueUpdate(TotalAPSpecIconButtons[i], "specIcons");
-	   
+			TotalAP.Debug(format("Updating spec icons for spec %i from cached data"), i);
+			-- Calculate available traits and progress using the cached data
+			local numTraitsAvailable = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(v["numTraitsPurchased"],  v["thisLevelUnspentAP"] + inBagsTotalAP, v["artifactTier"]);
+			local nextLevelRequiredAP = aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]); 
+			local percentageOfCurrentLevelUp = (v["thisLevelUnspentAP"]  + inBagsTotalAP) / nextLevelRequiredAP*100;
+			
+			TotalAP.Debug(format("Calculated progress using cached data for spec %s: %d traits available - %d%% towards next trait using AP from bags", k, numTraitsAvailable, percentageOfCurrentLevelUp)); -- TODO: > 100% becomes inaccurate due to only using cost for THIS level, not next etc?
 		
-			if numTraitsAvailable > 0 and settings.specIcons.showGlowEffect and v["numTraitsPurchased"] < maxArtifactTraits then -- Text and glow effect are independent of each other; combining them bugs out one or the other (apparently :P)
-				
-				-- -- TODO: Confusing, comment and naming conventions.
-				-- local ol = TotalAPSpecIconButtons[k].overlay;
-				-- local ox, oy, ax, ay, bx, by = 0, 0, 0, 0, 0, 0;
-				
-				-- if ol ~= nil then
-					-- ox, oy = TotalAPSpecIconButtons[k].overlay:GetSize();
-					-- ax, ay = TotalAPSpecIconButtons[k].overlay.ants:GetSize();
-					-- bx, by = TotalAPSpecIconButtons[k]:GetSize();
-				
-				
-					-- if ( (ax / bx) >= 1.19 and (ay / by) >= 1.19) or ( (ox / bx) >= 1.4 and (oy / by) >= 1.4 ) then  -- ants bigger than overlay = bugged animation. They ought to be INSIDE the overlay, not outside
-						
-						-- TotalAP.Debug("Resetting spec icon overlay glow effect due to mismatching dimensions of button and overlay/ants");
-						-- TotalAP.Debug(format("Overlay: %d %d - Ants: %d %d - Button: %d %d", ox, oy, ax, ay, bx, by));
-						
-						-- TotalAPSpecIconButtons[k].overlay:SetSize(bx * 1.4, by * 1.4);
-						-- TotalAPSpecIconButtons[k].overlay.ants:SetSize(bx * 1.19, by * 1.19);
-						
+		local fontStringText = "---"; -- TODO: For specs where no artifact data was available only
+			-- TODO: Identical names, local vs addon namespace -> this is confusing, change it
+			if numTraitsAvailable > 0  then
+				fontStringText = format("x%d", numTraitsAvailable);
+			else
+				fontStringText = format("%d%%", percentageOfCurrentLevelUp);
+			end
+			
+			TotalAPSpecIconButtons[i]:SetSize(settings.specIcons.size, settings.specIcons.size);
+			-- Well, I guess they need to be reskinned = updated if Masque is used
+		   MasqueUpdate(TotalAPSpecIconButtons[i], "specIcons");
+		   
+			
+				if numTraitsAvailable > 0 and settings.specIcons.showGlowEffect and v["numTraitsPurchased"] < maxArtifactTraits then -- Text and glow effect are independent of each other; combining them bugs out one or the other (apparently :P)
+					
+					-- -- TODO: Confusing, comment and naming conventions.
+					-- local ol = TotalAPSpecIconButtons[k].overlay;
+					-- local ox, oy, ax, ay, bx, by = 0, 0, 0, 0, 0, 0;
+					
+					-- if ol ~= nil then
 						-- ox, oy = TotalAPSpecIconButtons[k].overlay:GetSize();
 						-- ax, ay = TotalAPSpecIconButtons[k].overlay.ants:GetSize();
-						-- TotalAP.Debug(format("Changed to: Overlay: %d %d - Ants: %d %d - Button: %d %d", ox, oy, ax, ay, bx, by));
-						-- FlashActionButton(TotalAPSpecIconButtons[k], false); -- turn off to re-set and make sure it displays at the proper size 
-					-- end
-				-- end
-				TotalAP.Debug("Enabling spec icon glow effect for spec = " .. k)
-				
-				
-				local overlay = TotalAPSpecIconButtons[k].overlay; -- Will be nil if overlay was never enabled before
-				if overlay ~= nil then -- Check overlay size, should be 1.4 * parentSize basically or it will look bugged
-					local w, h = overlay:GetSize();
-					local bw, bh = overlay:GetParent():GetSize(); -- This is the button itself
+						-- bx, by = TotalAPSpecIconButtons[k]:GetSize();
 					
-					if math.floor(w) > math.floor(bw) * 1.4 or math.floor(h) > math.floor(bh) * 1.4 then
-						TotalAP.Debug(format("Spell overlay is too big (%d x %d but should be %d x %d), needs to be refreshed", w, h, bw * 1.4, bh * 1.4));
-					--	overlay:SetSize(bw * 1.4, bh * 1.4);
-				--	ActionButton_HideOverlayGlow(TotalAPSpecIconButtons[k]);
-						--FlashActionButton(TotalAPSpecIconButtons[k], false);
-						--FlashActionButton(TotalAPSpecIconButtons[k], false);
-						--overlay:SetSize(bw * 1.4, bh * 1.4);
-						-- overlay:Hide();
-						-- overlay.ants:Hide();
-						-- if k == GetSpecialization() then 
-							-- ActionButton_OverlayGlowAnimOutFinished(overlay.animOut) -- The animation is still visible otherwise; this flags it as unused and will prompt a new one to be created (with the proper dimensions) when the button is flashed again - which is below
+					
+						-- if ( (ax / bx) >= 1.19 and (ay / by) >= 1.19) or ( (ox / bx) >= 1.4 and (oy / by) >= 1.4 ) then  -- ants bigger than overlay = bugged animation. They ought to be INSIDE the overlay, not outside
+							
+							-- TotalAP.Debug("Resetting spec icon overlay glow effect due to mismatching dimensions of button and overlay/ants");
+							-- TotalAP.Debug(format("Overlay: %d %d - Ants: %d %d - Button: %d %d", ox, oy, ax, ay, bx, by));
+							
+							-- TotalAPSpecIconButtons[k].overlay:SetSize(bx * 1.4, by * 1.4);
+							-- TotalAPSpecIconButtons[k].overlay.ants:SetSize(bx * 1.19, by * 1.19);
+							
+							-- ox, oy = TotalAPSpecIconButtons[k].overlay:GetSize();
+							-- ax, ay = TotalAPSpecIconButtons[k].overlay.ants:GetSize();
+							-- TotalAP.Debug(format("Changed to: Overlay: %d %d - Ants: %d %d - Button: %d %d", ox, oy, ax, ay, bx, by));
+							-- FlashActionButton(TotalAPSpecIconButtons[k], false); -- turn off to re-set and make sure it displays at the proper size 
 						-- end
+					-- end
+					TotalAP.Debug("Enabling spec icon glow effect for spec = " .. k)
+					
+					
+					local overlay = TotalAPSpecIconButtons[k].overlay; -- Will be nil if overlay was never enabled before
+					if overlay ~= nil then -- Check overlay size, should be 1.4 * parentSize basically or it will look bugged
+						local w, h = overlay:GetSize();
+						local bw, bh = overlay:GetParent():GetSize(); -- This is the button itself
 						
-					--	TotalAP.Debug("Spell overlay animation finished and hidden -> will be re-enabled immediately (without a visible clue, hopefully)");
-						
-						--ActionButton_HideOverlayGlow(TotalAPSpecIconButtons[k]);
-						--TotalAPSpecIconButtons[k].overlay = nil; -- Delete overlay to have the client create a new one with proper size the next time it is enabled
-					else
-						--FlashActionButton(TotalAPSpecIconButtons[k], true);
-						TotalAP.Debug("Overlay size is now proportionate, no refresh necessary");
+						if math.floor(w) > math.floor(bw) * 1.4 or math.floor(h) > math.floor(bh) * 1.4 then
+							TotalAP.Debug(format("Spell overlay is too big (%d x %d but should be %d x %d), needs to be refreshed", w, h, bw * 1.4, bh * 1.4));
+						--	overlay:SetSize(bw * 1.4, bh * 1.4);
+					--	ActionButton_HideOverlayGlow(TotalAPSpecIconButtons[k]);
+							--FlashActionButton(TotalAPSpecIconButtons[k], false);
+							--FlashActionButton(TotalAPSpecIconButtons[k], false);
+							--overlay:SetSize(bw * 1.4, bh * 1.4);
+							-- overlay:Hide();
+							-- overlay.ants:Hide();
+							-- if k == GetSpecialization() then 
+								-- ActionButton_OverlayGlowAnimOutFinished(overlay.animOut) -- The animation is still visible otherwise; this flags it as unused and will prompt a new one to be created (with the proper dimensions) when the button is flashed again - which is below
+							-- end
+							
+						--	TotalAP.Debug("Spell overlay animation finished and hidden -> will be re-enabled immediately (without a visible clue, hopefully)");
+							
+							--ActionButton_HideOverlayGlow(TotalAPSpecIconButtons[k]);
+							--TotalAPSpecIconButtons[k].overlay = nil; -- Delete overlay to have the client create a new one with proper size the next time it is enabled
+						else
+							--FlashActionButton(TotalAPSpecIconButtons[k], true);
+							TotalAP.Debug("Overlay size is now proportionate, no refresh necessary");
+						end
 					end
+					
+					-- local w, h = TotalAPSpecIconButtons[k]:GetSize();
+					-- if math.floor(w) * > settings.specIcons.size * 1.4 or math.floor(h) > settings.specIcons.size * 1.4 then -- floor is necessary due to floating point precision inaccuracies vs. integer in settings
+						-- TotalAP.Debug("Re-enabling glow effect due to bugged spell overlay size")
+						-- TotalAP.Debug(format("Button dimensions are %i x %i but should be %i x %i", w, h, settings.specIcons.size, settings.specIcons.size))
+						-- FlashActionButton(TotalAPSpecIconButtons[k], false);
+					-- end
+					
+					FlashActionButton(TotalAPSpecIconButtons[k], true);
+				else
+					FlashActionButton(TotalAPSpecIconButtons[k], false);
 				end
-				
-				-- local w, h = TotalAPSpecIconButtons[k]:GetSize();
-				-- if math.floor(w) * > settings.specIcons.size * 1.4 or math.floor(h) > settings.specIcons.size * 1.4 then -- floor is necessary due to floating point precision inaccuracies vs. integer in settings
-					-- TotalAP.Debug("Re-enabling glow effect due to bugged spell overlay size")
-					-- TotalAP.Debug(format("Button dimensions are %i x %i but should be %i x %i", w, h, settings.specIcons.size, settings.specIcons.size))
-					-- FlashActionButton(TotalAPSpecIconButtons[k], false);
-				-- end
-				
-				FlashActionButton(TotalAPSpecIconButtons[k], true);
+			
+			-- Make sure the text display is moving accordingly to the frames (or it will detach and look buggy)
+			if v["numTraitsPurchased"] < maxArtifactTraits then
+				specIconFontStrings[k]:SetText(fontStringText);
 			else
-				FlashActionButton(TotalAPSpecIconButtons[k], false);
+				specIconFontStrings[k]:SetText("---"); -- TODO: MAX? Empty? Anything else?
 			end
-		
-		-- Make sure the text display is moving accordingly to the frames (or it will detach and look buggy)
-		if v["numTraitsPurchased"] < maxArtifactTraits then
-			specIconFontStrings[k]:SetText(fontStringText);
-		else
-			specIconFontStrings[k]:SetText("---"); -- TODO: MAX? Empty? Anything else?
-		end
-		
-		specIconFontStrings[k]:ClearAllPoints();
-		specIconFontStrings[k]:SetPoint("TOPLEFT", TotalAPSpecHighlightFrames[k], "TOPRIGHT", settings.specIcons.border + 5,  settings.specIcons.border - math.abs(TotalAPSpecHighlightFrames[k]:GetHeight() - specIconFontStrings[k]:GetHeight()) / 2);
-		TotalAP.Debug(format("Updating fontString for spec icon %d: %s", k, fontStringText));
+			
+			specIconFontStrings[k]:ClearAllPoints();
+			specIconFontStrings[k]:SetPoint("TOPLEFT", TotalAPSpecHighlightFrames[k], "TOPRIGHT", settings.specIcons.border + 5,  settings.specIcons.border - math.abs(TotalAPSpecHighlightFrames[k]:GetHeight() - specIconFontStrings[k]:GetHeight()) / 2);
+			TotalAP.Debug(format("Updating fontString for spec icon %d: %s", k, fontStringText));
 
+		end
+			
 	end
   
   --TotalAP.Debug(format("Expected fontString width: %.0f, wrapped width: %.0f, InfoFrame width: %.0f, texture width: %.0f", numTraitsFontString:GetStringWidth(), numTraitsFontString:GetWrappedWidth(), TotalAPInfoFrame:GetWidth(), TotalAPInfoFrame.texture:GetWidth()));
@@ -626,7 +642,8 @@ local function UpdateSpecIcons()
 			TotalAPSpecIconsBackgroundFrame:Hide();
 		end
    end
-end
+
+ end
 
 -- Update InfoFrame -> contains AP bar/progress displays
 local function UpdateInfoFrame()
@@ -685,115 +702,121 @@ local function UpdateInfoFrame()
 	
 	for k, v in pairs(artifactProgressCache) do -- Display progress bars
 	
-		local percentageUnspentAP = min(100, math.floor(v["thisLevelUnspentAP"] / aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100)); -- cap at 100 or bar will overflow
-		local percentageInBagsAP = min(math.floor(inBagsTotalAP / aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100), 100 - percentageUnspentAP); -- AP from bags should fill up the bar, but not overflow it
-		TotalAP.Debug(format("Updating percentage for bar display... spec %d: unspentAP = %s, inBags = %s" , k, percentageUnspentAP, percentageInBagsAP));
-		
-		local inset, border = settings.infoFrame.inset or 1, settings.infoFrame.border or 1; -- TODO
-
-		-- TODO: Default textures seem to require scaling? (or not... tested a couple, but not all of them)
-		-- TODO. Allow selection of these alongside potential SharedMedia ones (if they aren't included already)
-		local defaultTextures = { 
-																				   
-																				   "Interface\\CHARACTERFRAME\\BarFill.blp",
-																				   "Interface\\CHARACTERFRAME\\BarHighlight.blp",
-																				   "Interface\\CHARACTERFRAME\\UI-BarFill-Simple.blp",
-																				   "Interface\\Glues\\LoadingBar\\Loading-BarFill.blp",
-																				   "Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar.blp",
-																				   "Interface\\RAIDFRAME\\Raid-Bar-Hp-Bg.blp",
-																				   "Interface\\RAIDFRAME\\Raid-Bar-Hp-Fill.blp",
-																				   "Interface\\RAIDFRAME\\Raid-Bar-Resource-Background.blp",
-																				   "Interface\\RAIDFRAME\\Raid-Bar-Resource-Fill.blp",
-																				   "Interface\\TARGETINGFRAME\\BarFill2.blp",
-																				   "Interface\\TARGETINGFRAME\\UI-StatusBar.blp",
-																				   "Interface\\TARGETINGFRAME\\UI-TargetingFrame-BarFill.blp",
-																				   "Interface\\TUTORIALFRAME\\UI-TutorialFrame-BreathBar.blp", -- FatigueBar also
-																				   "Interface\\UNITPOWERBARALT\\Amber_Horizontal_Bgnd.blp",
-																				   "Interface\\UNITPOWERBARALT\\Amber-Horizontal_Fill.blp",
-																				   "Interface\\UNITPOWERBARALT\\BrewingStorm_Horizontal_Fill.blp",
-																				   "Interface\\UNITPOWERBARALT\\Darkmoon_Horizontal_Bgnd.blp",
-																				   
-																				   "Interface\\UNITPOWERBARALT\\Darkmoon_Horizontal_Fill.blp",
-																				   "Interface\\UNITPOWERBARALT\\DeathwingBlood_Horizontal_Fill.blp",
-																				   "Interface\\UNITPOWERBARALT\\Druid_Horizontal_Fill.blp",
-																				   "Interface\\UNITPOWERBARALT\\Generic1Party_Horizontal_Bgnd.blp",
-																				   "Interface\\UNITPOWERBARALT\\Generic1Party_Horizontal_Fill.blp",
-																				   "Interface\\UNITPOWERBARALT\\Generic1Player_Horizontal_Bgnd.blp",
-																				   "Interface\\UNITPOWERBARALT\\Generic1Player_Horizontal_Fill.blp",
-																				   "Interface\\UNITPOWERBARALT\\Generic1Target_Horizontal_Bgnd.blp",
-																				   "Interface\\UNITPOWERBARALT\\Generic1Target_Horizontal_Fill.blp",
-																				   "Interface\\UNITPOWERBARALT\\Generic1_Horizontal_Fill.blp",
-																				   "Interface\\UNITPOWERBARALT\\Generic1_Horizontal_Bgnd.blp",
-																				   "Interface\\UNITPOWERBARALT\\Generic2_Horizontal_Fill.blp",
-																				   "Interface\\UNITPOWERBARALT\\Generic3_Horizontal_Fill.blp",
-																				   "Interface\\UNITPOWERBARALT\\StoneGuardJade_HorizontalFill.blp", -- also Cobalt, Amethyst, Jasper
-																				   -- 32 textures
-																				}
-																	
-		local barTexture = settings.infoFrame.barTexture or "Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar.blp";
-		-- TODO: SharedMedia:Fetch("statusbar", settings.infoFrame.barTexture) or "Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar.blp"; -- TODO: Test default texture?
-
-   --TotalAPProgressBars[i].texture:SetTexCoord(1/3, 1/3, 2/3, 2/3, 1/3, 1/3, 2/3, 2/3); -- TODO: Only necessary for some (which?) textures from the default interface, not SharedMedia ones?
-
-   -- TODO: Update bars/position when button is resized or moved
-
-		-- Empty Bar -> Displayed when artifact is cached, but the bars for unspent/inBagsAP don't cover everything (background)
-		if not TotalAPProgressBars[k].texture then   
-			TotalAPProgressBars[k].texture = TotalAPProgressBars[k]:CreateTexture();
-		end
-		
-		TotalAPProgressBars[k].texture:SetAllPoints(TotalAPProgressBars[k]);
-		TotalAPProgressBars[k].texture:SetTexture(barTexture);
-		TotalAPProgressBars[k].texture:SetVertexColor(settings.infoFrame.progressBar.red/255, settings.infoFrame.progressBar.green/255, settings.infoFrame.progressBar.blue/255, settings.infoFrame.progressBar.alpha);
-		TotalAPProgressBars[k]:SetSize(100, settings.infoFrame.barHeight); -- TODO: Variable height! Should be adjustable independent from specIcons (and resizable via shift/drag, while specIcons center automatically)
-		TotalAPProgressBars[k]:ClearAllPoints();
-		TotalAPProgressBars[k]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPLEFT", 1 + inset, - ( (2 * displayOrder[k] - 1)  * inset + displayOrder[k] * border + (displayOrder[k] - 1)  * settings.infoFrame.barHeight))
---TotalAP.ChatMsg(k .. ", " .. displayOrder[k])
---TempTAPDisplayOrder = displayOrder
-		
-		-- Bar 1 -> Displays AP used on artifact but not yet spent on any traits
-		if not TotalAPUnspentBars[k].texture then   
-			TotalAPUnspentBars[k].texture = TotalAPUnspentBars[k]:CreateTexture();
-		end
-		 
-		TotalAPUnspentBars[k].texture:SetAllPoints(TotalAPUnspentBars[k]);
-		TotalAPUnspentBars[k].texture:SetTexture(barTexture);
-		if percentageUnspentAP > 0 then 
-			TotalAPUnspentBars[k].texture:SetVertexColor(settings.infoFrame.unspentBar.red/255, settings.infoFrame.unspentBar.green/255, settings.infoFrame.unspentBar.blue/255, settings.infoFrame.unspentBar.alpha);  -- TODO: colors variable (settings -> color picker)
-		else
-			TotalAPUnspentBars[k].texture:SetVertexColor(0, 0, 0, 0); -- Hide vertexes to avoid graphics glitch
-		end
-		
-		TotalAPUnspentBars[k]:SetSize(percentageUnspentAP, settings.infoFrame.barHeight);
-		TotalAPUnspentBars[k]:ClearAllPoints();
-		TotalAPUnspentBars[k]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPLEFT", 1 + inset, - ( (2 * displayOrder[k] - 1)  * inset + displayOrder[k] * border + (displayOrder[k] - 1) * settings.infoFrame.barHeight));
-		
-		-- Bar 2 -> Displays AP available in bags
-		-- TODO: Better naming of these things, TotalAP_InBagsBar? TotalAP.InBagsBar? inBagsBar?  etc
-		if not TotalAPInBagsBars[k].texture  then   
-		  TotalAPInBagsBars[k].texture = TotalAPInBagsBars[k]:CreateTexture();
-		end
-																				   
-		TotalAPInBagsBars[k].texture:SetAllPoints(TotalAPInBagsBars[k]);
-		TotalAPInBagsBars[k].texture:SetTexture(barTexture);
-	
-		if percentageInBagsAP > 0 then 
-			TotalAPInBagsBars[k].texture:SetVertexColor(settings.infoFrame.inBagsBar.red/255, settings.infoFrame.inBagsBar.green/255, settings.infoFrame.inBagsBar.blue/255, settings.infoFrame.inBagsBar.alpha);
-		else
-			TotalAPInBagsBars[k].texture:SetVertexColor(0, 0, 0, 0); -- Hide vertexes to avoid graphics glitch
-		end
-		
-		TotalAPInBagsBars[k]:SetSize(percentageInBagsAP, settings.infoFrame.barHeight);
-		TotalAPInBagsBars[k]:ClearAllPoints();
-		TotalAPInBagsBars[k]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPLEFT", 1 + inset + TotalAPUnspentBars[k]:GetWidth(), - ( (2 * displayOrder[k] - 1)  * inset + displayOrder[k] * border + (displayOrder[k] - 1) * settings.infoFrame.barHeight))
-
-		-- If artifact is maxed, replace overlay bars with a white one to indicate that fact
-		if v["numTraitsPurchased"] >= maxArtifactTraits then
-			TotalAPUnspentBars[k]:SetSize(100, settings.infoFrame.barHeight); -- maximize bar to take up all the available space
-			TotalAPUnspentBars[k].texture:SetVertexColor(239/255, 229/255, 176/255, 1); -- turns it white; TODO: settings.infoFrame.progressBar.maxRed etc to allow setting a custom colour for maxed artifacts (later on)
-			TotalAPInBagsBars[k].texture:SetVertexColor(settings.infoFrame.progressBar.red/255, settings.infoFrame.progressBar.green/255, settings.infoFrame.progressBar.blue/255, 0); -- turns it invisible (alpha = 0%)
-		end
+		if v["thisLevelUnspentAP"] and v["numTraitsPurchased"] then -- spec hasn't been scanned, but possibly ignored (so no actual data exists) 
 			
+		
+	
+			local percentageUnspentAP = min(100, math.floor(v["thisLevelUnspentAP"] / aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100)); -- cap at 100 or bar will overflow
+			local percentageInBagsAP = min(math.floor(inBagsTotalAP / aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100), 100 - percentageUnspentAP); -- AP from bags should fill up the bar, but not overflow it
+			TotalAP.Debug(format("Updating percentage for bar display... spec %d: unspentAP = %s, inBags = %s" , k, percentageUnspentAP, percentageInBagsAP));
+			
+			local inset, border = settings.infoFrame.inset or 1, settings.infoFrame.border or 1; -- TODO
+
+			-- TODO: Default textures seem to require scaling? (or not... tested a couple, but not all of them)
+			-- TODO. Allow selection of these alongside potential SharedMedia ones (if they aren't included already)
+			local defaultTextures = { 
+																					   
+																					   "Interface\\CHARACTERFRAME\\BarFill.blp",
+																					   "Interface\\CHARACTERFRAME\\BarHighlight.blp",
+																					   "Interface\\CHARACTERFRAME\\UI-BarFill-Simple.blp",
+																					   "Interface\\Glues\\LoadingBar\\Loading-BarFill.blp",
+																					   "Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar.blp",
+																					   "Interface\\RAIDFRAME\\Raid-Bar-Hp-Bg.blp",
+																					   "Interface\\RAIDFRAME\\Raid-Bar-Hp-Fill.blp",
+																					   "Interface\\RAIDFRAME\\Raid-Bar-Resource-Background.blp",
+																					   "Interface\\RAIDFRAME\\Raid-Bar-Resource-Fill.blp",
+																					   "Interface\\TARGETINGFRAME\\BarFill2.blp",
+																					   "Interface\\TARGETINGFRAME\\UI-StatusBar.blp",
+																					   "Interface\\TARGETINGFRAME\\UI-TargetingFrame-BarFill.blp",
+																					   "Interface\\TUTORIALFRAME\\UI-TutorialFrame-BreathBar.blp", -- FatigueBar also
+																					   "Interface\\UNITPOWERBARALT\\Amber_Horizontal_Bgnd.blp",
+																					   "Interface\\UNITPOWERBARALT\\Amber-Horizontal_Fill.blp",
+																					   "Interface\\UNITPOWERBARALT\\BrewingStorm_Horizontal_Fill.blp",
+																					   "Interface\\UNITPOWERBARALT\\Darkmoon_Horizontal_Bgnd.blp",
+																					   
+																					   "Interface\\UNITPOWERBARALT\\Darkmoon_Horizontal_Fill.blp",
+																					   "Interface\\UNITPOWERBARALT\\DeathwingBlood_Horizontal_Fill.blp",
+																					   "Interface\\UNITPOWERBARALT\\Druid_Horizontal_Fill.blp",
+																					   "Interface\\UNITPOWERBARALT\\Generic1Party_Horizontal_Bgnd.blp",
+																					   "Interface\\UNITPOWERBARALT\\Generic1Party_Horizontal_Fill.blp",
+																					   "Interface\\UNITPOWERBARALT\\Generic1Player_Horizontal_Bgnd.blp",
+																					   "Interface\\UNITPOWERBARALT\\Generic1Player_Horizontal_Fill.blp",
+																					   "Interface\\UNITPOWERBARALT\\Generic1Target_Horizontal_Bgnd.blp",
+																					   "Interface\\UNITPOWERBARALT\\Generic1Target_Horizontal_Fill.blp",
+																					   "Interface\\UNITPOWERBARALT\\Generic1_Horizontal_Fill.blp",
+																					   "Interface\\UNITPOWERBARALT\\Generic1_Horizontal_Bgnd.blp",
+																					   "Interface\\UNITPOWERBARALT\\Generic2_Horizontal_Fill.blp",
+																					   "Interface\\UNITPOWERBARALT\\Generic3_Horizontal_Fill.blp",
+																					   "Interface\\UNITPOWERBARALT\\StoneGuardJade_HorizontalFill.blp", -- also Cobalt, Amethyst, Jasper
+																					   -- 32 textures
+																					}
+																		
+			local barTexture = settings.infoFrame.barTexture or "Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar.blp";
+			-- TODO: SharedMedia:Fetch("statusbar", settings.infoFrame.barTexture) or "Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar.blp"; -- TODO: Test default texture?
+
+	   --TotalAPProgressBars[i].texture:SetTexCoord(1/3, 1/3, 2/3, 2/3, 1/3, 1/3, 2/3, 2/3); -- TODO: Only necessary for some (which?) textures from the default interface, not SharedMedia ones?
+
+	   -- TODO: Update bars/position when button is resized or moved
+
+			-- Empty Bar -> Displayed when artifact is cached, but the bars for unspent/inBagsAP don't cover everything (background)
+			if not TotalAPProgressBars[k].texture then   
+				TotalAPProgressBars[k].texture = TotalAPProgressBars[k]:CreateTexture();
+			end
+			
+			TotalAPProgressBars[k].texture:SetAllPoints(TotalAPProgressBars[k]);
+			TotalAPProgressBars[k].texture:SetTexture(barTexture);
+			TotalAPProgressBars[k].texture:SetVertexColor(settings.infoFrame.progressBar.red/255, settings.infoFrame.progressBar.green/255, settings.infoFrame.progressBar.blue/255, settings.infoFrame.progressBar.alpha);
+			TotalAPProgressBars[k]:SetSize(100, settings.infoFrame.barHeight); -- TODO: Variable height! Should be adjustable independent from specIcons (and resizable via shift/drag, while specIcons center automatically)
+			TotalAPProgressBars[k]:ClearAllPoints();
+			TotalAPProgressBars[k]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPLEFT", 1 + inset, - ( (2 * displayOrder[k] - 1)  * inset + displayOrder[k] * border + (displayOrder[k] - 1)  * settings.infoFrame.barHeight))
+	--TotalAP.ChatMsg(k .. ", " .. displayOrder[k])
+	--TempTAPDisplayOrder = displayOrder
+			
+			-- Bar 1 -> Displays AP used on artifact but not yet spent on any traits
+			if not TotalAPUnspentBars[k].texture then   
+				TotalAPUnspentBars[k].texture = TotalAPUnspentBars[k]:CreateTexture();
+			end
+			 
+			TotalAPUnspentBars[k].texture:SetAllPoints(TotalAPUnspentBars[k]);
+			TotalAPUnspentBars[k].texture:SetTexture(barTexture);
+			if percentageUnspentAP > 0 then 
+				TotalAPUnspentBars[k].texture:SetVertexColor(settings.infoFrame.unspentBar.red/255, settings.infoFrame.unspentBar.green/255, settings.infoFrame.unspentBar.blue/255, settings.infoFrame.unspentBar.alpha);  -- TODO: colors variable (settings -> color picker)
+			else
+				TotalAPUnspentBars[k].texture:SetVertexColor(0, 0, 0, 0); -- Hide vertexes to avoid graphics glitch
+			end
+			
+			TotalAPUnspentBars[k]:SetSize(percentageUnspentAP, settings.infoFrame.barHeight);
+			TotalAPUnspentBars[k]:ClearAllPoints();
+			TotalAPUnspentBars[k]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPLEFT", 1 + inset, - ( (2 * displayOrder[k] - 1)  * inset + displayOrder[k] * border + (displayOrder[k] - 1) * settings.infoFrame.barHeight));
+			
+			-- Bar 2 -> Displays AP available in bags
+			-- TODO: Better naming of these things, TotalAP_InBagsBar? TotalAP.InBagsBar? inBagsBar?  etc
+			if not TotalAPInBagsBars[k].texture  then   
+			  TotalAPInBagsBars[k].texture = TotalAPInBagsBars[k]:CreateTexture();
+			end
+																					   
+			TotalAPInBagsBars[k].texture:SetAllPoints(TotalAPInBagsBars[k]);
+			TotalAPInBagsBars[k].texture:SetTexture(barTexture);
+		
+			if percentageInBagsAP > 0 then 
+				TotalAPInBagsBars[k].texture:SetVertexColor(settings.infoFrame.inBagsBar.red/255, settings.infoFrame.inBagsBar.green/255, settings.infoFrame.inBagsBar.blue/255, settings.infoFrame.inBagsBar.alpha);
+			else
+				TotalAPInBagsBars[k].texture:SetVertexColor(0, 0, 0, 0); -- Hide vertexes to avoid graphics glitch
+			end
+			
+			TotalAPInBagsBars[k]:SetSize(percentageInBagsAP, settings.infoFrame.barHeight);
+			TotalAPInBagsBars[k]:ClearAllPoints();
+			TotalAPInBagsBars[k]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPLEFT", 1 + inset + TotalAPUnspentBars[k]:GetWidth(), - ( (2 * displayOrder[k] - 1)  * inset + displayOrder[k] * border + (displayOrder[k] - 1) * settings.infoFrame.barHeight))
+
+			-- If artifact is maxed, replace overlay bars with a white one to indicate that fact
+			if v["numTraitsPurchased"] >= maxArtifactTraits then
+				TotalAPUnspentBars[k]:SetSize(100, settings.infoFrame.barHeight); -- maximize bar to take up all the available space
+				TotalAPUnspentBars[k].texture:SetVertexColor(239/255, 229/255, 176/255, 1); -- turns it white; TODO: settings.infoFrame.progressBar.maxRed etc to allow setting a custom colour for maxed artifacts (later on)
+				TotalAPInBagsBars[k].texture:SetVertexColor(settings.infoFrame.progressBar.red/255, settings.infoFrame.progressBar.green/255, settings.infoFrame.progressBar.blue/255, 0); -- turns it invisible (alpha = 0%)
+			end
+			
+		end
+		
 	end
 	
 
@@ -1072,15 +1095,19 @@ local function CreateSpecIcons()
 			 
 			local cache = TotalArtifactPowerCache -- TODO: This can be removed later (as cache is available in the addon itself) -> Needs better handling as cache won't always be updated properly? (DBHandler -> CacheHandler)
 			 -- It is safe to assume that the key exists, as the cache has been updated at least once (when logging in) = tables have been created
-			 if cache[key][i]["isIgnored"] then  -- Spec is already being ignored
+			 if cache[key][i] and cache[key][i]["isIgnored"] then  -- Spec is already being ignored
 				TotalAP.Debug("Attempting to ignore spec, but spec " .. i .. " is already ignored for character " .. key)
 				return
 			 end
 			 
 			 TotalAP.ChatMsg(format(L["Ignoring spec %d for character %s"], i, key))
 			 TotalAP.ChatMsg(format(L["Type %s unignore to reset all currently ignored specs for this character"], "/" .. TotalAP.Controllers.GetSlashCommandAlias())) -- TODO: Only show this once?
-			 
-			 cache[key][i]["isIgnored"] = true
+
+			 -- Specs might not have been initialised (if they haven't been switched to, ever)
+			if not cache[key][i] then cache[key][i] = { isIgnored = true }  -- TODO: InitialiseCache(specNo) function
+			else
+				cache[key][i]["isIgnored"] = true
+			end
 			 
 			 UpdateEverything() -- TODO
 			 
@@ -1523,6 +1550,11 @@ function AceAddon:OnInitialize() -- Called on ADDON_LOADED
 	CreateAnchorFrame(); -- anchor for all other frames -> needs to be loaded before PLAYER_LOGIN to have the game save its position and size -- TODO: move to GUI/AceGUI
 
 	
+	-- TODO: via AceGUI?
+	-- TODO: Allow custom views to be loaded instead of (or in addition to) the default one, and toggling of views, respectively
+	-- TotalAP.GUI.CreateView("DefaultView") -- Create view/layout that will later be rendered (shown) and updated
+	-- TotalAP.GUI.SetActiveView("DefaultView") -- Enable default view (TODO: Obsolete? Should be done by default)
+	--TotalAP.Controllers.ShowGUI() -- Display whichever view is currently active (TODO: Views aren't fully implemented yet :| -- This is always the default view, for now)
 	
 	-- Register slash commands
 	self:RegisterChatCommand(TotalAP.Controllers.GetSlashCommand(), TotalAP.Controllers.SlashCommandHandler)

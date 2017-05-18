@@ -119,7 +119,9 @@ end
 -- Returns the number of ignored specs for a given character (defaults to currently used character if none is given)
 local function GetNumIgnoredSpecs(fqCharName)
 	
-	local characterName, realm
+	--if not TotalArtifactPowerCache then return end -- in case this is called before the addon was fully loaded
+	
+	local characterName, realm, key
 	
 	if fqCharName then 
 		characterName, realm = fqCharName:match("(%.+)%s-%s(%.)+")
@@ -139,7 +141,7 @@ local function GetNumIgnoredSpecs(fqCharName)
 	
 	for i = 1, GetNumSpecializations() do
 	
-		if TotalArtifactPowerCache[key] and TotalArtifactPowerCache[key][i]["isIgnored"] then
+		if TotalArtifactPowerCache[key] and TotalArtifactPowerCache[key][i] and TotalArtifactPowerCache[key][i]["isIgnored"] then
 			
 			--TotalAP.Debug("Spec " .. i .. " was found to be ignored")
 			numIgnoredSpecs = numIgnoredSpecs + 1
@@ -173,7 +175,7 @@ local function UnignoreAllSpecs(fqCharName)
 	
 	for i = 1, GetNumSpecializations() do -- Remove spec from "ignore list" (more precisely, remove "marked as ignored" flag)
 	
-		if TotalArtifactPowerCache[key] then TotalArtifactPowerCache[key][i]["isIgnored"] = false end
+		if TotalArtifactPowerCache[key] and TotalArtifactPowerCache[key][i] then TotalArtifactPowerCache[key][i]["isIgnored"] = false end
 	
 	end
 	
