@@ -34,6 +34,7 @@ Locales\Locales.xml
 Locales\NumberFormats.lua
 
 Core\Init.lua
+Core\ArtifactInterface.lua
 Core\DBHandler.lua
 Core\Scanner.lua
 
@@ -45,6 +46,7 @@ Core\GUI\Views\PrimarySpecView.lua
 Core\GUI\Views\TabbedView.lua
 
 Core\GUI\Config.lua
+Core\GUI\Tooltips.lua
 
 Core\Controllers\Keybinds.lua
 Core\Controllers\SlashCommands.lua
