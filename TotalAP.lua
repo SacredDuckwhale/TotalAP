@@ -769,6 +769,7 @@ local function UpdateInfoFrame()
 			TotalAPProgressBars[k]:SetSize(100, settings.infoFrame.barHeight); -- TODO: Variable height! Should be adjustable independent from specIcons (and resizable via shift/drag, while specIcons center automatically)
 			TotalAPProgressBars[k]:ClearAllPoints();
 			TotalAPProgressBars[k]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPLEFT", 1 + inset, - ( (2 * displayOrder[k] - 1)  * inset + displayOrder[k] * border + (displayOrder[k] - 1)  * settings.infoFrame.barHeight))
+			
 	--TotalAP.ChatMsg(k .. ", " .. displayOrder[k])
 	--TempTAPDisplayOrder = displayOrder
 			
@@ -1375,7 +1376,7 @@ local function CreateAnchorFrame()
 		
 		if self:IsMovable() and IsAltKeyDown() then self:StartMoving(); -- Alt -> Move button
 		elseif self:IsResizable() and IsShiftKeyDown() then self:StartSizing(); end -- Shift -> Resize button
-			
+
 		self.isMoving = true;
 	
 		end);
@@ -1536,6 +1537,7 @@ function AceAddon:OnInitialize() -- Called on ADDON_LOADED
 	LoadSettings();  -- from saved vars
 	CreateAnchorFrame(); -- anchor for all other frames -> needs to be loaded before PLAYER_LOGIN to have the game save its position and size -- TODO: move to GUI/AceGUI
 
+	CreateActionButton() -- Ditto, as its size is being saved by the client
 	
 	-- TODO: via AceGUI?
 	-- TODO: Allow custom views to be loaded instead of (or in addition to) the default one, and toggling of views, respectively
@@ -1556,7 +1558,7 @@ function AceAddon:OnEnable()	-- Called on PLAYER_LOGIN or ADDON_LOADED (if addon
 	local clientVersion, clientBuild = GetBuildInfo(); 
 			
 			-- Those could be created earlier, BUT: Talent info isn't available sooner, and those frames are anchored to the AnchorFrame anyway -> Initial position doesn't matter as it is updated automatically (TODO: TALENT or SPEC info?)
-			CreateActionButton();
+			
 			CreateInfoFrame();
 			CreateSpecIcons(); 
 			
