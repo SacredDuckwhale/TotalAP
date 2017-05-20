@@ -54,7 +54,9 @@ local defaultSettings =	{
 													showGlowEffect = true,
 													size = 18,
 													border = 1,
-													inset = 1
+													inset = 1,
+													
+													alignment = "center", -- TODO: Provide option via GUI (AceConfig)
 												},
 												
 												-- Controls what information is displayed in the tooltip
@@ -71,6 +73,8 @@ local defaultSettings =	{
 													barHeight = 16,
 													border = 1,
 													inset = 1,
+													
+													alignment = "center", -- TODO: Provide option via GUI (AceConfig)
 													
 													progressBar = {
 														red = 250,

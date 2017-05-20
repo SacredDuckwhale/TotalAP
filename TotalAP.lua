@@ -465,8 +465,17 @@ local function UpdateSpecIcons()
 			reservedButtonWidth = TotalAPButton:GetWidth() + (TotalAPButtonFontString:GetWidth() - TotalAPButton:GetWidth()) / 2  + 5  -- TODO: 5 = spacing? (settings)
 		end	
 	end
-		
-	TotalAPSpecIconsBackgroundFrame:SetPoint("BOTTOMLEFT", TotalAPAnchorFrame, "TOPLEFT", reservedButtonWidth + reservedInfoFrameWidth, math.abs( max(settings.actionButton.maxResize, (numSpecs - numIgnoredSpecs)  * (settings.specIcons.size + 2 * border + 2 * inset) + border) -  TotalAPSpecIconsBackgroundFrame:GetHeight()) / 2);
+	
+		-- TODO: Proper handling of alignment option / further customization
+	if settings.infoFrame.alignment == "top" then -- Align bars to the top
+		TotalAPSpecIconsBackgroundFrame:SetPoint("BOTTOMLEFT", TotalAPAnchorFrame, "TOPLEFT", reservedButtonWidth + reservedInfoFrameWidth, settings.actionButton.maxResize - (math.abs(settings.actionButton.maxResize - (TotalAPButton:GetHeight() + TotalAPButtonFontString:GetHeight() + 5 )) / 2)  - TotalAPSpecIconsBackgroundFrame:GetHeight() + ( math.abs(TotalAPSpecIconsBackgroundFrame:GetHeight() - TotalAPInfoFrame:GetHeight())) / 2)
+	elseif settings.infoFrame.alignment == "bottom" then -- Align bars to the bottom
+		TotalAPSpecIconsBackgroundFrame:SetPoint("BOTTOMLEFT", TotalAPAnchorFrame, "TOPLEFT", reservedButtonWidth + reservedInfoFrameWidth, (settings.actionButton.maxResize - (TotalAPButton:GetHeight() + TotalAPButtonFontString:GetHeight() + 5 ) ) / 2 - ( math.abs(TotalAPSpecIconsBackgroundFrame:GetHeight() - TotalAPInfoFrame:GetHeight())) / 2)  -- TODO: 5 = hardcoded spacing
+	
+	else -- Align bars in the center (only applies if some are hidden/ignored)
+		TotalAPSpecIconsBackgroundFrame:SetPoint("BOTTOMLEFT", TotalAPAnchorFrame, "TOPLEFT", reservedButtonWidth + reservedInfoFrameWidth, math.abs( max(settings.actionButton.maxResize, (numSpecs - numIgnoredSpecs)  * (settings.specIcons.size + 2 * border + 2 * inset) + border) -  TotalAPSpecIconsBackgroundFrame:GetHeight()) / 2);
+	end
+	
 	TotalAPSpecIconsBackgroundFrame:SetBackdropColor(0/255, 0/255, 0/255, 0.25); -- TODO
 	
 	for i = 1, numSpecs do
@@ -697,7 +706,17 @@ local function UpdateInfoFrame()
 	end
 	
 	TotalAPInfoFrame:ClearAllPoints(); 
-	TotalAPInfoFrame:SetPoint("BOTTOMLEFT", TotalAPAnchorFrame, "TOPLEFT", reservedButtonWidth,  math.abs(TotalAPInfoFrame:GetHeight() - settings.actionButton.maxResize) / 2); 
+	
+		-- TODO: Proper handling of alignment option / further customization
+	if settings.infoFrame.alignment == "top" then -- Align bars to the top
+		TotalAPInfoFrame:SetPoint("BOTTOMLEFT", TotalAPAnchorFrame, "TOPLEFT", reservedButtonWidth,  settings.actionButton.maxResize - (math.abs(settings.actionButton.maxResize - (TotalAPButton:GetHeight() + TotalAPButtonFontString:GetHeight() + 5 )) / 2)  - TotalAPInfoFrame:GetHeight()  )
+	elseif settings.infoFrame.alignment == "bottom" then -- Align bars to the bottom
+		TotalAPInfoFrame:SetPoint("BOTTOMLEFT", TotalAPAnchorFrame, "TOPLEFT", reservedButtonWidth,  (settings.actionButton.maxResize - (TotalAPButton:GetHeight() + TotalAPButtonFontString:GetHeight() + 5 ) ) / 2); 
+	else -- Align bars in the center (only applies if some are hidden/ignored)
+		TotalAPInfoFrame:SetPoint("BOTTOMLEFT", TotalAPAnchorFrame, "TOPLEFT", reservedButtonWidth,  math.abs(TotalAPInfoFrame:GetHeight() - settings.actionButton.maxResize) / 2); 
+	end
+			
+	
 	
 		--  Only show when settings allow it
 	if settings.infoFrame.enabled and not ( numIgnoredSpecs == GetNumSpecializations() ) then TotalAPInfoFrame:Show();

@@ -59,6 +59,12 @@ local slashCommands = {
 	
 }
 
+-- Undocumented -> Won't be listed (and there is no need to translate them either)
+local hiddenSlashCommands = {
+	["align-top"] = "",
+	["align-bottom"] = "",
+	["align-center"] = "",
+}
 
 -- Actual handling of slash commands (TODO: Not fully migrated yet -> most won't work until it is done)
 local slashHandlers = {
@@ -207,6 +213,19 @@ local slashHandlers = {
 		settings.debugMode = not settings.debugMode;
 	end,
 
+	
+--- Hidden slash commands
+	["align-top"] = function(settings) -- Align bars and spec icons to the top
+		 TotalAP.Controllers.AlignGUI("top")
+	end,
+	
+	["align-bottom"] = function(settings) -- Align bars and spec icons to the top
+		 TotalAP.Controllers.AlignGUI("bottom")
+	end,
+	
+	["align-center"] = function(settings) -- Align bars and spec icons to the top
+		 TotalAP.Controllers.AlignGUI("center")
+	end,
 
 -- TODO: Debugging/undocumented commands should be separate
 	-- elseif command == "anchor" then -- Show anchor frame
@@ -304,7 +323,13 @@ local function SlashCommandHandler(input, usedAlias)
 		elseif command == "dbtest" then -- Simulate DB operations to test functionality, without actually changing the savedVars in the process	
 		
 		-- TODO once AceDB handles vars (current db handling should work fine for the time being)
-			
+		
+		elseif hiddenSlashCommands[command] then -- TODO: Handling for guitest etc. here also
+		
+			local slashHandlerFunction = slashHandlers[command]
+			slashHandlerFunction() -- Parameter is nil -> There's no need to submit the DB for test commands, really
+			return
+		
 		elseif command == validCommand then -- Execute individual handler function for this slash command
 			
 			local slashHandlerFunction = slashHandlers[command]
