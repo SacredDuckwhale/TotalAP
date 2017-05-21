@@ -17,8 +17,6 @@
 -- TotalAP.lua (AKA main, core, what have you ...)
 -- Sets up the addon, db, libraries etc. - basic startup stuff (TODO: Does much more currently, but migration/refactoring is in progress ;)
 
-local itemEffects; -- loaded on init from separate (script-generated) file: DB\ItemEffects.lua
-
 -- Libraries: If they fail to load, TotalAP shouldn't load either
 local AceAddon = LibStub("AceAddon-3.0"):NewAddon("TotalAP", "AceConsole-3.0"); -- AceAddon object -> local because it's not really needed elsewhere
 local L = LibStub("AceLocale-3.0"):GetLocale("TotalAP", false); -- Localization table; default locale is enGB (=enUS). false to show an error if locale not found (via AceLocale)
@@ -36,10 +34,12 @@ TotalAP = T -- Global container for modularised functions and library instance o
 
 
 
-local addonVersion = GetAddOnMetadata(addonName, "Version");
-
 -- Internal vars - TODO: Move these to the appropriate modules
-local itemEffects, artifacts; -- Loaded from TotalArtifactPowerDB in LoadSettings(), for now
+	-- Load item spell effects & spec artifact list from global (shared) DB
+--local itemEffects = TotalAP.DB; -- This isn't strictly necessary, as the DB is in the global namespace. However, it's better to not litter the code with direct references in case of future changes - also, they are static so loading them once (on startup) should suffice
+--local artifacts = TotalAP.DB["artifacts"]; -- Ditto
+	
+
 local tempItemLink, tempItemID, currentItemLink, currentItemID, currentItemTexture, currentItemAP; -- used for bag scanning and tooltip display
 local numItems, inBagsTotalAP, numTraitsAvailable, artifactProgressPercent = 0, 0, 0, 0; -- used for tooltip text
 local foundKnowledgeTome -- buttonText (TODO -> workaround for display inconsistencies)
@@ -150,10 +150,6 @@ end
 -- Load saved vars and DB files, attempt to verify SavedVars
 local function LoadSettings()
 	
-	-- Load item spell effects & spec artifact list from global (shared) DB
-	itemEffects = TotalArtifactPowerDB["itemEffects"]; -- This isn't strictly necessary, as the DB is in the global namespace. However, it's better to not litter the code with direct references in case of future changes - also, they are static so loading them once (on startup) should suffice
-	artifacts = TotalArtifactPowerDB["artifacts"]; -- Ditto
-	
 	-- Check & verify default settings before loading them
 	settings = TotalArtifactPowerSettings;
 	if not settings then 	-- Load default settings
@@ -174,9 +170,10 @@ local function LoadSettings()
 	
 end
 
--- Check for artifact power tokens in the player's bags 
+-- Check for artifact power tokens in the player's bags
+-- TODO: Move to Core\Inventory? or sth (model or controllers?) 
  local function CheckBags()
- 
+
 	local bag, slot;
 	numItems, inBagsTotalAP, currentItemAP = 0, 0, 0; -- Each scan has to reset the (global) counter used by the tooltip and update handlers
 	foundKnowledgeTome = false -- AK tomes will later overwrite the AP progress in some displays, but not prevent it from being saved and used for others (tooltip display/bars)
@@ -188,7 +185,7 @@ end
 
 			if tempItemLink and tempItemLink:match("item:%d")  then
 					tempItemID = GetItemInfoInstant(tempItemLink);
-					local spellID = itemEffects[tempItemID];
+					local spellID = TotalAP.DB.GetItemEffectID(tempItemID)
 				
 				-- TODO: Move this to DB\ResearchTomes or something, and access via helper function (similar to artifacts)
 				if tempItemID == 139390 		-- Artifact Research Notes (max. AK 25) TODO: obsolete? Seem to be replaced by the AK 50 version entirely
@@ -247,6 +244,9 @@ end
 			end
 		end
 	end
+
+	TotalAP.Globals.inBagsTotalAP = inBagsTotalAP -- This is so the value can be used by tooltips from the GUI.Tooltips module // TODO			
+	
 end
 
 -- Toggle spell overlay (glow effect) on an action button
@@ -315,21 +315,15 @@ local function HasCorrectSpecArtifactEquipped()
 	-- Check all artifacts for this spec
 	TotalAP.Debug(format("Checking artifacts for class %d, spec %d", classID, specID));
 	
-	local specArtifacts = artifacts[classID][specID];
+	local itemID = TotalAP.DB.GetArtifactItemID(classID, specID)
 	
-	-- Test for all artifacts that this spec can equip
-	for k, v in pairs(specArtifacts) do
-		local itemID = v[1]; -- TODO: Why did I want canOccupyOffhandSlot again? Seems useless now, remove it from DB\Artifacts.lua?
-	
-		-- Cancel if just one is missing
-		if not IsEquippedItem(itemID) then
-			TotalAP.Debug(format("Expected to find artifact weapon %s, but it isn't equipped", GetItemInfo(itemID) or "<none>"));
-			return false 
-		end
-		
+
+	if not IsEquippedItem(itemID) then
+		TotalAP.Debug(format("Expected to find artifact weapon %s, but it isn't equipped", GetItemInfo(itemID) or "<none>"));
+		return false 
 	end
 	
-	-- All checks passed -> Looks like the equipped weapon is in fact the class' artifact weapon 
+	-- All checks passed -> Looks like the equipped weapon is in fact (one of) the class' artifact weapon 
 	return true;
 	
 end
@@ -433,14 +427,11 @@ local function UpdateSpecIcons()
 	if IsEquippedItem(133755) then return end -- TODO: UpdateEverything? Also, why just spec icons but not the rest?
 	
 	local numSpecs = GetNumSpecializations();
-	local numIgnoredSpecs = TotalAP.DBHandler.GetNumIgnoredSpecs()
+	local numIgnoredSpecs = TotalAP.Cache.GetNumIgnoredSpecs()
 	local displayOrder = GetSpecDisplayOrder() -- TODO: DRY
 	
-	
-	
-	
 	if numSpecs == numIgnoredSpecs then
-		TotalAP.Debug("Hiding spec icons because all currently specs are being ignored")
+		TotalAP.Debug("Hiding spec icons because all specs are being ignored")
 		TotalAPSpecIconsBackgroundFrame:Hide()
 		return
 	end
@@ -664,7 +655,7 @@ local function UpdateInfoFrame()
 	-- if IsEquippedItem(133755) then return end -- TODO: This should be unnecessary after HasCorrectSpecArtifactEquipped() checks the equipped weapon
 	
 	-- Display bars for cached specs only (not cached -> invisible/hidden)
-	local numIgnoredSpecs = TotalAP.DBHandler.GetNumIgnoredSpecs()
+	local numIgnoredSpecs = TotalAP.Cache.GetNumIgnoredSpecs()
 	
 	
 	
@@ -723,17 +714,12 @@ local function UpdateInfoFrame()
 	else TotalAPInfoFrame:Hide(); end
 	 
 	
-	
 	local displayOrder = GetSpecDisplayOrder() -- TODO: Only necessary if numIgnoredSpecs > 0 (and it should only be called once -> local to addon scope instead)
-	
-	
 	
 	for k, v in pairs(artifactProgressCache) do -- Display progress bars
 	
-		if v["thisLevelUnspentAP"] and v["numTraitsPurchased"] then -- spec hasn't been scanned, but possibly ignored (so no actual data exists) 
+		if v["thisLevelUnspentAP"] and v["numTraitsPurchased"] then -- spec has been scanned, but could possibly be ignored // TODO: Detect initialised specs (by the Cache:NewEntry() function) that have seemingly valid data, even though they aren't scanned yet
 			
-		
-	
 			local percentageUnspentAP = min(100, math.floor(v["thisLevelUnspentAP"] / aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100)); -- cap at 100 or bar will overflow
 			local percentageInBagsAP = min(math.floor(inBagsTotalAP / aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100), 100 - percentageUnspentAP); -- AP from bags should fill up the bar, but not overflow it
 			TotalAP.Debug(format("Updating percentage for bar display... spec %d: unspentAP = %s, inBags = %s" , k, percentageUnspentAP, percentageInBagsAP));
@@ -875,8 +861,8 @@ local function UpdateActionButton()
 		return
 	end
 
-	-- Hide button if spec is being ignored
-	if artifactProgressCache[GetSpecialization()] ~= nil and artifactProgressCache[GetSpecialization()]["isIgnored"] then
+	-- Hide button if spec is being ignored (unless research notes need to be used) -- TODO: Instead of hiding, give visual indicator? (greyed out icon or sth.)
+	if not foundKnowledgeTome and artifactProgressCache[GetSpecialization()] ~= nil and artifactProgressCache[GetSpecialization()]["isIgnored"] then
 		TotalAP.Debug("Hiding action button because the current spec is set to being ignored")
 		TotalAPButton:Hide();
 		return
@@ -997,7 +983,7 @@ local function UpdateEverything()
 		return;
 	end
 	
-	if ( TotalAP.DBHandler.GetNumIgnoredSpecs() == GetNumSpecializations() ) and not allSpecsIgnoredWarningGiven then -- Print warning and instructions on how to reset ignored specs... just in case -- TODO: use verbose setting for optional warnings/notices like this?
+	if ( TotalAP.Cache.GetNumIgnoredSpecs() == GetNumSpecializations() ) and not specIgnoredWarningGiven then -- Print warning and instructions on how to reset ignored specs... just in case -- TODO: use verbose setting for optional warnings/notices like this?
 	
 		TotalAP.ChatMsg(format(L["All specs are set to being ignored for this character. Type %s unignore to reset them if this is unintended."], "/" .. TotalAP.Controllers.GetSlashCommandAlias()))
 		allSpecsIgnoredWarningGiven = true -- TODO: Lame, but whatever
@@ -1110,9 +1096,12 @@ local function CreateSpecIcons()
 				return
 			 end
 			 
-			 TotalAP.ChatMsg(format(L["Ignoring spec %d for character %s"], i, key))
-			 TotalAP.ChatMsg(format(L["Type %s to reset all currently ignored specs for this character"], "/" .. TotalAP.Controllers.GetSlashCommandAlias() .. " unignore")) -- TODO: Only show this once?
-
+			 TotalAP.ChatMsg(format(L["Ignoring spec %d (%s) for character %s"], i, select(2, GetSpecializationInfo(GetSpecialization())), key))
+			if not specIgnoredWarningGiven then
+				TotalAP.ChatMsg(format(L["Type %s to reset all currently ignored specs for this character"], "/" .. TotalAP.Controllers.GetSlashCommandAlias() .. " unignore"))
+				specIgnoredWarningGiven = true
+			end
+			
 			 -- Specs might not have been initialised (if they haven't been switched to, ever)
 			if not cache[key][i] then cache[key][i] = { isIgnored = true }  -- TODO: InitialiseCache(specNo) function
 			else
@@ -1124,8 +1113,6 @@ local function CreateSpecIcons()
 		  end
 	   )
  
-		
-		
 		-- TODO: Ordering so that main spec (active) is first? Hmm. Maybe an option to consider only some specs / set a main spec?
 		
 	-- TODO: What for chars below lv10? They don't have any spec.	  	if spec then -- no spec => nil (below lv10 -> shouldn't matter, as no artifact weapon equipped means everything will be hidden regardless of the player's spec)
@@ -1153,9 +1140,10 @@ local function CreateSpecIcons()
 		--TotalAPSpecIconButtons[i]:Show();
 		
 		-- TODO: Should they be draggable? If so, background frame, highlights, icons? Which?
-		
-			-- Hide default button template's visual peculiarities - I wanted just want a spec icon that can be pushed (to change specs) and styled (via Masque)
-		
+
+		-- TODO: Movement function, similar to Tooltips -> and DRY issue! (maybe one "mover" frame would be in order, could be toggled via /ap lock/unlock?)
+
+		-- Hide default button template's visual peculiarities - I wanted just want a spec icon that can be pushed (to change specs) and styled (via Masque)
 		-- Remove ugly borders. Masque will yell if I do this, though .(
 		if not Masque then -- TODO: Some part of the border must still be there, as it glitches the spell overlay ? (ants texture perhaps?)
 			TotalAPSpecIconButtons[i].Border:Hide();
@@ -1194,8 +1182,7 @@ local function CreateInfoFrame()
 
 		-- Tooltip script handlers
 		TotalAPProgressBars[i]:SetScript("OnEnter", TotalAP.GUI.Tooltips.ShowArtifactKnowledgeTooltip)
-		--function(self, button) TotalAP.ChatMsg(self:GetName() .. " " .. button) end)
-		
+	
 		TotalAPProgressBars[i]:SetScript("OnLeave", TotalAP.GUI.Tooltips.HideArtifactKnowledgeTooltip)
 		
 	end
@@ -1269,9 +1256,6 @@ local function CreateInfoFrame()
 			TotalAPAnchorFrame:StopMovingOrSizing();
 			self.isMoving = false;
 		
-			-- Reset glow effect in case the button's size changed (will stick to the old size otherwise, which looks buggy), but only if it is displayed (or it will flash briefly before being deactivated during the UpdateActionButton phase)
-			FlashActionButton(TotalAPButton, false); 
-			UpdateEverything();
 			-- TODO: Updates should be done by event frame, not button... but alas
 		end)
 	
@@ -1382,14 +1366,7 @@ local function CreateAnchorFrame()
 		-- TotalAPButton:SetSize(settings.actionButtonSize, settings.actionButtonSize); 
 		TotalAPAnchorFrame:SetPoint("CENTER");
 		
-		-- TotalAPAnchorFrame:SetBackdrop(
-		-- {
-			-- bgFile = "Interface\\GLUES\\COMMON\\Glue-Tooltip-Background.blp",
-												-- -- edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
-												-- -- tile = true, tileSize = 16, edgeSize = 16, 
-												-- -- insets = { left = 4, right = 4, top = 4, bottom = 4 }
-		-- }
-	-- ); -- No one needs to see it. If they do -> debug command /ap anchor
+--		TotalAPAnchorFrame:SetBackdrop( { bgFile = "Interface\\GLUES\\COMMON\\Glue-Tooltip-Background.blp", edgeFile = "Interface/Tooltips/UI-Tooltip-Border",  tile = true, tileSize = 16, edgeSize = 16,  insets = { left = 4, right = 4, top = 4, bottom = 4 } } ); -- No one needs to see it. If they do -> debug  TODO: /ap anchor
 	
 	
 		--TotalAPAnchorFrame:SetBackdropBorderColor(0, 50, 150, 1); -- TODO: Not working?
@@ -1419,7 +1396,7 @@ local function CreateAnchorFrame()
 		end)
 		
 		TotalAPAnchorFrame:SetScript("OnDragStop", function(self) -- (to update the button skin and stop it from being moved after dragging has ended) -- TODO: OnDraagStop vs OnReceivedDrag?
-			
+
 			self:StopMovingOrSizing();
 			self.isMoving = false;
 		
@@ -1480,7 +1457,7 @@ local function CreateAnchorFrame()
 		end
 	end);
 end
-
+			
 	-- Register all relevant events required to update the button -> addon starts working from here on
 local function RegisterUpdateEvents()
 
@@ -1509,7 +1486,7 @@ GameTooltip:HookScript('OnTooltipSetItem', function(self)
 
 		tempItemID = GetItemInfoInstant(tempItemLink);
 		
-		if itemEffects[tempItemID] then -- Only display tooltip addition for AP tokens
+		if TotalAP.DB.GetItemEffectID(tempItemID) then -- Only display tooltip addition for AP tokens
 			
 			local artifactID, _, artifactName = C_ArtifactUI.GetEquippedArtifactInfo();
 			
@@ -1564,7 +1541,6 @@ function AceAddon:OnInitialize() -- Called on ADDON_LOADED
 	
 	LoadSettings();  -- from saved vars
 	CreateAnchorFrame(); -- anchor for all other frames -> needs to be loaded before PLAYER_LOGIN to have the game save its position and size -- TODO: move to GUI/AceGUI
-
 	CreateActionButton() -- Ditto, as its size is being saved by the client
 	
 	-- TODO: via AceGUI?
@@ -1590,7 +1566,7 @@ function AceAddon:OnEnable()	-- Called on PLAYER_LOGIN or ADDON_LOADED (if addon
 			CreateInfoFrame();
 			CreateSpecIcons(); 
 			
-			if settings.showLoginMessage then TotalAP.ChatMsg(format(L["%s %s for WOW %s loaded!"], addonName, addonVersion, clientVersion)); end
+			if settings.showLoginMessage then TotalAP.ChatMsg(format(L["%s %s for WOW %s loaded!"], addonName, TotalAP.Globals.addonVersion, clientVersion)); end
 			
 			TotalAP.Debug(format("Registering button update events", event));
 			RegisterUpdateEvents();

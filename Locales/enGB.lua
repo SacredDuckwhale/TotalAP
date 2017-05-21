@@ -68,6 +68,11 @@ L["Click to activate"] = true;
 L["Right-click to ignore this spec"] = true
 L["This artifact is currently equipped"] = true; -- This seems to be unused? Might as well delete it...
 
+L["Total Ranks Purchased"] = true
+L["% towards Rank %d"] = true
+L["Artifact Knowledge Level"] = true
+L["Shipments ready for pickup"] = true
+L["Next in: %s"] = true
 
 -- Keybind UI
 L["TotalAP - Artifact Power Tracker"] = true; -- Also used for Masque groups
@@ -79,6 +84,6 @@ L["Show/Hide Bar Display"] = true;
 L["Show/Hide Icons"] = true;
 
 -- One-time warnings and notices
-L["Ignoring spec %d for character %s"] = true
-L["Type %s unignore to reset all currently ignored specs for this character"] = true
+L["Ignoring spec %d (%s) for character %s"] = true
+L["Type %s to reset all currently ignored specs for this character"] = true
 L["All specs are set to being ignored for this character. Type %s unignore to reset them if this is unintended."] = true

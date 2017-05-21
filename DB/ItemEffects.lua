@@ -1,5 +1,5 @@
 --[[ List of artifact empowerment items and their spell IDs (currently 445 entries)
-Auto-generated on April 2, 2017, 8:43 pm ]]--
+Auto-generated on May 20, 2017, 4:46 pm ]]--
 
 local itemEffects = {
 	[130152] = 228957,
@@ -449,5 +449,11 @@ local itemEffects = {
 	[146671] = 227941,
  };
 
+local addonName, TotalAP = ...
+
+if not TotalAP then return end
+
 -- Populate DB with updated AP item spell effects
-TotalArtifactPowerDB["itemEffects"] = itemEffects;
+TotalAP.DB["itemEffects"] = itemEffects
+
+return TotalAP.DB["itemEffects"]

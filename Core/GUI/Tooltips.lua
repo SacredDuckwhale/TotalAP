@@ -14,8 +14,8 @@
 ----------------------------------------------------------------------------------------------------------------------
 
 
--- [[ Tooltips.lua ]]
--- Dynamic tooltip text functions that can be hooked to the appropriate events by the GUI controller
+--	[[ Tooltips.lua ]]
+--	Dynamic tooltip text functions that can be hooked to the appropriate events by the GUI controller
 
 local addonName, TotalAP = ...
 
@@ -23,30 +23,46 @@ if not TotalAP then return end
 
 local L = LibStub("AceLocale-3.0"):GetLocale("TotalAP", false)
 
+
 -- This is the mouseover-tooltip for progress bars, based on Blizzard's ForgeDisplay (icon to the top-left of the ArtifactFrame)
+-- TODO: Split into ProgressTooltip and ArtifactKnowledgeTooltip (once the AK bar is implemented)
 local function ArtifactKnowledgeTooltipFunction(self, button, hide)
---	TotalAP.ChatMsg(self:GetName())
-	local artifactName = "ARTIFACT_NAME"
-	local numRanksPurchased = 0
-	local knowledgeLevel = 0
-	--TotalArtifactPowerCache["Bearlin - Outland"][i]["numTraitsPurchased"]
+
+	local specID = tonumber((self:GetName()):match("(%d+)$")) -- Derive spec from frame's name, as they're numbered accordingly -> e.g., TotalAPProgressBar1 for spec = 1
+
+	local fqcn = TotalAP.Utils.GetFQCN() -- Fully-qualified character name -> e.g., "Cakechart - Outland". No parameter = use currently logged in character
 	
+	-- Retrieve this spec's artifact name from the DB
+	local _, _, classID = UnitClass("player"); -- 1 to 12
+	local itemID = TotalAP.DB.GetArtifactItemID(classID, specID) -- index 1 => Pick first (lowest item ID) match -> should be mainhand weapon (but probably doesn't matter, because MH + OH are created from just one item when equipped)
+	local artifactName = GetItemInfo(itemID)  --  since the spec has been cached the item name should be available already... otherweise, the first line won't show until the tooltip is displayed again and the server sent the item's name
+	--Note: This is NOT the individual weapon's name if it consists of mainhand / offhand, but the "general item"'s name that they turn into when not equipped (e.g., "Warswords of the Valarjar")
+	
+	-- Load cached values
+	local numTraitsPurchased = TotalAP.Cache.GetValue(fqcn, specID, "numTraitsPurchased")
+	local inBagsTotalAP = TotalAP.Globals.inBagsTotalAP
+	local maxAvailableAP = TotalAP.Cache.GetValue(fqcn, specID, "thisLevelUnspentAP") + inBagsTotalAP
+	local tier = TotalAP.Cache.GetValue(fqcn, specID, "artifactTier")
+	
+	-- Calculate progress from cached values
+	local maxAttainableRank = numTraitsPurchased + TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(numTraitsPurchased, maxAvailableAP, tier) 
+	local progressPercent = TotalAP.ArtifactInterface.GetProgressTowardsNextRank(numTraitsPurchased, maxAvailableAP, tier)
+	local knowledgeLevel = TotalAP.ArtifactInterface.GetArtifactKnowledgeLevel() 
+	
+	-- Calculate shipment data (for Artifact Research Notes)
 	local shipmentsReady = TotalAP.ArtifactInterface.GetNumAvailableResearchNotes()
-	local shipmentsTotal = 2 -- Could use the interface, but no more than 2 can actually be queued anyway
-	local timeLeftString = TotalAP.ArtifactInterface.GetTimeUntilNextResearchNoteIsReady()
-	--local name, timeLeftString, timeLeft, elapsedTime, shipmentsReady, shipmentsTotal, itemName = TotalAP.ArtifactInterface.GetResearchNotesShipmentInfo() 
-	
+	local shipmentsTotal = 2 -- Could use the same interface (maxShipments is returned by the API), but no more than 2 can actually be queued anyway... so, whatever
+	local timeLeft, timeLeftString = TotalAP.ArtifactInterface.GetTimeUntilNextResearchNoteIsReady()
+
 	  GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
-      -- GameTooltip:SetText("Specialization: " .. specName)
-      GameTooltip:AddLine(format("%s", artifactName), 230/255, 204/255, 128/255)
+      if artifactName then GameTooltip:AddLine(format("%s", artifactName), 230/255, 204/255, 128/255) end
       
-	  -- if AK not cached then don't display tooltip? Or display AK only / no progress for weapon
-      -- TODO: Locale table (format %s)
-      GameTooltip:AddLine("Total Ranks Purchased: " ..  numRanksPurchased, 1, 1, 1)
-      GameTooltip:AddLine("Progress: X% (towards rank X)") 
-      GameTooltip:AddLine("\nArtifact Knowledge Level: " .. knowledgeLevel, 1, 1, 1)
-      GameTooltip:AddLine("Queued: " .. shipmentsReady .. "/" .. shipmentsTotal)
-      GameTooltip:AddLine("Next: " .. timeLeftString)
+	  -- TODO: Split into two tooltips -> this => ProgressBarTooltip and AK Tooltip for separate research bar/indicator (not yet implemented)
+     if numTraitsPurchased > 0 then GameTooltip:AddLine(L["Total Ranks Purchased"] ..  ": " .. numTraitsPurchased, 1, 1, 1) end
+     if progressPercent > 0 and maxAttainableRank > numTraitsPurchased then GameTooltip:AddLine(format("%.2f%" .. L["% towards Rank %d"],  progressPercent, maxAttainableRank)) end
+      GameTooltip:AddLine("\n" .. L["Artifact Knowledge Level"] .. ": " .. knowledgeLevel, 1, 1, 1)
+      GameTooltip:AddLine(L["Shipments ready for pickup"] .. ": " .. shipmentsReady .. "/" .. shipmentsTotal)
+      if timeLeft then GameTooltip:AddLine(format(L["Next in: %s"],  timeLeftString)) end
 	
 	if hide then
 		GameTooltip:Hide()
@@ -67,7 +83,6 @@ local function HideArtifactKnowledgeTooltip(self, button)
 	ArtifactKnowledgeTooltipFunction(self, button, true)
 
 end
-
 
 
 -- Displayed on mouseover for the spec icons (used to activate/ignore specs)
@@ -103,7 +118,6 @@ local function SpecIconTooltipFunction(self, button, hide)
 	end
 	
 end
-
 
 local function ShowSpecIconTooltip(self, button)
 

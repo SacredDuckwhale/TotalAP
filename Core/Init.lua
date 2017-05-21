@@ -14,7 +14,6 @@
 ----------------------------------------------------------------------------------------------------------------------
 
 -- Init.lua
--- Build table structure for modules to rely on no matter when they are loaded or used
 -- Build table structure for modules to rely on
 
 local addonName, T = ...
@@ -22,13 +21,15 @@ local addonName, T = ...
 if not T then return end
 
 
--- TODO: DB\Init -> rename from global var TotalArtifactPowerDB and put this here (right now, both parts are separate but they could easily be combined)
 
-T.version = GetAddOnMetadata("TotalAP", "Version")
+-- Shared local variables (usually those used by logic AND display, or different modules)
+T.Globals = {} 
+T.Globals.addonVersion = GetAddOnMetadata("TotalAP", "Version")
 
 -- Core modules
 T.ArtifactInterface = {}
 T.Scanner = {}
+T.Cache = {}
 T.DBHandler = {} 
 
 -- Controllers & Input handling
@@ -36,14 +37,13 @@ T.Controllers = {}
 
 -- User Interface & Views
 T.GUI = {}
-T.GUI.frameCounter = 0 -- Used for automatically naming new frames if no specific name was provided, i.e., TotalAPAnonymousFrame<No> -> TotalAPAnonymousFrame1 (avoiding name clashes)
 
 -- Utility and helper functions
 T.Utils = {}
 
 
 -- Global functions (TODO: Move to separate file if there will be more?)
--- TODO: Custom colour codes (in Utils) -> not added yet
+-- TODO: Custom colour codes (in Utils) -> not implemented yet
 -- Print debug messages (if enabled)
 local function Debug(msg)
 	if TotalArtifactPowerSettings.debugMode then

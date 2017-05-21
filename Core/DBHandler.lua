@@ -1,4 +1,7 @@
-  ----------------------------------------------------------------------------------------------------------------------
+ --[[ TotalAP - Artifact Power tracking addon for World of Warcraft: Legion
+ 
+	-- LICENSE (short version):
+	
     -- This program is free software: you can redistribute it and/or modify
     -- it under the terms of the GNU General Public License as published by
     -- the Free Software Foundation, either version 3 of the License, or
@@ -11,14 +14,96 @@
 
     -- You should have received a copy of the GNU General Public License
     -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
-----------------------------------------------------------------------------------------------------------------------
+--]]
 
--- Core\DBHandler.lua
--- Interface for the addon's DB (SavedVars) -- TODO: Let AceDB handle this, and repurpose the DBHandler for the "actual" DB (itemEffects and such), also split into DBHandler and CacheHandler (in Core\Controllers?)
+
+-- [[ DB.lua ]]
+-- Interface for the addon's static database (= all files stored in the \DB\ folder)
+
+-- TODO: Let AceDB handle TotalArtifactPowerSettings (formerly handled by DBHandler, which is now DB.lua and acts as an interface for TotalAP.DB (formerly TotalArtifactsPowerDB)), and repurpose the DBHandler for the "actual" DB (itemEffects and such), also split into DBHandler and CacheHandler (in Core\Controllers?)
 
 local addonName, TotalAP = ...
 
 if not TotalAP then return end
+
+-- Returns a reference to the top-level DB object
+local function GetReference()
+
+	return TotalAP.DB
+	
+end
+
+
+---- Artifact weapons DB
+
+-- Returns a reference to the artifact weapons DB object
+local function GetArtifactWeapons()
+
+	local db = GetReference()
+	return db["artifacts"]
+
+end
+
+-- TODO Unused, for now?
+-- local function GetArtifactWeaponsForClass(classID)
+-- end
+
+-- Returns the item ID of the artifact weapon for the given class and spec
+local function GetArtifactItemID(classID, specID)
+
+	local db = GetArtifactWeapons()
+	
+	if not (classID and specID and db[classID] and db[classID][specID] and db[classID][specID]["itemID"]) then -- Invalid parameters
+	
+		TotalAP.Debug("Attempted to retrieve artifact weapon ID, but the class or spec IDs were invalid")
+		return false
+		
+	end
+
+	return db[classID][specID]["itemID"]
+	
+end	
+
+---- Artifact items (tokens) DB // TODO: Actually, itemEffectsDB would be a more fitting name... but it serves as DB for the items themselves
+
+-- Returns a reference to the item effects DB (spell effects)
+local function GetItemEffects()
+	
+	local db = GetReference()
+	return db["itemEffects"]
+	
+end
+
+-- Returns the item spell effect ID for a given itemID
+local function GetItemEffectID(itemID)
+
+	local itemEffects = GetItemEffects()
+	
+	if not (itemID and itemEffects[itemID]) then
+	
+		TotalAP.Debug("Attempted to retrieve item effect for an invalid itemID")
+		return false
+	end
+	
+	return itemEffects[itemID]
+
+end
+
+---- ULA items DB (TODO)
+
+
+
+-- Public methods
+TotalAP.DB.GetArtifactItemID = GetArtifactItemID
+TotalAP.DB.GetItemEffectID = GetItemEffectID
+
+-- Keep these private, unless they're needed elsewhere
+-- TotalAP.DB.GetReference = GetReference
+-- TotalAP.DB.GetArtifactWeapons = GetArtifactWeapons
+-- TotalAP.DB.
+-- TotalAP.DB.
+-- TotalAP.DB.
+
 
 -- SavedVars defaults (to check against, and load if corrupted/rendered invalid by version updates)
 -- TODO: Use AceDB for this
@@ -120,43 +205,7 @@ local function RestoreDefaults()
 	--settings = TotalArtifactPowerSettings;
 end
 
--- Returns the number of ignored specs for a given character (defaults to currently used character if none is given)
-local function GetNumIgnoredSpecs(fqCharName)
-	
-	--if not TotalArtifactPowerCache then return end -- in case this is called before the addon was fully loaded
-	
-	local characterName, realm, key
-	
-	if fqCharName then 
-		characterName, realm = fqCharName:match("(%.+)%s-%s(%.)+")
-	end
-	
-	if not characterName or not realm then -- Use currently active character
-		
-		characterName = UnitName("player")
-		realm = GetRealmName()
-		
-	end
-		 
-	key = format("%s - %s", characterName, realm)	 
-	--TotalAP.Debug("Counting ignored specs for character " .. key)
-	
-	local numIgnoredSpecs = 0
-	
-	for i = 1, GetNumSpecializations() do
-	
-		if TotalArtifactPowerCache[key] and TotalArtifactPowerCache[key][i] and TotalArtifactPowerCache[key][i]["isIgnored"] then
-			
-			--TotalAP.Debug("Spec " .. i .. " was found to be ignored")
-			numIgnoredSpecs = numIgnoredSpecs + 1
-			
-		end
-		
-	end
-	
-	return numIgnoredSpecs
-	
-end
+
 
 -- Removes all specs from the ignored specs list for a given character (defaults to currently used character if none is given)
 local function UnignoreAllSpecs(fqCharName)
@@ -193,7 +242,6 @@ end
 TotalAP.DBHandler.GetDB = GetDB
 TotalAP.DBHandler.RestoreDefaults = RestoreDefaults
 TotalAP.DBHandler.GetDefaults = GetDefaults
-TotalAP.DBHandler.GetNumIgnoredSpecs = GetNumIgnoredSpecs
 TotalAP.DBHandler.UnignoreAllSpecs = UnignoreAllSpecs
 
 return TotalAP.DBHandler
