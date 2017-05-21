@@ -689,7 +689,7 @@ local function UpdateInfoFrame()
 	local reservedButtonWidth = 0;
 	if settings.actionButton.enabled then -- TODO: DRY / GUI -> GetReservedButtonWidth (only for DefaultView?)
 		if TotalAPButton:GetWidth() > TotalAPButtonFontString:GetWidth() then -- Use button width
-			reservedButtonWidth = TotalAPButton:GetWidth()
+			reservedButtonWidth = TotalAPButton:GetWidth() + 5
 		else -- Use button width + size of the right part of the buttonText's display
 			reservedButtonWidth = TotalAPButton:GetWidth() + (TotalAPButtonFontString:GetWidth() - TotalAPButton:GetWidth()) / 2  + 5  -- TODO: 5 = spacing? (settings)
 		end
@@ -963,6 +963,13 @@ end
 
 -- Update anchor frame -> Decide whether to hide or show it, mainly, based on general criteria that doesn't affect the other components
 local function UpdateAnchorFrame()
+	
+	-- Set size according to the individual display's width, so that it moving them around doesn't leave any space to the sides, but also doesn't allow them to be moved off-screen
+	if TotalAPButton and TotalAPInfoFrame and TotalAPSpecIconsBackgroundFrame then -- Addon is loaded (will always be the case when the player attempts to move them; before that, the anchor size doesn't matter as it serves only to prevent them from dragging the displays off-screen)
+		TotalAPAnchorFrame:SetSize(TotalAPButton:GetWidth() + 5 + TotalAPInfoFrame:GetWidth() + 5 + TotalAPSpecIconsBackgroundFrame:GetWidth() + 5 + 25, 15) -- Doesn't really matter unless there is an option to show and move it manually. ...There isn't any right now.
+	end
+	
+-- TODO: spacing from view/settings, 25 is an educated guess as the exact size depends on the spec icons (and there could be a specIconBackground also, depending on the view -> use that)
 	
 		if UnitLevel("player") < 98 then 
 			TotalAP.Debug("Hiding display because character level is too low for Legion content (and artifact weapons)");
