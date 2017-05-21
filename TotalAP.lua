@@ -1023,7 +1023,8 @@ local function CreateSpecIcons()
 	-- Create background for the spec icons and their active/inactive highlight frames
 	TotalAPSpecIconsBackgroundFrame = CreateFrame("Frame", "TotalAPSpecIconsBackgroundFrame", TotalAPAnchorFrame);
 	--TotalAPSpecIconsBackgroundFrame:SetClampedToScreen(true);
-	TotalAPSpecIconsBackgroundFrame:SetFrameStrata("BACKGROUND");
+	TotalAPSpecIconsBackgroundFrame:SetFrameStrata("BACKGROUND")
+	TotalAPSpecIconsBackgroundFrame:SetClampedToScreen(true)
 	TotalAPSpecIconsBackgroundFrame:SetBackdrop(
 		{
 			bgFile = "Interface\\CHATFRAME\\CHATFRAMEBACKGROUND.BLP", 
@@ -1177,7 +1178,7 @@ local function CreateInfoFrame()
 	-- Create anchored container frame for the bar display
 	TotalAPInfoFrame = CreateFrame("Frame", "TotalAPInfoFrame", TotalAPAnchorFrame);
 	--TotalAPInfoFrame:SetFrameStrata("BACKGROUND");
---	TotalAPInfoFrame:SetClampedToScreen(true);
+	TotalAPInfoFrame:SetClampedToScreen(true);
 
 	-- Create progress bars for all available specs
 	local numSpecs = GetNumSpecializations(); 
@@ -1336,7 +1337,7 @@ local function CreateActionButton()
 		end)
 		
 		TotalAPButton:SetScript("OnDragStop", function(self) -- (to update the button skin and stop it from being moved after dragging has ended) -- TODO: OnDraagStop vs OnReceivedDrag?
-			
+
 			self:StopMovingOrSizing();
 			TotalAPAnchorFrame:StopMovingOrSizing();
 			self.isMoving = false;
@@ -1362,7 +1363,7 @@ local function CreateAnchorFrame()
 	
 		TotalAPAnchorFrame = CreateFrame("Frame", "TotalAPAnchorFrame", UIParent);
 		TotalAPAnchorFrame:SetFrameStrata("BACKGROUND");
-		--TotalAPAnchorFrame:SetClampedToScreen(true);
+		TotalAPAnchorFrame:SetClampedToScreen(true);
 		
 		-- TotalAPButton:SetSize(settings.actionButtonSize, settings.actionButtonSize); 
 		TotalAPAnchorFrame:SetPoint("CENTER");
@@ -1397,7 +1398,7 @@ local function CreateAnchorFrame()
 		end)
 		
 		TotalAPAnchorFrame:SetScript("OnDragStop", function(self) -- (to update the button skin and stop it from being moved after dragging has ended) -- TODO: OnDraagStop vs OnReceivedDrag?
-
+			
 			self:StopMovingOrSizing();
 			self.isMoving = false;
 		
@@ -1458,7 +1459,7 @@ local function CreateAnchorFrame()
 		end
 	end);
 end
-			
+
 	-- Register all relevant events required to update the button -> addon starts working from here on
 local function RegisterUpdateEvents()
 
