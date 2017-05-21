@@ -1,3 +1,8 @@
+local L;
+
+L = LibStub("AceLocale-3.0"):NewLocale("TotalAP", "deDE")
+
+
 L = L or {}
 L["%d new traits available - Use AP now to level up!"] = "%d neue Boni verfügbar – Verwende deine Artefaktmacht!"
 L["%s %s for WOW %s loaded!"] = "%s %s für WOW %s geladen!"
@@ -11,6 +16,8 @@ L["Action button text disabled."] = "Aktionsbuttontext deaktiviert."
 L["Action button text enabled."] = "Aktionsbuttontext aktiviert."
 L["All displays are now being hidden."] = "Alle Anzeigen sind nun versteckt."
 L["All displays are now being shown."] = "Alle Anzeigen werden jetzt angezeigt."
+--Translation missing 
+L["All specs are set to being ignored for this character. Type %s unignore to reset them if this is unintended."] = "All specs are set to being ignored for this character. Type %s unignore to reset them if this is unintended."
 L["Bar display is now hidden."] = "Leistenanzeige wird jetzt versteckt."
 L["Bar display is now shown."] = "Leistenanzeige wird jetzt gezeigt."
 L["Button glow effect disabled."] = "Button-Leuchteffekt deaktiviert."
@@ -23,6 +30,8 @@ L["Display will now be hidden in combat."] = "Anzeige wird im Kampf versteckt we
 L["Display will now remain visible in combat."] = "Anzeige wird im Kampf sichtbar bleiben."
 L["Icons are now hidden."] = "Symbole werden jetzt versteckt."
 L["Icons are now shown."] = "Symbole werden jetzt gezeigt."
+--Translation missing 
+L["Ignoring spec %d for character %s"] = "Ignoring spec %d for character %s"
 L["Item counter disabled."] = "Gegenstandszähler deaktiviert."
 L["Item counter enabled."] = "Gegenstandszähler aktiviert."
 L["Load default settings (will overwrite any changes made)"] = "Standardeinstellungen laden (Dies wird alle Änderungen verwerfen)"
@@ -32,6 +41,9 @@ L["New trait available - Use AP now to level up!"] = "Neuer Bonus verfügbar –
 L["Progress report disabled."] = "Fortschrittsbericht deaktiviert."
 L["Progress report enabled."] = "Fortschrittsbericht aktiviert."
 L["Progress towards next trait: %d%%"] = "Fortschritt bezüglich des nächsten Bonus: %d%%"
+--Translation missing 
+L["Resets ignored specs for the currently active character"] = "Resets ignored specs for the currently active character"
+L["Right-click to ignore this spec"] = "Rechtsklick, um diese Spezialisierung zu ignorieren"
 L["Settings couldn't be verified... Default values have been loaded."] = "Die Einstellungen sind fehlerhaft... Standardwerte wurden geladen."
 L["Show/Hide All Displays"] = "Alle Anzeigen zeigen/verstecken"
 L["Show/Hide Bar Display"] = "Leistenanzeige zeigen/verstecken"
@@ -59,5 +71,7 @@ L["Toggle visibility in combat"] = "Schaltet die Sichtbarkeit im Kampf ein/aus"
 L["Tooltip display is now hidden."] = "Tooltipanzeige wird jetzt versteckt."
 L["Tooltip display is now shown."] = "Tooltipanzeige wird jetzt gezeigt."
 L["TotalAP - Artifact Power Tracker"] = "TotalAP – Artefaktmachtverfolgung"
+--Translation missing 
+L["Type %s to reset all currently ignored specs for this character"] = "Type %s to reset all currently ignored specs for this character"
 L["Use Next AP Token"] = [=[Nächsten AM-Ggst. verw.
 ]=]

@@ -66,12 +66,12 @@ L["Specialization: %s"] = true;
 L["This spec is currently active"] = true;
 L["Click to activate"] = true;
 L["Right-click to ignore this spec"] = true
-L["This artifact is currently equipped"] = true; -- This seems to be unused? Might as well delete it...
+--L["This artifact is currently equipped"] = true; -- This seems to be unused? Might as well delete it...
 
-L["Total Ranks Purchased"] = true
-L["% towards Rank %d"] = true
-L["Artifact Knowledge Level"] = true
-L["Shipments ready for pickup"] = true
+L["Total Ranks Purchased: %d"] = true
+L["%.2f%% towards Rank %d"] = true
+L["Artifact Knowledge Level: %d"] = true
+L["Shipments ready for pickup: %d/%d"] = true
 L["Next in: %s"] = true
 
 -- Keybind UI
@@ -86,4 +86,4 @@ L["Show/Hide Icons"] = true;
 -- One-time warnings and notices
 L["Ignoring spec %d (%s) for character %s"] = true
 L["Type %s to reset all currently ignored specs for this character"] = true
-L["All specs are set to being ignored for this character. Type %s unignore to reset them if this is unintended."] = true
+L["All specs are set to being ignored for this character. Type %s to reset them if this is unintended."] = true

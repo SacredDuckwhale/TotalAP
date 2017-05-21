@@ -1020,7 +1020,7 @@ local function UpdateEverything()
 	
 	if ( TotalAP.Cache.GetNumIgnoredSpecs() == GetNumSpecializations() ) and not specIgnoredWarningGiven then -- Print warning and instructions on how to reset ignored specs... just in case -- TODO: use verbose setting for optional warnings/notices like this?
 	
-		TotalAP.ChatMsg(format(L["All specs are set to being ignored for this character. Type %s unignore to reset them if this is unintended."], "/" .. TotalAP.Controllers.GetSlashCommandAlias()))
+		TotalAP.ChatMsg(format(L["All specs are set to being ignored for this character. Type %s to reset them if this is unintended."], "/" .. TotalAP.Controllers.GetSlashCommandAlias() .. " unignore"))
 		specIgnoredWarningGiven = true -- TODO: Lame, but whatever
 	
 	end

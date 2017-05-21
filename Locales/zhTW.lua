@@ -1,4 +1,7 @@
-L = LibStub("AceLocale-3.0"):NewLocale("TotalAP", "zhTW"); 
+local L;
+
+L = LibStub("AceLocale-3.0"):NewLocale("TotalAP", "zhTW")
+
 
 L = L or {}
 L["%d new traits available - Use AP now to level up!"] = "可以解鎖 %d 項新特長 - 現在就使用神兵之力來升級!"

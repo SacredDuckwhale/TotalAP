@@ -55,14 +55,26 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 	local timeLeft, timeLeftString = TotalAP.ArtifactInterface.GetTimeUntilNextResearchNoteIsReady()
 
 	  GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
-      if artifactName then GameTooltip:AddLine(format("%s", artifactName), 230/255, 204/255, 128/255) end
+	  
+    if artifactName then
+		GameTooltip:AddLine(format("%s", artifactName), 230/255, 204/255, 128/255)
+	end
       
 	  -- TODO: Split into two tooltips -> this => ProgressBarTooltip and AK Tooltip for separate research bar/indicator (not yet implemented)
-     if numTraitsPurchased > 0 then GameTooltip:AddLine(L["Total Ranks Purchased"] ..  ": " .. numTraitsPurchased, 1, 1, 1) end
-     if progressPercent > 0 and maxAttainableRank > numTraitsPurchased then GameTooltip:AddLine(format("%.2f%" .. L["% towards Rank %d"],  progressPercent, maxAttainableRank)) end
-      GameTooltip:AddLine("\n" .. L["Artifact Knowledge Level"] .. ": " .. knowledgeLevel, 1, 1, 1)
-      GameTooltip:AddLine(L["Shipments ready for pickup"] .. ": " .. shipmentsReady .. "/" .. shipmentsTotal)
-      if timeLeft then GameTooltip:AddLine(format(L["Next in: %s"],  timeLeftString)) end
+    if numTraitsPurchased > 0 then
+		GameTooltip:AddLine(format(L["Total Ranks Purchased: %d"],  numTraitsPurchased), 1, 1, 1)
+	end
+	
+     if progressPercent > 0 and maxAttainableRank > numTraitsPurchased then
+		GameTooltip:AddLine(format(L["%.2f%% towards Rank %d"],  progressPercent, maxAttainableRank))
+	end
+     
+	 GameTooltip:AddLine("\n" .. format(L["Artifact Knowledge Level: %d"], knowledgeLevel), 1, 1, 1)
+     GameTooltip:AddLine(format(L["Shipments ready for pickup: %d/%d"], shipmentsReady, shipmentsTotal))
+	
+	if timeLeft and timeLeftString then
+		GameTooltip:AddLine(format(L["Next in: %s"],  timeLeftString))
+	end
 	
 	if hide then
 		GameTooltip:Hide()
