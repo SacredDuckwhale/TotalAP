@@ -828,12 +828,12 @@ local function UpdateInfoFrame()
 			local maxAttainableRank =  v["numTraitsPurchased"] + TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(v["numTraitsPurchased"],  v["thisLevelUnspentAP"] + inBagsTotalAP,  v["artifactTier"]) 
 			local progressPercent = TotalAP.ArtifactInterface.GetProgressTowardsNextRank(v["numTraitsPurchased"] , v["thisLevelUnspentAP"] + inBagsTotalAP, v["artifactTier"])
 
+			if not TotalAPMiniBars[k].texture then -- Create texture object
+				TotalAPMiniBars[k].texture = TotalAPMiniBars[k]:CreateTexture();
+			end
+			
 			if maxAttainableRank > v["numTraitsPurchased"] and progressPercent > 0 then -- Display secondary bar
-	
-				if not TotalAPMiniBars[k].texture then -- Create texture object
-					TotalAPMiniBars[k].texture = TotalAPMiniBars[k]:CreateTexture();
-				end
-				
+
 				TotalAPMiniBars[k]:SetSize(progressPercent, 2) -- TODO: options....
 				TotalAPMiniBars[k]:ClearAllPoints()
 				TotalAPMiniBars[k]:SetPoint("BOTTOMLEFT", TotalAPProgressBars[k], "BOTTOMLEFT", 0, -1)
