@@ -46,7 +46,7 @@ local foundKnowledgeTome -- buttonText (TODO -> workaround for display inconsist
 local numTraitsFontString, specIconFontStrings = nil, {}; -- Used for the InfoFrame
 
 -- One-time checks (per login... not stored otherwise)
-local allSpecsIgnoredWarningGiven = false 
+local specIgnoredWarningGiven = false 
 
 local artifactProgressCache = {} -- Used to calculate offspec artifact progress
 
@@ -986,7 +986,7 @@ local function UpdateEverything()
 	if ( TotalAP.Cache.GetNumIgnoredSpecs() == GetNumSpecializations() ) and not specIgnoredWarningGiven then -- Print warning and instructions on how to reset ignored specs... just in case -- TODO: use verbose setting for optional warnings/notices like this?
 	
 		TotalAP.ChatMsg(format(L["All specs are set to being ignored for this character. Type %s unignore to reset them if this is unintended."], "/" .. TotalAP.Controllers.GetSlashCommandAlias()))
-		allSpecsIgnoredWarningGiven = true -- TODO: Lame, but whatever
+		specIgnoredWarningGiven = true -- TODO: Lame, but whatever
 	
 	end
 	
