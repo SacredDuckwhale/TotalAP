@@ -823,7 +823,35 @@ local function UpdateInfoFrame()
 			TotalAPInBagsBars[k]:ClearAllPoints();
 			TotalAPInBagsBars[k]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPLEFT", 1 + inset + TotalAPUnspentBars[k]:GetWidth(), - ( (2 * displayOrder[k] - 1)  * inset + displayOrder[k] * border + (displayOrder[k] - 1) * settings.infoFrame.barHeight))
 
-			-- If artifact is maxed, replace overlay bars with a white one to indicate that fact
+
+			-- Display secondary bar on top of the actual progress bar to indicate progress when multiple ranks are available
+			local maxAttainableRank =  v["numTraitsPurchased"] + TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(v["numTraitsPurchased"],  v["thisLevelUnspentAP"] + inBagsTotalAP,  v["artifactTier"]) 
+			local progressPercent = TotalAP.ArtifactInterface.GetProgressTowardsNextRank(v["numTraitsPurchased"] , v["thisLevelUnspentAP"] + inBagsTotalAP, v["artifactTier"])
+
+			if maxAttainableRank > v["numTraitsPurchased"] and progressPercent > 0 then -- Display secondary bar
+	
+				if not TotalAPMiniBars[k].texture then -- Create texture object
+					TotalAPMiniBars[k].texture = TotalAPMiniBars[k]:CreateTexture();
+				end
+				
+				TotalAPMiniBars[k]:SetSize(progressPercent, 2) -- TODO: options....
+				TotalAPMiniBars[k]:ClearAllPoints()
+				TotalAPMiniBars[k]:SetPoint("BOTTOMLEFT", TotalAPProgressBars[k], "BOTTOMLEFT", 0, -1)
+				TotalAPMiniBars[k]:SetFrameStrata("HIGH")
+				TotalAPMiniBars[k].texture:SetAllPoints(TotalAPMiniBars[k]);
+				TotalAPMiniBars[k].texture:SetTexture(barTexture);
+			--	TotalAPMiniBars[k].texture:SetVertexColor(1.0, 0.5, 0.25, 1);  -- TODO: colors variable (settings -> color picker)
+				TotalAPMiniBars[k].texture:SetVertexColor(239/255, 229/255, 176/255, 1)
+				TotalAPMiniBars[k]:Show()
+				
+			else -- Hide bar
+				
+				TotalAPMiniBars[k].texture:SetVertexColor(0, 0, 0, 0); -- Hide vertexes to avoid graphics glitch
+				TotalAPMiniBars[k]:Hide()
+			
+			end
+			
+			-- If artifact is maxed, replace overlay bars with a white one to indicate that fact: TODO: Obsolete in 7.2 -> repurpose as AK Bar
 			if v["numTraitsPurchased"] >= maxArtifactTraits then
 				TotalAPUnspentBars[k]:SetSize(100, settings.infoFrame.barHeight); -- maximize bar to take up all the available space
 				TotalAPUnspentBars[k].texture:SetVertexColor(239/255, 229/255, 176/255, 1); -- turns it white; TODO: settings.infoFrame.progressBar.maxRed etc to allow setting a custom colour for maxed artifacts (later on)
@@ -1182,7 +1210,7 @@ local function CreateInfoFrame()
 
 	-- Create progress bars for all available specs
 	local numSpecs = GetNumSpecializations(); 
-	TotalAPProgressBars, TotalAPUnspentBars, TotalAPInBagsBars = {}, {}, {};
+	TotalAPProgressBars, TotalAPUnspentBars, TotalAPInBagsBars, TotalAPMiniBars = {}, {}, {}, {}
 	for i = 1, numSpecs do -- Create bar frames
 	
 		-- Empty bar texture
@@ -1193,6 +1221,9 @@ local function CreateInfoFrame()
 		-- AP in bags 
 		TotalAPInBagsBars[i] = CreateFrame("Frame", "TotalAPInBagsBar" .. i, TotalAPProgressBars[i]);
 
+		-- Secondary progress bars 
+		TotalAPMiniBars[i] = CreateFrame("Frame", "TotalAPMiniBar" .. i, TotalAPProgressBars[i])
+		
 		-- Tooltip script handlers
 		TotalAPProgressBars[i]:SetScript("OnEnter", TotalAP.GUI.Tooltips.ShowArtifactKnowledgeTooltip)
 	
@@ -1383,7 +1414,7 @@ local function CreateAnchorFrame()
 		
 		if self:IsMovable() and IsAltKeyDown() then self:StartMoving(); -- Alt -> Move button
 		elseif self:IsResizable() and IsShiftKeyDown() then self:StartSizing(); end -- Shift -> Resize button
-
+			
 		self.isMoving = true;
 	
 		end);
