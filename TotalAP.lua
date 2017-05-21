@@ -451,7 +451,7 @@ local function UpdateSpecIcons()
 	local reservedButtonWidth = 0;
 	 if settings.actionButton.enabled then	 -- No longer reposition displays to the left unless button is actually disabled entirely, since the button can be hidden temporarily without being set to invisible (if no items are in the player's inventory/the active spec is set to being ignored)
 			if TotalAPButton:GetWidth() > TotalAPButtonFontString:GetWidth() then -- Use actual button width
-			reservedButtonWidth = TotalAPButton:GetWidth()
+			reservedButtonWidth = TotalAPButton:GetWidth() + 5
 		else -- Use button width + size of the right part of the buttonText's display (this is the only part that overlaps with the infoFrame otherwise)
 			reservedButtonWidth = TotalAPButton:GetWidth() + (TotalAPButtonFontString:GetWidth() - TotalAPButton:GetWidth()) / 2  + 5  -- TODO: 5 = spacing? (settings)
 		end	
