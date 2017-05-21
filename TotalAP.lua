@@ -1054,8 +1054,17 @@ local function CreateSpecIcons()
 		
 		specIconFontStrings[i] = TotalAPSpecIconButtons[i]:CreateFontString("TotalAPSpecIconFontString" .. i, "OVERLAY", "GameFontNormal"); -- TODO: What frame as parent? There isn't really one other than the respective icon?
 		
+		-- TODO: Button script handlers in separate file
+		
 		TotalAPSpecIconButtons[i]:SetScript("OnClick", function(self, button) -- When clicked, change spec accordingly to the button's icon
 
+			if self.isMoving then -- Stop moving, but ignore this click
+				self.isMoving = false
+				TotalAPAnchorFrame:StopMovingOrSizing()
+				return -- Don't activate spec while moving is enabled (technically, the InfoFrame is being moved, so the specIcon should not be clicked)
+			end
+			
+			
 			-- Hide border etc again (for some reason it will show if a button is clicked, until the next update that disables them). Masque obviously doesn't like this at all.
 			if not Masque then TotalAPSpecIconButtons[i]:SetNormalTexture(nil); end
 		
@@ -1072,16 +1081,26 @@ local function CreateSpecIcons()
 				SetSpecialization(i);
 			end
 	end);
-		
+	
+		TotalAPSpecIconButtons[i]:SetScript("OnMouseDown", function(self, button) 
+
+			if IsAltKeyDown() then -- ALT-left-clicking toggles dragging of the entire display
+				self.isMoving = true
+				TotalAPAnchorFrame:StartMoving() 
+			end
+			
+			return -- don't activate specs or ignore them
+
+		end)
+	
+	
 		TotalAPSpecIconButtons[i]:SetScript("OnEnter", TotalAP.GUI.Tooltips.ShowSpecIconTooltip)
-		
 		TotalAPSpecIconButtons[i]:SetScript("OnLeave", TotalAP.GUI.Tooltips.HideSpecIconTooltip)
 		
-		-- TODO: Button script handlers in separate file
-	   TotalAPSpecIconButtons[i]:SetScript("OnMouseUp", function(self, button) -- right clicked ->
+
+	   TotalAPSpecIconButtons[i]:SetScript("OnMouseUp", function(self, button)
 			
-			--print("Clicked SpecIcon button " .. i .. " with " .. button)
-			 if button ~= "RightButton" then return end
+			 if button ~= "RightButton"  then return end
 
 			 -- Add spec to ignored specs (actually, it is flagged as "ignored" for the current character only)
 			 local characterName = UnitName("player")
@@ -1124,20 +1143,6 @@ local function CreateSpecIcons()
 		TotalAPSpecIconButtons[i].icon:SetTexture(specIcon);
 		TotalAP.Debug(format("Setting specIcon texture for spec %d (%s): |T%s:%d|t", i, specIcon,  specIcon, settings.specIconSize));
 		
-		-- register, enable etc TODO
-
-		-- TODO: Only show buttons, enable click features etc. for specs that actually exist
-		-- TODO: Align properly, 2-3-4 specs = center vertically
-
-		
-		--TotalAPSpecIconButtons[i]:SetFrameStrata("MEDIUM");
-		--TotalAPSpecIconButtons[i]:SetClampedToScreen(true);
-	
-		--TotalAPSpecIconButtons[i]:ClearAllPoints();
-	--	TotalAPSpecIconButtons[i]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPRIGHT", 5, 0 - (i-1) * (settings.specIconSize + 2)); -- TODO: consider settings.specIconSize to calculate position and spacing dynamically, also depnding on number of specs to center them vertically: size*numspecs = totalSize; infoframeSize
-		--TotalAP.Debug(format("specIconButton %d -> SetPoint to %d, %d", i, 5, 0 - (i-1) * (settings.specIconSize + 2)));
-		
-		--TotalAPSpecIconButtons[i]:Show();
 		
 		-- TODO: Should they be draggable? If so, background frame, highlights, icons? Which?
 
@@ -1185,6 +1190,27 @@ local function CreateInfoFrame()
 	
 		TotalAPProgressBars[i]:SetScript("OnLeave", TotalAP.GUI.Tooltips.HideArtifactKnowledgeTooltip)
 		
+		-- Dragging script handlers
+
+		-- TODO: Move this elsewhere
+		local function StartDragging(self, button)
+		
+			if IsAltKeyDown() then -- ALT-left-clicking toggles dragging of the entire display
+				self.isMoving = true
+				TotalAPAnchorFrame:StartMoving() 
+			end
+			
+		end
+			
+		
+		local function StopDragging(self, button)
+			self.isMoving = false
+			TotalAPAnchorFrame:StopMovingOrSizing()
+		end
+		
+		TotalAPProgressBars[i]:SetScript("OnMouseDown", StartDragging)
+		TotalAPProgressBars[i]:SetScript("OnMouseUp", StopDragging) -- TODO: Proper handler functions. Could also toggle AP level as separate text on the progress bars
+		
 	end
 	
 	TotalAPInfoFrame:SetBackdrop(
@@ -1202,53 +1228,21 @@ local function CreateInfoFrame()
 	TotalAPInfoFrame:SetBackdropBorderColor(255, 255, 255, 1); -- TODO: Not working?
 	
 	-- Enable mouse interaction: ALT+RightClick = Drag and change position
-	TotalAPInfoFrame:EnableMouse(true);
-	TotalAPInfoFrame:SetMovable(true);
-	TotalAPInfoFrame:RegisterForDrag("LeftButton"); -- TODO: Remove this, if it is anchored to the button?
-	
-	-- TotalAPInfoFrame:SetScript("OnDragStart", function(self)
-		
-		-- TotalAP.Debug("TotalAPInfoFrame is being dragged")
-		
-		-- if self:IsMovable()
-			-- then
-				-- self:StartMoving();
-				-- self.isMoving = true;
-			-- end
-	-- end);
-	
-	-- TotalAPInfoFrame:SetScript("OnUpdate", function(self)
-		-- if self.IsMoving then
-		--	self.texture:SetAllPoints(self);
-			-- UpdateInfoFrame(); -- to make sure the info is placed correctly at all times
-		-- end
-	-- end);
-	
-	-- TotalAPInfoFrame:SetScript("OnDragStop", function(self)
-		
-		-- self:StopMovingOrSizing();
-		-- local point, relPoint, x, y = self:GetPoint();
-		-- TotalAP.Debug(format("TotalAPInfoFrame received drag with coords %s %d %d", point, x, y));
-		-- self.isMoving = false;
-		-- UpdateInfoFrame(); -- TODO: For testing purposes only--self:Hide();
+	TotalAPInfoFrame:EnableMouse(true)
+	TotalAPInfoFrame:SetMovable(true)
+	TotalAPInfoFrame:RegisterForDrag("LeftButton")  -- Allow frame to be dragged (also by specIcons/scripts)
 
-	-- end);
-	-- TODO: Duplicate code for dragging the three main frames?
-				TotalAPInfoFrame:SetScript("OnDragStart", function(self) -- (to allow dragging the button, and also to resize it)
-		
-		if self:IsMovable() and IsAltKeyDown() then TotalAPAnchorFrame:StartMoving(); -- Alt -> Move button
-		elseif self:IsResizable() and IsShiftKeyDown() then self:StartSizing(); end -- Shift -> Resize button
-			
-		self.isMoving = true;
 	
-		end);
+		TotalAPInfoFrame:SetScript("OnDragStart", function(self) -- (to allow dragging the button, and also to resize it)
 		
-		TotalAPInfoFrame:SetScript("OnUpdate", function(self) -- (to update the button skin and proportions while being resized)
-			
-			if self.isMoving then
-				UpdateEverything();
+			if self:IsMovable() and IsAltKeyDown() then -- Move InfoFrame
+				
+				TotalAPAnchorFrame:StartMoving()
+				self.isMoving = true
+				
 			end
-		end)
+		
+		end);
 		
 		TotalAPInfoFrame:SetScript("OnDragStop", function(self) -- (to update the button skin and stop it from being moved after dragging has ended) -- TODO: OnDraagStop vs OnReceivedDrag?
 			
