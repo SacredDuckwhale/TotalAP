@@ -360,7 +360,7 @@ local numSpecs = GetNumSpecializations();
 				["thisLevelUnspentAP"] =  select(5, aUI.GetEquippedArtifactInfo()) or 0, 
 				["numTraitsPurchased"] = select(6, aUI.GetEquippedArtifactInfo()) or 0, -- 0 -> artifact UI not loaded yet? TODO (first login = lua error, but couldn't reproduce)
 				["artifactTier"] = select(13, aUI.GetEquippedArtifactInfo()) or 2, --  Assume 2 (for 7.2) as a default until it is cached next, if it hasn't been cached before, as most people are going to have the empowered traits unlocked ASAP
-				["isIgnored"] = TotalArtifactPowerCache[key][i]["isIgnored"] or false, -- All specs are enabled by default (until they're disabled manually)
+				["isIgnored"] = (TotalArtifactPowerCache[key] and TotalArtifactPowerCache[key][i] and TotalArtifactPowerCache[key][i]["isIgnored"] or false), -- All specs are enabled by default (until they're disabled manually)
 			};
 			
 			TotalAP.Debug(format("Updated artifactProgressCache for spec %d: %s traits purchased - %s unspent AP already applied - artifact tier = %d", i, artifactProgressCache[i]["numTraitsPurchased"], artifactProgressCache[i]["thisLevelUnspentAP"], artifactProgressCache[i]["artifactTier"]));
