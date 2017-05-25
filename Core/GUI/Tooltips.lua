@@ -98,19 +98,16 @@ end
 
 
 -- Displayed on mouseover for the spec icons (used to activate/ignore specs)
-local function SpecIconTooltipFunction(self, button, hide)
+local function SpecIconTooltipFunction(self, button, hide)  
 	
-	local specNo = (self:GetName()):match("(%d)$") -- e.g., TotalAPSpecIconButton1 for spec = 1
+	local specID = tonumber((self:GetName()):match("(%d)$")) -- e.g., TotalAPSpecIconButton1 for spec = 1
 	
-	 -- On mouseover, show message that spec can be changed by clicking (unless it's the currently active spec)
+	GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
 	
-	-- Show tooltip "Click to change spec" or sth. TODO
-	GameTooltip:SetOwner(self, "ANCHOR_CURSOR");
+	local _, specName = GetSpecializationInfo(specID)
+	GameTooltip:SetText(format(L["Specialization: %s"], specName), nil, nil, nil, nil, true)
 	
-	local _, specName = GetSpecializationInfo(specNo);
-	GameTooltip:SetText(format(L["Specialization: %s"], specName), nil, nil, nil, nil, true);
-	
-	if i == GetSpecialization() then 
+	if specID == GetSpecialization() then 
 		GameTooltip:AddLine(L["This spec is currently active"], 0/255, 255/255, 0/255);
 	else
 		GameTooltip:AddLine(L["Click to activate"],  0/255, 255/255, 0/255);
