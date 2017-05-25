@@ -13,8 +13,8 @@
     -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------------------------------------------------
 
--- GUI\Views.lua
--- Handling of display templates (views) that will be used by the GUI controller to show/hide frames as required
+-- GUI\Views\TabbedView.lua
+-- Display template (test)
 
 
 local addonName, TotalAP = ...
@@ -81,7 +81,7 @@ TabbedView.CreateNew = CreateNew
 
 
 -- Make class available in the addon namespace
-TotalAP.GUI.TabbedView
+TotalAP.GUI.TabbedView = TabbedView
 
 
 return TabbedView

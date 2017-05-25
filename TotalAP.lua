@@ -1040,6 +1040,134 @@ local function UpdateEverything()
 		UpdateInfoFrame();
 		UpdateSpecIcons();
 
+	-- Temporary (while testing)
+
+	-- If one note is available, lack of indicator (shows time for 2nd -> maybe text in label that indicates 1/2? -> flash anim)
+
+	if false then -- TODO: Not yet ready -> Disabled until it is done properly... (This is just a first "proof of concept" test :P)
+			local sliderBackground = "Interface\\BUTTONS\\UI-SliderBar-Background.blp"
+			local sliderBorder = "Interface\\BUTTONS\\UI-SliderBar-Border.blp"
+			local sliderButton = "Interface\\BUTTONS\\UI-SliderBar-Button-Horizontal.blp"
+
+			local defaultTextures = { 
+			   
+			   "Interface\\CHARACTERFRAME\\BarFill.blp", -- 1
+			   "Interface\\CHARACTERFRAME\\BarHighlight.blp", -- 2
+			   "Interface\\CHARACTERFRAME\\UI-BarFill-Simple.blp", -- 3
+			   "Interface\\Glues\\LoadingBar\\Loading-BarFill.blp", -- 4
+			   "Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar.blp", -- 5
+			   "Interface\\RAIDFRAME\\Raid-Bar-Hp-Bg.blp", -- 6
+			   "Interface\\RAIDFRAME\\Raid-Bar-Hp-Fill.blp", -- 7
+			   "Interface\\RAIDFRAME\\Raid-Bar-Resource-Background.blp", -- 8
+			   "Interface\\RAIDFRAME\\Raid-Bar-Resource-Fill.blp", -- 9
+			   "Interface\\TARGETINGFRAME\\BarFill2.blp", -- 10
+			   "Interface\\TARGETINGFRAME\\UI-StatusBar.blp", -- 11
+			   "Interface\\TARGETINGFRAME\\UI-TargetingFrame-BarFill.blp", -- 12
+			   "Interface\\TUTORIALFRAME\\UI-TutorialFrame-BreathBar.blp", --13 FatigueBar also
+			   "Interface\\UNITPOWERBARALT\\Amber_Horizontal_Bgnd.blp", -- 14
+			   "Interface\\UNITPOWERBARALT\\Amber-Horizontal_Fill.blp", -- 15
+			   "Interface\\UNITPOWERBARALT\\BrewingStorm_Horizontal_Fill.blp", -- 16
+			   "Interface\\UNITPOWERBARALT\\Darkmoon_Horizontal_Bgnd.blp", -- 17
+			   
+			   "Interface\\UNITPOWERBARALT\\Darkmoon_Horizontal_Fill.blp", -- 18
+			   "Interface\\UNITPOWERBARALT\\DeathwingBlood_Horizontal_Fill.blp",--19
+			   "Interface\\UNITPOWERBARALT\\Druid_Horizontal_Fill.blp", -- 20
+			   "Interface\\UNITPOWERBARALT\\Generic1Party_Horizontal_Bgnd.blp", --21
+			   "Interface\\UNITPOWERBARALT\\Generic1Party_Horizontal_Fill.blp", --22
+			   "Interface\\UNITPOWERBARALT\\Generic1Player_Horizontal_Bgnd.blp",--23
+			   "Interface\\UNITPOWERBARALT\\Generic1Player_Horizontal_Fill.blp",--24
+			   "Interface\\UNITPOWERBARALT\\Generic1Target_Horizontal_Bgnd.blp",--25
+			   "Interface\\UNITPOWERBARALT\\Generic1Target_Horizontal_Fill.blp",--26
+			   "Interface\\UNITPOWERBARALT\\Generic1_Horizontal_Fill.blp",--27
+			   "Interface\\UNITPOWERBARALT\\Generic1_Horizontal_Bgnd.blp",--28
+			   "Interface\\UNITPOWERBARALT\\Generic2_Horizontal_Fill.blp",--29
+			   "Interface\\UNITPOWERBARALT\\Generic3_Horizontal_Fill.blp",--30
+			   "Interface\\UNITPOWERBARALT\\StoneGuardJade_HorizontalFill.blp", --31 also Cobalt, Amethyst, Jasper
+			   -- 32 textures
+			} --8, 13, 17/18
+			
+			local select = 25 -- TODO: GUI -> then finally... SharedMedia (see InFlight for an awesome bar texture)
+			local bg = defaultTextures[select]
+
+			if not TotalAPKnowledgeSlider then -- Create slider frame
+			
+			   TotalAPKnowledgeSlider = CreateFrame("Slider", "TotalAPKnowledgeSlider", TotalAPAnchorFrame, "OptionsSliderTemplate")
+			
+			end
+
+			TotalAPKnowledgeSlider:ClearAllPoints()
+			TotalAPKnowledgeSlider:SetPoint("BOTTOMLEFT", TotalAPAnchorFrame, "TOPLEFT", 0, -5)
+
+			TotalAPKnowledgeSliderThumb:SetSize(20, 40)
+			TotalAPKnowledgeSlider:SetThumbTexture(sliderButton)
+
+			TotalAPKnowledgeSlider:SetBackdrop({ bgFile = bg, edgeFile = nil })
+			TotalAPKnowledgeSlider:SetSize(200, 5)
+			TotalAPKnowledgeSliderText:SetText("Artifact Research") -- TODO: On mouseover?
+			-- TODO: Hide if research is finished / not queued
+
+			-- Option (configUI) to fade entire bar in, not just the thumb, or hide altogether until notes are available (under views > DefaultView -> or custom View)
+			TotalAPKnowledgeSliderLow:SetText("7d") -- TODO: Options, and maybe 100% - 0%, or any other label (localized)
+			TotalAPKnowledgeSliderLow:ClearAllPoints()
+			TotalAPKnowledgeSliderLow:SetPoint("BOTTOMRIGHT", TotalAPKnowledgeSlider, "BOTTOMLEFT", 10, -1)
+			TotalAPKnowledgeSliderHigh:SetText("0d")
+			TotalAPKnowledgeSliderHigh:ClearAllPoints()
+			TotalAPKnowledgeSliderHigh:SetPoint("BOTTOMLEFT", TotalAPKnowledgeSlider, "BOTTOMRIGHT", -8, -1)
+
+			TotalAPKnowledgeSlider:Disable()
+
+			local numAvailableShipments = TotalAP.ArtifactInterface.GetNumAvailableResearchNotes()
+			
+			if numAvailableShipments ~= nil and numAvailableShipments > 0 then -- Research Notes are ready for pickup
+			
+				-- Display pickup notice
+			
+				if numAvailableShipments == 2 then -- 
+			
+				end
+			end
+		
+		-- TODO: Update -> in UpdateEverything -> UpdateView (which then calls View.ArtifactKnowledgeBar:Update()
+			local t, s = TotalAP.ArtifactInterface.GetTimeUntilNextResearchNoteIsReady()
+			
+			if t ~= nil and t > 0 then -- Research is pending
+				
+				-- Update slider with time until next shipment
+				local m = t / 60
+				local h = m / 60
+				local d = h / 24
+				
+				local maxResearchTimeInDays = 7 -- TODO: duration as return value from the shipment in ArtifactInterface
+				local maxSec = maxResearchTimeInDays * 24 * 60 * 60
+
+				TotalAPKnowledgeSliderThumb:SetAlpha((maxSec - t) / maxSec) -- TODO: Set alpha according to progress -> almost invisible until it gets close, then flash animation once notes become available
+
+				TotalAPKnowledgeSlider:SetMinMaxValues(0, maxSec)
+				TotalAPKnowledgeSlider:SetValue(maxSec - t)
+			
+				--if not TotalAPKnowledgeSlider.texture then
+
+				-- TotalAPKnowledgeSlider.texture = 
+				--TotalAPKnowledgeSlider:CreateTexture()
+
+				--end
+
+				--TotalAPKnowledgeSlider.texture:SetAllPoints(
+				--TotalAPKnowledgeSlider)
+				--TotalAPKnowledgeSlider.texture:SetTexture("Interface\\BUTTONS\\UI-SliderBar-Border.blp")
+				--"Interface\\CastingBar\\UI-CastingBar-Border.blp")
+
+				TotalAPKnowledgeSlider:Show()
+			
+			else if numAvailableShipments == 0 then -- No work orders queued or maxed AK?
+			
+				-- TODO Reminder if AK < maxAK and no research queued
+			
+			end
+		end									
+
+	end
+
 end
 
 -- TODO: Temp crutch for the migration process

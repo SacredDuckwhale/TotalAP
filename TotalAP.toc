@@ -1,10 +1,10 @@
 ## Interface: 70200
 ## Version: 1.2
 ## Author: Cakechart
+
 ## Title: TotalAP - Artifact Power Tracker
 ## Title-deDE: TotalAP – Artefaktmachtverfolgung
 ## Title-zhTW: TotalAP - 一鍵使用神兵之力
-
 
 ## Notes: Summarizes and displays artifact power-related information in a variety of ways
 ## Notes-deDE: Fasst Artefaktmacht-bezogene Informationen zusammen und zeigt sie auf verschiedene Weise an.
@@ -40,6 +40,13 @@ Core\Cache.lua
 Core\DBHandler.lua
 Core\Scanner.lua
 
+Core\GUI\WidgetTypes\DisplayFrame.lua
+Core\GUI\WidgetTypes\BackgroundFrame.lua
+Core\GUI\WidgetTypes\ItemUseButton.lua
+Core\GUI\WidgetTypes\ProgressBar.lua
+Core\GUI\WidgetTypes\SpecIcon.lua
+Core\GUI\WidgetTypes\TextDisplay.lua
+
 Core\GUI\Views\Prototype.lua
 Core\GUI\Views\CompactView.lua
 Core\GUI\Views\DefaultView.lua
@@ -50,10 +57,12 @@ Core\GUI\Views\TabbedView.lua
 Core\GUI\Config.lua
 Core\GUI\Tooltips.lua
 
+Core\Controllers\GUI.lua
 Core\Controllers\Keybinds.lua
 Core\Controllers\SlashCommands.lua
 
-#Core\Utils\Colours.lua
+
+Core\Utils\Colours.lua
 Core\Utils\Format.lua
 Core\Utils\FQCN.lua
 #Core\Utils\ItemLink.lua

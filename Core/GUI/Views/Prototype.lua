@@ -87,7 +87,7 @@ end
 local function Update(self)
 
 	-- Update,enabled elements that are part of the view
-	for index, Element in ipairs(elementsList) do -
+	for index, Element in ipairs(elementsList) do
 		
 		TotalAP.Debug("Updating view element " .. index .. ": " .. Element:GetName() or "<unnamed>") -- Element:GetName() will look up the attached FrameObject and return the WOW Frame's name
 		if Element:IsEnabled() then 
