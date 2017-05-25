@@ -210,6 +210,8 @@ end
 -- Removes all specs from the ignored specs list for a given character (defaults to currently used character if none is given)
 local function UnignoreAllSpecs(fqCharName)
 	
+	if not TotalArtifactPowerCache then return end -- Skip unignore if cache isn't initialised or this is called before the addon loads
+	
 	-- TODO: DRY
 	local characterName, realm
 	
@@ -226,7 +228,7 @@ local function UnignoreAllSpecs(fqCharName)
 		 
 	key = format("%s - %s", characterName, realm)	 
 	
-	for i = 1, GetNumSpecializations() do -- Remove spec from "ignore list" (more precisely, remove "marked as ignored" flag)
+	for i = 1, GetNumSpecializations() do -- Remove spec from "ignore list" (more precisely, remove "marked as ignored" flag for all cached specs of the active character)
 	
 		if TotalArtifactPowerCache[key] and TotalArtifactPowerCache[key][i] then TotalArtifactPowerCache[key][i]["isIgnored"] = false end
 	

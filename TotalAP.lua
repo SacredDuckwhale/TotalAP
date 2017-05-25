@@ -117,8 +117,11 @@ end
 -- Load default settings (will overwrite SavedVars)
 local function RestoreDefaultSettings()
 
-	TotalAP.DBHandler.RestoreDefaults() -- TODO: remove
-
+	
+	TotalArtifactPowerSettings = TotalAP.DBHandler.GetDefaults()
+	-- TotalAP.DBHandler.RestoreDefaults() -- TODO: remove
+	settings = TotalArtifactPowerSettings;
+	
 end
 
 
@@ -163,10 +166,12 @@ local function LoadSettings()
 	end
 	
 	-- Load cached AP progress if is has been saved before (will be updated as soon as the spec is enabled again)
-	cache = TotalArtifactPowerCache;
-	if type(cache) ~= "table" then
-		cache = {};
+	if TotalArtifactPowerCache == nil or type(TotalArtifactPowerCache) ~= "table" then -- First login / SavedVars were deleted
+		-- TODO: Initialise Cache
+		TotalArtifactPowerCache = {};
 	end
+	
+	cache = TotalArtifactPowerCache;
 	
 end
 

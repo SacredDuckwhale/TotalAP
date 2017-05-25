@@ -40,7 +40,7 @@ local function GetReference()
 	-- TODO: LoadAddonMetadata("TotalAP", "SavedVars") ?
 	-- TODO: provide interface for AceDB via this handler ?
 	
-	return TotalArtifactPowerCache
+	return TotalArtifactPowerCache or {}
 	
 end
 
