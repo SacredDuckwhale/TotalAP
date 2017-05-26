@@ -40,21 +40,22 @@ local function GetReference()
 	-- TODO: LoadAddonMetadata("TotalAP", "SavedVars") ?
 	-- TODO: provide interface for AceDB via this handler ?
 	
-	return TotalArtifactPowerCache or {}
+	return TotalArtifactPowerCache
 	
 end
 
 -- Returns the entire cache entry for a given character and spec
 local function GetEntry(fqcn, specID)
 
-	if not (fqcn and specID) then -- Parameters given were invalid
+	local cache = GetReference()
+
+	if not (cache and fqcn and specID) then -- Parameters given were invalid
 	
-		TotalAP.Debug("Attempted to retrieve Cache entry, but either fqcn or specID given were invalid")
-		return false
+		TotalAP.Debug("Attempted to retrieve Cache entry, but either fqcn or specID given were invalid (or the cache doesn't even exist)")
+		return
 	
 	end
-
-	local cache = GetReference()
+	
 	return cache[fqcn][specID] 
 	
 end
@@ -63,10 +64,12 @@ end
 -- Add a new entry for the respective character (key => char - realm) spec. Will us values given via defaults table
 local function NewEntry(fqcn, specID, defaults)
 	
-	if not (fqcn and specID) then -- Parameters given were invalid
+	local cache = GetReference() -- using API so name changes will carry over to this function
 	
-		TotalAP.Debug("Attempted to create new Cache entry, but either fqcn or specID were invalid")
-		return false
+	if not (cache and fqcn and specID) then -- Parameters given were invalid
+	
+		TotalAP.Debug("Attempted to create new Cache entry, but either fqcn or specID given were invalid (or the cache doesn't exist)")
+		return
 		
 	end
 	
@@ -79,8 +82,7 @@ local function NewEntry(fqcn, specID, defaults)
 	end
 	
 	
-	local cache = GetReference() -- using API so name changes will carry over to this function
-	
+
 	if not cache[fqcn] then -- Create new entry, without adding spec data
 	
 		cache[fqcn] = {}
@@ -98,19 +100,19 @@ end
 -- Updates an existing entry for the respective character and spec with the given values
 local function UpdateEntry(fqcn, specID, updateValues)
 
+	local cache = GetReference()
+
 	if not (fqcn and specID) then -- Parameters given were invalid
 	
 		TotalAP.Debug("Attempted to update Cache entry, but either fqcn or specID given were invalid")
-		return false
+		return
 	
 	end
-
-	local cache = GetReference()
 	
 	if not (cache and cache[fqcn] and cache[fqcn][specID]) then -- Cache entry doesn't exist
 	
-		TotalAP.Debug("Attempted to update cache entry for fqcn = " .. fqcn .. " and spec = " .. specID .. ", but it didn't exist")
-		return false
+		TotalAP.Debug("Attempted to update cache entry for fqcn = " .. fqcn .. " and spec = " .. specID .. ", but it didn't exist (or the cache isn't initialised yet)")
+		return
 		
 	end
 	
@@ -127,7 +129,7 @@ local function GetValue(fqcn, specID, key)
 	if not (fqcn and specID) then -- Parameters given were invalid
 	
 		TotalAP.Debug("Attempted to retrieve Cache entry, but either fqcn or specID given were invalid")
-		return false
+		return
 	
 	end
 
@@ -136,16 +138,16 @@ local function GetValue(fqcn, specID, key)
 	if not (cache and cache[fqcn] and cache[fqcn][specID]) then -- Cache entry doesn't exist
 	
 		TotalAP.Debug("Attempted to update cache entry for fqcn = " .. fqcn .. " and spec = " .. specID .. ", but it didn't exist")
-		return false
+		return
 		
 	end
 	
 	local entry = GetEntry(fqcn, specID)
 	
-	if not (key and entry[key]) then -- Key is invalid or entry doesn't exist
+	if not (entry and key and entry[key]) then -- Key is invalid or entry doesn't exist
 	
 		TotalAP.Debug("Attempted to retrieve cache entry for key = " .. key .. ", but key is invalid or entry doesn't exist")
-		return false
+		return
 		
 	end
 	
@@ -167,6 +169,7 @@ local function GetNumIgnoredSpecs(fqcn) -- TODO: Move to Cache
 	for i = 1, GetNumSpecializations() do -- Test if this spec is currently set to being ignored
 	
 		local isSpecIgnored = GetValue(fqcn, i, "isIgnored")
+		
 		if isSpecIgnored then
 			
 			TotalAP.Debug("Spec " .. i .. " was found to be ignored")
