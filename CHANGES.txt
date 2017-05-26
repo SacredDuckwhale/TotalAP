@@ -1,0 +1,38 @@
+------------------------------------------------------------------------
+## TotalAP v1.2.0 - Recent changes (3 releases)
+------------------------------------------------------------------------
+
+r20:
+	Added secondary progress bar ("MiniBar"), which is displayed whenever more than one new trait is available
+	
+	ALT-clicking should now correctly allow dragging of the entire display, no matter which part was being clicked on (progress bars and spec icons included)
+	Individual displays can no longer be dragged off-screen, and their anchor now resizes dynamically to make sure they fit even in the tightest corners ;)
+	The action button now remains visible if artifact research notes (or similar tomes) are available, even if the active spec is being ignored
+
+	Fixed broken localization for the recently-added progress tooltip
+	Fixed various localization issues (such as a broken deDE translation and formatting mishaps)
+	Fixed an oversight that would cause the initialisation routine to break on the very first login (or if the saved variables were deleted manually)
+
+
+r19:
+	Added option to ignore specs (on a per-character basis). Ignored specs will not trigger the action button to show and not have any displays. Right-clicking the spec icon will ignore it, while a newly-added slash command (/ap unignore) resets the "ignore list" for that character
+	Added (hidden) option to align bars and specIcons to the top, bottom, or center (default), accessible via /ap align-top, align-bottom or align-center - (There will be a GUI option for this later, but you may use these slash commands in the meantime)
+	Added tooltip for progress bars, displaying detailed information regarding the overall progress for that spec's artifact. In comparison, the progress bars themselves are limited to just the current rank (for now)
+
+	Slash commands that change display options should once again update all displays properly
+	
+	Fixed broken slash commands that were causing LUA errors when used - "Accidents! They happen!"
+	Fixed an issue that would cause the action button's size to not be saved throughout sessions
+	Fixed display peculiarities (overlapping frames) that could occur if the action button's size was smaller than its buttonText
+	
+	
+r18:
+	Clicking the spec icons will now dismount the player (or cancel shapeshift forms, if not engaged in combat) before attempting to change specs. Dismounting will only happen on the ground.
+	Removed unnecessary precision for number formatting, to make the displays that used it more consistent and look slightly more natural.
+	Fixed an issue that could cause Artifact Research tomes which remained unused in the player's inventory to break the tooltip and button text displays.
+	Changed wording of the recently-added "buttonText" display's slash command to be less confusing.
+	Included additional improvements to scanning algorithm for koKR, zhTW, and zhCN clients.
+	Updated translation for the German (deDE) locale - thanks for contributing!	
+	Added translation for the Traditional Chinese (zhTW) locale - thanks for contributing!
+	
+	
