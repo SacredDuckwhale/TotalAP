@@ -788,10 +788,7 @@ local function UpdateInfoFrame()
 			TotalAPProgressBars[k]:SetSize(100, settings.infoFrame.barHeight); -- TODO: Variable height! Should be adjustable independent from specIcons (and resizable via shift/drag, while specIcons center automatically)
 			TotalAPProgressBars[k]:ClearAllPoints();
 			TotalAPProgressBars[k]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPLEFT", 1 + inset, - ( (2 * displayOrder[k] - 1)  * inset + displayOrder[k] * border + (displayOrder[k] - 1)  * settings.infoFrame.barHeight))
-			
-	--TotalAP.ChatMsg(k .. ", " .. displayOrder[k])
-	--TempTAPDisplayOrder = displayOrder
-			
+	
 			-- Bar 1 -> Displays AP used on artifact but not yet spent on any traits
 			if not TotalAPUnspentBars[k].texture then   
 				TotalAPUnspentBars[k].texture = TotalAPUnspentBars[k]:CreateTexture();
