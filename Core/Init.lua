@@ -20,11 +20,9 @@ local addonName, T = ...
 
 if not T then return end
 
-
-
--- Shared local variables (usually those used by logic AND display, or different modules)
+-- Shared local variables (usually those used by logic AND display, or different modules) -> Shared by means of the addon Table
 T.Globals = {} 
-T.Globals.addonVersion = GetAddOnMetadata("TotalAP", "Version")
+T.versionString = GetAddOnMetadata("TotalAP", "Version")
 
 -- Core modules
 T.ArtifactInterface = {}

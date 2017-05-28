@@ -1727,7 +1727,7 @@ function AceAddon:OnEnable()	-- Called on PLAYER_LOGIN or ADDON_LOADED (if addon
 			CreateInfoFrame();
 			CreateSpecIcons(); 
 			
-			if settings.showLoginMessage then TotalAP.ChatMsg(format(L["%s %s for WOW %s loaded!"], addonName, TotalAP.Globals.addonVersion, clientVersion)); end
+			if settings.showLoginMessage then TotalAP.ChatMsg(format(L["%s %s for WOW %s loaded!"], addonName, TotalAP.versionString, clientVersion)); end
 			
 			TotalAP.Debug(format("Registering button update events"));
 			RegisterUpdateEvents();
