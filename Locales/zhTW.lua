@@ -1,6 +1,4 @@
-local L;
-
-L = LibStub("AceLocale-3.0"):NewLocale("TotalAP", "zhTW")
+local L = LibStub("AceLocale-3.0"):NewLocale("TotalAP", "zhTW")
 
 
 L = L or {}
