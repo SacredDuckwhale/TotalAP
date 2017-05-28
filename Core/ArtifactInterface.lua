@@ -119,10 +119,10 @@ end
 
 -- Public methods
 T.ArtifactInterface.GetNumAvailableResearchNotes = GetNumAvailableResearchNotes
-T.ArtifactInterface.GetArtifactKnowledgeMultiplier = GetArtifactKnowledgeMultiplier
+--T.ArtifactInterface.GetArtifactKnowledgeMultiplier = GetArtifactKnowledgeMultiplier
 T.ArtifactInterface.GetArtifactKnowledgeLevel = GetArtifactKnowledgeLevel
 T.ArtifactInterface.GetTimeUntilNextResearchNoteIsReady = GetTimeUntilNextResearchNoteIsReady
-T.ArtifactInterface.GetNumRanksPurchased = GetNumRanksPurchased
+--T.ArtifactInterface.GetNumRanksPurchased = GetNumRanksPurchased
 T.ArtifactInterface.GetNumRanksPurchasableWithAP = GetNumRanksPurchasableWithAP
 T.ArtifactInterface.GetProgressTowardsNextRank = GetProgressTowardsNextRank
 
