@@ -226,7 +226,7 @@ local function UnignoreAllSpecs(fqcn)
 		
 	end
 		 
-	key = format("%s - %s", characterName, realm)	 
+	local key = format("%s - %s", characterName, realm)	 
 	
 	for i = 1, GetNumSpecializations() do -- Remove spec from "ignore list" (more precisely, remove "marked as ignored" flag for all cached specs of the active character)
 	
