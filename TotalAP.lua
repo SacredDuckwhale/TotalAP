@@ -19,7 +19,6 @@
 
 -- Libraries: If they fail to load, TotalAP shouldn't load either
 local AceAddon = LibStub("AceAddon-3.0"):NewAddon("TotalAP", "AceConsole-3.0"); -- AceAddon object -> local because it's not really needed elsewhere
-local L = LibStub("AceLocale-3.0"):GetLocale("TotalAP", false); -- Localization table; default locale is enGB (=enUS). false to show an error if locale not found (via AceLocale)
 local SharedMedia = LibStub("LibSharedMedia-3.0");  -- TODO: Not implemented yet... But "soon" (TM) -> allow styling of bars and font strings (I'm really just waiting until the config/options are done properly for this -> AceConfig)
 local Masque = LibStub("Masque", true); -- optional (will use default client style if not found)
 
@@ -27,7 +26,7 @@ local Masque = LibStub("Masque", true); -- optional (will use default client sty
 -- Shorthands: Those don't do anything except save me work :P
 local aUI = C_ArtifactUI
 
-
+local L = TotalAP.L -- Localization table
 -- Addon metadata (used for messages/output, primarily)
 local addonName, T = ...;
 TotalAP = T -- Global container for modularised functions and library instance objects -> contains the addonTable to exchange information between modules

@@ -28,7 +28,7 @@ local slashCommand = "totalap"
 local slashCommandAlias = "ap"
 
 -- AceLocale localisation table -> used for console output
-local L = LibStub("AceLocale-3.0"):GetLocale("TotalAP", false); -- Localization table
+local L = TotalAP.L
 
 -- TODO: Use AceDB for this
 --local settings = TotalAP.DBHandler.GetDB() -- TODO: Upvalue / LUA Error

@@ -41,6 +41,9 @@ T.GUI = {}
 -- Utility and helper functions
 T.Utils = {}
 
+-- Localization table
+T.L = LibStub("AceLocale-3.0"):GetLocale("TotalAP", false)
+
 
 -- Global functions (TODO: Move to separate file if there will be more?)
 -- TODO: Custom colour codes (in Utils) -> not implemented yet

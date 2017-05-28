@@ -21,7 +21,8 @@ local addonName, TotalAP = ...
 
 if not TotalAP then return end
 
-local L = LibStub("AceLocale-3.0"):GetLocale("TotalAP", false)
+-- AceLocale localization table
+local L = TotalAP.L
 
 
 -- This is the mouseover-tooltip for progress bars, based on Blizzard's ForgeDisplay (icon to the top-left of the ArtifactFrame)

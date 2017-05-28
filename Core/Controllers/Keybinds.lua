@@ -22,8 +22,7 @@ local addonName, TotalAP = ...
 if not TotalAP then return end
 
 -- AceLocale localisation table -> used for keybind header and descriptions
-local L = LibStub("AceLocale-3.0"):GetLocale("TotalAP", false); -- Localization table
-
+local L =  TotalAP.L
 
 -- TODO: Use AceDB for this
 local settings
