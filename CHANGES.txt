@@ -2,6 +2,13 @@
 ## TotalAP v1.2.0 - Recent changes (3 releases)
 ------------------------------------------------------------------------
 
+r21:
+	Added slash command to hide the secondary progress bars ("MiniBar") -> /ap minibar
+	
+	Updated translation for the Traditional Chinese (zhTW) locale - thanks for contributing!
+	
+	Fixed ingame description for the "/ap progress" slash command
+	
 r20:
 	Added secondary progress bar ("MiniBar"), which is displayed whenever more than one new trait is available
 	
@@ -24,15 +31,5 @@ r19:
 	Fixed broken slash commands that were causing LUA errors when used - "Accidents! They happen!"
 	Fixed an issue that would cause the action button's size to not be saved throughout sessions
 	Fixed display peculiarities (overlapping frames) that could occur if the action button's size was smaller than its buttonText
-	
-	
-r18:
-	Clicking the spec icons will now dismount the player (or cancel shapeshift forms, if not engaged in combat) before attempting to change specs. Dismounting will only happen on the ground.
-	Removed unnecessary precision for number formatting, to make the displays that used it more consistent and look slightly more natural.
-	Fixed an issue that could cause Artifact Research tomes which remained unused in the player's inventory to break the tooltip and button text displays.
-	Changed wording of the recently-added "buttonText" display's slash command to be less confusing.
-	Included additional improvements to scanning algorithm for koKR, zhTW, and zhCN clients.
-	Updated translation for the German (deDE) locale - thanks for contributing!	
-	Added translation for the Traditional Chinese (zhTW) locale - thanks for contributing!
 	
 	
