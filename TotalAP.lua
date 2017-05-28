@@ -25,13 +25,10 @@ local Masque = LibStub("Masque", true); -- optional (will use default client sty
 
 -- Shorthands: Those don't do anything except save me work :P
 local aUI = C_ArtifactUI
+local addonName, TotalAP = ...
+if not TotalAP then return end
 
 local L = TotalAP.L -- Localization table
--- Addon metadata (used for messages/output, primarily)
-local addonName, T = ...;
-TotalAP = T -- Global container for modularised functions and library instance objects -> contains the addonTable to exchange information between modules
-
-
 
 -- Internal vars - TODO: Move these to the appropriate modules
 	-- Load item spell effects & spec artifact list from global (shared) DB
