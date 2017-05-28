@@ -13,6 +13,12 @@ require 'lfs' -- LuaFileSystem
 local startDir = ".." -- start scraping here
 local filePrefix = startDir .. "/" -- TODO
 
+-- Export settings
+local enableExport = true
+local exportFolder = "Locales/"  -- relative to startDir
+local renameTo = "enGB.lua" -- Careful: Will overwrite stuff without asking
+local prefixString = [[local L = LibStub("AceLocale-3.0"):NewLocale("TotalAP", "enGB", true)]]
+
 
 -- CurseForge namespaces (if several are to be used)
 local namespaces = {
@@ -56,7 +62,7 @@ local function ScanDir(path)
         if file ~= "." and file ~= ".." then
             local f = path..'/'..file
 	
-			if string.match(file, "\.lua$") and not MatchesIgnorelistEntry(f) then -- Is a valid file for scraping
+			if string.match(file, ".lua$") and not MatchesIgnorelistEntry(f) then -- Is a valid file for scraping
 				--print ("\tAdding file to the scrape list: "..f)
 				table.insert(scrapeList, f)
 			else
@@ -123,7 +129,7 @@ do -- Actual script begins here
 		ns_file:close()
 		
 		-- Write summary (to be imported by CF)
-		local ns_cmp_file = assert(io.open(namespace .. "_Import.lua", "w+"), "Error opening file")
+		local ns_cmp_file = assert(io.open(namespace .. "_Import.lua", "w"), "Error opening file")
 		
 		p = phrases
 		phrases = {}
@@ -140,7 +146,20 @@ do -- Actual script begins here
 			end
 		end
 		
-		-- All done, yay ^_^ (Print summary)
-		print("\nFinished scraping: " .. #scrapeList .. " files for a total of " .. #phrases .. " phrases")
+		-- All done, yay ^_^ (Print summary) - Well, almost...
+		print("\nFinished scraping " .. #scrapeList .. " files for a total of " .. #phrases .. " phrases")
+		
+		-- Export to Locales/ folder (or elsewhere, I guess)
+		if enableExport then 
+			local exportFilePath = startDir .. "/" .. exportFolder .. "/" .. renameTo
+			print("\nExporting scraped phrases to " .. exportFilePath)
+			ns_cmp_file:close()
+			local ns_cmp_file = assert(io.open(namespace .. "_Import.lua", "r"), "Error opening file")
+			local writeStr = ns_cmp_file:read("*all")
+		
+			local exportFile = assert(io.open(exportFilePath, "w"), "Error opening file")
+			exportFile:write(prefixString, "\n\n", writeStr)
+			exportFile:close()	
+		end		
 	end
 end
