@@ -47,6 +47,7 @@ local slashCommands = {
 	["hide"] = L["Toggle all displays (will override the individual display's settings)"],
 	["button"] = L["Toggle button visibility (tooltip visibility is unaffected)"],
 	["bars"] = L["Toggle bar display for artifact power progress"],
+	["minibar"] = L["Toggle the secondary progress bar"],
 	["tooltip"] = L["Toggle tooltip display for artifact power items"],
 	["icons"] = L["Toggle icon and text display for artifact power progress"],
 	
@@ -154,6 +155,18 @@ local slashHandlers = {
 
 		TotalAP.Controllers.KeybindHandler("BarDisplayToggle", false);	
 		
+	end,
+	
+	["minibar"] = function(settings) -- Toggle MiniBar (on top of ProgressBars)
+	
+		if settings.infoFrame.showMiniBar then
+			TotalAP.ChatMsg(L["Secondary progress bars are now hidden."]);
+		else
+			TotalAP.ChatMsg(L["Secondary progress bars are now shown."]);
+		end
+		
+		settings.infoFrame.showMiniBar = not settings.infoFrame.showMiniBar;
+	
 	end,
 	
 	["icons"] = function(settings) -- Toggle spec icons

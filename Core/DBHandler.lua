@@ -158,7 +158,7 @@ local defaultSettings =	{
 													barHeight = 16,
 													border = 1,
 													inset = 1,
-													
+													showMiniBar = true,
 													alignment = "center", -- TODO: Provide option via GUI (AceConfig)
 													
 													progressBar = {

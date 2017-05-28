@@ -826,7 +826,7 @@ local function UpdateInfoFrame()
 				TotalAPMiniBars[k].texture = TotalAPMiniBars[k]:CreateTexture();
 			end
 			
-			if maxAttainableRank > v["numTraitsPurchased"] and progressPercent > 0 then -- Display secondary bar
+			if maxAttainableRank > v["numTraitsPurchased"] and progressPercent > 0 and settings.infoFrame.showMiniBar then -- Display secondary bar
 
 				TotalAPMiniBars[k]:SetSize(progressPercent, 2) -- TODO: options....
 				TotalAPMiniBars[k]:ClearAllPoints()
