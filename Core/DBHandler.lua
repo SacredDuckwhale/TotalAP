@@ -208,15 +208,15 @@ end
 
 
 -- Removes all specs from the ignored specs list for a given character (defaults to currently used character if none is given)
-local function UnignoreAllSpecs(fqCharName)
+local function UnignoreAllSpecs(fqcn)
 	
 	if not TotalArtifactPowerCache then return end -- Skip unignore if cache isn't initialised or this is called before the addon loads
 	
 	-- TODO: DRY
 	local characterName, realm
 	
-	if fqCharName then 
-		characterName, realm = fqCharName:match("(%.+)%s-%s(%.)+")
+	if fqcn then 
+		characterName, realm = fqcn:match("(%.+)%s-%s(%.)+")
 	end
 	
 	if not characterName or not realm then -- Use currently active character
