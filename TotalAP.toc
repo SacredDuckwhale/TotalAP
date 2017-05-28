@@ -36,6 +36,13 @@ Locales\Locales.xml
 Locales\NumberFormats.lua
 
 Core\Init.lua
+
+Core\Utils\Colours.lua
+Core\Utils\Format.lua
+Core\Utils\FQCN.lua
+#Core\Utils\ItemLink.lua
+Core\Utils\TableFunctions.lua
+
 Core\ArtifactInterface.lua
 Core\Cache.lua
 Core\DBHandler.lua
@@ -61,12 +68,5 @@ Core\GUI\Tooltips.lua
 Core\Controllers\GUI.lua
 Core\Controllers\Keybinds.lua
 Core\Controllers\SlashCommands.lua
-
-
-Core\Utils\Colours.lua
-Core\Utils\Format.lua
-Core\Utils\FQCN.lua
-#Core\Utils\ItemLink.lua
-Core\Utils\TableFunctions.lua
 
 TotalAP.lua
