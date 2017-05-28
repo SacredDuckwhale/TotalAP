@@ -25,4 +25,4 @@ end
 TotalAP.Utils.GetFQCN = GetFQCN
 
 
-return TotalAP.Utils
+return TotalAP.Utils.GetFQCN

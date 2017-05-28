@@ -72,4 +72,4 @@ end
 if not T then return end
 T.Utils.FormatShort = FormatShort
 
-return Format
+return FormatShort
