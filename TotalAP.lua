@@ -481,11 +481,11 @@ local function UpdateSpecIcons()
 		
 		TotalAP.Debug("Hiding spec icon button for spec " .. i .. " because the spec is set to being ignored")
 			TotalAPSpecIconButtons[i]:Hide();
-			TotalAPSpecHighlightFrames[i]:Hide()
+			TotalAPSpecIconHighlightFrames[i]:Hide()
 				
 		else
 		
-			TotalAPSpecHighlightFrames[i]:Show()
+			TotalAPSpecIconHighlightFrames[i]:Show()
 			TotalAPSpecIconButtons[i]:Show()
 			
 		end 
@@ -494,28 +494,28 @@ local function UpdateSpecIcons()
 	   --TotalAPSpecIconButtons[i].NormalTexture(nil)
 	  
 		-- TODO: BG for text and settings for font/size/alignment/sharedmedia
-		TotalAPSpecHighlightFrames[i]:SetSize(settings.specIcons.size + 2 * inset, settings.specIcons.size + 2 * inset); -- TODO 4x or 2x?
-		TotalAPSpecHighlightFrames[i]:ClearAllPoints();
-		TotalAPSpecHighlightFrames[i]:SetPoint("TOPLEFT", TotalAPSpecIconsBackgroundFrame, "TOPLEFT", border, - (border + (displayOrder[i] - 1) * (settings.specIcons.size + 3 * inset + border)));
+		TotalAPSpecIconHighlightFrames[i]:SetSize(settings.specIcons.size + 2 * inset, settings.specIcons.size + 2 * inset); -- TODO 4x or 2x?
+		TotalAPSpecIconHighlightFrames[i]:ClearAllPoints();
+		TotalAPSpecIconHighlightFrames[i]:SetPoint("TOPLEFT", TotalAPSpecIconsBackgroundFrame, "TOPLEFT", border, - (border + (displayOrder[i] - 1) * (settings.specIcons.size + 3 * inset + border)));
 	  
 		-- Reposition spec icons
 		TotalAPSpecIconButtons[i]:SetSize(settings.specIcons.size, settings.specIcons.size); -- TODO: settings.specIconSize. Also, 16 is too small for this?
 		TotalAPSpecIconButtons[i]:ClearAllPoints();
 		--TotalAPSpecIconButtons[i]:SetFrameStrata("HIGH");
-		TotalAPSpecIconButtons[i]:SetPoint("TOPLEFT", TotalAPSpecHighlightFrames[i], "TOPLEFT", math.abs( TotalAPSpecHighlightFrames[i]:GetWidth() - settings.specIcons.size ) / 2, - math.abs( TotalAPSpecHighlightFrames[i]:GetHeight() - TotalAPSpecIconButtons[i]:GetHeight() ) / 2 );
+		TotalAPSpecIconButtons[i]:SetPoint("TOPLEFT", TotalAPSpecIconHighlightFrames[i], "TOPLEFT", math.abs( TotalAPSpecIconHighlightFrames[i]:GetWidth() - settings.specIcons.size ) / 2, - math.abs( TotalAPSpecIconHighlightFrames[i]:GetHeight() - TotalAPSpecIconButtons[i]:GetHeight() ) / 2 );
     
 
 
 
-		--	TotalAPSpecHighlightFrames[i]:SetPoint("BOTTOMRIGHT", TotalAPSpecIconButtons[i], "BOTTOMRIGHT", activeSpecIconBorderWidth, -activeSpecIconBorderWidth);
+		--	TotalAPSpecIconHighlightFrames[i]:SetPoint("BOTTOMRIGHT", TotalAPSpecIconButtons[i], "BOTTOMRIGHT", activeSpecIconBorderWidth, -activeSpecIconBorderWidth);
 		-- TotalAPActiveSpecBackgroundFrame.texture = TotalAPActiveSpecBackgroundFrame:CreateTexture("bgTexture");
 		--  TotalAPActiveSpecBackgroundFrame.texture:SetTexture(255/255, 128/255, 0/255, 1);
 
 
 	if i == GetSpecialization() then
-		TotalAPSpecHighlightFrames[i]:SetBackdropColor(255/255, 128/255, 0/255, 1); -- TODO: This isn't even working? Find a better backdrop texture, perhaps?
+		TotalAPSpecIconHighlightFrames[i]:SetBackdropColor(255/255, 128/255, 0/255, 1); -- TODO: This isn't even working? Find a better backdrop texture, perhaps?
 	else
-		TotalAPSpecHighlightFrames[i]:SetBackdropColor(0/255, 0/255, 0/255, 0.75); -- TODO: Settings
+		TotalAPSpecIconHighlightFrames[i]:SetBackdropColor(0/255, 0/255, 0/255, 0.75); -- TODO: Settings
 	end
 	   --(numSpecs * (specIconSize + 2 * inset) - TotalAPInfoFrame:GetHeight())/2 - (i-1) * (specIconSize + 2) + 2); -- TODO: consider settings.specIconSize to calculate position and spacing<<<!! dynamically
 	   -- TODO: function UpdateSpecIconPosition or something to avoid duplicate code?
@@ -628,7 +628,7 @@ local function UpdateSpecIcons()
 			end
 			
 			specIconFontStrings[k]:ClearAllPoints();
-			specIconFontStrings[k]:SetPoint("TOPLEFT", TotalAPSpecHighlightFrames[k], "TOPRIGHT", settings.specIcons.border + 5,  settings.specIcons.border - math.abs(TotalAPSpecHighlightFrames[k]:GetHeight() - specIconFontStrings[k]:GetHeight()) / 2);
+			specIconFontStrings[k]:SetPoint("TOPLEFT", TotalAPSpecIconHighlightFrames[k], "TOPRIGHT", settings.specIcons.border + 5,  settings.specIcons.border - math.abs(TotalAPSpecIconHighlightFrames[k]:GetHeight() - specIconFontStrings[k]:GetHeight()) / 2);
 			TotalAP.Debug(format("Updating fontString for spec icon %d: %s", k, fontStringText));
 
 		end
@@ -1195,16 +1195,16 @@ local function CreateSpecIcons()
 	
 	
 	-- Create active/inactive spec highlight frames
-	TotalAPSpecIconButtons, TotalAPSpecHighlightFrames = {}, {};
+	TotalAPSpecIconButtons, TotalAPSpecIconHighlightFrames = {}, {};
 	for i = 1, numSpecs do
 		
 		local _, specName = GetSpecializationInfo(i);
 		
-			TotalAPSpecHighlightFrames[i] = CreateFrame("Frame", "TotalAPSpec" .. i .. "HighlightFrame", TotalAPSpecIconsBackgroundFrame); -- TODO: Rename var, and frame
-		--	TotalAPSpecHighlightFrames[i]:SetClampedToScreen(true);
-		--TotalAPSpecHighlightFrames[i]:SetFrameStrata("BACKGROUND");
+			TotalAPSpecIconHighlightFrames[i] = CreateFrame("Frame", "TotalAPSpec" .. i .. "HighlightFrame", TotalAPSpecIconsBackgroundFrame); -- TODO: Rename var, and frame
+		--	TotalAPSpecIconHighlightFrames[i]:SetClampedToScreen(true);
+		--TotalAPSpecIconHighlightFrames[i]:SetFrameStrata("BACKGROUND");
 			
-			TotalAPSpecHighlightFrames[i]:SetBackdrop(
+			TotalAPSpecIconHighlightFrames[i]:SetBackdrop(
 				{
 					bgFile = "Interface\\CHATFRAME\\CHATFRAMEBACKGROUND.BLP", 
 				-- edgeFile = "Interface/Tooltips/UI-Tooltip-Border", 
@@ -1215,7 +1215,7 @@ local function CreateSpecIcons()
 		
 		--TotalAP.Debug(format("Created specIcon for spec %d: %s ", i, specName));
 		
-		TotalAPSpecIconButtons[i] = CreateFrame("Button", "TotalAPSpecIconButton" .. i, TotalAPSpecHighlightFrames[i], "ActionButtonTemplate", "SecureActionButtonTemplate");
+		TotalAPSpecIconButtons[i] = CreateFrame("Button", "TotalAPSpecIconButton" .. i, TotalAPSpecIconHighlightFrames[i], "ActionButtonTemplate", "SecureActionButtonTemplate");
 		TotalAPSpecIconButtons[i]:SetFrameStrata("MEDIUM"); -- I don't like this, but Masque screws with the regular parent -> child draw order somehow
 		
 		specIconFontStrings[i] = TotalAPSpecIconButtons[i]:CreateFontString("TotalAPSpecIconFontString" .. i, "OVERLAY", "GameFontNormal"); -- TODO: What frame as parent? There isn't really one other than the respective icon?
