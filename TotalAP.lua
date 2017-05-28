@@ -1198,7 +1198,7 @@ local function CreateSpecIcons()
 	TotalAPSpecIconButtons, TotalAPSpecIconHighlightFrames = {}, {};
 	for i = 1, numSpecs do
 		
-		local _, specName = GetSpecializationInfo(i);
+		local _, specName, _, specIcon, _, specRole = GetSpecializationInfo(i)
 		
 			TotalAPSpecIconHighlightFrames[i] = CreateFrame("Frame", "TotalAPSpec" .. i .. "HighlightFrame", TotalAPSpecIconsBackgroundFrame); -- TODO: Rename var, and frame
 		--	TotalAPSpecIconHighlightFrames[i]:SetClampedToScreen(true);
@@ -1305,7 +1305,6 @@ local function CreateSpecIcons()
 	--	local classDisplayName, classTag, classID = UnitClass("player");
 		
 		-- Set textures (only needs to be done once, as specs are generally static)
-		local _, specName, _, specIcon, _, specRole = GetSpecializationInfo(i);
 		TotalAPSpecIconButtons[i].icon:SetTexture(specIcon);
 		TotalAP.Debug(format("Setting specIcon texture for spec %d (%s): |T%s:%d|t", i, specIcon,  specIcon, settings.specIconSize));
 		
