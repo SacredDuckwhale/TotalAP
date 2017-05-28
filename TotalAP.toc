@@ -15,6 +15,8 @@
 ## SavedVariables: TotalArtifactPowerSettings, TotalArtifactPowerCache
 
 ## X-Revision: @project-version@
+## X-Date: @project-date-iso@
+## X-License: GPL3
 ## X-Embeds: LibStub, AceAddon-3.0, AceConsole-3.0, AceLocale-3.0, LibSharedMedia-3.0
 ## X-Website: http://www.curse.com/addons/wow/totalap
 
