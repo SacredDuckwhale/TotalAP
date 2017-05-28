@@ -39,23 +39,23 @@ local L = TotalAP.L
 -- Match commands to locale table keys (the actual strings are NOT used, except to look up the correct translation)
 local slashCommands = {
 	
-	["counter"] = "Toggle display of the item counter",
-	["progress"] = "Toggle spell overlay notification (glow effect) when new traits are available",
-	["glow"] = "Toggle spell overlay notification (glow effect) when new traits are available",
-	["buttontext"] = "Toggle short summary of the tooltip information as an additional display next to the action button",
+	["counter"] = L["Toggle display of the item counter"],
+	["progress"] = L["Toggle display of the progress report"],
+	["glow"] = L["Toggle spell overlay notification (glow effect) when new traits are available"],
+	["buttontext"] = L["Toggle short summary of the tooltip information as an additional display next to the action button"],
 	
-	["hide"] = "Toggle all displays (will override the individual display's settings)",
-	["button"] = "Toggle button visibility (tooltip visibility is unaffected)",
-	["bars"] = "Toggle bar display for artifact power progress",
-	["tooltip"] = "Toggle tooltip display for artifact power items",
-	["icons"] = "Toggle icon and text display for artifact power progress",
+	["hide"] = L["Toggle all displays (will override the individual display's settings)"],
+	["button"] = L["Toggle button visibility (tooltip visibility is unaffected)"],
+	["bars"] = L["Toggle bar display for artifact power progress"],
+	["tooltip"] = L["Toggle tooltip display for artifact power items"],
+	["icons"] = L["Toggle icon and text display for artifact power progress"],
 	
-	["unignore"] = "Resets ignored specs for the currently active character",
+	["unignore"] = L["Resets ignored specs for the currently active character"],
 	
-	["loginmsg"] = "Toggle login message on load",
-	["combat"] = "Toggle visibility in combat",
-	["reset"] =  "Load default settings (will overwrite any changes made)",
-	["debug"] = "Toggle debug mode (not particularly useful as long as everything is working as expected)",
+	["loginmsg"] = L["Toggle login message on load"],
+	["combat"] = L["Toggle visibility in combat"],
+	["reset"] =  L["Load default settings (will overwrite any changes made)"],
+	["debug"] = L["Toggle debug mode (not particularly useful as long as everything is working as expected)"],
 	
 }
 
@@ -290,7 +290,7 @@ local function PrintSlashCommands(usedAlias)
 				usedCmd = GetSlashCommandAlias()
 			end
 		
-			TotalAP.ChatMsg("/" .. usedCmd .. " " .. cmd .. " - " .. L[slashCommands[cmd]])
+			TotalAP.ChatMsg("/" .. usedCmd .. " " .. cmd .. " - " .. slashCommands[cmd])
 		
 		end
 end
