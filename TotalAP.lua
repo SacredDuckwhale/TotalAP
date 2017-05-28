@@ -23,19 +23,15 @@ local SharedMedia = LibStub("LibSharedMedia-3.0");  -- TODO: Not implemented yet
 local Masque = LibStub("Masque", true); -- optional (will use default client style if not found)
 
 
--- Shorthands: Those don't do anything except save me work :P
-local aUI = C_ArtifactUI
 local addonName, TotalAP = ...
 if not TotalAP then return end
 
 local L = TotalAP.L -- Localization table
 
--- Internal vars - TODO: Move these to the appropriate modules
-	-- Load item spell effects & spec artifact list from global (shared) DB
---local itemEffects = TotalAP.DB; -- This isn't strictly necessary, as the DB is in the global namespace. However, it's better to not litter the code with direct references in case of future changes - also, they are static so loading them once (on startup) should suffice
---local artifacts = TotalAP.DB["artifacts"]; -- Ditto
-	
+-- Shorthands: Those don't do anything except save me work :P
+local aUI = C_ArtifactUI
 
+-- Shared variables (TODO: They shouldn't be in this file, but migration is not yet complete)
 local tempItemLink, tempItemID, currentItemLink, currentItemID, currentItemTexture, currentItemAP; -- used for bag scanning and tooltip display
 local numItems, inBagsTotalAP, numTraitsAvailable, artifactProgressPercent = 0, 0, 0, 0; -- used for tooltip text
 local foundKnowledgeTome -- buttonText (TODO -> workaround for display inconsistencies)
