@@ -46,6 +46,6 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# Directories that shouldn't be commited/uploaded as they're intended only for "work in progress" or Project Site management
+# Directories that shouldn't be commited/uploaded
 _DEV
-ProjectSite
+Libs
