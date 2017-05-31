@@ -67,7 +67,7 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 	end
 	
      if progressPercent > 0 and maxAttainableRank > numTraitsPurchased then
-		GameTooltip:AddLine(format(L["%.2f%% towards Rank %d"],  progressPercent, maxAttainableRank))
+		GameTooltip:AddLine(format(L["%.2f%% towards Rank %d"],  progressPercent, maxAttainableRank + 1))
 	end
      
 	 GameTooltip:AddLine("\n" .. format(L["Artifact Knowledge Level: %d"], knowledgeLevel), 1, 1, 1)
