@@ -13,9 +13,13 @@
     -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------------------------------------------------
 
+--- Controllers\Keybinds
+-- @module Controllers
 
--- Keybinds.lua
+--- Keybinds.lua.
 -- Handling of keybinds and delegation of tasks when they are being used
+-- @section Keybinds
+
 
 local addonName, TotalAP = ...
 

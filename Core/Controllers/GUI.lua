@@ -13,9 +13,13 @@
     -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------------------------------------------------
 
+--- Designed to handle interaction with the player, react to their input, and adjust program behaviour accordingly
+-- @module Controllers
 
--- [[ GUI.lua ]]
--- Controls the displays via Views (TODO) and manages the individual parts accordingly
+--- GUI.lua.
+-- Controls the displays and manages its individual parts according to the user's settings
+-- @section GUI
+
 
 local addonName, TotalAP = ...
 

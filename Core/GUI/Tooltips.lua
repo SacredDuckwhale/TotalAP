@@ -41,7 +41,7 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 	
 	-- Load cached values
 	local numTraitsPurchased = TotalAP.Cache.GetValue(fqcn, specID, "numTraitsPurchased")
-	local inBagsTotalAP = TotalAP.Globals.inBagsTotalAP
+	local inBagsTotalAP = TotalAP.inBagsTotalAP
 	local maxAvailableAP = TotalAP.Cache.GetValue(fqcn, specID, "thisLevelUnspentAP") + inBagsTotalAP
 	local tier = TotalAP.Cache.GetValue(fqcn, specID, "artifactTier")
 	

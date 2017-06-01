@@ -13,10 +13,12 @@
     -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------------------------------------------------
 
+--- Aggregates any logic pertaining to the presentation of data, as well as its layout
+-- @module GUI
 
--- [[ Config.lua ]]
--- Handling of the config GUI (via AceConfig-3.0 library)
-
+--- Config.lua.
+-- Manages the appearance, layout, and functionality of the config GUI (via AceConfig-3.0 library)
+-- @section Config
 
 -- Default settings DB (TODO: Replace defaultSettings in the current DBHandler module)
 

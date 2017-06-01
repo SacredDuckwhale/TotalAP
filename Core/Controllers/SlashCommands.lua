@@ -13,9 +13,12 @@
     -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------------------------------------------------
 
+--- Controllers\SlashCommands
+-- @module Controllers
 
--- SlashCommands.lua
--- Handling of slash commands (duh)
+--- SlashCommands.lua.
+-- Handling of slash commands and console-based operations
+-- @section SlashCommands
 
 local addonName, TotalAP = ...
 

@@ -60,7 +60,7 @@
 	-- end
 -- end
 
----	Consists of various utilities that make working with things easier across all other modules
+---	Consists of various utilities that make working with things easier across modules
 -- @module Utils
 
 
