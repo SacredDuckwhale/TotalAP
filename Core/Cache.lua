@@ -13,16 +13,25 @@
     -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------------------------------------------------
 
--- [[ Cache.lua ]]
--- Interface for the addon's progress cache (stored via SavedVars) -- TODO: Can AceDB handle this, or should it be restricted to settings only?
+--- 
+-- @module Core
+
+--- Cache.lua.
+-- Provides an interface for the addon's progress cache (stored via SavedVars).
+-- @section Cache
+
 
 local addonName, TotalAP = ...
 
 if not TotalAP then return end
 
 
--- Return "empty" entry / default values for a spec that hasn't been scanned yet (values are nil, so that specs that haven't been cached yet can be detected but it doesn't break the API/addon)
-local function GetDefaults()
+--- Returns the base structure for an "empty" cache entry.
+-- It contains values for a spec that hasn't been scanned yet, where all values are nil except "isIgnored" (which is FALSE)
+-- This is so that specs that haven't been cached yet can be detected, but won't cause errors when their cache entries are being accessed
+-- @return A newly-created table with predefined keys and the setting for "ignore spec" disabled
+-- @usage GetDefaults() -> { ["numTraitsPurchased"] = nil, ["thisLevelUnspentAP"] = nil, ["artifactTier"] = nil, ["isIgnored"] = false }
+local function GetDefaults() -- TODO Is this even necessary? Surely the ignore methods could check for nil instead
 
 	local defaultValues = {
 			["numTraitsPurchased"] = nil,
@@ -35,16 +44,19 @@ local function GetDefaults()
 		
 end
 
--- Returns a reference to the currently used SavedVars (cache) object
-local function GetReference()
-	-- TODO: LoadAddonMetadata("TotalAP", "SavedVars") ?
-	-- TODO: provide interface for AceDB via this handler ?
-	
+--- Returns a reference to the underlying SavedVars (cache) object
+-- @returns  A reference to the cache database table itself
+local function GetReference() -- TODO: AceDB can handle this
+
 	return TotalArtifactPowerCache
 	
 end
 
--- Returns the entire cache entry for a given character and spec
+--- Returns the entire cache entry for a given character and spec
+-- @param fqcn Fully-qualified character name, to be used as the key
+-- @param specID Specialization ID, to be used as the secondary key
+-- @returns The table representing the cache entry if one exists; nil otherwise
+-- @usage GetEntry("Duckwhale - Outland", 1) ->  { ["numTraitsPurchased"] = 15, ["thisLevelUnspentAP"] = 235000, ["artifactTier"] = 1, ["isIgnored"] = false }
 local function GetEntry(fqcn, specID)
 
 	local cache = GetReference()
@@ -60,8 +72,12 @@ local function GetEntry(fqcn, specID)
 	
 end
 
-
--- Add a new entry for the respective character (key => char - realm) spec. Will us values given via defaults table
+--- Add a new cache entry for the respective character/spec, and optionally sets it to predefined values (uses empty "default" entry if none was given)
+-- @param fqcn Fully-qualified character name, to be used as the primary key
+-- @param specID Specialization ID, to be used as the secondary key
+-- @param[opt] defaults A table containing default entries that should be used
+-- @returns The newly-created entry (as a table) if creation was successful; nil otherwise
+-- @usage NewEntry("Duckwhale - Outland", 2) ->  { ["numTraitsPurchased"] = nil, ["thisLevelUnspentAP"] = nil, ["artifactTier"] = nil, ["isIgnored"] = false }
 local function NewEntry(fqcn, specID, defaults)
 	
 	local cache = GetReference() -- using API so name changes will carry over to this function
@@ -95,9 +111,16 @@ local function NewEntry(fqcn, specID, defaults)
 		
 	end
 	
+	return cache[fqcn][specID]
+	
 end
 
--- Updates an existing entry for the respective character and spec with the given values
+--- Updates an existing entry for the respective character and spec with the given values
+-- @param fqcn Fully qualified character name, to be used as the primary key
+-- @param specID Specialization ID, to be used as the secondary key
+-- @param updateValues A table representing the new entry, to replace any existing entry with
+-- @return true if the update was successful; nil otherwise
+-- @usage UpdateEntry("Duckwhale - Outland", 3, { ["numTraitsPurchased"] = 15, ["thisLevelUnspentAP"] = 235000, ["artifactTier"] = 1, ["isIgnored"] = false }  -> true
 local function UpdateEntry(fqcn, specID, updateValues)
 
 	local cache = GetReference()
@@ -123,7 +146,11 @@ local function UpdateEntry(fqcn, specID, updateValues)
 	return true
 end
 
--- Returns the cached value of the respective character and spec for a given key
+--- Returns the cached value of the respective character and spec for a given key
+-- @param fqcn Fully-qualified character name, to be used as the primary key
+-- @param specID Specialization ID, to be used as the secondary key
+-- @param key The key used to look up values inside of the cache entry
+-- @usage GetValue("Duckwhale - Outland", 3, "numTraitsPurchased") -> 15
 local function GetValue(fqcn, specID, key)
 
 	if not (fqcn and specID) then -- Parameters given were invalid
@@ -155,8 +182,10 @@ local function GetValue(fqcn, specID, key)
 
 end
 
--- Returns the number of ignored specs for a given character (defaults to currently used character if none is given)
-local function GetNumIgnoredSpecs(fqcn) -- TODO: Move to Cache
+--- Returns the number of ignored specs for a given character (defaults to currently used character if none is given)
+-- @param[opt] fqcn Fully qualified character name, to be used as the primary key
+-- @return Number of ignored specs; 0 if none are cached
+local function GetNumIgnoredSpecs(fqcn)
 	
 	if not fqcn then -- Use currently logged in character
 		fqcn = TotalAP.Utils.GetFQCN() 

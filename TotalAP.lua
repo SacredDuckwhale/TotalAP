@@ -3,7 +3,7 @@
     -- it under the terms of the GNU General Public License as published by
     -- the Free Software Foundation, either version 3 of the License, or
     -- (at your option) any later version.
-	
+
     -- This program is distributed in the hope that it will be useful,
     -- but WITHOUT ANY WARRANTY; without even the implied warranty of
     -- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -14,8 +14,13 @@
 ----------------------------------------------------------------------------------------------------------------------
 
 
--- TotalAP.lua (AKA main, core, what have you ...)
--- Sets up the addon, db, libraries etc. - basic startup stuff (TODO: Does much more currently, but migration/refactoring is in progress ;)
+--- Contains low-level interfaces for interacting with the data (DB, SavedVars) and WoW's Lua environment itself
+-- @module Core
+
+--- TotalAP.lua.
+-- This is the addon loader, which performs various startup tasks.
+-- @section TotalAP
+
 
 -- Libraries: If they fail to load, TotalAP shouldn't load either
 local AceAddon = LibStub("AceAddon-3.0"):NewAddon("TotalAP", "AceConsole-3.0"); -- AceAddon object -> local because it's not really needed elsewhere

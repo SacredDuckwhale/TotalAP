@@ -17,10 +17,13 @@
 --]]
 
 
--- [[ DB.lua ]]
--- Interface for the addon's static database (= all files stored in the \DB\ folder)
+--- 
+-- @module Core
 
--- TODO: Let AceDB handle TotalArtifactPowerSettings (formerly handled by DBHandler, which is now DB.lua and acts as an interface for TotalAP.DB (formerly TotalArtifactsPowerDB)), and repurpose the DBHandler for the "actual" DB (itemEffects and such), also split into DBHandler and CacheHandler (in Core\Controllers?)
+--- DB.lua.
+-- Provides an interface for the addon's static database (i.e., all files stored in the \DB\ folder)
+-- @section DB
+
 
 local addonName, TotalAP = ...
 
@@ -64,7 +67,7 @@ local function GetArtifactItemID(classID, specID)
 	
 end	
 
----- Artifact items (tokens) DB // TODO: Actually, itemEffectsDB would be a more fitting name... but it serves as DB for the items themselves
+-- Artifact items (tokens) DB // TODO: Actually, itemEffectsDB would be a more fitting name... but it serves as DB for the items themselves
 
 -- Returns a reference to the item effects DB (spell effects)
 local function GetItemEffects()

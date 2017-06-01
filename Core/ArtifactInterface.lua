@@ -17,8 +17,14 @@
 --]]
 
 
--- [[ ArtifactInterface.lua ]]
--- Utilities and interaction with Blizzard's ArtifactUI (as well as Artifact Knowledge/Research Notes, which are accessed via GarrisonUI)
+--- 
+-- @module Core
+
+--- ArtifactInterface.lua.
+-- Provides utilities and manages interaction with Blizzard's ArtifactUI (as well as Artifact Knowledge/Research Notes, which are accessed via GarrisonUI)
+-- @section ArtifactInterface
+
+
 -- Note: Most of these are just thin wrappers / already available elsewhere, but API changes will be easier to maintain if they're all in one place
 
 local addonName, T = ...

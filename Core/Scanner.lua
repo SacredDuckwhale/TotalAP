@@ -13,12 +13,20 @@
     -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------------------------------------------------
 
+---
+-- @module Core
+
+--- Scanner.lua.
+-- Handles scanning of spell descriptions for artifact power tokens
+-- @section Scanner
+
+
 local addonName, TotalAP = ...
 
 
--- TODO: This and some other modules are probably misplaced (Scanner = Utils, DBHandler = ??, ... if there's even a point in reusing their functionality)
-
--- Look up string-characters and return their regexp pattern string (purely for ease of use and readability)
+--- Looks up string-characters to find their regexp pattern string (purely for ease of use and readability)
+-- @param c The character that the pattern should represent
+-- @return The Lua-expression pattern that can be used to match this character
 local function RegexEscapeChar(c)
 	
 	local esc = {
@@ -34,7 +42,10 @@ local function RegexEscapeChar(c)
 end
 
 
--- Scans spell description and extracts AP amount based on locale (as they use different formats to display the numbers)
+--- Scans spell description and extracts AP amount based on locale (some use different formats to display numbers)
+-- @param spellDescription The localized spell description text as returned by the WOW API
+-- @param[opt] localeString The locale in the typical format (enUS, deDE, frFR, ...). Defaults to currently active locale if omitted
+-- @return The number of artifact power that this spell will apply to the current artifact
 local function ParseSpellDesc(spellDescription, localeString)
 	
 	-- 7.2 AP number format detection (should work for > 1 billion and all locales)
