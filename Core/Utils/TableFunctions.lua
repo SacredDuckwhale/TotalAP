@@ -13,12 +13,23 @@
     -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------------------------------------------------
 
+
+---	Consists of various utilities that make working with things easier across all other modules
+-- @module Utils
+
+--- TableFunctions.lua.
+-- Utilities for dealing with tables
+-- @section TableFunctions
+
+
 local addonName, T = ...
 
 
--- Compares two tables, and replaces mismatching entries in t2 with those from t1 (with t2 and t2 being used recursively, while targetTable remains the original table reference)
--- targetTable will have mismatching entries replaced by those from t1[lastTableKey]
--- TODO: Well, this is kind of confusing, isn't it? I'm sure it could be optimised somewhat, if only for readability
+--- Compares two tables, and replaces mismatching entries in t2 with those from t1 (with t2 and t2 being used recursively, while targetTable remains the original table reference)
+-- @p t1 The master table
+-- @p t2 The table that is to be checked against the master table
+-- @p targetTable Temporary table based on t2 that will have mismatching entries replaced by those from t1[lastTableKey]
+-- @p lastTableKey The key last used before entering a new recursion
 local function CompareTables(t1, t2, targetTable, lastTableKey)
    
    if not lastTableKey then lastTableKey = "<none>" end

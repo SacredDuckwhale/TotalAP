@@ -14,13 +14,25 @@
 ----------------------------------------------------------------------------------------------------------------------
 
 
--- [[ Format.lua ]]
--- Number formatting functions
+---	Consists of various utilities that make working with things easier across all other modules
+-- @module Utils
+
+--- Format.lua.
+-- Utilities for number formatting and parsing
+-- @section Format
+
 
 local addonName, T = ...
 
 
- -- Format number as short (15365 = 15.3k etc.)
+ --- Format number as short textual representation
+ -- Adheres to international standards for orders of magnitude ('k' for thousands, 'm' for millions, etc.)
+ -- @param value The number (value) to be formatted
+ -- @param[opt] format Whether or not the formatting should be applied directly. Will return the original value alongside a format string that can be used with string.format(...) otherwise
+ -- @return The formatted output if the 'format' parameter was given; a format string otherwise
+ -- @return[opt] The number this formatted string can be applied to in order to obtain the same textual representation; nil if the 'format' parameter wasn't given
+ -- @usage FormatShort(15365, true) -> "15.3k"
+ -- @usage FormatShort(15365) -> { "%.1fk", 15.365 }
  local function FormatShort(value,format) 
  
 	if type(value) == "number" then
