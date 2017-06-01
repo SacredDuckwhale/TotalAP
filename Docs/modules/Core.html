@@ -1,0 +1,424 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>TotalAP Docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>TotalAP</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#TotalAP_lua">TotalAP.lua </a></li>
+<li><a href="#Cache_lua">Cache.lua </a></li>
+<li><a href="#Scanner_lua">Scanner.lua </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/Controllers.html">Controllers</a></li>
+  <li><strong>Core</strong></li>
+  <li><a href="../modules/GUI.html">GUI</a></li>
+  <li><a href="../modules/Utils.html">Utils</a></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/Init.lua.html">Init.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>Core</code></h1>
+<p>Contains low-level interfaces for interacting with the data (DB, SavedVars) and WoW's Lua environment itself</p>
+<p></p>
+
+
+<h2><a href="#TotalAP_lua">TotalAP.lua </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#AceAddon:OnEnable">AceAddon:OnEnable ()</a></td>
+	<td class="summary">Called on PLAYER_LOGIN or ADDON_LOADED (if addon is loaded-on-demand)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#AceAddon:OnInitialize">AceAddon:OnInitialize ()</a></td>
+	<td class="summary">Called on ADDON_LOADED</td>
+	</tr>
+</table>
+<h2><a href="#Cache_lua">Cache.lua </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GetDefaults">GetDefaults ()</a></td>
+	<td class="summary">Returns the base structure for an "empty" cache entry.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetEntry">GetEntry (fqcn, specID)</a></td>
+	<td class="summary">Returns the entire cache entry for a given character and spec</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetNumIgnoredSpecs">GetNumIgnoredSpecs ([fqcn])</a></td>
+	<td class="summary">Returns the number of ignored specs for a given character (defaults to currently used character if none is given)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetReference">GetReference ()</a></td>
+	<td class="summary">Returns a reference to the underlying SavedVars (cache) object</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetValue">GetValue (fqcn, specID, key)</a></td>
+	<td class="summary">Returns the cached value of the respective character and spec for a given key</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#NewEntry">NewEntry (fqcn, specID[, defaults])</a></td>
+	<td class="summary">Add a new cache entry for the respective character/spec, and optionally sets it to predefined values (uses empty "default" entry if none was given)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#UpdateEntry">UpdateEntry (fqcn, specID, updateValues)</a></td>
+	<td class="summary">Updates an existing entry for the respective character and spec with the given values</td>
+	</tr>
+</table>
+<h2><a href="#Scanner_lua">Scanner.lua </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#ParseSpellDesc">ParseSpellDesc (spellDescription[, localeString])</a></td>
+	<td class="summary">Scans spell description and extracts AP amount based on locale (some use different formats to display numbers)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#RegexEscapeChar">RegexEscapeChar (c)</a></td>
+	<td class="summary">Looks up string-characters to find their regexp pattern string (purely for ease of use and readability)</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header has-description"><a name="TotalAP_lua"></a>TotalAP.lua </h2>
+
+          <div class="section-description">
+
+ This is the addon loader, which performs various startup tasks.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "AceAddon:OnEnable"></a>
+    <strong>AceAddon:OnEnable ()</strong>
+    </dt>
+    <dd>
+    Called on PLAYER_LOGIN or ADDON_LOADED (if addon is loaded-on-demand)
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "AceAddon:OnInitialize"></a>
+    <strong>AceAddon:OnInitialize ()</strong>
+    </dt>
+    <dd>
+    Called on ADDON_LOADED
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Cache_lua"></a>Cache.lua </h2>
+
+          <div class="section-description">
+
+ Provides an interface for the addon's progress cache (stored via SavedVars).
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "GetDefaults"></a>
+    <strong>GetDefaults ()</strong>
+    </dt>
+    <dd>
+    Returns the base structure for an "empty" cache entry.
+ It contains values for a spec that hasn't been scanned yet, where all values are nil except "isIgnored" (which is FALSE)
+ This is so that specs that haven't been cached yet can be detected, but won't cause errors when their cache entries are being accessed
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        A newly-created table with predefined keys and the setting for "ignore spec" disabled
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">GetDefaults() -&gt; { [<span class="string">"numTraitsPurchased"</span>] = <span class="keyword">nil</span>, [<span class="string">"thisLevelUnspentAP"</span>] = <span class="keyword">nil</span>, [<span class="string">"artifactTier"</span>] = <span class="keyword">nil</span>, [<span class="string">"isIgnored"</span>] = <span class="keyword">false</span> }</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "GetEntry"></a>
+    <strong>GetEntry (fqcn, specID)</strong>
+    </dt>
+    <dd>
+    Returns the entire cache entry for a given character and spec
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fqcn</span>
+         Fully-qualified character name, to be used as the key
+        </li>
+        <li><span class="parameter">specID</span>
+         Specialization ID, to be used as the secondary key
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">GetEntry(<span class="string">"Duckwhale - Outland"</span>, <span class="number">1</span>) -&gt;  { [<span class="string">"numTraitsPurchased"</span>] = <span class="number">15</span>, [<span class="string">"thisLevelUnspentAP"</span>] = <span class="number">235000</span>, [<span class="string">"artifactTier"</span>] = <span class="number">1</span>, [<span class="string">"isIgnored"</span>] = <span class="keyword">false</span> }</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "GetNumIgnoredSpecs"></a>
+    <strong>GetNumIgnoredSpecs ([fqcn])</strong>
+    </dt>
+    <dd>
+    Returns the number of ignored specs for a given character (defaults to currently used character if none is given)
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fqcn</span>
+         Fully qualified character name, to be used as the primary key
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Number of ignored specs; 0 if none are cached
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetReference"></a>
+    <strong>GetReference ()</strong>
+    </dt>
+    <dd>
+    Returns a reference to the underlying SavedVars (cache) object
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetValue"></a>
+    <strong>GetValue (fqcn, specID, key)</strong>
+    </dt>
+    <dd>
+    Returns the cached value of the respective character and spec for a given key
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fqcn</span>
+         Fully-qualified character name, to be used as the primary key
+        </li>
+        <li><span class="parameter">specID</span>
+         Specialization ID, to be used as the secondary key
+        </li>
+        <li><span class="parameter">key</span>
+         The key used to look up values inside of the cache entry
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">GetValue(<span class="string">"Duckwhale - Outland"</span>, <span class="number">3</span>, <span class="string">"numTraitsPurchased"</span>) -&gt; <span class="number">15</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "NewEntry"></a>
+    <strong>NewEntry (fqcn, specID[, defaults])</strong>
+    </dt>
+    <dd>
+    Add a new cache entry for the respective character/spec, and optionally sets it to predefined values (uses empty "default" entry if none was given)
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fqcn</span>
+         Fully-qualified character name, to be used as the primary key
+        </li>
+        <li><span class="parameter">specID</span>
+         Specialization ID, to be used as the secondary key
+        </li>
+        <li><span class="parameter">defaults</span>
+         A table containing default entries that should be used
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">NewEntry(<span class="string">"Duckwhale - Outland"</span>, <span class="number">2</span>) -&gt;  { [<span class="string">"numTraitsPurchased"</span>] = <span class="keyword">nil</span>, [<span class="string">"thisLevelUnspentAP"</span>] = <span class="keyword">nil</span>, [<span class="string">"artifactTier"</span>] = <span class="keyword">nil</span>, [<span class="string">"isIgnored"</span>] = <span class="keyword">false</span> }</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "UpdateEntry"></a>
+    <strong>UpdateEntry (fqcn, specID, updateValues)</strong>
+    </dt>
+    <dd>
+    Updates an existing entry for the respective character and spec with the given values
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fqcn</span>
+         Fully qualified character name, to be used as the primary key
+        </li>
+        <li><span class="parameter">specID</span>
+         Specialization ID, to be used as the secondary key
+        </li>
+        <li><span class="parameter">updateValues</span>
+         A table representing the new entry, to replace any existing entry with
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        true if the update was successful; nil otherwise
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">UpdateEntry(<span class="string">"Duckwhale - Outland"</span>, <span class="number">3</span>, { [<span class="string">"numTraitsPurchased"</span>] = <span class="number">15</span>, [<span class="string">"thisLevelUnspentAP"</span>] = <span class="number">235000</span>, [<span class="string">"artifactTier"</span>] = <span class="number">1</span>, [<span class="string">"isIgnored"</span>] = <span class="keyword">false</span> }  -&gt; <span class="keyword">true</span></pre>
+    </ul>
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Scanner_lua"></a>Scanner.lua </h2>
+
+          <div class="section-description">
+
+ Handles scanning of spell descriptions for artifact power tokens
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "ParseSpellDesc"></a>
+    <strong>ParseSpellDesc (spellDescription[, localeString])</strong>
+    </dt>
+    <dd>
+    Scans spell description and extracts AP amount based on locale (some use different formats to display numbers)
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">spellDescription</span>
+         The localized spell description text as returned by the WOW API
+        </li>
+        <li><span class="parameter">localeString</span>
+         The locale in the typical format (enUS, deDE, frFR, ...). Defaults to currently active locale if omitted
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The number of artifact power that this spell will apply to the current artifact
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "RegexEscapeChar"></a>
+    <strong>RegexEscapeChar (c)</strong>
+    </dt>
+    <dd>
+    Looks up string-characters to find their regexp pattern string (purely for ease of use and readability)
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">c</span>
+         The character that the pattern should represent
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The Lua-expression pattern that can be used to match this character
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-06-01 21:56:02 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

@@ -22,6 +22,7 @@ externals:
         tag: latest
 
 ignore:
+ - Docs/
  - scrapewhale.lua
 
  

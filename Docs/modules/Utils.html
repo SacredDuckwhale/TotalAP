@@ -1,0 +1,319 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>TotalAP Docs</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>TotalAP</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Colours_lua">Colours.lua </a></li>
+<li><a href="#FQCN_lua">FQCN.lua </a></li>
+<li><a href="#Format_lua">Format.lua </a></li>
+<li><a href="#TableFunctions_lua">TableFunctions.lua </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/Controllers.html">Controllers</a></li>
+  <li><a href="../modules/Core.html">Core</a></li>
+  <li><a href="../modules/GUI.html">GUI</a></li>
+  <li><strong>Utils</strong></li>
+</ul>
+<h2>Scripts</h2>
+<ul class="nowrap">
+  <li><a href="../scripts/Init.lua.html">Init.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>Utils</code></h1>
+<p>Consists of various utilities that make working with things easier across modules</p>
+<p></p>
+
+
+<h2><a href="#Colours_lua">Colours.lua </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#HexToRGB">HexToRGB (hexString)</a></td>
+	<td class="summary">Translates HTML colour codes to RGB values</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#RGBToHex">RGBToHex (r, g, b[, addPrefix])</a></td>
+	<td class="summary">Translates RGB values to HTML colour codes</td>
+	</tr>
+</table>
+<h2><a href="#FQCN_lua">FQCN.lua </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GetFQCN">GetFQCN ([characterName[, realm]])</a></td>
+	<td class="summary">Build a fully-qualified character name from the given character and realm names (uses the current character if none are given)</td>
+	</tr>
+</table>
+<h2><a href="#Format_lua">Format.lua </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#FormatShort">FormatShort (value[, format])</a></td>
+	<td class="summary">Format number as short textual representation
+ Adheres to international standards for orders of magnitude ('k' for thousands, 'm' for millions, etc.)</td>
+	</tr>
+</table>
+<h2><a href="#TableFunctions_lua">TableFunctions.lua </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#CompareTables">CompareTables (t1, t2, targetTable, lastTableKey)</a></td>
+	<td class="summary">Compares two tables, and replaces mismatching entries in t2 with those from t1 (with t2 and t2 being used recursively, while targetTable remains the original table reference)</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header has-description"><a name="Colours_lua"></a>Colours.lua </h2>
+
+          <div class="section-description">
+
+ Utilities for dealing with and translating between different ways of representing colours
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "HexToRGB"></a>
+    <strong>HexToRGB (hexString)</strong>
+    </dt>
+    <dd>
+    Translates HTML colour codes to RGB values
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">hexString</span>
+         A string representing a colour code in hexadecimal/HTML notation (the leading '#' symbol is optional)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        Red value; 0 if invalid string was given</li>
+        <li>
+        Green value; 0 if invalid string was given</li>
+        <li>
+        Blue value; 0 if invalid string was given</li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">HexToRGB(<span class="string">"#FFFEFD"</span>) -&gt; { <span class="number">255</span>, <span class="number">254</span>, <span class="number">253</span> }</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "RGBToHex"></a>
+    <strong>RGBToHex (r, g, b[, addPrefix])</strong>
+    </dt>
+    <dd>
+    Translates RGB values to HTML colour codes
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">r</span>
+         Red value
+        </li>
+        <li><span class="parameter">g</span>
+         Green value
+        </li>
+        <li><span class="parameter">b</span>
+         Blue value
+        </li>
+        <li><span class="parameter">addPrefix</span>
+         Whether or not to prefix the result with a '#' symbol (as used in HTML notation)
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The hexadecimal/HTML representation of the colour
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">RGBToHex(<span class="number">0</span>, <span class="number">255</span>, <span class="number">1</span>) -&gt; <span class="string">"00FF01"</span></pre></li>
+        <li><pre class="example">RGBToHex(<span class="number">0</span>, <span class="number">255</span>, <span class="number">1</span>, <span class="keyword">true</span>) -&gt; <span class="string">"#00FF01"</span></pre></li>
+    </ul>
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="FQCN_lua"></a>FQCN.lua </h2>
+
+          <div class="section-description">
+
+ Utilities for dealing with fully-qualified character names
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "GetFQCN"></a>
+    <strong>GetFQCN ([characterName[, realm]])</strong>
+    </dt>
+    <dd>
+    Build a fully-qualified character name from the given character and realm names (uses the current character if none are given)
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">characterName</span>
+         The name of a character
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">realm</span>
+         The realm said character exists on
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Fully-qualified character name that can directly be used as a unique lookup key for many tables
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">GetFQCN(<span class="string">"Duckwhale"</span>, <span class="string">"Outland"</span>) -&gt; <span class="string">"Duckwhale - Outland"</span></pre></li>
+        <li><pre class="example">GetFQCN() -&gt; <span class="string">"Duckwhale - Outland"</span> (<span class="keyword">if</span> this is the currently active character</pre></li>
+        <li><pre class="example">GetFQCN(<span class="string">"Swimmingly"</span>) -&gt; <span class="string">"Swimmingly - Outland"</span> (<span class="keyword">if</span> the currently active character is located on the realm <span class="string">"Outland"</span>)</pre></li>
+        <li><pre class="example">GetFQCN(<span class="keyword">nil</span>, <span class="string">"Outland"</span>) -&gt; <span class="string">"Swimmingly - Outland"</span> (<span class="keyword">if</span> <span class="string">"Swimmingly"</span> is the name of the currently active character, regardless of the realm)</pre></li>
+    </ul>
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="Format_lua"></a>Format.lua </h2>
+
+          <div class="section-description">
+
+ Utilities for number formatting and parsing
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "FormatShort"></a>
+    <strong>FormatShort (value[, format])</strong>
+    </dt>
+    <dd>
+    Format number as short textual representation
+ Adheres to international standards for orders of magnitude ('k' for thousands, 'm' for millions, etc.)
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">value</span>
+         The number (value) to be formatted
+        </li>
+        <li><span class="parameter">format</span>
+         Whether or not the formatting should be applied directly. Will return the original value alongside a format string that can be used with string.format(...) otherwise
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        The formatted output if the 'format' parameter was given; a format string otherwise</li>
+        <li>
+        The number this formatted string can be applied to in order to obtain the same textual representation; nil if the 'format' parameter wasn't given</li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example">FormatShort(<span class="number">15365</span>, <span class="keyword">true</span>) -&gt; <span class="string">"15.3k"</span></pre></li>
+        <li><pre class="example">FormatShort(<span class="number">15365</span>) -&gt; { <span class="string">"%.1fk"</span>, <span class="number">15.365</span> }</pre></li>
+    </ul>
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="TableFunctions_lua"></a>TableFunctions.lua </h2>
+
+          <div class="section-description">
+
+ Utilities for dealing with tables
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "CompareTables"></a>
+    <strong>CompareTables (t1, t2, targetTable, lastTableKey)</strong>
+    </dt>
+    <dd>
+    Compares two tables, and replaces mismatching entries in t2 with those from t1 (with t2 and t2 being used recursively, while targetTable remains the original table reference)
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t1</span>
+         The master table
+        </li>
+        <li><span class="parameter">t2</span>
+         The table that is to be checked against the master table
+        </li>
+        <li><span class="parameter">targetTable</span>
+         Temporary table based on t2 that will have mismatching entries replaced by those from t1[lastTableKey]
+        </li>
+        <li><span class="parameter">lastTableKey</span>
+         The key last used before entering a new recursion
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-06-01 21:56:02 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
