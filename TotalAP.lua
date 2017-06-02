@@ -458,11 +458,11 @@ local function UpdateSpecIcons()
 	
 	local reservedButtonWidth = 0;
 	 if settings.actionButton.enabled then	 -- No longer reposition displays to the left unless button is actually disabled entirely, since the button can be hidden temporarily without being set to invisible (if no items are in the player's inventory/the active spec is set to being ignored)
-			if TotalAPButton:GetWidth() > TotalAPButtonFontString:GetWidth() then -- Use actual button width
-			reservedButtonWidth = TotalAPButton:GetWidth() + 5
+			if TotalAPButton:GetWidth() > (TotalAPButtonFontString:GetWidth() - 5) then -- Use actual button width
+			reservedButtonWidth = max(settings.actionButton.minResize, TotalAPButton:GetWidth()) + 5
 		else -- Use button width + size of the right part of the buttonText's display (this is the only part that overlaps with the infoFrame otherwise)
-			reservedButtonWidth = TotalAPButton:GetWidth() + (TotalAPButtonFontString:GetWidth() - TotalAPButton:GetWidth()) / 2  + 5  -- TODO: 5 = spacing? (settings)
-		end	
+			reservedButtonWidth = min(settings.actionButton.maxResize, TotalAPButton:GetWidth() + (TotalAPButtonFontString:GetWidth() - TotalAPButton:GetWidth()) / 2)  + 5  -- TODO: 5 = spacing? (settings)
+		end
 	end
 	
 		-- TODO: Proper handling of alignment option / further customization
@@ -695,11 +695,13 @@ local function UpdateInfoFrame()
 	
 		-- Move bars to the left, but only if action button is actually disabled (and not hidden temporarily from not having any AP items in the player's inventory)
 	local reservedButtonWidth = 0;
-	if settings.actionButton.enabled then -- TODO: DRY / GUI -> GetReservedButtonWidth (only for DefaultView?)
-		if TotalAPButton:GetWidth() > TotalAPButtonFontString:GetWidth() then -- Use button width
-			reservedButtonWidth = TotalAPButton:GetWidth() + 5
-		else -- Use button width + size of the right part of the buttonText's display
-			reservedButtonWidth = TotalAPButton:GetWidth() + (TotalAPButtonFontString:GetWidth() - TotalAPButton:GetWidth()) / 2  + 5  -- TODO: 5 = spacing? (settings)
+	 -- TODO: DRY / GUI -> GetReservedButtonWidth (only for DefaultView?)
+
+	 if settings.actionButton.enabled then	 -- No longer reposition displays to the left unless button is actually disabled entirely, since the button can be hidden temporarily without being set to invisible (if no items are in the player's inventory/the active spec is set to being ignored)
+			if TotalAPButton:GetWidth() > (TotalAPButtonFontString:GetWidth() - 5) then -- Use actual button width
+			reservedButtonWidth = max(settings.actionButton.minResize, TotalAPButton:GetWidth()) + 5
+		else -- Use button width + size of the right part of the buttonText's display (this is the only part that overlaps with the infoFrame otherwise)
+			reservedButtonWidth = min(settings.actionButton.maxResize, TotalAPButton:GetWidth() + (TotalAPButtonFontString:GetWidth() - TotalAPButton:GetWidth()) / 2)  + 5  -- TODO: 5 = spacing? (settings)
 		end
 		
 	end
