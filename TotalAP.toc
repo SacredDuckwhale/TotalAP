@@ -3,8 +3,8 @@
 ## Author: Cakechart
 
 ## Title: TotalAP - Artifact Power Tracker
-## Title-deDE: @localization(locale="deDE", key="TotalAP - Artifact Power Tracker", namespace="Base Namespace")@
-## Title-zhTW: @localization(locale="zhTW", key="TotalAP - Artifact Power Tracker", namespace="Base Namespace")@
+## Title-deDE: @localization(locale="deDE", key="TotalAP - Artifact Power Tracker", namespace="")@
+## Title-zhTW: @localization(locale="zhTW", key="TotalAP - Artifact Power Tracker", namespace="")@
 
 ## Notes: Summarizes and displays artifact power-related information in a variety of ways
 ## Notes-ruRU: @localization(locale="ruRU", key="Notes", namespace="ToC - Table of Contents")@
