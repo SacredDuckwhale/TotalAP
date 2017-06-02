@@ -23,7 +23,6 @@ if not TotalAP then return end
 
 
 -- Shared local variables (usually those used by logic AND display, or different modules) -> Shared by means of the addon Table
-T.Globals = {} 
 TotalAP.versionString = GetAddOnMetadata("TotalAP", "Version")
 
 -- Core modules
