@@ -252,8 +252,9 @@ end
 		end
 	end
 
-	TotalAP.Globals.inBagsTotalAP = inBagsTotalAP -- This is so the value can be used by tooltips from the GUI.Tooltips module // TODO			
-	
+	-- Add to shared vars so other modules can access it
+	TotalAP.inBagsTotalAP = inBagsTotalAP
+
 end
 
 -- Toggle spell overlay (glow effect) on an action button
