@@ -24,5 +24,4 @@ externals:
 ignore:
  - Docs/
  - scrapewhale.lua
-
-  - README.MD
+ - README.MD
