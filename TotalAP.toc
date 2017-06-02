@@ -9,6 +9,17 @@
 ## Notes: Summarizes and displays artifact power-related information in a variety of ways
 ## Notes-deDE: Fasst Artefaktmacht-bezogene Informationen zusammen und zeigt sie auf verschiedene Weise an.
 ## Notes-zhTW: 只要按一個鍵或按鈕就能使用背包中所有的神兵之力、顯示每個專精的神兵之力進度。供多種方式顯示神兵之力相關的資訊和統計摘要。
+## Notes-ruRU: @localization(locale="ruRU", key="Notes", namespace="ToC - Table of Contents")@
+## Notes-deDE: @localization(locale="deDE", key="Notes", namespace="ToC - Table of Contents")@
+## Notes-koKR: @localization(locale="koKR", key="Notes", namespace="ToC - Table of Contents")@
+## Notes-esMX: @localization(locale="esMX", key="Notes", namespace="ToC - Table of Contents")@
+## Notes-esES: @localization(locale="esES", key="Notes", namespace="ToC - Table of Contents")@
+## Notes-ptBR: @localization(locale="ptBR", key="Notes", namespace="ToC - Table of Contents")@
+## Notes-zhCN: @localization(locale="zhCN", key="Notes", namespace="ToC - Table of Contents")@
+## Notes-zhTW: @localization(locale="zhTW", key="Notes", namespace="ToC - Table of Contents")@
+## Notes-itIT: @localization(locale="itIT", key="Notes", namespace="ToC - Table of Contents")@
+## Notes-frFR: @localization(locale="frFR", key="Notes", namespace="ToC - Table of Contents")@
+
 
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
