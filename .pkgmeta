@@ -25,4 +25,4 @@ ignore:
  - Docs/
  - scrapewhale.lua
 
- 
+  - README.MD
