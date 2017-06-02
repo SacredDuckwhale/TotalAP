@@ -1701,6 +1701,8 @@ end);
  
 -- Standard methods (via AceAddon) -> They use the local object and not the shared container variable (which are for the modularised functions in other lua files)
 -- TODO: Use AceConfig to create slash commands automatically for simplicity?
+
+--- Called on ADDON_LOADED
 function AceAddon:OnInitialize() -- Called on ADDON_LOADED
 	
 	LoadSettings();  -- from saved vars
@@ -1721,10 +1723,11 @@ function AceAddon:OnInitialize() -- Called on ADDON_LOADED
 	TotalAP.Controllers.RegisterKeybinds()
 end
 
-function AceAddon:OnEnable()	-- Called on PLAYER_LOGIN or ADDON_LOADED (if addon is loaded-on-demand)
-	
-	local clientVersion, clientBuild = GetBuildInfo(); 
-			
+--- Called on PLAYER_LOGIN or ADDON_LOADED (if addon is loaded-on-demand)
+function AceAddon:OnEnable()
+
+	local clientVersion, clientBuild = GetBuildInfo();
+
 			-- Those could be created earlier, BUT: Talent info isn't available sooner, and those frames are anchored to the AnchorFrame anyway -> Initial position doesn't matter as it is updated automatically (TODO: TALENT or SPEC info?)
 			
 			CreateInfoFrame();
@@ -1737,6 +1740,7 @@ function AceAddon:OnEnable()	-- Called on PLAYER_LOGIN or ADDON_LOADED (if addon
 			
 end
 
+--- Called when addon is unloaded or disabled manually
 function AceAddon:OnDisable()
 	
 	-- Shed a tear because the addon was disabled ;'(
