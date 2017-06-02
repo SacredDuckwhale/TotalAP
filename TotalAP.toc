@@ -3,8 +3,8 @@
 ## Author: Cakechart
 
 ## Title: TotalAP - Artifact Power Tracker
-## Title-deDE: TotalAP – Artefaktmachtverfolgung
-## Title-zhTW: TotalAP - 一鍵使用神兵之力
+## Title-deDE: @localization(locale="deDE", key="TotalAP - Artifact Power Tracker", namespace="Base Namespace")@
+## Title-zhTW: @localization(locale="zhTW", key="TotalAP - Artifact Power Tracker", namespace="Base Namespace")@
 
 ## Notes: Summarizes and displays artifact power-related information in a variety of ways
 ## Notes-ruRU: @localization(locale="ruRU", key="Notes", namespace="ToC - Table of Contents")@
@@ -17,7 +17,6 @@
 ## Notes-zhTW: @localization(locale="zhTW", key="Notes", namespace="ToC - Table of Contents")@
 ## Notes-itIT: @localization(locale="itIT", key="Notes", namespace="ToC - Table of Contents")@
 ## Notes-frFR: @localization(locale="frFR", key="Notes", namespace="ToC - Table of Contents")@
-
 
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
