@@ -28,13 +28,18 @@ local SharedMedia = LibStub("LibSharedMedia-3.0");  -- TODO: Not implemented yet
 local Masque = LibStub("Masque", true); -- optional (will use default client style if not found)
 
 
-local addonName, TotalAP = ...
-if not TotalAP then return end
+local addonName, T = ...
+if not T then return end
 
-local L = TotalAP.L -- Localization table
+
+TotalAP = T -- Make modules available globally (for keybinds etc.)
+local TotalAP = TotalAP -- ... but use local copy to avoid lookups in global environment
+local L = T.L -- Localization table
+
 
 -- Shorthands: Those don't do anything except save me work :P
-local aUI = C_ArtifactUI
+local aUI = C_ArtifactUI -- also avoids global lookups as a side effect
+
 
 -- Shared variables (TODO: They shouldn't be in this file, but migration is not yet complete)
 local tempItemLink, tempItemID, currentItemLink, currentItemID, currentItemTexture, currentItemAP; -- used for bag scanning and tooltip display
