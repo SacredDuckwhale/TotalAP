@@ -13,12 +13,14 @@
     -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ----------------------------------------------------------------------------------------------------------------------
 
+
 --- Aggregates any logic pertaining to the presentation of data, as well as its layout
 -- @module GUI
 
 --- Config.lua.
 -- Manages the appearance, layout, and functionality of the config GUI (via AceConfig-3.0 library)
 -- @section Config
+
 
 -- Default settings DB (TODO: Replace defaultSettings in the current DBHandler module)
 
@@ -29,6 +31,7 @@ if not TotalAP then return end
 
 -- TODO: What methods should be moved here from the GUI controller, if any?
 
+-- Stub
 local function CreateConfig()
 
 end

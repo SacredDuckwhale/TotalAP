@@ -14,8 +14,13 @@
 ----------------------------------------------------------------------------------------------------------------------
 
 
---	[[ Tooltips.lua ]]
+--- GUI\Tooltips.lua
+-- @module GUI
+
+---	Tooltips.lua.
 --	Dynamic tooltip text functions that can be hooked to the appropriate events by the GUI controller
+-- @section Tooltips
+
 
 local addonName, TotalAP = ...
 
@@ -25,8 +30,10 @@ if not TotalAP then return end
 local L = TotalAP.L
 
 
--- This is the mouseover-tooltip for progress bars, based on Blizzard's ForgeDisplay (icon to the top-left of the ArtifactFrame)
--- TODO: Split into ProgressTooltip and ArtifactKnowledgeTooltip (once the AK bar is implemented)
+--- This is the mouseover-tooltip for progress bars, based on Blizzard's ForgeDisplay (icon to the top-left of the ArtifactFrame)
+-- @param self The frame the tooltip will be attached to
+-- @param button The button that has been used to toggle the triggering event (Note: This isn't actually relevant here)
+-- @param[opt] hide Whether or not the tooltip will be hidden. Defaults to false
 local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 
 	local specID = tonumber((self:GetName()):match("(%d+)$")) -- Derive spec from frame's name, as they're numbered accordingly -> e.g., TotalAPProgressBar1 for spec = 1
@@ -85,12 +92,18 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 	
 end
 
+--- Show artifact knowledge tooltip (alias for ArtifactKnowledgeTooltipFunction with hide = false)
+-- @param self The frame the tooltip will be attached to
+-- @param button The button that has been used to toggle the triggering event (Note: This isn't actually relevant here)
 local function ShowArtifactKnowledgeTooltip(self, button)
 
 	ArtifactKnowledgeTooltipFunction(self, button)
 
 end
 
+--- Hide artifact knowledge tooltip (alias for ArtifactKnowledgeTooltipFunction with hide = true)
+-- @param self The frame the tooltip will be attached to
+-- @param button The button that has been used to toggle the triggering event (Note: This isn't actually relevant here)
 local function HideArtifactKnowledgeTooltip(self, button)
 
 	ArtifactKnowledgeTooltipFunction(self, button, true)
@@ -98,7 +111,10 @@ local function HideArtifactKnowledgeTooltip(self, button)
 end
 
 
--- Displayed on mouseover for the spec icons (used to activate/ignore specs)
+--- Tooltip that is displayed on mouseover for the spec icons (used to activate/ignore specs)
+-- @param self The frame the tooltip will be attached to
+-- @param button The button that has been used to toggle the triggering event (Note: This isn't actually relevant here)
+-- @param[opt] hide Whether or not the tooltip will be hidden. Defaults to false
 local function SpecIconTooltipFunction(self, button, hide)  
 	
 	local specID = tonumber((self:GetName()):match("(%d)$")) -- e.g., TotalAPSpecIconButton1 for spec = 1
@@ -129,12 +145,18 @@ local function SpecIconTooltipFunction(self, button, hide)
 	
 end
 
+--- Show spec icon tooltip (alias for SpecIconTooltipFunction with hide = false)
+-- @param self The frame the tooltip will be attached to
+-- @param button The button that has been used to toggle the triggering event (Note: This isn't actually relevant here)
 local function ShowSpecIconTooltip(self, button)
 
 	SpecIconTooltipFunction(self, button)
 
 end
 
+--- Show spec icon tooltip (alias for SpecIconTooltipFunction with hide = true)
+-- @param self The frame the tooltip will be attached to
+-- @param button The button that has been used to toggle the triggering event (Note: This isn't actually relevant here)
 local function HideSpecIconTooltip(self, button)
 
 	SpecIconTooltipFunction(self, button, true)
@@ -148,5 +170,6 @@ TotalAP.GUI.Tooltips = {
 	ShowArtifactKnowledgeTooltip = ShowArtifactKnowledgeTooltip,
 	HideArtifactKnowledgeTooltip = HideArtifactKnowledgeTooltip,
 }
+
 
 return TotalAP.GUI.Tooltips
