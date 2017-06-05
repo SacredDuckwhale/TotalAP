@@ -458,11 +458,11 @@ local function UpdateSpecIcons()
 	
 	local reservedButtonWidth = 0;
 	 if settings.actionButton.enabled then	 -- No longer reposition displays to the left unless button is actually disabled entirely, since the button can be hidden temporarily without being set to invisible (if no items are in the player's inventory/the active spec is set to being ignored)
-			if TotalAPButton:GetWidth() > (TotalAPButtonFontString:GetWidth() - 5) then -- Use actual button width
-			reservedButtonWidth = max(settings.actionButton.minResize, TotalAPButton:GetWidth()) + 5
-		else -- Use button width + size of the right part of the buttonText's display (this is the only part that overlaps with the infoFrame otherwise)
-			reservedButtonWidth = min(settings.actionButton.maxResize, TotalAPButton:GetWidth() + (TotalAPButtonFontString:GetWidth() - TotalAPButton:GetWidth()) / 2)  + 5  -- TODO: 5 = spacing? (settings)
-		end
+			if settings.actionButton.showText then -- Increase space to the right to avoid buttonText from overlapping in case of large numbers in the summary
+				reservedButtonWidth = TotalAPButton:GetWidth() + 10
+			else
+				reservedButtonWidth = TotalAPButton:GetWidth() + 5
+			end
 	end
 	
 		-- TODO: Proper handling of alignment option / further customization
@@ -698,12 +698,11 @@ local function UpdateInfoFrame()
 	 -- TODO: DRY / GUI -> GetReservedButtonWidth (only for DefaultView?)
 
 	 if settings.actionButton.enabled then	 -- No longer reposition displays to the left unless button is actually disabled entirely, since the button can be hidden temporarily without being set to invisible (if no items are in the player's inventory/the active spec is set to being ignored)
-			if TotalAPButton:GetWidth() > (TotalAPButtonFontString:GetWidth() - 5) then -- Use actual button width
-			reservedButtonWidth = max(settings.actionButton.minResize, TotalAPButton:GetWidth()) + 5
-		else -- Use button width + size of the right part of the buttonText's display (this is the only part that overlaps with the infoFrame otherwise)
-			reservedButtonWidth = min(settings.actionButton.maxResize, TotalAPButton:GetWidth() + (TotalAPButtonFontString:GetWidth() - TotalAPButton:GetWidth()) / 2)  + 5  -- TODO: 5 = spacing? (settings)
-		end
-		
+			if settings.actionButton.showText then -- Increase space to the right to avoid buttonText from overlapping in case of large numbers in the summary
+				reservedButtonWidth = TotalAPButton:GetWidth() + 10
+			else
+				reservedButtonWidth = TotalAPButton:GetWidth() + 5
+			end
 	end
 	
 	TotalAPInfoFrame:ClearAllPoints(); 
