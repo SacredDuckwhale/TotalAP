@@ -58,8 +58,7 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 	local knowledgeLevel = TotalAP.ArtifactInterface.GetArtifactKnowledgeLevel() 
 	
 	-- Calculate shipment data (for Artifact Research Notes)
-	local shipmentsReady = TotalAP.ArtifactInterface.GetNumAvailableResearchNotes()
-	local shipmentsTotal = 2 -- Could use the same interface (maxShipments is returned by the API), but no more than 2 can actually be queued anyway... so, whatever
+	local shipmentsReady, shipmentsTotal = TotalAP.ArtifactInterface.GetNumAvailableResearchNotes()
 	local timeLeft, timeLeftString = TotalAP.ArtifactInterface.GetTimeUntilNextResearchNoteIsReady()
 
 	  GameTooltip:SetOwner(self, "ANCHOR_CURSOR")

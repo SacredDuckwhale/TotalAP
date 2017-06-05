@@ -45,7 +45,7 @@ local function GetResearchNotesShipmentInfo()
       
       for i = 1, #looseShipments do -- Find Research Notes
          
-         local name, texture, shipmentCapacity, shipmentsReady, shipmentsTotal, creationTime, duration, timeleftString, itemName, itemTexture, itemID  = C_Garrison.GetLandingPageShipmentInfoByContainerID (looseShipments [i])
+         local name, texture, shipmentCapacity, shipmentsReady, shipmentsTotal, creationTime, duration, timeLeftString, itemName, itemTexture, itemID  = C_Garrison.GetLandingPageShipmentInfoByContainerID (looseShipments [i])
        --  if name and creationTime and creationTime > 0 and texture == 237446 then -- Shipment is Artifact Research Notes
         if name and texture == 237446 then -- Shipment is Artifact Research Notes
                
@@ -55,7 +55,7 @@ local function GetResearchNotesShipmentInfo()
 				timeLeft = duration - elapsedTime
 			 end  
         
-            return name, timeleftString, timeLeft, elapsedTime, shipmentsReady, shipmentsTotal, itemName
+            return name, timeLeftString, timeLeft, elapsedTime, shipmentsReady, shipmentsTotal, itemName
             
          end
          
@@ -68,7 +68,10 @@ end
 -- Returns the number of Artifact Research Notes that are ready for pickup
 local function GetNumAvailableResearchNotes()
 
-	return select(5, GetResearchNotesShipmentInfo()) or 0
+	local shipmentsReady = select(5, GetResearchNotesShipmentInfo()) or 0
+	local shipmentsTotal = select(6, GetResearchNotesShipmentInfo()) or 0
+	
+	return shipmentsReady, shipmentsTotal
 
 end
 
