@@ -1513,7 +1513,7 @@ local function CreateActionButton()
 		end)
 
 		
-		--- Will display the currently mapped item's AP amount (if enabled) later
+		-- Will display the currently mapped item's AP amount (if enabled) later
 		TotalAPButtonFontString = TotalAPButton:CreateFontString("TotalAPButtonFontString", "OVERLAY", "GameFontNormal");
 		--TotalAPButtonFontString:SetTextColor(0x00/255,0xCC/255,0x80/255,1) -- TODO. via settings
 		
