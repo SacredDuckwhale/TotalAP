@@ -61,16 +61,13 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 	local shipmentsReady, shipmentsTotal = TotalAP.ArtifactInterface.GetNumAvailableResearchNotes()
 	local timeLeft, timeLeftString = TotalAP.ArtifactInterface.GetTimeUntilNextResearchNoteIsReady()
 
-	  GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
+	 GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
 	  
     if artifactName then
 		GameTooltip:AddLine(format("%s", artifactName), 230/255, 204/255, 128/255)
 	end
       
-	  -- TODO: Split into two tooltips -> this => ProgressBarTooltip and AK Tooltip for separate research bar/indicator (not yet implemented)
-    if numTraitsPurchased > 0 then
-		GameTooltip:AddLine(format(L["Total Ranks Purchased: %d"],  numTraitsPurchased), 1, 1, 1)
-	end
+	GameTooltip:AddLine(format(L["Total Ranks Purchased: %d"],  numTraitsPurchased), 1, 1, 1)
 	
      if progressPercent > 0 and maxAttainableRank > numTraitsPurchased then
 		GameTooltip:AddLine(format(L["%.2f%% towards Rank %d"],  progressPercent, maxAttainableRank + 1))
