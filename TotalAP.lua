@@ -843,7 +843,6 @@ local function UpdateInfoFrame()
 				TotalAPMiniBars[k]:SetSize(progressPercent, 2) -- TODO: options....
 				TotalAPMiniBars[k]:ClearAllPoints()
 				TotalAPMiniBars[k]:SetPoint("BOTTOMLEFT", TotalAPProgressBars[k], "BOTTOMLEFT", 0, -1)
-				TotalAPMiniBars[k]:SetFrameStrata("HIGH")
 				TotalAPMiniBars[k].texture:SetAllPoints(TotalAPMiniBars[k]);
 				TotalAPMiniBars[k].texture:SetTexture(barTexture);
 			--	TotalAPMiniBars[k].texture:SetVertexColor(1.0, 0.5, 0.25, 1);  -- TODO: colors variable (settings -> color picker)
@@ -1338,7 +1337,7 @@ local function CreateInfoFrame()
 	
 	-- Create anchored container frame for the bar display
 	TotalAPInfoFrame = CreateFrame("Frame", "TotalAPInfoFrame", TotalAPAnchorFrame);
-	--TotalAPInfoFrame:SetFrameStrata("BACKGROUND");
+	TotalAPInfoFrame:SetFrameStrata("BACKGROUND");
 	TotalAPInfoFrame:SetClampedToScreen(true);
 
 	-- Create progress bars for all available specs
@@ -1348,14 +1347,19 @@ local function CreateInfoFrame()
 	
 		-- Empty bar texture
 		TotalAPProgressBars[i] = CreateFrame("Frame", "TotalAPProgressBar" .. i, TotalAPInfoFrame);
+		TotalAPProgressBars[i]:SetFrameStrata("LOW")
+		
 		-- leftmost part: AP used on artifact
 		TotalAPUnspentBars[i] = CreateFrame("Frame", "TotalAPUnspentBar" .. i, TotalAPProgressBars[i]);
-
+		TotalAPUnspentBars[i]:SetFrameStrata("LOW")
+		
 		-- AP in bags 
 		TotalAPInBagsBars[i] = CreateFrame("Frame", "TotalAPInBagsBar" .. i, TotalAPProgressBars[i]);
-
+		TotalAPInBagsBars[i]:SetFrameStrata("LOW")
+		
 		-- Secondary progress bars 
 		TotalAPMiniBars[i] = CreateFrame("Frame", "TotalAPMiniBar" .. i, TotalAPProgressBars[i])
+		TotalAPMiniBars[i]:SetFrameStrata("MEDIUM")
 		
 		-- Tooltip script handlers
 		TotalAPProgressBars[i]:SetScript("OnEnter", TotalAP.GUI.Tooltips.ShowArtifactKnowledgeTooltip)
