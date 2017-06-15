@@ -1,13 +1,20 @@
 ------------------------------------------------------------------------
-## TotalAP v1.3.0 - Recent changes (3 releases)
+## TotalAP v1.3.1 - Recent changes (3 releases)
 ------------------------------------------------------------------------
 
 r21:
 	Added slash command to hide the secondary progress bars ("MiniBar") -> /ap minibar
 	
+	Updated DB to include 7.2.5 artifact power items and their spell effects
 	Updated translation for the Traditional Chinese (zhTW) locale - thanks for contributing!
+	Modified progress bar tooltip to indicate when research is idle, and when the maximum AK level has been reached
 	
 	Fixed ingame description for the "/ap progress" slash command
+	Fixed progress bar tooltip for artifact weapons that have never been used before
+	Fixed a graphics glitch that could occur when the buttonText became too long to fit smoothly in its space
+	Fixed a graphics glitch that lead to the MiniBar being displayed over other, arguably more important UI frames
+	Fixed an issue where the displayed shipment info for Artifact Research Notes could be inaccurate
+	
 	
 r20:
 	Added secondary progress bar ("MiniBar"), which is displayed whenever more than one new trait is available
