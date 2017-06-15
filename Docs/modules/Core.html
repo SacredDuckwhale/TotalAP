@@ -33,7 +33,9 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#TotalAP_lua">TotalAP.lua </a></li>
+<li><a href="#ArtifactInterface_lua">ArtifactInterface.lua </a></li>
 <li><a href="#Cache_lua">Cache.lua </a></li>
+<li><a href="#DB_lua">DB.lua </a></li>
 <li><a href="#Scanner_lua">Scanner.lua </a></li>
 </ul>
 
@@ -74,6 +76,33 @@
 	<td class="summary">Called on ADDON_LOADED</td>
 	</tr>
 </table>
+<h2><a href="#ArtifactInterface_lua">ArtifactInterface.lua </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GetArtifactKnowledgeLevel">GetArtifactKnowledgeLevel ()</a></td>
+	<td class="summary">Returns the the current AK level (same as used in Blizzard's Forge tooltip)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetNumAvailableResearchNotes">GetNumAvailableResearchNotes ()</a></td>
+	<td class="summary">Returns the number of Artifact Research Notes that are ready for pickup</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetNumRanksPurchasableWithAP">GetNumRanksPurchasableWithAP (rank, power, tier)</a></td>
+	<td class="summary">Returns the number of traits that can be purchased</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetProgressTowardsNextRank">GetProgressTowardsNextRank (rank, power, tier)</a></td>
+	<td class="summary">Returns progress towards the next trait (after considering all available "level ups")</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetResearchNotesShipmentInfo">GetResearchNotesShipmentInfo ()</a></td>
+	<td class="summary">Returns information about the currently queued Artifact Research work order status</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetTimeUntilNextResearchNoteIsReady">GetTimeUntilNextResearchNoteIsReady ()</a></td>
+	<td class="summary">Returns the time (integer timestamp, String) until the next Artifact Research Notes are ready to be picked up</td>
+	</tr>
+</table>
 <h2><a href="#Cache_lua">Cache.lua </a></h2>
 <table class="function_list">
 	<tr>
@@ -103,6 +132,45 @@
 	<tr>
 	<td class="name" nowrap><a href="#UpdateEntry">UpdateEntry (fqcn, specID, updateValues)</a></td>
 	<td class="summary">Updates an existing entry for the respective character and spec with the given values</td>
+	</tr>
+</table>
+<h2><a href="#DB_lua">DB.lua </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GetArtifactItemID">GetArtifactItemID (classID, specID)</a></td>
+	<td class="summary">Returns the item ID of the artifact weapon for the given class and spec</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetArtifactWeapons">GetArtifactWeapons ()</a></td>
+	<td class="summary">Returns a reference to the artifact weapons DB object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetDB">GetDB ()</a></td>
+	<td class="summary">Returns a reference to the currently used SavedVars (DB) object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetDefaults">GetDefaults ()</a></td>
+	<td class="summary">Returns the default settings for the initial startup or manual/automatic resets during verification.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetItemEffectID">GetItemEffectID (itemID)</a></td>
+	<td class="summary">Returns the item spell effect ID for a given itemID</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetItemEffects">GetItemEffects ()</a></td>
+	<td class="summary">Returns a reference to the item effects DB (spell effects).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetReference">GetReference ()</a></td>
+	<td class="summary">Returns a reference to the top-level DB object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#RestoreDefaults">RestoreDefaults ()</a></td>
+	<td class="summary">Reset settings to their default values.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#UnignoreAllSpecs">UnignoreAllSpecs ([fqcn])</a></td>
+	<td class="summary">Removes all specs from the ignored specs list for a given character (defaults to currently used character if none is given)</td>
 	</tr>
 </table>
 <h2><a href="#Scanner_lua">Scanner.lua </a></h2>
@@ -165,6 +233,168 @@
 
 
 
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header has-description"><a name="ArtifactInterface_lua"></a>ArtifactInterface.lua </h2>
+
+          <div class="section-description">
+
+ Provides utilities and manages interaction with Blizzard's ArtifactUI (as well as Artifact Knowledge/Research Notes, which are accessed via GarrisonUI)
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "GetArtifactKnowledgeLevel"></a>
+    <strong>GetArtifactKnowledgeLevel ()</strong>
+    </dt>
+    <dd>
+    Returns the the current AK level (same as used in Blizzard's Forge tooltip)
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Current Artifact Knowledge Level
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetNumAvailableResearchNotes"></a>
+    <strong>GetNumAvailableResearchNotes ()</strong>
+    </dt>
+    <dd>
+    Returns the number of Artifact Research Notes that are ready for pickup
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        Amount of Research Notes that are available for pickup</li>
+        <li>
+        Maximum number of shipments that have been queued</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetNumRanksPurchasableWithAP"></a>
+    <strong>GetNumRanksPurchasableWithAP (rank, power, tier)</strong>
+    </dt>
+    <dd>
+    Returns the number of traits that can be purchased
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">rank</span>
+         The current artifact level (number of purchased traits)
+        </li>
+        <li><span class="parameter">power</span>
+         Number of unspent artifact power applied to the weapon
+        </li>
+        <li><span class="parameter">tier</span>
+         Artifact tier (defaults to 1; new tiers unlock additional traits)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Number of traits that can be purchased
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetProgressTowardsNextRank"></a>
+    <strong>GetProgressTowardsNextRank (rank, power, tier)</strong>
+    </dt>
+    <dd>
+    Returns progress towards the next trait (after considering all available "level ups")
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">rank</span>
+         The current artifact level (number of purchased traits)
+        </li>
+        <li><span class="parameter">power</span>
+         Number of unspent artifact power applied to the weapon
+        </li>
+        <li><span class="parameter">tier</span>
+         Artifact tier (defaults to 1; new tiers unlock additional traits)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Percentage towards the next available trait (after buying as many as possible)
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetResearchNotesShipmentInfo"></a>
+    <strong>GetResearchNotesShipmentInfo ()</strong>
+    </dt>
+    <dd>
+    Returns information about the currently queued Artifact Research work order status
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        Localized name of the work order item (this is "Artifact Research Notes" in English)</li>
+        <li>
+        Localized string representing the time left until the next work order is available for pickup</li>
+        <li>
+        Duration (in seconds) until the next work order is available for pickup</li>
+        <li>
+        Time (in seconds) that has elapsed since the current work order has been started</li>
+        <li>
+        Number of work orders that are available for pickup</li>
+        <li>
+        Total number of work orders that are currently in progress</li>
+        <li>
+        Name of the item (That, too, is "Artifact Research Notes" in English)</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetTimeUntilNextResearchNoteIsReady"></a>
+    <strong>GetTimeUntilNextResearchNoteIsReady ()</strong>
+    </dt>
+    <dd>
+    Returns the time (integer timestamp, String) until the next Artifact Research Notes are ready to be picked up
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        Localized string representing the time left until the next work order is available for pickup</li>
+        <li>
+        Duration (in seconds) until the next work order is available for pickup</li>
+    </ol>
 
 
 
@@ -367,6 +597,172 @@
 
 </dd>
 </dl>
+    <h2 class="section-header has-description"><a name="DB_lua"></a>DB.lua </h2>
+
+          <div class="section-description">
+
+ Provides an interface for the addon's static database (i.e., all files stored in the \DB\ folder)
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "GetArtifactItemID"></a>
+    <strong>GetArtifactItemID (classID, specID)</strong>
+    </dt>
+    <dd>
+    Returns the item ID of the artifact weapon for the given class and spec
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">classID</span>
+         The class identifier (as returned by UnitClass("player")). Usually, this is a number between 1 and 12
+        </li>
+        <li><span class="parameter">specID</span>
+         The specialization identifier (as returned by GetSpecialization()). Usually, this is a number between 1 and 4
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Item ID of the corresponding artifact weapon; NIL if no DB entry exists
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetArtifactWeapons"></a>
+    <strong>GetArtifactWeapons ()</strong>
+    </dt>
+    <dd>
+    Returns a reference to the artifact weapons DB object.  For internal use only
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetDB"></a>
+    <strong>GetDB ()</strong>
+    </dt>
+    <dd>
+    Returns a reference to the currently used SavedVars (DB) object.  Temporary crutch for ongoing refactoring/migration of modules :)
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetDefaults"></a>
+    <strong>GetDefaults ()</strong>
+    </dt>
+    <dd>
+    Returns the default settings for the initial startup or manual/automatic resets during verification.  Temporary crutch for ongoing refactoring/migration of modules :)
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetItemEffectID"></a>
+    <strong>GetItemEffectID (itemID)</strong>
+    </dt>
+    <dd>
+    Returns the item spell effect ID for a given itemID
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">itemID</span>
+         The identifier for a specific artifact power item
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        ID of the spell effect corresponding to the given artifact power item's "Empowering" spell (which is how AP is applied to the currently equipped artifact ingame); NIL if the itemID was invalid or no DB entry exists
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetItemEffects"></a>
+    <strong>GetItemEffects ()</strong>
+    </dt>
+    <dd>
+    Returns a reference to the item effects DB (spell effects).  For internal use only
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetReference"></a>
+    <strong>GetReference ()</strong>
+    </dt>
+    <dd>
+    Returns a reference to the top-level DB object.  Temporary crutch for ongoing refactoring/migration of modules :)
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "RestoreDefaults"></a>
+    <strong>RestoreDefaults ()</strong>
+    </dt>
+    <dd>
+    Reset settings to their default values.  Overwrites the SavedVars part responsible for storing the user's settings
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "UnignoreAllSpecs"></a>
+    <strong>UnignoreAllSpecs ([fqcn])</strong>
+    </dt>
+    <dd>
+    Removes all specs from the ignored specs list for a given character (defaults to currently used character if none is given)
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fqcn</span>
+          Fully-qualified character name that will have their specs "IsIgnored" setting reset
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
     <h2 class="section-header has-description"><a name="Scanner_lua"></a>Scanner.lua </h2>
 
           <div class="section-description">
@@ -435,7 +831,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2017-06-02 19:07:42 </i>
+<i style="float:right;">Last updated 2017-06-15 15:39:07 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

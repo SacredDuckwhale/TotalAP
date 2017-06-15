@@ -51,6 +51,7 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 	local inBagsTotalAP = TotalAP.inBagsTotalAP
 	local maxAvailableAP = TotalAP.Cache.GetValue(fqcn, specID, "thisLevelUnspentAP") + inBagsTotalAP
 	local tier = TotalAP.Cache.GetValue(fqcn, specID, "artifactTier")
+	local maxKnowledgeLevel = C_ArtifactUI.GetMaxArtifactKnowledgeLevel()
 	
 	-- Calculate progress from cached values
 	local maxAttainableRank = numTraitsPurchased + TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(numTraitsPurchased, maxAvailableAP, tier) 
@@ -58,27 +59,37 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 	local knowledgeLevel = TotalAP.ArtifactInterface.GetArtifactKnowledgeLevel() 
 	
 	-- Calculate shipment data (for Artifact Research Notes)
-	local shipmentsReady = TotalAP.ArtifactInterface.GetNumAvailableResearchNotes()
-	local shipmentsTotal = 2 -- Could use the same interface (maxShipments is returned by the API), but no more than 2 can actually be queued anyway... so, whatever
+	local shipmentsReady, shipmentsTotal = TotalAP.ArtifactInterface.GetNumAvailableResearchNotes()
 	local timeLeft, timeLeftString = TotalAP.ArtifactInterface.GetTimeUntilNextResearchNoteIsReady()
 
-	  GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
+	 GameTooltip:SetOwner(self, "ANCHOR_CURSOR")
 	  
     if artifactName then
 		GameTooltip:AddLine(format("%s", artifactName), 230/255, 204/255, 128/255)
 	end
       
-	  -- TODO: Split into two tooltips -> this => ProgressBarTooltip and AK Tooltip for separate research bar/indicator (not yet implemented)
-    if numTraitsPurchased > 0 then
-		GameTooltip:AddLine(format(L["Total Ranks Purchased: %d"],  numTraitsPurchased), 1, 1, 1)
-	end
+	GameTooltip:AddLine(format(L["Total Ranks Purchased: %d"],  numTraitsPurchased), 1, 1, 1)
 	
      if progressPercent > 0 and maxAttainableRank > numTraitsPurchased then
 		GameTooltip:AddLine(format(L["%.2f%% towards Rank %d"],  progressPercent, maxAttainableRank + 1))
 	end
      
-	 GameTooltip:AddLine("\n" .. format(L["Artifact Knowledge Level: %d"], knowledgeLevel), 1, 1, 1)
-     GameTooltip:AddLine(format(L["Shipments ready for pickup: %d/%d"], shipmentsReady, shipmentsTotal))
+	
+	GameTooltip:AddLine("\n" .. format(L["Artifact Knowledge Level: %d"], knowledgeLevel), 1, 1, 1)
+	if maxKnowledgeLevel > knowledgeLevel and shipmentsReady ~= nil then -- Research isn't maxed yet
+		
+		if shipmentsReady > 0 then -- Shipments are available -> Display current work order progress
+			GameTooltip:AddLine(format(L["Shipments ready for pickup: %d/%d"], shipmentsReady, shipmentsTotal))
+		end
+		
+		if (not shipmentsTotal or shipmentsReady == shipmentsTotal) and maxKnowledgeLevel > (knowledgeLevel + shipmentsReady) then -- More work orders could be queued, and available Research Notes aren't enough to reach the maximum level -> Show reminder
+			GameTooltip:AddLine(format(L["Researchers are idle!"]), 255/255, 32/255, 32/255) 
+			
+		end
+		
+	else -- No more research is necessary - yay!
+		GameTooltip:AddLine(L["No further research necessary"], 0/255, 255/255, 0/255)
+	end
 	
 	if timeLeft and timeLeftString then
 		GameTooltip:AddLine(format(L["Next in: %s"],  timeLeftString))

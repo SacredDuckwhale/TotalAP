@@ -16,8 +16,7 @@
     -- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 --]]
 
-
---- 
+--- Core\ArtifactInterface.lua
 -- @module Core
 
 --- ArtifactInterface.lua.
@@ -36,7 +35,14 @@ if not T then return end
 local aUI = C_ArtifactUI 
 
 
--- Returns information about the currently queued Artifact Research work order status
+--- Returns information about the currently queued Artifact Research work order status
+-- @return Localized name of the work order item (this is "Artifact Research Notes" in English)
+-- @return Localized string representing the time left until the next work order is available for pickup
+-- @return Duration (in seconds) until the next work order is available for pickup
+-- @return Time (in seconds) that has elapsed since the current work order has been started
+-- @return Number of work orders that are available for pickup
+-- @return Total number of work orders that are currently in progress
+-- @return Name of the item (That, too, is "Artifact Research Notes" in English)
 local function GetResearchNotesShipmentInfo()
    
    local looseShipments = C_Garrison.GetLooseShipments (LE_GARRISON_TYPE_7_0) -- Contains: Nomi's work orders, OH Research/Troops, AK Research Notes
@@ -45,7 +51,7 @@ local function GetResearchNotesShipmentInfo()
       
       for i = 1, #looseShipments do -- Find Research Notes
          
-         local name, texture, shipmentCapacity, shipmentsReady, shipmentsTotal, creationTime, duration, timeleftString, itemName, itemTexture, itemID  = C_Garrison.GetLandingPageShipmentInfoByContainerID (looseShipments [i])
+         local name, texture, shipmentCapacity, shipmentsReady, shipmentsTotal, creationTime, duration, timeLeftString, itemName, itemTexture, itemID  = C_Garrison.GetLandingPageShipmentInfoByContainerID (looseShipments [i])
        --  if name and creationTime and creationTime > 0 and texture == 237446 then -- Shipment is Artifact Research Notes
         if name and texture == 237446 then -- Shipment is Artifact Research Notes
                
@@ -55,7 +61,7 @@ local function GetResearchNotesShipmentInfo()
 				timeLeft = duration - elapsedTime
 			 end  
         
-            return name, timeleftString, timeLeft, elapsedTime, shipmentsReady, shipmentsTotal, itemName
+            return name, timeLeftString, timeLeft, elapsedTime, shipmentsReady, shipmentsTotal, itemName
             
          end
          
@@ -65,14 +71,21 @@ local function GetResearchNotesShipmentInfo()
    
 end
 
--- Returns the number of Artifact Research Notes that are ready for pickup
+--- Returns the number of Artifact Research Notes that are ready for pickup
+-- @return Amount of Research Notes that are available for pickup
+-- @return Maximum number of shipments that have been queued
 local function GetNumAvailableResearchNotes()
 
-	return select(5, GetResearchNotesShipmentInfo()) or 0
+	local shipmentsReady = select(5, GetResearchNotesShipmentInfo()) or 0
+	local shipmentsTotal = select(6, GetResearchNotesShipmentInfo()) or 0
+	
+	return shipmentsReady, shipmentsTotal
 
 end
 
--- Returns the time (integer timestamp, String) until the next Artifact Research Notes are ready to be picked up
+--- Returns the time (integer timestamp, String) until the next Artifact Research Notes are ready to be picked up
+-- @return Localized string representing the time left until the next work order is available for pickup
+-- @return Duration (in seconds) until the next work order is available for pickup
 local function GetTimeUntilNextResearchNoteIsReady()
 	
 	local timeLeftString, timeLeft = select(2, GetResearchNotesShipmentInfo())
@@ -81,7 +94,8 @@ local function GetTimeUntilNextResearchNoteIsReady()
 
 end
 
--- Returns the the current AK level (same as used in Blizzard's Forge tooltip)
+--- Returns the the current AK level (same as used in Blizzard's Forge tooltip)
+-- @return Current Artifact Knowledge Level
 local function GetArtifactKnowledgeLevel()
 
 	local name, amount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = GetCurrencyInfo(1171) -- Hidden currency -> always available (unlike the crappy ArtifactUI :| )
@@ -91,7 +105,7 @@ local function GetArtifactKnowledgeLevel()
 
 end
 
--- Returns the multiplier for the current AK level (same as used in Blizzard's Forge tooltip)
+-- Returns the multiplier for the current Artifact Knowledge level (same as used in Blizzard's Forge tooltip)
 -- TODO: Only works if ArtifactFrame is currently open -> needs caching before it can be used
 -- local function GetArtifactKnowledgeMultiplier()
 
@@ -102,7 +116,11 @@ end
 -- end
 
 
--- Returns the number of traits that can be purchased with any given artifact power value for the given rank
+--- Returns the number of traits that can be purchased
+-- @param rank The current artifact level (number of purchased traits)
+-- @param power Number of unspent artifact power applied to the weapon
+-- @param tier Artifact tier (defaults to 1; new tiers unlock additional traits)
+-- @return Number of traits that can be purchased
 local function GetNumRanksPurchasableWithAP(rank, artifactPowerValue, tier)
 
 	-- The MainMenuBar function returns multiple values, but they aren't needed here. It might be practical, but it is also confusing
@@ -110,7 +128,11 @@ local function GetNumRanksPurchasableWithAP(rank, artifactPowerValue, tier)
 	
 end
 
--- Returns progress towards the next trait (after considering all available "level ups")
+--- Returns progress towards the next trait (after considering all available "level ups")
+-- @param rank The current artifact level (number of purchased traits)
+-- @param power Number of unspent artifact power applied to the weapon
+-- @param tier Artifact tier (defaults to 1; new tiers unlock additional traits)
+-- @return Percentage towards the next available trait (after buying as many as possible)
 local function GetProgressTowardsNextRank(rank, artifactPowerValue, tier)
 
 	local numPoints, artifactXP, xpForNextPoint = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(rank, artifactPowerValue, tier)

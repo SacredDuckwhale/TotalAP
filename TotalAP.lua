@@ -458,11 +458,11 @@ local function UpdateSpecIcons()
 	
 	local reservedButtonWidth = 0;
 	 if settings.actionButton.enabled then	 -- No longer reposition displays to the left unless button is actually disabled entirely, since the button can be hidden temporarily without being set to invisible (if no items are in the player's inventory/the active spec is set to being ignored)
-			if TotalAPButton:GetWidth() > (TotalAPButtonFontString:GetWidth() - 5) then -- Use actual button width
-			reservedButtonWidth = max(settings.actionButton.minResize, TotalAPButton:GetWidth()) + 5
-		else -- Use button width + size of the right part of the buttonText's display (this is the only part that overlaps with the infoFrame otherwise)
-			reservedButtonWidth = min(settings.actionButton.maxResize, TotalAPButton:GetWidth() + (TotalAPButtonFontString:GetWidth() - TotalAPButton:GetWidth()) / 2)  + 5  -- TODO: 5 = spacing? (settings)
-		end
+			if settings.actionButton.showText then -- Increase space to the right to avoid buttonText from overlapping in case of large numbers in the summary
+				reservedButtonWidth = TotalAPButton:GetWidth() + 10
+			else
+				reservedButtonWidth = TotalAPButton:GetWidth() + 5
+			end
 	end
 	
 		-- TODO: Proper handling of alignment option / further customization
@@ -698,12 +698,11 @@ local function UpdateInfoFrame()
 	 -- TODO: DRY / GUI -> GetReservedButtonWidth (only for DefaultView?)
 
 	 if settings.actionButton.enabled then	 -- No longer reposition displays to the left unless button is actually disabled entirely, since the button can be hidden temporarily without being set to invisible (if no items are in the player's inventory/the active spec is set to being ignored)
-			if TotalAPButton:GetWidth() > (TotalAPButtonFontString:GetWidth() - 5) then -- Use actual button width
-			reservedButtonWidth = max(settings.actionButton.minResize, TotalAPButton:GetWidth()) + 5
-		else -- Use button width + size of the right part of the buttonText's display (this is the only part that overlaps with the infoFrame otherwise)
-			reservedButtonWidth = min(settings.actionButton.maxResize, TotalAPButton:GetWidth() + (TotalAPButtonFontString:GetWidth() - TotalAPButton:GetWidth()) / 2)  + 5  -- TODO: 5 = spacing? (settings)
-		end
-		
+			if settings.actionButton.showText then -- Increase space to the right to avoid buttonText from overlapping in case of large numbers in the summary
+				reservedButtonWidth = TotalAPButton:GetWidth() + 10
+			else
+				reservedButtonWidth = TotalAPButton:GetWidth() + 5
+			end
 	end
 	
 	TotalAPInfoFrame:ClearAllPoints(); 
@@ -844,7 +843,6 @@ local function UpdateInfoFrame()
 				TotalAPMiniBars[k]:SetSize(progressPercent, 2) -- TODO: options....
 				TotalAPMiniBars[k]:ClearAllPoints()
 				TotalAPMiniBars[k]:SetPoint("BOTTOMLEFT", TotalAPProgressBars[k], "BOTTOMLEFT", 0, -1)
-				TotalAPMiniBars[k]:SetFrameStrata("HIGH")
 				TotalAPMiniBars[k].texture:SetAllPoints(TotalAPMiniBars[k]);
 				TotalAPMiniBars[k].texture:SetTexture(barTexture);
 			--	TotalAPMiniBars[k].texture:SetVertexColor(1.0, 0.5, 0.25, 1);  -- TODO: colors variable (settings -> color picker)
@@ -1339,7 +1337,7 @@ local function CreateInfoFrame()
 	
 	-- Create anchored container frame for the bar display
 	TotalAPInfoFrame = CreateFrame("Frame", "TotalAPInfoFrame", TotalAPAnchorFrame);
-	--TotalAPInfoFrame:SetFrameStrata("BACKGROUND");
+	TotalAPInfoFrame:SetFrameStrata("BACKGROUND");
 	TotalAPInfoFrame:SetClampedToScreen(true);
 
 	-- Create progress bars for all available specs
@@ -1349,14 +1347,19 @@ local function CreateInfoFrame()
 	
 		-- Empty bar texture
 		TotalAPProgressBars[i] = CreateFrame("Frame", "TotalAPProgressBar" .. i, TotalAPInfoFrame);
+		TotalAPProgressBars[i]:SetFrameStrata("LOW")
+		
 		-- leftmost part: AP used on artifact
 		TotalAPUnspentBars[i] = CreateFrame("Frame", "TotalAPUnspentBar" .. i, TotalAPProgressBars[i]);
-
+		TotalAPUnspentBars[i]:SetFrameStrata("LOW")
+		
 		-- AP in bags 
 		TotalAPInBagsBars[i] = CreateFrame("Frame", "TotalAPInBagsBar" .. i, TotalAPProgressBars[i]);
-
+		TotalAPInBagsBars[i]:SetFrameStrata("LOW")
+		
 		-- Secondary progress bars 
 		TotalAPMiniBars[i] = CreateFrame("Frame", "TotalAPMiniBar" .. i, TotalAPProgressBars[i])
+		TotalAPMiniBars[i]:SetFrameStrata("MEDIUM")
 		
 		-- Tooltip script handlers
 		TotalAPProgressBars[i]:SetScript("OnEnter", TotalAP.GUI.Tooltips.ShowArtifactKnowledgeTooltip)
@@ -1514,7 +1517,7 @@ local function CreateActionButton()
 		end)
 
 		
-		--- Will display the currently mapped item's AP amount (if enabled) later
+		-- Will display the currently mapped item's AP amount (if enabled) later
 		TotalAPButtonFontString = TotalAPButton:CreateFontString("TotalAPButtonFontString", "OVERLAY", "GameFontNormal");
 		--TotalAPButtonFontString:SetTextColor(0x00/255,0xCC/255,0x80/255,1) -- TODO. via settings
 		
