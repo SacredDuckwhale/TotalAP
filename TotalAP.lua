@@ -411,7 +411,7 @@ end
 -- TODO: Helper function
 local function GetSpecDisplayOrder()
 
-	local displayOrder = {}
+	local displayOrder = { 1, 2, 3, 4 } -- default order, used if no specs are being ignored
 	local order = 1 -- 0 is used to indicate ignored displays
 	
 	for i = 1, GetNumSpecializations() do 
