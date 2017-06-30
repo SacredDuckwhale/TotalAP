@@ -54,6 +54,8 @@ local slashCommands = {
 	["tooltip"] = L["Toggle tooltip display for artifact power items"],
 	["icons"] = L["Toggle icon and text display for artifact power progress"],
 	
+	["numberformat"] = L["Switches between international and localised number formats for textual output"],
+	
 	["unignore"] = L["Resets ignored specs for the currently active character"],
 	
 	["loginmsg"] = L["Toggle login message on load"],
@@ -176,6 +178,21 @@ local slashHandlers = {
 
 		TotalAP.Controllers.KeybindHandler("SpecIconsToggle", false);	
 
+	end,
+	
+	["numberformat"] = function(settings) -- Switch between internation and localised number formats
+	
+		if settings.numberFormat == "default" then -- use localised number format
+			
+			local currentLocale = GetLocale()
+			settings.numberFormat = currentLocale
+			
+		else -- revert to default format - this is similar to enUS, but not identical (1.5k instead of 1.5K)
+			settings.numberFormat = "default"
+		end
+		
+		TotalAP.ChatMsg(format(L["Number format set to %s"], settings.numberFormat))
+		
 	end,
 	
 	["unignore"] = function(settings) -- Reset this character's ignored specs list

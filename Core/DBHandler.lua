@@ -88,7 +88,7 @@ local function GetItemEffectID(itemID)
 	
 	if not (itemID and itemEffects[itemID]) then
 	
-		TotalAP.Debug("Attempted to retrieve item effect for an invalid itemID")
+		--TotalAP.Debug("Attempted to retrieve item effect for an invalid itemID")
 		return
 	end
 	
@@ -123,6 +123,7 @@ local defaultSettings =	{
 												showLoginMessage = true,
 												enabled = true,		-- This controls the entire display, but NOT the individual parts (which will be hidden, but their settings won't be overridden)
 												hideInCombat = true,
+												numberFormat = "default",
 												
 											--	showNumItems = true, -- TODO: Deprecated
 												--showProgressReport = true, -- TODO: Deprecated

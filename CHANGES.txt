@@ -1,7 +1,16 @@
 ------------------------------------------------------------------------
-## TotalAP v1.3.1 - Recent changes (3 releases)
+## TotalAP v1.3.2 - Recent changes (3 releases)
 ------------------------------------------------------------------------
 
+r22:
+	Added option to toggle between using the international and localised number formats for each locale (experimental). It is accessible via slash command: /ap numberformat
+	
+	Updated detection for maxed artifact weapons (was disabled after tier 2 became available, but now applies to only tier 1 artifacts). They now show as "maxed" once again
+	
+	Fixed an issue that could cause high numbers of artifact power (> 2.14b) to break the addon's output under certain circumstances
+	Fixed a bug that would cause tier 1 artifacts (those that haven't yet been upgraded via the Dalaran Council's quest chain) to display inaccurate values beyond the final, 54th trait
+	Fixed a graphics glitch that caused the buttonText to collide with the bar display when using locales with a larger-than-normal default font size (koKR, zhCN, zhTW mainly) - this workaround is not ideal, and somewhat experimental
+	
 r21:
 	Added slash command to hide the secondary progress bars ("MiniBar") -> /ap minibar
 	
@@ -28,15 +37,3 @@ r20:
 	Fixed an oversight that would cause the initialisation routine to break on the very first login (or if the saved variables were deleted manually)
 
 
-r19:
-	Added option to ignore specs (on a per-character basis). Ignored specs will not trigger the action button to show and not have any displays. Right-clicking the spec icon will ignore it, while a newly-added slash command (/ap unignore) resets the "ignore list" for that character
-	Added (hidden) option to align bars and specIcons to the top, bottom, or center (default), accessible via /ap align-top, align-bottom or align-center - (There will be a GUI option for this later, but you may use these slash commands in the meantime)
-	Added tooltip for progress bars, displaying detailed information regarding the overall progress for that spec's artifact. In comparison, the progress bars themselves are limited to just the current rank (for now)
-
-	Slash commands that change display options should once again update all displays properly
-	
-	Fixed broken slash commands that were causing LUA errors when used - "Accidents! They happen!"
-	Fixed an issue that would cause the action button's size to not be saved throughout sessions
-	Fixed display peculiarities (overlapping frames) that could occur if the action button's size was smaller than its buttonText
-	
-	
