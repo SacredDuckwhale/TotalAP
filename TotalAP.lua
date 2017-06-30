@@ -385,7 +385,7 @@ local numSpecs = GetNumSpecializations();
 				end
 				
 				artifactProgressCache[i] = cache[key][i];
-				TotalAP.Debug(format("Cached data exists from a previous session: spec = %i - traits = %i - AP = %i, tier = %i", i, cache[key][i]["numTraitsPurchased"], cache[key][i]["thisLevelUnspentAP"]), cache[key][i]["artifactTier"]);
+				TotalAP.Debug(format("Cached data exists from a previous session: spec = %i - traits = %i - AP = %d, tier = %i", i, cache[key][i]["numTraitsPurchased"], cache[key][i]["thisLevelUnspentAP"], cache[key][i]["artifactTier"]));
 			else  -- Initialise empty cache (for specs that have never been used) -> Necessary to allow them to be ignored/unignored without breaking everything
 					TotalAP.Debug(format("No cached data exists for spec %d!", i));
 		--		cache[key][i] = {}; -- TODO: This is pretty useless, except that it indicates which specs have been recognized but not yet scanned? - ACTUALLY it 
