@@ -457,12 +457,24 @@ local function UpdateSpecIcons()
 	end 
 	
 	local reservedButtonWidth = 0;
-	 if settings.actionButton.enabled then	 -- No longer reposition displays to the left unless button is actually disabled entirely, since the button can be hidden temporarily without being set to invisible (if no items are in the player's inventory/the active spec is set to being ignored)
-			if settings.actionButton.showText then -- Increase space to the right to avoid buttonText from overlapping in case of large numbers in the summary
-				reservedButtonWidth = TotalAPButton:GetWidth() + 10
-			else
-				reservedButtonWidth = TotalAPButton:GetWidth() + 5
+	
+	if settings.actionButton.enabled then	 -- No longer reposition displays to the left unless button is actually disabled entirely, since the button can be hidden temporarily without being set to invisible (if no items are in the player's inventory/the active spec is set to being ignored)
+			
+		if settings.actionButton.showText then -- Increase space to the right to avoid buttonText from overlapping in case of large numbers in the summary
+			
+			local diff, spacer = 0,  3 -- TODO: Spacer via settings (later; can be part of the view)
+			if TotalAPButtonFontString:GetWidth() > (TotalAPButton:GetWidth() + spacer)  then -- Use buttonText instead of button to calculate the required space
+				diff = TotalAPButtonFontString:GetWidth() - TotalAPButton:GetWidth()
 			end
+			
+			reservedButtonWidth = TotalAPButton:GetWidth() + diff / 2 + spacer
+			
+		else
+		
+			reservedButtonWidth = TotalAPButton:GetWidth() + spacer
+			
+		end
+		
 	end
 	
 		-- TODO: Proper handling of alignment option / further customization
@@ -698,11 +710,22 @@ local function UpdateInfoFrame()
 	 -- TODO: DRY / GUI -> GetReservedButtonWidth (only for DefaultView?)
 
 	 if settings.actionButton.enabled then	 -- No longer reposition displays to the left unless button is actually disabled entirely, since the button can be hidden temporarily without being set to invisible (if no items are in the player's inventory/the active spec is set to being ignored)
-			if settings.actionButton.showText then -- Increase space to the right to avoid buttonText from overlapping in case of large numbers in the summary
-				reservedButtonWidth = TotalAPButton:GetWidth() + 10
-			else
-				reservedButtonWidth = TotalAPButton:GetWidth() + 5
+			
+		if settings.actionButton.showText then -- Increase space to the right to avoid buttonText from overlapping in case of large numbers in the summary
+			
+			local diff, spacer = 0,  3 -- TODO: Spacer via settings (later; can be part of the view)
+			if TotalAPButtonFontString:GetWidth() > (TotalAPButton:GetWidth() + spacer) then -- Use buttonText instead of button to calculate the required space
+				diff = TotalAPButtonFontString:GetWidth() - TotalAPButton:GetWidth()
 			end
+			
+			reservedButtonWidth = TotalAPButton:GetWidth() + diff / 2 + spacer
+			
+		else
+		
+			reservedButtonWidth = TotalAPButton:GetWidth() + spacer
+			
+		end
+
 	end
 	
 	TotalAPInfoFrame:ClearAllPoints(); 
