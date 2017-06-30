@@ -124,7 +124,14 @@ end
 local function GetNumRanksPurchasableWithAP(rank, artifactPowerValue, tier)
 
 	-- The MainMenuBar function returns multiple values, but they aren't needed here. It might be practical, but it is also confusing
-	return select(1, MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(rank, artifactPowerValue, tier))
+	local availableRanks = select(1, MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(rank, artifactPowerValue, tier))
+	
+	-- Tier 1 artifacts are limited to 54 traits, but the API does not consider this cap
+	if tier == 1 then
+		availableRanks = min(min(54, rank + availableRanks) - rank, availableRanks) -- This is the number of available ranks after considering the hard cap of 54
+	end
+
+	return availableRanks
 	
 end
 

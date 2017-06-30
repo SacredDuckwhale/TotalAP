@@ -52,7 +52,7 @@ local specIgnoredWarningGiven = false
 
 local artifactProgressCache = {} -- Used to calculate offspec artifact progress
 
-local maxArtifactTraits = 999; -- TODO: Temporary (before 7.2) - allow it to be set manually (to ignore specs above 35 or 54) - In 7.2 this might be entirely useless as AP will continue to increase exponentially at those levels and beyond - 7.2 TODO: Change to option and allow the user to manually set it (feature request to ignore "inefficient" specs)
+local maxArtifactTraits = 54; -- Only applied to tier 1 artifacts in 7.2 -- TODO: Temporary (before 7.2) - allow it to be set manually (to ignore specs above 35 or 54) - In 7.2 this might be entirely useless as AP will continue to increase exponentially at those levels and beyond - 7.2 TODO: Change to option and allow the user to manually set it (feature request to ignore "inefficient" specs)
 
 
 --local TotalAPFrame, TotalAPInfoFrame, TotalAPButton, TotalAPSpec1IconButton, TotalAPSpec2conButton, TotalAPSpec3IconButton, TotalAPSpec4IconButton; -- UI elements/frames
@@ -86,7 +86,7 @@ local function GetNumAvailableTraits()
 		
 	local thisLevelUnspentAP, numTraitsPurchased, _, _, _, _, _, _, tier = select(5, aUI.GetEquippedArtifactInfo());	
 	--local tier = aUI.GetArtifactTier() or 2; -- Assuming 2 as per usual (see other calls and comments for GetArtifactTier) - only defaults to this when artifact is not available/opened?
-	local numTraitsAvailable = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(numTraitsPurchased, thisLevelUnspentAP + inBagsTotalAP, tier); -- This is how many times the weapon can be leveled up with AP from bags AND already used (but not spent) AP from this level
+	local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(numTraitsPurchased, thisLevelUnspentAP + inBagsTotalAP, tier)
 	TotalAP.Debug(format("Called GetNumAvailableTraits -> %s new traits available!", numTraitsAvailable or 0));
 	
 	return numTraitsAvailable or 0;
@@ -535,7 +535,7 @@ local function UpdateSpecIcons()
 		
 			TotalAP.Debug(format("Updating spec icons for spec %i from cached data"), i);
 			-- Calculate available traits and progress using the cached data
-			local numTraitsAvailable = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(v["numTraitsPurchased"],  v["thisLevelUnspentAP"] + inBagsTotalAP, v["artifactTier"]);
+			local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(v["numTraitsPurchased"],  v["thisLevelUnspentAP"] + inBagsTotalAP, v["artifactTier"])
 			local nextLevelRequiredAP = aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]); 
 			local percentageOfCurrentLevelUp = (v["thisLevelUnspentAP"]  + inBagsTotalAP) / nextLevelRequiredAP*100;
 			
@@ -554,7 +554,7 @@ local function UpdateSpecIcons()
 		   MasqueUpdate(TotalAPSpecIconButtons[i], "specIcons");
 		   
 			
-				if numTraitsAvailable > 0 and settings.specIcons.showGlowEffect and v["numTraitsPurchased"] < maxArtifactTraits then -- Text and glow effect are independent of each other; combining them bugs out one or the other (apparently :P)
+				if numTraitsAvailable > 0 and settings.specIcons.showGlowEffect and not (v["artifactTier"] == 1 and v["numTraitsPurchased"] < maxArtifactTraits) then -- Text and glow effect are independent of each other; combining them bugs out one or the other (apparently :P)
 					
 					-- -- TODO: Confusing, comment and naming conventions.
 					-- local ol = TotalAPSpecIconButtons[k].overlay;
@@ -624,7 +624,7 @@ local function UpdateSpecIcons()
 				end
 			
 			-- Make sure the text display is moving accordingly to the frames (or it will detach and look buggy)
-			if v["numTraitsPurchased"] < maxArtifactTraits then
+			if v["numTraitsPurchased"] < maxArtifactTraits or v["artifactTier"] > 1 then
 				specIconFontStrings[k]:SetText(fontStringText);
 			else
 				specIconFontStrings[k]:SetText("---"); -- TODO: MAX? Empty? Anything else?
@@ -857,7 +857,7 @@ local function UpdateInfoFrame()
 			end
 			
 			-- If artifact is maxed, replace overlay bars with a white one to indicate that fact: TODO: Obsolete in 7.2 -> repurpose as AK Bar
-			if v["numTraitsPurchased"] >= maxArtifactTraits then
+			if v["artifactTier"] == 1 and v["numTraitsPurchased"] >= maxArtifactTraits then
 				TotalAPUnspentBars[k]:SetSize(100, settings.infoFrame.barHeight); -- maximize bar to take up all the available space
 				TotalAPUnspentBars[k].texture:SetVertexColor(239/255, 229/255, 176/255, 1); -- turns it white; TODO: settings.infoFrame.progressBar.maxRed etc to allow setting a custom colour for maxed artifacts (later on)
 				TotalAPInBagsBars[k].texture:SetVertexColor(settings.infoFrame.progressBar.red/255, settings.infoFrame.progressBar.green/255, settings.infoFrame.progressBar.blue/255, 0); -- turns it invisible (alpha = 0%)
@@ -887,15 +887,17 @@ end
 -- TODO: This is quite messy, due to the button being the only and primary component in early addon versions (that was then change to be just one of many)
 local function UpdateActionButton()
 
+	local spec = GetSpecialization()
+
 	-- Hide button if artifact is already maxed (TODO: 7.1 only?)
-	if artifactProgressCache[GetSpecialization()] ~= nil and artifactProgressCache[GetSpecialization()]["numTraitsPurchased"] >= maxArtifactTraits and not InCombatLockdown() then
+	if artifactProgressCache[spec] ~= nil and artifactProgressCache[spec]["artifactTier"] == 1 and artifactProgressCache[spec]["numTraitsPurchased"] >= maxArtifactTraits and not InCombatLockdown() then
 		TotalAP.Debug("Hiding action button due to maxed out artifact weapon");
 		TotalAPButton:Hide();
 		return
 	end
 
 	-- Hide button if spec is being ignored (unless research notes need to be used) -- TODO: Instead of hiding, give visual indicator? (greyed out icon or sth.)
-	if not foundKnowledgeTome and artifactProgressCache[GetSpecialization()] ~= nil and artifactProgressCache[GetSpecialization()]["isIgnored"] then
+	if not foundKnowledgeTome and artifactProgressCache[spec] ~= nil and artifactProgressCache[spec]["isIgnored"] then
 		TotalAP.Debug("Hiding action button because the current spec is set to being ignored")
 		TotalAPButton:Hide();
 		return
