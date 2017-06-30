@@ -1,4 +1,3 @@
-<p><img src="https://api.travis-ci.org/SacredDuckwhale/TotalAP.png"></img></p>
 <p><strong>TotalAP</strong> provides an all-in-one solution for your Artifact Power needs.
 It displays relevant information related to your artifact, for all specs, such as the total amount of AP available for use, progress towards the next trait, and more.</p>
 <p>Use AP tokens easily by assigning keybinds or simply clicking the provided button - No more searching for that one last item in the unfathomable depths of your bags!</p>
@@ -57,4 +56,5 @@ It can be used to quickly use any AP items without having to find, and click, th
 
 
 <h2>Localisation</h2>
-<p>A proper localisation system is implemented, but many locales aren't fully translated (yet). If you can help out, it will be appreciated! You can check on the current translation progress here: <a href="https://wow.curseforge.com/projects/totalap/localization">Project Site</a></p>
+<p>A proper localisation system is implemented, but many locales aren't fully translated (yet). If you can help out, it will be appreciated!</p>
+<p> You can check on the current translation progress here: <a href="https://wow.curseforge.com/projects/totalap/localization">Project site</a></p>
