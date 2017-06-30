@@ -29,47 +29,81 @@ local addonName, T = ...
  -- Adheres to international standards for orders of magnitude ('k' for thousands, 'm' for millions, etc.)
  -- @param value The number (value) to be formatted
  -- @param[opt] format Whether or not the formatting should be applied directly. Will return the original value alongside a format string that can be used with string.format(...) otherwise
+ -- @param[opt] locale Which localised format should be applied to the number, if any. Will use the default format (m = millions, b = billions, etc.) otherwise
  -- @return The formatted output if the 'format' parameter was given; a format string otherwise
  -- @return[opt] The number this formatted string can be applied to in order to obtain the same textual representation; nil if the 'format' parameter wasn't given
  -- @usage FormatShort(15365, true) -> "15.3k"
  -- @usage FormatShort(15365) -> { "%.1fk", 15.365 }
- local function FormatShort(value,format) 
+ -- @usage FormatShort(15365, true, true) -> { "15.3K"} 
+ local function FormatShort(value, format, locale) 
  
 	if type(value) == "number" then
 	
-		local fmt
-		if value >= 1000000000 or value <= -1000000000 then
-			fmt = "%.1fb"
-			value = value / 1000000000
-		elseif value >= 10000000 or value <= -10000000 then
-			fmt = "%.1fm"
-			value = value / 1000000
-		elseif value >= 1000000 or value <= -1000000 then
-			fmt = "%.2fm"
-			value = value / 1000000
-		elseif value >= 100000 or value <= -100000 then
-			fmt = "%.0fk"
-			value = value / 1000
-		elseif value >= 10000 or value <= -10000 then
-			fmt = "%.1fk"
-			value = value / 1000
-		else
-			fmt = "%d"
-			value = math.floor(value + 0.5)
+		local fmt, decimalSeparator, unitsPattern = "%i", ".", "[k|m|b]" -- The default format will be replaced by localised version below if locale parameter was given
+		
+		if not locale or locale == "default" then -- Use default format
+			if value >= 1000000000 or value <= -1000000000 then
+				fmt = "%.1fb"
+				value = value / 1000000000
+			elseif value >= 10000000 or value <= -10000000 then
+				fmt = "%.1fm"
+				value = value / 1000000
+			elseif value >= 1000000 or value <= -1000000 then
+				fmt = "%.2fm"
+				value = value / 1000000
+			elseif value >= 100000 or value <= -100000 then
+				fmt = "%.0fk"
+				value = value / 1000
+			elseif value >= 10000 or value <= -10000 then
+				fmt = "%.1fk"
+				value = value / 1000
+			else
+				fmt = "%d"
+				value = math.floor(value + 0.5)
+			end
+		else -- Use localised format (depends on locale parameter)
+			
+			local formatTable = T.GetLocaleNumberFormat(locale)
+			local unitsShort = formatTable["unitsShort"]
+			
+			for k, v in ipairs(unitsShort) do -- Apply format, starting with largest divisor (billions for English), then continue until no further divisons are possible
+			
+				local divisor, unitString, numDigits = v["divisor"], v["unitString"], v["numDigits"]
+				
+				if value  >= divisor  or value <= -divisor then -- Divide and use this unit
+				
+					fmt = "%." .. numDigits .. "f" .. unitString
+					value = value / divisor
+					decimalSeparator = formatTable["decimalSeparator"]
+					
+					unitsPattern = unitString:gsub(" ", "%%s") -- Escape whitespace for use in regex pattern
+					unitsPattern = unitsPattern:gsub("%.", "%%.") -- Escape decimal point for use in regex pattern
+					
+					break -- Found the largest divisor -> There's no need to continue
+				end
+				
+			end
+			
 		end
 		
-		if format then
+		if format then -- Apply format to number and return formatted string
+
 			fmt = fmt:format(value)
 			
-			local r, f, u = fmt:match("^(%d+)%.([1-9]?)0+([k|m|b])") -- to remove trailing 0 (e.g., 4.00 m => 4m, 13.0k => 13k
-         
-			if r and u then
-				if f and tonumber(f) then
-					return r .. "." .. f .. u
+			local integerPart, fractionalPart, unit = fmt:match("^(%d+)%.([1-9]?)0*(" .. unitsPattern .. ")") -- Remove trailing zeroes (e.g., 4.00 m => 4m, 13.0k => 13k, etc.)
+
+			if integerPart and unit then -- Is a valid number that can be returned
+			
+				if fractionalPart and tonumber(fractionalPart) then -- Number needs to include decimalSeparator and fractionalPart as well
+					return integerPart .. decimalSeparator .. fractionalPart .. unit -- e.g., "3.55m"
 				end
-            return r .. u
-         end
+		
+            return integerPart .. unit -- e.g., "3m"
+			
+			end
+		 
 			return fmt	
+			
 		end
 		
 		return fmt, value

@@ -970,9 +970,9 @@ local function UpdateActionButton()
 		--if settings.actionButton.showText and inBagsTotalAP > 0 and currentItemAP > 0 then
 			
 			if numItems > 1 then -- Display total AP in bags
-				TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(currentItemAP, true) .. "\n(" .. TotalAP.Utils.FormatShort(inBagsTotalAP, true) .. ")") -- TODO: More options/HUD setup - planned once advanced config is implemented via AceConfig
+				TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(currentItemAP, true, settings.numberFormat) .. "\n(" .. TotalAP.Utils.FormatShort(inBagsTotalAP, true, settings.numberFormat) .. ")") -- TODO: More options/HUD setup - planned once advanced config is implemented via AceConfig
 			else
-				TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(currentItemAP, true))
+				TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(currentItemAP, true, settings.numberFormat))
 			end
 				
 		else
@@ -1677,9 +1677,9 @@ GameTooltip:HookScript('OnTooltipSetItem', function(self)
 		
 				-- Display AP summary
 				if numItems > 1 and settings.tooltip.showNumItems then
-					self:AddLine(format("\n" .. L["%s Artifact Power in bags (%d items)"], TotalAP.Utils.FormatShort(inBagsTotalAP, true), numItems), 230/255, 204/255, 128/255);
+					self:AddLine(format("\n" .. L["%s Artifact Power in bags (%d items)"], TotalAP.Utils.FormatShort(inBagsTotalAP, true, settings.numberFormat), numItems), 230/255, 204/255, 128/255);
 				else
-					self:AddLine(format("\n" .. L["%s Artifact Power in bags"], TotalAP.Utils.FormatShort(inBagsTotalAP, true)) , 230/255, 204/255, 128/255);
+					self:AddLine(format("\n" .. L["%s Artifact Power in bags"], TotalAP.Utils.FormatShort(inBagsTotalAP, true, settings.numberFormat)) , 230/255, 204/255, 128/255);
 				end
 			
 				-- Calculate progress towards next trait

@@ -41,6 +41,25 @@ local localeNumberFormats = {
 				["billions"] = 1000000000,
 			}
 		},
+		["unitsShort"] = {
+			[1] = {
+				["divisor"] = 1000000000,
+				["unitString"] = "B",
+				["numDigits"] = 1,
+			},
+			
+			[2] = {
+				["divisor"] = 1000000,
+				["unitString"] = "M",
+				["numDigits"] = 1,
+			},
+			
+			[3] = {
+				["divisor"] = 1000,
+				["unitString"] = "K",
+				["numDigits"] = 1,
+			}
+		}
 	},
 	
 	-- deDE: German (Germany)
@@ -63,6 +82,25 @@ local localeNumberFormats = {
 				["Milliarde"] = 1000000000,
 			},
 		},
+		["unitsShort"] = {
+			[1] = {
+				["divisor"] = 1000000000,
+				["unitString"] = " Mrd.",
+				["numDigits"] = 1,
+			},
+			
+			[2] = {
+				["divisor"] = 1000000,
+				["unitString"] = " Mio.",
+				["numDigits"] = 1,
+			},
+			
+			[3] = {
+				["divisor"] = 1000,
+				["unitString"] = " Tsd.",
+				["numDigits"] = 1,
+			}
+		}
 	},
 	 
 	-- esES: Spanish (Spain)
@@ -82,6 +120,25 @@ local localeNumberFormats = {
 					["millones"] = 1000000
 				},
 		},
+		["unitsShort"] = {
+			[1] = {
+				["divisor"] = 1000000000,
+				["unitString"] = " bil.",
+				["numDigits"] = 1,
+			},
+			
+			[2] = {
+				["divisor"] = 1000000,
+				["unitString"] = " mil.",
+				["numDigits"] = 1,
+			},
+			
+			[3] = {
+				["divisor"] = 1000,
+				["unitString"] = "K",
+				["numDigits"] = 1,
+			}
+		}
 	},
 
 	-- frFR: French (France)
@@ -98,6 +155,25 @@ local localeNumberFormats = {
 				["milliard"] = 1000000000,
 			},
 		},
+		["unitsShort"] = {
+			[1] = {
+				["divisor"] = 1000000000,
+				["unitString"] = "B",
+				["numDigits"] = 1,
+			},
+			
+			[2] = {
+				["divisor"] = 1000000,
+				["unitString"] = "M",
+				["numDigits"] = 1,
+			},
+			
+			[3] = {
+				["divisor"] = 1000,
+				["unitString"] = "K",
+				["numDigits"] = 1,
+			}
+		}
 	},
 
 	-- itIT: Italian (Italy)
@@ -120,6 +196,25 @@ local localeNumberFormats = {
 				["miliardo"] = 1000000000,
 			}
 		},
+		["unitsShort"] = {
+			[1] = {
+				["divisor"] = 1000000000,
+				["unitString"] = "B",
+				["numDigits"] = 1,
+			},
+			
+			[2] = {
+				["divisor"] = 1000000,
+				["unitString"] = "M",
+				["numDigits"] = 1,
+			},
+			
+			[3] = {
+				["divisor"] = 1000,
+				["unitString"] = "K",
+				["numDigits"] = 1,
+			}
+		}
 	},
 
 	-- koKR: Korean (Korea)
@@ -139,6 +234,25 @@ local localeNumberFormats = {
 				["조의"] = 1000000000000,
 			},
 		},
+		["unitsShort"] = {
+			[1] = {
+				["divisor"] = 1000000000000,
+				["unitString"] = "조의",
+				["numDigits"] = 2,
+			},
+			
+			[2] = {
+				["divisor"] = 100000000,
+				["unitString"] = "억의",
+				["numDigits"] = 2,
+			},
+			
+			[3] = {
+				["divisor"] = 10000,
+				["unitString"] = "만의",
+				["numDigits"] = 2,
+			}
+		}
 	},
 
 	-- ptBR: Portuguese (Brazil)
@@ -161,6 +275,25 @@ local localeNumberFormats = {
 				["bilhão"] = 1000000000,
 			},
 		},
+		["unitsShort"] = {
+			[1] = {
+				["divisor"] = 1000000000,
+				["unitString"] = "B",
+				["numDigits"] = 1,
+			},
+			
+			[2] = {
+				["divisor"] = 1000000,
+				["unitString"] = "M",
+				["numDigits"] = 1,
+			},
+			
+			[3] = {
+				["divisor"] = 1000,
+				["unitString"] = "K",
+				["numDigits"] = 1,
+			}
+		}
 	},
 
 	-- ruRU: Russian (Russia) 
@@ -177,6 +310,25 @@ local localeNumberFormats = {
 				["млн"] =  1000000,
 			},
 		},
+		["unitsShort"] = {
+			[1] = {
+				["divisor"] = 1000000000,
+				["unitString"] = " млрд",
+				["numDigits"] = 1,
+			},
+			
+			[2] = {
+				["divisor"] = 1000000,
+				["unitString"] = " млн",
+				["numDigits"] = 1,
+			},
+			
+			[3] = {
+				["divisor"] = 1000,
+				["unitString"] = "к",
+				["numDigits"] = 1,
+			}
+		}
 	},
 
 	-- zhCN: Chinese (Simplified, PRC)
@@ -193,15 +345,28 @@ local localeNumberFormats = {
 				["亿"] = 100000000,
 			},
 		},
+		["unitsShort"] = {
+			[1] = {
+				["divisor"] = 100000000,
+				["unitString"] = "亿",
+				["numDigits"] = 2,
+			},
+			
+			[2] = {
+				["divisor"] = 10000,
+				["unitString"] = "万",
+				["numDigits"] = 2
+			},
+		}
 	},
 	
 	-- zhTW: Chinese (Traditional, Taiwan)
 	 ["zhTW"] = { 
-		 ["thousandsSeparator"] = ",",
-		 ["decimalSeparator"] = ".",
-		 ["leadingSpace"] = "",
-		 ["trailingSpace"] = "",
-		 ["unitsTable"] = {
+		["thousandsSeparator"] = ",",
+		["decimalSeparator"] = ".",
+		["leadingSpace"] = "",
+		["trailingSpace"] = "",
+		["unitsTable"] = {
 			 [1] = {
 				 ["萬"] = 10000,
 			 },
@@ -212,7 +377,26 @@ local localeNumberFormats = {
 				 ["兆"] = 1000000000000,
 			 },
 		 },
-	 },
+		["unitsShort"] = {
+			[1] = {
+				["divisor"] = 1000000000000,
+				["unitString"] = "兆",
+				["numDigits"] = 2,
+			},
+			
+			[2] = {
+				["divisor"] = 100000000,
+				["unitString"] = "億",
+				["numDigits"] = 2,
+			},
+			
+			[3] = {
+				["divisor"] = 10000,
+				["unitString"] = "萬",
+				["numDigits"] = 2,
+			}
+		}
+	},
 
 }
 
