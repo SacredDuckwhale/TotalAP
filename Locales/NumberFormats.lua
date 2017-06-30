@@ -381,19 +381,31 @@ local localeNumberFormats = {
 			[1] = {
 				["divisor"] = 1000000000000,
 				["unitString"] = "兆",
-				["numDigits"] = 2,
+				["numDigits"] = 1,
 			},
 			
 			[2] = {
 				["divisor"] = 100000000,
 				["unitString"] = "億",
-				["numDigits"] = 2,
+				["numDigits"] = 1,
 			},
 			
 			[3] = {
+				["divisor"] = 1000000,
+				["unitString"] = "萬",
+				["numDigits"] = 1,
+			},
+			
+			[4] = {
 				["divisor"] = 10000,
 				["unitString"] = "萬",
 				["numDigits"] = 2,
+			},
+			
+			[5] = {
+				["divisor"] = 1000,
+				["unitString"] = "千",
+				["numDigits"] = 1,
 			}
 		}
 	},
