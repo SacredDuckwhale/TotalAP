@@ -9,12 +9,18 @@ local addonName = "TotalAP"
 local root = "..\\" 
 local toc = addonName .. ".toc"
 
--- Global environment (mockup) 
-local G = {}
+-- Global environment 
+G = {}
+
+-- Localizatuon table
+L = {}
 
 -- Variables
 
--- Functions
+-- Lua functions
+strmatch = string.match
+
+-- WOW API functions
 GetAddOnMetadata = function(addon, value)
 	
 	if addon == addonName then
@@ -23,46 +29,77 @@ GetAddOnMetadata = function(addon, value)
 	
 end
 
+-- WOW API objects
+GameTooltip = {}
+function GameTooltip:HookScript(triggerEvent, scriptFunction)
 
--- Initialise addon table
-T = {}
+end
 
+-- Libary objects
+LibStub = function(libraryName)
 
+	LS = {}
 
-
--- Establish load order and assemble list of all addon files (by reading the TOC file)
-local addonFiles = {}
-
--- Read TOC file
-
-print("Opening file: " .. toc .. "\n")
-local file = assert(io.open(root .. toc, "r") or io.open(toc), "Could not open " .. root .. toc)
+	if libraryName == "AceLocale-3.0" then -- AceLocale mockup
 	
-for line in file:lines() do -- Read line to find .lua files that are to be loaded
-	if line ~= "" and not line:match("#") then -- is a valid file (no comment or empty line) -> Add file to loader
+		function LS:NewLocale(addonName, locale, isDefaultLocale)
 		
-		if not line:match("%.xml") then -- .lua file -> add directly
-			addonFiles[#addonFiles+1] = line
-			print("Adding file: " .. line .. " (position: " .. #addonFiles .. ")")
+		L.addonName = {}
+			L.addonName.locale = {}
 			
-		else -- .xml file -> parse and add files that are included instead
-			print("Detected XML file: " .. line)
-			
-			local xmlFile = assert(io.open(root .. line, "r") or io.open(line), "Could not open " .. line)
-			local text = xmlFile:read("*all")
-			xmlFile:close()
-			
-			local pattern = "<Script%sfile=\"(.-)\"/>"
-			local folder = line:match("(.-)\\.-%.xml") .. "\\"
-			print(folder)
-			for embeddedFile in string.gmatch(text, pattern) do
-				addonFiles[#addonFiles+1] = folder .. embeddedFile
-				print("Adding embedded file: " .. folder .. embeddedFile .. " (position: " .. #addonFiles .. ")")
+			if isDefaultLocale then -- Set new locale to be the default
+				L.addonName.activeLocale = locale
+			else
+				L.addonName.activeLocale = "enUS" -- use English as default locale
 			end
+			
+			return L.addonName.locale
+			
+		end
+		
+		function LS:GetLocale(addonName, locale)
+			return L.addonName.locale
 		end
 		
 	end
-end	
+	
+	if libraryName == "AceAddon-3.0" then -- AceLocale mockup
+		
+		function LS:NewAddon(addonName, ...)
+		
+			local addonObject = {}
+		
+			local mixins = ...
+			
+			return addonObject
+		end
+		
+	end
+	
+	if libraryName == "Masque" then -- Masque mockup
+		
+		local M = {}
+	
+		return M
+	
+	end
+	
+	if libraryName == "LibSharedMedia-3.0" then -- SharedMedia mockup
+		
+		local LSM = {}
+		
+		return LSM
+		
+	end
+	
+	return LS
+
+end
+
+-- Addon table
+T = {}
+
+
 -- Read TOC file and load all addon-specific lua and xml files (will extract embeds, but not parse actual XML)
 function readTOC(filePath)
 
