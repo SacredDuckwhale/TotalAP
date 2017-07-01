@@ -13,6 +13,12 @@ GetLocale = function()
 	
 end
 
+GetRealmName = function()
+
+	return realm or "Outland"
+
+end
+
 
 -- WOW API objects
 GameTooltip = {}
