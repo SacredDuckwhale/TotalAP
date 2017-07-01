@@ -6,3 +6,4 @@ T = {} -- Addon table
 
 -- Lua functions
 strmatch = string.match
+format = string.format
