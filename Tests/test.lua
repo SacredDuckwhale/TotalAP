@@ -17,8 +17,10 @@ require("Core\\Utils\\test_format")
 
 
 -- Settings
-local addonName = "TotalAP"
-local locale = "enUS"
+addonName = "TotalAP"
+locale = "enUS"
+realm = "Outland"
+
 local root = "..\\"  -- path from tests subfolder to addon root dir
 local toc = addonName .. ".toc"
 
