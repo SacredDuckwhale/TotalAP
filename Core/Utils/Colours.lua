@@ -73,16 +73,37 @@ local addonName,  TotalAP = ...
 
 if not TotalAP then return end
 
+--- Decide whether the given number is a valid RGB value (must be between 0 and 255)
+-- @param number The number that is to be checked
+-- @return true or false
+local function isValid(number)
+	
+	if type(number) == "number" and number > 0 and number <= 255 then return true end
+	
+	return false
+		
+end
+	
+
 --- Translates HTML colour codes to RGB values
 -- @param hexString A string representing a colour code in hexadecimal/HTML notation (the leading '#' symbol is optional)
 -- @return Red value; 0 if invalid string was given
 -- @return Green value; 0 if invalid string was given
 -- @return Blue value; 0 if invalid string was given
 -- @usage HexToRGB("#FFFEFD") -> { 255, 254, 253 }
+-- @usage HexToRGB("FFFEFD") -> { 255, 254, 253 }
+-- @usage HexToRGB("asdf") -> { 0, 0, 0 }
 local function HexToRGB(hexString)
+	
+	local R = { 0, 0, 0 } -- This is used for invalid parameters and as a default value
+
+	if not hexString or type(hexString) ~= "string" then return R end
 
 	local r, g, b = hexString:match("^#?(%x%x)(%x%x)(%x%x)$")
-	return tonumber("0x" .. r) or 0, tonumber("0x" .. g) or 0, tonumber("0x" .. b or 0)
+	
+	if not (r and g and b) then return R end
+	
+	return tonumber("0x" .. r), tonumber("0x" .. g), tonumber("0x" .. b)
 	
 end
 
@@ -96,12 +117,16 @@ end
 -- @usage RGBToHex(0, 255, 1, true) -> "#00FF01"
 local function RGBToHex(r, g, b, addPrefix)
 
+	local hexString = ((addPrefix and "#") or "") .. "000000"
+
+	if not (isValid(r) and isValid(g) and isValid(b)) then return hexString end
+
 	local fmt
 	
-	if not addPrefix then fmt = "%02x%02x%02x"
-	else fmt = "#%02x%02x%02x" end
+	if not addPrefix then fmt = "%02X%02X%02X"
+	else fmt = "#%02X%02X%02X" end
 
-	local hexString = string.format(fmt, r or 0, g or 0, b or 0)
+	hexString = string.format(fmt, r or 0, g or 0, b or 0)
 	return hexString
 	
 end
