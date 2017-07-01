@@ -12,6 +12,7 @@ require("mock_libs")
 require("mock_luaenv")
 
 -- Testing suites
+require("Core\\Utils\\test_colours")
 require("Core\\Utils\\test_format")
 
 
