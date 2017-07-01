@@ -39,7 +39,7 @@ local addonName, T = ...
  
 	if type(value) == "number" then
 	
-		local fmt, decimalSeparator, unitsPattern = "%i", ".", "[k|m|b]" -- The default format will be replaced by localised version below if locale parameter was given
+		local fmt, decimalSeparator, unitsPattern = "%d", ".", "[k|m|b]" -- The default format will be replaced by localised version below if locale parameter was given
 		
 		if not locale or locale == "legacy" then -- Use legacy format
 			if value >= 1000000000 or value <= -1000000000 then
@@ -63,14 +63,17 @@ local addonName, T = ...
 			end
 		else -- Use localised format (depends on locale parameter)
 			
+			value = math.floor(value + 0.5) -- round to nearest integer before formatting anything
+			
 			local formatTable = T.GetLocaleNumberFormat(locale)
 			local unitsShort = formatTable["unitsShort"]
+			smallestUnitSize = unitsShort[#unitsShort]["divisor"]
 			
 			for k, v in ipairs(unitsShort) do -- Apply format, starting with largest divisor (billions for English), then continue until no further divisons are possible
 			
 				local divisor, unitString, numDigits = v["divisor"], v["unitString"], v["numDigits"]
 				
-				if value  >= divisor  or value <= -divisor then -- Divide and use this unit
+				if value >= divisor or value <= -divisor then -- Divide and use this unit
 				
 					fmt = "%." .. numDigits .. "f" .. unitString
 					value = value / divisor
@@ -89,13 +92,15 @@ local addonName, T = ...
 		if format then -- Apply format to number and return formatted string
 
 			fmt = fmt:format(value)
-			
-			local integerPart, fractionalPart, unit = fmt:match("^(%d+)%.([1-9]?)0*(" .. unitsPattern .. ")") -- Remove trailing zeroes (e.g., 4.00 m => 4m, 13.0k => 13k, etc.)
 
+			local integerPart, fractionalPart, unit = fmt:match("^(%d+)%.([1-9]?)0*(" .. unitsPattern .. ")") -- Remove trailing zeroes (e.g., 4.00 m => 4m, 13.0k => 13k, etc.)
+			
 			if integerPart and unit then -- Is a valid number that can be returned
 			
 				if fractionalPart and tonumber(fractionalPart) then -- Number needs to include decimalSeparator and fractionalPart as well
+					
 					return integerPart .. decimalSeparator .. fractionalPart .. unit -- e.g., "3.55m"
+					
 				end
 		
             return integerPart .. unit -- e.g., "3m"
