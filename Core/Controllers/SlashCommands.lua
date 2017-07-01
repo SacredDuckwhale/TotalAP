@@ -182,13 +182,13 @@ local slashHandlers = {
 	
 	["numberformat"] = function(settings) -- Switch between internation and localised number formats
 	
-		if settings.numberFormat == "default" then -- use localised number format
+		if settings.numberFormat == "legacy" then -- use localised number format
 			
 			local currentLocale = GetLocale()
 			settings.numberFormat = currentLocale
 			
-		else -- revert to default format - this is similar to enUS, but not identical (1.5k instead of 1.5K)
-			settings.numberFormat = "default"
+		else -- revert to legacy format - this is similar to enUS, but not identical (1.5k instead of 1.5K)
+			settings.numberFormat = "legacy"
 		end
 		
 		TotalAP.ChatMsg(format(L["Number format set to %s"], settings.numberFormat))
