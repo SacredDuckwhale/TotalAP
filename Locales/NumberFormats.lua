@@ -391,18 +391,12 @@ local localeNumberFormats = {
 			},
 			
 			[3] = {
-				["divisor"] = 1000000,
-				["unitString"] = "萬",
-				["numDigits"] = 1,
-			},
-			
-			[4] = {
 				["divisor"] = 10000,
 				["unitString"] = "萬",
 				["numDigits"] = 2,
 			},
 			
-			[5] = {
+			[4] = {
 				["divisor"] = 1000,
 				["unitString"] = "千",
 				["numDigits"] = 1,

@@ -29,19 +29,19 @@ local addonName, T = ...
  -- Adheres to international standards for orders of magnitude ('k' for thousands, 'm' for millions, etc.)
  -- @param value The number (value) to be formatted
  -- @param[opt] format Whether or not the formatting should be applied directly. Will return the original value alongside a format string that can be used with string.format(...) otherwise
- -- @param[opt] locale Which localised format should be applied to the number, if any. Will use the default format (m = millions, b = billions, etc.) otherwise
+ -- @param[opt] locale Which localised format should be applied to the number, if any. Will use the legacy format (m = millions, b = billions, etc.) otherwise
  -- @return The formatted output if the 'format' parameter was given; a format string otherwise
  -- @return[opt] The number this formatted string can be applied to in order to obtain the same textual representation; nil if the 'format' parameter wasn't given
  -- @usage FormatShort(15365, true) -> "15.3k"
  -- @usage FormatShort(15365) -> { "%.1fk", 15.365 }
- -- @usage FormatShort(15365, true, true) -> { "15.3K"} 
+ -- @usage FormatShort(15365, true, "enUS") -> { "15.3K"} 
  local function FormatShort(value, format, locale) 
  
 	if type(value) == "number" then
 	
 		local fmt, decimalSeparator, unitsPattern = "%i", ".", "[k|m|b]" -- The default format will be replaced by localised version below if locale parameter was given
 		
-		if not locale or locale == "default" then -- Use default format
+		if not locale or locale == "legacy" then -- Use legacy format
 			if value >= 1000000000 or value <= -1000000000 then
 				fmt = "%.1fb"
 				value = value / 1000000000
