@@ -14,6 +14,7 @@ require("mock_luaenv")
 -- Testing suites
 require("Core\\Utils\\test_colours")
 require("Core\\Utils\\test_format")
+require("Core\\Utils\\test_fqcn")
 
 
 -- Settings
