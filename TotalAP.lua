@@ -147,7 +147,13 @@ local function VerifySettings()
 	-- Check default settings (= always up-to-date) against SavedVars, and add missing keys from the defaults. TODO: This leaves some remnants of deprecated options, also it would be easier with Ace
 	TotalAP.Utils.CompareTables(masterTable, targetTable, targetTable, nil);
 	
-
+	if settings.numberFormat == "default" then -- replace outdated value with one that works in future versions (TODO: This can be avoided if aceDB handles it?)
+	
+		TotalAP.Debug("Replaced invalid value \"default\" for key \"numberFormat\" with updated value \"legacy\"") -- TODO: Do this for all values automatically
+		settings.numberFormat = "legacy"
+		
+	end
+	
 	return true;
 	
 end
