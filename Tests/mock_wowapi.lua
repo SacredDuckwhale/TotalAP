@@ -19,6 +19,15 @@ GetRealmName = function()
 
 end
 
+UnitName = function(unit)
+
+	if unit == "player" then
+		
+		return "Duckwhale"
+		
+	end	
+
+end
 
 -- WOW API objects
 GameTooltip = {}
