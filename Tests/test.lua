@@ -1,11 +1,15 @@
--- Experimental testing suite
-
+-- Full testing suite (work in progress) -> Mainly focuses on non-GUI unit tests
 -- TODO: Move global environment to setup / different files based on which parts are being mocked (so they can be called by individual test's SetUp routines)
 -- TODO: Tests for locales other than enUS, deDE, ruRU, frFR, zhTW (those that use English by default, until users have complained and provided a better format)
+
 
 -- Required Lua modules
 luaunit = require("luaunit") -- stored in global so that testing suites can access it directly
 
+-- Mock environment
+require("mock_wowapi")
+require("mock_libs")
+require("mock_luaenv")
 
 -- Testing suites
 require("Core\\Utils\\test_format")
@@ -14,104 +18,8 @@ require("Core\\Utils\\test_format")
 -- Settings
 local addonName = "TotalAP"
 local locale = "enUS"
-
-local root = "..\\" 
+local root = "..\\"  -- path from tests subfolder to addon root dir
 local toc = addonName .. ".toc"
-
-
--- Variables
-G = {} -- Global environment 
-L = {} -- Localization table
-T = {} -- Addon table
-
-
--- Lua functions
-strmatch = string.match
-
-
--- WOW API functions
-GetAddOnMetadata = function(addon, value)
-	
-	if addon == addonName then
-		return "1.3.1 (r-23)"
-	end
-	
-end
-
-GetLocale = function()
-
-	return locale or "enUS"
-	
-end
-
-
--- WOW API objects
-GameTooltip = {}
-function GameTooltip:HookScript(triggerEvent, scriptFunction)
-
-end
-
-
--- Libary objects
-LibStub = function(libraryName)
-
-	LS = {}
-
-	if libraryName == "AceLocale-3.0" then -- AceLocale mockup
-	
-		function LS:NewLocale(addonName, locale, isDefaultLocale)
-		
-		L.addonName = {}
-			L.addonName.locale = {}
-			
-			if isDefaultLocale then -- Set new locale to be the default
-				L.addonName.activeLocale = locale
-			else
-				L.addonName.activeLocale = "enUS" -- use English as default locale
-			end
-			
-			return L.addonName.locale
-			
-		end
-		
-		function LS:GetLocale(addonName, locale)
-			return L.addonName.locale
-		end
-		
-	end
-	
-	if libraryName == "AceAddon-3.0" then -- AceLocale mockup
-		
-		function LS:NewAddon(addonName, ...)
-		
-			local addonObject = {}
-		
-			local mixins = ...
-			
-			return addonObject
-		end
-		
-	end
-	
-	if libraryName == "Masque" then -- Masque mockup
-		
-		local M = {}
-	
-		return M
-	
-	end
-	
-	if libraryName == "LibSharedMedia-3.0" then -- SharedMedia mockup
-		
-		local LSM = {}
-		
-		return LSM
-		
-	end
-	
-	return LS
-
-end
 
 
 -- Read TOC file and load all addon-specific lua and xml files (will extract embeds, but not parse actual XML)
@@ -166,17 +74,8 @@ function readTOC(filePath) -- TODO: Split this up into TOC Parser and Lua Loader
 
 end
 
-
 -- Read TOC
 readTOC(root .. toc)
 
-
--- Add tests for individual modules
-TestCore = {}
-TestGUI = {} -- TODO: This might be impossible
-TestControllers = {}
-TestUtils = {}
-
--- Core\Utils\Colours.lua
-
+-- Run all tests that have been queued
 os.exit( luaunit.LuaUnit.run() )
