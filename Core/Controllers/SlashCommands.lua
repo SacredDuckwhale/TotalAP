@@ -34,7 +34,6 @@ local slashCommandAlias = "ap"
 local L = TotalAP.L
 
 -- TODO: Use AceDB for this
---local settings = TotalAP.DBHandler.GetDB() -- TODO: Upvalue / LUA Error
 
 -- TODO: settings in slashHandlers is a workaround from incomplete migration issues -> it's not final and should probably be reworked after migration is complete
 
@@ -226,7 +225,7 @@ local slashHandlers = {
 	
 	["reset"] =  function(settings) -- Load default values for all settings
 
-		TotalAP.DBHandler.RestoreDefaults()
+		TotalAP.Settings.RestoreDefaults()
 		--RestoreDefaultSettings();
 		TotalAP.ChatMsg(L["Default settings loaded."]);
 		-- TODO: Run UnignoreAllSpecs() also?
@@ -367,8 +366,8 @@ local function SlashCommandHandler(input, usedAlias)
 			
 			local slashHandlerFunction = slashHandlers[command]
 			TotalAP.Debug("Recognized slash command: " .. command .. " - executing handler function..." )
-			local db = TotalAP.DBHandler.GetDB() 
-			slashHandlerFunction(db)
+			local settings = TotalAP.Settings.GetReference() 
+			slashHandlerFunction(settings)
 			
 			-- Always update displays to make sure any changes will be displayed immediately (if possible/not locked)
 			TotalAP.Controllers.UpdateGUI()

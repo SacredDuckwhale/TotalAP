@@ -59,7 +59,7 @@ local maxArtifactTraits = 54; -- Only applied to tier 1 artifacts in 7.2 -- TODO
 local settings, cache = {}, {}; -- will be loaded from savedVars later
 
 
-local defaultSettings = TotalAP.Settings.GetDefaults() -- TODO: remove (crutch while in migration)
+--local defaultSettings = TotalAP.Settings.GetDefaults() -- TODO: remove (crutch while in migration)
 
 -- Calculate the total number of purchaseable traits (using AP from both the equipped artifact and from AP tokens in the player's inventory)
 local function GetNumAvailableTraits()
@@ -120,7 +120,7 @@ end
 local function RestoreDefaultSettings()
 
 	TotalArtifactPowerSettings = TotalAP.Settings.GetDefaults()
-	settings = TotalArtifactPowerSettings;
+	settings = TotalAP.Settings.GetReference();
 	
 end
 
@@ -129,12 +129,12 @@ end
 -- TODO: Doesn't remove outdated SavedVars (minor waste of disk space, not a high priority issue I guess) as it checks the master table against savedvars but not the other way around
 local function VerifySettings()
 	
-	settings = TotalArtifactPowerSettings;
+	settings = TotalAP.Settings.GetReference()
 	
 	-- TODO: Optimise this, and add checks for 1.2 savedVars (bars etc)
 	
 	if settings == nil or not type(settings) == "table" then
-		RestoreDefaultSettings();
+		TotalAP.Settings.RestoreDefaults()
 		return false;
 	end
 	
@@ -160,14 +160,17 @@ end
 local function LoadSettings()
 	
 	-- Check & verify default settings before loading them
-	settings = TotalArtifactPowerSettings;
-	if not settings then 	-- Load default settings
-		RestoreDefaultSettings(); 
+	settings = TotalAP.Settings.GetReference()
+	if not settings then -- Load default settings
+		TotalAP.Settings.RestoreDefaults() 
 	else -- check for types and proper values 
-		if not VerifySettings() then
-			TotalAP.ChatMsg(L["Settings couldn't be verified... Default values have been loaded."]);
+		
+		if not TotalAP.Settings.Validate() then
+		--if not VerifySettings() then
+			--TotalAP.ChatMsg(L["Settings couldn't be verified... Default values have been loaded."]);
+			TotalAP.Debug("Settings couldn't be validated. A manual reset might be in order?")
 		else
-			TotalAP.Debug("SavedVars verified (and loaded) successfully.");
+			TotalAP.Debug("Settings were validated (and loaded) successfully.");
 		end
 	end
 	

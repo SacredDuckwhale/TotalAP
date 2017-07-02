@@ -20,74 +20,233 @@
 --- 
 -- @module Core
 
---- SavedVars.lua.
+--- Settings.lua.
 -- Provides an interface for the addon's settings database (i.e., all settings stored in the SavedVariables\TotalAP.lua file)
--- @section SavedVars
+-- @section Settings
 
 
 local addonname, TotalAP = ...
 
 if not TotalAP then return end
 
+
+-- Validator functions
+local function IsBoolean(value)
+	return type(value) == "boolean"
+end	
+
+local function IsTable(value)
+	return type(value) == "table"
+end	
+
+local function IsNumber(value)
+	return type(value) == "number"
+end	
+
+local function IsRGB(value)
+	return IsNumber(value) and value > 0 and value < 255
+end
+
+local function IsDecimalFraction(value)
+	return IsNumber(value) and value > 0 and value <= 1
+end
+
+local function IsNumberFormat(value)
+
+	local validNumberFormats = {
+		legacy = true,
+		enUS = true, -- also enGB?
+		enGB = true, -- will use enUS format
+		deDE = true,
+		esES = true, -- also esMX?
+		esMX = true, -- will use esES format
+		frFR = true,
+		itIT = true,
+		koKR = true,
+		ptBR = true,
+		ruRU = true,
+		zhCN = true,
+		zhTW = true,
+	}
+
+	return type(value) == "string" and validNumberFormats[value] ~= nil
+end
+
+local function IsString(value)
+	
+	return type(value) == "string"
+
+end
+
+local function IsAlignmentString(value)
+
+	local validAlignmentStrings = {
+		["center"] = true,
+		["top"] = true,
+		["bottom"] = true,
+	}
+
+	return IsString(value) and validAlignmentStrings[value] ~= nil
+	
+end
+
+
+-- LUT for validator functions
 local validators = {
 	
-	debugMode = function(value)
-			return type(value) == "boolean"
-		end,
+	["debugMode"] = IsBoolean,
+	["enabled"] = IsBoolean,
+	["hideInCombat"] = IsBoolean,
+	["numberFormat"] = IsNumberFormat,
+	["showLoginMessage"] = IsBoolean,
+	["verbose"] = IsBoolean,
 	
+	["actionButton"] = IsTable,
+	["actionButton.enabled"] = IsBoolean,
+	["actionButton.maxResize"] = IsNumber,
+	["actionButton.minResize"] = IsNumber,
+	["actionButton.showGlowEffect"] = IsBoolean,
+	["actionButton.showText"] = IsBoolean,
 	
+	["infoFrame"] = IsTable,
+	["infoFrame.alignment"] = IsAlignmentString,
+	["infoFrame.border"] = IsNumber,
+	["infoFrame.barHeight"] = IsNumber,
+	["infoFrame.barTexture"] = IsString,
+	["infoFrame.enabled"] = IsBoolean,
+	["infoFrame.inset"] = IsNumber,
+	["infoFrame.showMiniBar"] = IsBoolean,
 	
-	["infoFrame"] = {
-		["border"] = {
-			["defaultValue"] = 1,
-			["IsValid"] = function(value)
-				return type(value) == "number" and value >= 1
-			end,
-		},
-		["progressBar"] = {
-			["alpha"] = {
-				["defaultValue"] = 0.2,
-				["IsValid"] = function(value)
-					return type(value) == "number" and value > 0 and value <= 1
-				end,
-			}
-		}
-	}
+	["infoFrame.progressBar"] = IsTable,
+	["infoFrame.progressBar.red"] = IsRGB,
+	["infoFrame.progressBar.green"] = IsRGB,
+	["infoFrame.progressBar.blue"] = IsRGB,
+	["infoFrame.progressBar.alpha"] = IsDecimalFraction,
 	
-}
+	["infoFrame.unspentBar"] = IsTable,
+	["infoFrame.unspentBar.red"] = IsRGB,
+	["infoFrame.unspentBar.green"] = IsRGB,
+	["infoFrame.unspentBar.blue"] = IsRGB,
+	["infoFrame.unspentBar.alpha"] = IsDecimalFraction,
+	
+	["infoFrame.inBagsBar"] = IsTable,
+	["infoFrame.inBagsBar.red"] = IsRGB,
+	["infoFrame.inBagsBar.green"] = IsRGB,
+	["infoFrame.inBagsBar.blue"] = IsRGB,
+	["infoFrame.inBagsBar.alpha"] = IsDecimalFraction,
+	
+	["specIcons"] = IsTable,
+	["specIcons.alignment"] = IsAlignmentString,
+	["specIcons.border"] = IsNumber,
+	["specIcons.enabled"] = IsBoolean,
+	["specIcons.inset"] = IsNumber,
+	["specIcons.showGlowEffect"] = IsBoolean,
+	["specIcons.size"] = IsNumber,
+	
+	["tooltip"] = IsTable,
+	["tooltip.enabled"] = IsBoolean,
+	["tooltip.showNumItems"] = IsBoolean,
+	["tooltip.showProgressReport"] = IsBoolean,
+	
+}	
 
---- Dynamic name lookup (read) - from the Lua manual
+--- Dynamic name lookup (read) - from the Lua manual - Used as a helper function, but only rarely because it is extremely slow
 -- @param f The dynamic field name (string) that should be looked up
 -- @param[opt] t The table that the field should be set in (defaults to _G)
 -- @usage getfield("some.field", defaultSettings) -> value of defaultSettings["some"]["field"]
 -- @usage getfield("some.field") -> value of _G["some"]["field"]
 function getfield (f, t)
-      local v = t or _G    -- start with the table of globals
-      for w in string.gfind(f, "[%w_]+") do
-        v = v[w]
-      end
-      return v
-    end
+	
+	local v = t or _G    -- start with the table of globals
+ 
+		for w in string.gfind(f, "[%w_]+") do
+			v = v[w]
+		end
+      
+	return v
+ 
+ end
 
---- Dynamic name lookup (write) - from the Lua manual
--- @param f The dynamic field name (string) that should be looked up
--- @param v The value that the field should be set to
--- @param[opt] t The table the field should be looked up in (defaults to _G)
-function setfield (f, v, t)
-	local t = t or _G -- start with the table of globals
-      for w, d in string.gfind(f, "([%w_]+)(.?)") do
-        if d == "." then      -- not last field?
-          t[w] = t[w] or {}   -- create table if absent
-          t = t[w]            -- get the table
-        else                  -- last field
-          t[w] = v            -- do the assignment
-        end
-      end
-    end
+ 
+--- Validates the given table by calling a validator function for the given path
+-- @param t The table that is going to be validated
+-- @param[opt] relPath The relative path of the current node in the table; defaults to "" (empty string) if none is given
+-- @param[opt] v The list (table) of validator functions; uses a predefined list if none is given
+-- @usage ValidateTable(settings) -> Validates all entries in the addon's settings, dropping deprecated values and replacing invalid ones with their default value (Note: This is an expensive operation and should not happen too much)
+local function ValidateTable(t, relPath, v)
 
+	if not relPath then -- Use root as path if none was given
+	
+		TotalAP.Debug("ValidateTable -> Using root as relative path because none was given")
+		relPath = ""
+	
+	end
+	
+	if not v then -- Use local validators table (TODO)
+	
+		TotalAP.Debug("ValidateTable -> Using default validator functions because none were supplied")
+		v = validators
+	
+	end
+	
+	if t and not type(t) == "table" then -- Skip validation for invalid table parameter
+	
+		TotalAP.Debug("ValidateTable -> Skipped validation because an invalid table parameter was supplied (with relPath = " .. relPath .. ")")
+		return
+	
+	end
+	
+	
+	-- Iterate over entries in the table and validate them individually
+	for key, value in pairs(t) do
+		
+		--print("Validating entry with key = " .. key .. " and value = " .. tostring(value))
+		local absPath = relPath .. (relPath ~= "" and "." or "") .. key
+		--print("Validating key = " .. key .. " for absPath = " .. absPath)
+		local IsValid = v[absPath]
+
+		if IsValid == nil then -- No validation routine existed -> Value is likely deprecated and no longer required
+		
+			TotalAP.Debug("ValidateTable -> Found deprecated value for key = " .. key .. " (lookup = " .. absPath .. ")")
+			
+			-- Remove obsolete value
+			t[key] = nil
+			TotalAP.Debug("ValidateTable -> Dropped obsolete value for key = " .. key)
+		
+		else
+			
+			if not (type(IsValid) == "function" and IsValid(value)) then -- Validation failed -> Reset to default
+		
+				TotalAP.Debug("ValidateTable -> Validation failed for key: " .. key .. " (lookup = " .. absPath .. ")")
+				
+				-- Load default value
+				t[key] = getfield(absPath, defaultSettings) -- VERY slow, but it shouldn't really happen all that often that a saved variable gets corrupted or otherwise messed up
+				TotalAP.Debug("ValidateTable -> Restored default value for key = " .. key)
+				
+			else -- Validation was successful -> Everything is in order
+		
+				--print("Validation passed for key: " .. key .. " (lookup = " .. absPath .. ")")
+				
+			end
+		end
+		
+		if type(value) == "table" then -- Validate the table that was found, recursively
+			
+			--print("Found table for key: " .. key)
+			--print("Using absPath = " .. absPath .. " as relPath of recursion")
+			--print("Entering recursive step with new relPath = " .. absPath)
+			ValidateTable(t[key], absPath)
+			
+		end
+		
+	end
+
+	return true
+	
+end
 
 	
--- SavedVars defaults (to check against, and load if corrupted/rendered invalid by version updates)
+-- Default settings (to check against, and load from if corrupted/rendered invalid by version updates)
 local defaultSettings =	{	
 		-- General options
 		
@@ -191,77 +350,67 @@ local function ResetValue(path)
 	
 	-- TODO: Invalid field(path)?
 	
-	local oldValue = getfield(path, settings)
-	local defaultValue = getfield(path, defaultSettings)
-	local setfield(path, defaultValue, settings)
+	-- local oldValue = getfield(path, settings)
+	-- local defaultValue = getfield(path, defaultSettings)
+	-- local setfield(path, defaultValue, settings)
 	
-	return 
+	return nil
 	
 	-- Experimental stuff - TODO: Delete it later
-	if type(path) == "string" then
+	-- if false then
 	
-		local matches = path:gmatch("(.+)%.")
+		-- local matches = path:gmatch("(.+)%.")
 		
-		print("#matches = " .. #matches)
-		local currentNode = defaultSettings
+		-- print("#matches = " .. #matches)
+		-- local currentNode = defaultSettings
 		
-		for index, key in ipairs(matches) do --  Traverse default settings to follow the given path of keys (as far as it exists)
+		-- for index, key in ipairs(matches) do --  Traverse default settings to follow the given path of keys (as far as it exists)
 			
-			print("Key: " .. key .. " (index: " .. index)
-			currentNode = currentNode.key
-			if currentNode == nil then -- Invalid key -> Stop traversion
+			-- print("Key: " .. key .. " (index: " .. index)
+			-- currentNode = currentNode.key
+			-- if currentNode == nil then -- Invalid key -> Stop traversion
 				
-				return
+				-- return
 				
-			end
+			-- end
 			
-		end
+		-- end
 		
 		-- If this point is reached, the key must be a valid one -> Set it to its default value
-		
-	
-	end
+	-- end
 
-	local keys = { ... }
-	local n = #keys
+	-- local keys = { ... }
+	-- local n = #keys
 	
-	if n > 0 then -- check if all given keys are strings, and exist in the defaults table
-		
-		for i=1, n-2 do --
-		
-			
-		
-		end
-		
-		
-	end
+	-- if n > 0 then -- check if all given keys are strings, and exist in the defaults table
+		-- for i=1, n-2 do --
+		-- end
+	-- end
 
-	if settings.key ~= nil and defaultValues.key ~= nil then -- Replace key with its default value
+	-- if settings.key ~= nil and defaultValues.key ~= nil then -- Replace key with its default value
 		
-		if type(defaultValues.key == "table") then -- copy table, don't pass a reference
-			settings.key = defaultValues.key
-		end
-	end
-	
+		-- if type(defaultValues.key == "table") then -- copy table, don't pass a reference
+			-- settings.key = defaultValues.key
+		-- end
+	-- end
 end
 
 --- Reset all settings to their default values
 local function RestoreDefaults()
 
-	TotalArtifactPowerSettings = defaultSettings
+	local settings = GetReference()
+	settings = defaultSettings
 
 end
 
 --- Validate all settings and reset those that weren't found to be corret to their default values (while printing a debug message)
 local function Validate()
 
-	-- for all keys in settings -> IsValidValue(key)
-	
 	-- Validate entries
+	local settings = GetReference()
+	local validatedSuccessfully = ValidateTable(settings) 	-- Also deletes unused (deprecated) entries
 	
-	-- Add missing entries
-	
-	-- Delete unused (deprecated) entries
+	return validatedSuccessfully
 	
 end
 
@@ -303,11 +452,8 @@ local function SetValue(field, value)
 end
 
 
-TotalAP.Settings.
-TotalAP.Settings.
-TotalAP.Settings.
-TotalAP.Settings.
-TotalAP.Settings.
-TotalAP.Settings.
+TotalAP.Settings.GetReference = GetReference
+TotalAP.Settings.RestoreDefaults = RestoreDefaults
+TotalAP.Settings.Validate = Validate
 
 return TotalAP.Settings
