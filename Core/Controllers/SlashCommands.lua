@@ -191,7 +191,7 @@ local slashHandlers = {
 			settings.numberFormat = "legacy"
 		end
 		
-		TotalAP.ChatMsg(format(L["Number format set to %s"], settings.numberFormat))
+		TotalAP.ChatMsg(format(L["Number format set to %s"],  '"' .. settings.numberFormat .. '"'))
 		
 	end,
 	

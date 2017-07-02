@@ -70,8 +70,14 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
       
 	GameTooltip:AddLine(format(L["Total Ranks Purchased: %d"],  numTraitsPurchased), 1, 1, 1)
 	
-     if progressPercent > 0 and maxAttainableRank > numTraitsPurchased then
-		GameTooltip:AddLine(format(L["%.2f%% towards Rank %d"],  progressPercent, maxAttainableRank + 1))
+     if progressPercent > 0 and maxAttainableRank > numTraitsPurchased  then 
+		
+		if tier > 1 or maxAttainableRank < 54 then  -- TODO: Hardcoded limit for tier 1 artifacts isn't ideal
+			GameTooltip:AddLine(format(L["%.2f%% towards Rank %d"],  progressPercent, maxAttainableRank + 1))
+		else
+			GameTooltip:AddLine(format(L["Maximum number of traits unlocked"]), 0/255, 255/255, 0/255)
+		end
+		
 	end
      
 	

@@ -171,7 +171,7 @@ local function GetValue(fqcn, specID, key)
 	
 	local entry = GetEntry(fqcn, specID)
 	
-	if not (entry and key and entry[key]) then -- Key is invalid or entry doesn't exist
+	if not (entry ~= nil and key and entry[key]) then -- Key is invalid or entry doesn't exist
 	
 		TotalAP.Debug("Attempted to retrieve cache entry for key = " .. key .. ", but key is invalid or entry doesn't exist")
 		return
@@ -181,6 +181,15 @@ local function GetValue(fqcn, specID, key)
 	return entry[key]
 
 end
+
+local function SetValue(fqcn, specID, key, value)
+
+end
+
+local function IgnoreSpec(fqcn, spec)
+
+end
+
 
 --- Returns the number of ignored specs for a given character (defaults to currently used character if none is given)
 -- @param[opt] fqcn Fully qualified character name, to be used as the primary key
@@ -213,8 +222,10 @@ local function GetNumIgnoredSpecs(fqcn)
 end
 
 
+
 -- Public methods
 TotalAP.Cache.NewEntry = NewEntry
+TotalAP.Cache.GetEntry = GetEntry
 TotalAP.Cache.UpdateEntry = UpdateEntry
 TotalAP.Cache.GetValue = GetValue
 TotalAP.Cache.GetNumIgnoredSpecs = GetNumIgnoredSpecs

@@ -145,7 +145,13 @@ local function VerifySettings()
 	-- Check default settings (= always up-to-date) against SavedVars, and add missing keys from the defaults. TODO: This leaves some remnants of deprecated options, also it would be easier with Ace
 	TotalAP.Utils.CompareTables(masterTable, targetTable, targetTable, nil);
 	
-
+	if settings.numberFormat == "default" then -- replace outdated value with one that works in future versions (TODO: This can be avoided if aceDB handles it?)
+	
+		TotalAP.Debug("Replaced invalid value \"default\" for key \"numberFormat\" with updated value \"legacy\"") -- TODO: Do this for all values automatically
+		settings.numberFormat = "legacy"
+		
+	end
+	
 	return true;
 	
 end
@@ -565,7 +571,7 @@ local function UpdateSpecIcons()
 		   MasqueUpdate(TotalAPSpecIconButtons[i], "specIcons");
 		   
 			
-				if numTraitsAvailable > 0 and settings.specIcons.showGlowEffect and not (v["artifactTier"] == 1 and v["numTraitsPurchased"] < maxArtifactTraits) then -- Text and glow effect are independent of each other; combining them bugs out one or the other (apparently :P)
+				if numTraitsAvailable > 0 and settings.specIcons.showGlowEffect and (v["artifactTier"] > 1 or v["numTraitsPurchased"] < maxArtifactTraits) then -- Text and glow effect are independent of each other; combining them bugs out one or the other (apparently :P)
 					
 					-- -- TODO: Confusing, comment and naming conventions.
 					-- local ol = TotalAPSpecIconButtons[k].overlay;
@@ -860,8 +866,8 @@ local function UpdateInfoFrame()
 			if not TotalAPMiniBars[k].texture then -- Create texture object
 				TotalAPMiniBars[k].texture = TotalAPMiniBars[k]:CreateTexture();
 			end
-			
-			if maxAttainableRank > v["numTraitsPurchased"] and progressPercent > 0 and settings.infoFrame.showMiniBar then -- Display secondary bar
+
+			if maxAttainableRank > v["numTraitsPurchased"] and progressPercent > 0 and settings.infoFrame.showMiniBar and (v["artifactTier"] > 1 or maxAttainableRank < maxArtifactTraits) then -- Display secondary bar
 
 				TotalAPMiniBars[k]:SetSize(progressPercent, 2) -- TODO: options....
 				TotalAPMiniBars[k]:ClearAllPoints()
