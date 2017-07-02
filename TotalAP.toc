@@ -57,6 +57,7 @@ Core\ArtifactInterface.lua
 Core\Cache.lua
 Core\DBHandler.lua
 Core\Scanner.lua
+Core\Settings.lua
 
 Core\GUI\WidgetTypes\DisplayFrame.lua
 Core\GUI\WidgetTypes\BackgroundFrame.lua

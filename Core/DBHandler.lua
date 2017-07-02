@@ -104,119 +104,20 @@ TotalAP.DB.GetArtifactItemID = GetArtifactItemID
 TotalAP.DB.GetItemEffectID = GetItemEffectID
 
 -- Keep these private, unless they're needed elsewhere?
--- TotalAP.DB.GetReference = GetReference
 -- TotalAP.DB.GetArtifactWeapons = GetArtifactWeapons
--- TotalAP.DB.
--- TotalAP.DB.
--- TotalAP.DB.
-
-
--- SavedVars defaults (to check against, and load if corrupted/rendered invalid by version updates)
--- TODO: Use AceDB for this
--- TODO: Doesn't belong here. Maybe put it in Core\DefaultSettings.lua? - or not. AceDB will handle it soon enough
-local defaultSettings =	{	
-												-- General options
-												
-												-- controls what output will be printed in the chat frame
-												debugMode = false,
-												verbose = true,
-												showLoginMessage = true,
-												enabled = true,		-- This controls the entire display, but NOT the individual parts (which will be hidden, but their settings won't be overridden)
-												hideInCombat = true,
-												numberFormat = GetLocale(),
-												
-											--	showNumItems = true, -- TODO: Deprecated
-												--showProgressReport = true, -- TODO: Deprecated
-												
-												--showActionButton = true, -- TODO: Toggles everything. That should be changed
-												
-												--showButtonGlowEffect = true, -- TODO: actionButton
-												
-												actionButton = {
-													enabled = true,
-													showGlowEffect = true,
-													minResize = 20,
-													maxResize = 100,
-													showText = true
-												},
-
-												-- Display options for the spec icons
-												specIcons = {
-													enabled = true,
-													showGlowEffect = true,
-													size = 18,
-													border = 1,
-													inset = 1,
-													
-													alignment = "center", -- TODO: Provide option via GUI (AceConfig)
-												},
-												
-												-- Controls what information is displayed in the tooltip
-												tooltip = {
-													enabled = true, 
-													showProgressReport = true,
-													showNumItems = true
-												},
-												
-												-- Display options for the bar displays
-												infoFrame = {
-													enabled = true,
-													barTexture = "Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar.blp", -- Default texture. TODO. SharedMedia
-													barHeight = 16,
-													border = 1,
-													inset = 1,
-													showMiniBar = true,
-													alignment = "center", -- TODO: Provide option via GUI (AceConfig)
-													
-													progressBar = {
-														red = 250,
-														green = 250,
-														blue = 250,
-														alpha = 0.2
-													},
-													
-													unspentBar = {
-														red = 50,
-														green = 150,
-														blue = 250,
-														alpha = 1
-													},
-													
-													inBagsBar = {
-														red = 50,
-														green = 95,
-														blue = 150,
-														alpha = 1
-													}
-												}
-												
-											};
-
 
 
 --- Returns a reference to the currently used SavedVars (DB) object. Temporary crutch for ongoing refactoring/migration of modules :)
 local function GetDB()
-	-- TODO: LoadAddonMetadata("TotalAP", "SavedVars") ?
-	-- TODO: provide interface for AceDB via this handler
-	
+
 	return TotalArtifactPowerSettings
+	
 end
-
---- Returns the default settings for the initial startup or manual/automatic resets during verification. Temporary crutch for ongoing refactoring/migration of modules :)
-local function GetDefaults()
-	return defaultSettings
-end
-
---- Reset settings to their default values. Overwrites the SavedVars part responsible for storing the user's settings
-local function RestoreDefaults()
-	TotalArtifactPowerSettings = defaultSettings;
-	--settings = TotalArtifactPowerSettings;
-end
-
 
 
 --- Removes all specs from the ignored specs list for a given character (defaults to currently used character if none is given)
 -- @param[opt] fqcn  Fully-qualified character name that will have their specs "IsIgnored" setting reset
+-- TODO: This doesn't belong here
 local function UnignoreAllSpecs(fqcn)
 	
 	if not TotalArtifactPowerCache then return end -- Skip unignore if cache isn't initialised or this is called before the addon loads
@@ -245,15 +146,8 @@ local function UnignoreAllSpecs(fqcn)
 	
 end
 
+
 -- TODO: Unignore only one (current) spec
-
----
-local function SaveDB()
-end
-
-TotalAP.DBHandler.GetDB = GetDB
-TotalAP.DBHandler.RestoreDefaults = RestoreDefaults
-TotalAP.DBHandler.GetDefaults = GetDefaults
 TotalAP.DBHandler.UnignoreAllSpecs = UnignoreAllSpecs
 
 return TotalAP.DBHandler

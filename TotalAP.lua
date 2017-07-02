@@ -59,7 +59,7 @@ local maxArtifactTraits = 54; -- Only applied to tier 1 artifacts in 7.2 -- TODO
 local settings, cache = {}, {}; -- will be loaded from savedVars later
 
 
-local defaultSettings = TotalAP.DBHandler.GetDefaults() -- TODO: remove (crutch while in migration)
+local defaultSettings = TotalAP.Settings.GetDefaults() -- TODO: remove (crutch while in migration)
 
 -- Calculate the total number of purchaseable traits (using AP from both the equipped artifact and from AP tokens in the player's inventory)
 local function GetNumAvailableTraits()
@@ -119,9 +119,7 @@ end
 -- Load default settings (will overwrite SavedVars)
 local function RestoreDefaultSettings()
 
-	
-	TotalArtifactPowerSettings = TotalAP.DBHandler.GetDefaults()
-	-- TotalAP.DBHandler.RestoreDefaults() -- TODO: remove
+	TotalArtifactPowerSettings = TotalAP.Settings.GetDefaults()
 	settings = TotalArtifactPowerSettings;
 	
 end

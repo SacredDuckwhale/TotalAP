@@ -30,6 +30,7 @@ TotalAP.ArtifactInterface = {}
 TotalAP.Scanner = {}
 TotalAP.Cache = {}
 TotalAP.DBHandler = {} 
+TotalAP.Settings = {}
 
 -- Controllers & Input handling
 TotalAP.Controllers = {}
