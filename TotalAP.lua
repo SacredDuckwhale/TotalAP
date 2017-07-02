@@ -573,7 +573,7 @@ local function UpdateSpecIcons()
 		   MasqueUpdate(TotalAPSpecIconButtons[i], "specIcons");
 		   
 			
-				if numTraitsAvailable > 0 and settings.specIcons.showGlowEffect and not (v["artifactTier"] == 1 and v["numTraitsPurchased"] < maxArtifactTraits) then -- Text and glow effect are independent of each other; combining them bugs out one or the other (apparently :P)
+				if numTraitsAvailable > 0 and settings.specIcons.showGlowEffect and (v["artifactTier"] > 1 or v["numTraitsPurchased"] < maxArtifactTraits) then -- Text and glow effect are independent of each other; combining them bugs out one or the other (apparently :P)
 					
 					-- -- TODO: Confusing, comment and naming conventions.
 					-- local ol = TotalAPSpecIconButtons[k].overlay;
@@ -868,8 +868,8 @@ local function UpdateInfoFrame()
 			if not TotalAPMiniBars[k].texture then -- Create texture object
 				TotalAPMiniBars[k].texture = TotalAPMiniBars[k]:CreateTexture();
 			end
-			
-			if maxAttainableRank > v["numTraitsPurchased"] and progressPercent > 0 and settings.infoFrame.showMiniBar then -- Display secondary bar
+
+			if maxAttainableRank > v["numTraitsPurchased"] and progressPercent > 0 and settings.infoFrame.showMiniBar and (v["artifactTier"] > 1 or maxAttainableRank < maxArtifactTraits) then -- Display secondary bar
 
 				TotalAPMiniBars[k]:SetSize(progressPercent, 2) -- TODO: options....
 				TotalAPMiniBars[k]:ClearAllPoints()
