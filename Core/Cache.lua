@@ -221,6 +221,36 @@ local function GetNumIgnoredSpecs(fqcn)
 	
 end
 
+--- Removes all specs from the ignored specs list for a given character (defaults to currently used character if none is given)
+-- @param[opt] fqcn  Fully-qualified character name that will have their specs "IsIgnored" setting reset
+-- TODO: This doesn't belong here
+local function UnignoreAllSpecs(fqcn)
+	
+	if not TotalArtifactPowerCache then return end -- Skip unignore if cache isn't initialised or this is called before the addon loads
+	
+	-- TODO: DRY
+	local characterName, realm
+	
+	if fqcn then 
+		characterName, realm = fqcn:match("(%.+)%s-%s(%.)+")
+	end
+	
+	if not characterName or not realm then -- Use currently active character
+		
+		characterName = UnitName("player")
+		realm = GetRealmName()
+		
+	end
+		 
+	local key = format("%s - %s", characterName, realm)	 
+	
+	for i = 1, GetNumSpecializations() do -- Remove spec from "ignore list" (more precisely, remove "marked as ignored" flag for all cached specs of the active character)
+	
+		if TotalArtifactPowerCache[key] and TotalArtifactPowerCache[key][i] then TotalArtifactPowerCache[key][i]["isIgnored"] = false end
+	
+	end
+	
+end
 
 
 -- Public methods
@@ -229,7 +259,7 @@ TotalAP.Cache.GetEntry = GetEntry
 TotalAP.Cache.UpdateEntry = UpdateEntry
 TotalAP.Cache.GetValue = GetValue
 TotalAP.Cache.GetNumIgnoredSpecs = GetNumIgnoredSpecs
-
+TotalAP.Cache.UnignoreAllSpecs = UnignoreAllSpecs
 
 -- Keep these private
 -- TotalAP.Cache.GetReference = GetReference

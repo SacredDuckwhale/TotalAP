@@ -196,7 +196,7 @@ local slashHandlers = {
 	
 	["unignore"] = function(settings) -- Reset this character's ignored specs list
 
-		TotalAP.DBHandler.UnignoreAllSpecs()
+		TotalAP.Cache.UnignoreAllSpecs()
 	
 	end,
 	
