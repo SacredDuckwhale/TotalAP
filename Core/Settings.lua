@@ -324,12 +324,12 @@ local defaultSettings =	{
 		}
 		
 	}
-
---- Retrieve the saved variables table containing all of the addon's settings
+	
+--- Retrieve the table containing all of the addon's settings for the currently active profile (managed by AceDB)
 -- @return Reference to the settings table
 local function GetReference()
 	
-	return TotalArtifactPowerSettings
+	return TotalAP.Addon.db.profile
 	
 end
 
@@ -399,16 +399,18 @@ end
 local function RestoreDefaults()
 
 	local settings = GetReference()
-	settings = defaultSettings
+	settings.ResetProfile()
 
 end
 
 --- Validate all settings and reset those that weren't found to be corret to their default values (while printing a debug message)
 local function Validate()
 
-	-- Validate entries
+	-- Validate existing entries
 	local settings = GetReference()
-	local validatedSuccessfully = ValidateTable(settings) 	-- Also deletes unused (deprecated) entries
+	local validatedSuccessfully = ValidateTable(settings) 	-- Also deletes unused (deprecated) entries -> everything that is stored in the saved variables should now be correct
+	
+	-- Settings that aren't set will be read from the default values (via AceDB)
 	
 	return validatedSuccessfully
 	
@@ -451,8 +453,35 @@ local function SetValue(field, value)
 	
 end
 
+-- Initialises the addon's settings and validates them (run at startup)
+local function Initialise()
+	
+	-- Register settings with AceDB
+	local defaultSettings = GetDefaults()
+	
+	-- Create defaults in AceDB format (wrapper around actual default values for use with profiles)
+	local defaults = {
+		profile = defaultSettings
+	}	
+	
+	local self = TotalAP.Addon
+	self.db = LibStub("AceDB-3.0"):New("TotalArtifactPowerSettings", defaults, true) -- Use the "Default" profile for all settings
+	self.db:RegisterDefaults(defaults)
+	
+	-- Register callbacks -> Used to update the displays when the current profile is altered in any way
+	self.db.RegisterCallback(self, "OnProfileChanged", "OnProfileChanged")
+	self.db.RegisterCallback(self, "OnProfileCopied", "OnProfileChanged")
+	self.db.RegisterCallback(self, "OnProfileReset", "OnProfileChanged")
+	self.db.RegisterCallback(self, "OnProfileDeleted", "OnProfileChanged")
 
+	-- Validate existing settings to weed out invalid entries / drop obsolete keys
+	Validate()
+	
+end
+	
 TotalAP.Settings.GetReference = GetReference
+TotalAP.Settings.GetDefaults = GetDefaults
+TotalAP.Settings.Initialise = Initialise
 TotalAP.Settings.RestoreDefaults = RestoreDefaults
 TotalAP.Settings.Validate = Validate
 
