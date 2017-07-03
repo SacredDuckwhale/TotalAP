@@ -159,7 +159,7 @@ function getfield (f, t)
 	
 	local v = t or _G    -- start with the table of globals
  
-		for w in string.gfind(f, "[%w_]+") do
+		for w in string.gmatch(f, "[%w_]+") do
 			v = v[w]
 		end
       
