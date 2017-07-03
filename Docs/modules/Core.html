@@ -37,6 +37,7 @@
 <li><a href="#Cache_lua">Cache.lua </a></li>
 <li><a href="#DB_lua">DB.lua </a></li>
 <li><a href="#Scanner_lua">Scanner.lua </a></li>
+<li><a href="#Settings_lua">Settings.lua </a></li>
 </ul>
 
 
@@ -64,15 +65,15 @@
 <h2><a href="#TotalAP_lua">TotalAP.lua </a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#AceAddon:OnDisable">AceAddon:OnDisable ()</a></td>
+	<td class="name" nowrap><a href="#Addon:OnDisable">Addon:OnDisable ()</a></td>
 	<td class="summary">Called when addon is unloaded or disabled manually</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AceAddon:OnEnable">AceAddon:OnEnable ()</a></td>
+	<td class="name" nowrap><a href="#Addon:OnEnable">Addon:OnEnable ()</a></td>
 	<td class="summary">Called on PLAYER_LOGIN or ADDON_LOADED (if addon is loaded-on-demand)</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#AceAddon:OnInitialize">AceAddon:OnInitialize ()</a></td>
+	<td class="name" nowrap><a href="#Addon:OnInitialize">Addon:OnInitialize ()</a></td>
 	<td class="summary">Called on ADDON_LOADED</td>
 	</tr>
 </table>
@@ -130,6 +131,10 @@
 	<td class="summary">Add a new cache entry for the respective character/spec, and optionally sets it to predefined values (uses empty "default" entry if none was given)</td>
 	</tr>
 	<tr>
+	<td class="name" nowrap><a href="#UnignoreAllSpecs">UnignoreAllSpecs ([fqcn])</a></td>
+	<td class="summary">Removes all specs from the ignored specs list for a given character (defaults to currently used character if none is given)</td>
+	</tr>
+	<tr>
 	<td class="name" nowrap><a href="#UpdateEntry">UpdateEntry (fqcn, specID, updateValues)</a></td>
 	<td class="summary">Updates an existing entry for the respective character and spec with the given values</td>
 	</tr>
@@ -145,14 +150,6 @@
 	<td class="summary">Returns a reference to the artifact weapons DB object.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GetDB">GetDB ()</a></td>
-	<td class="summary">Returns a reference to the currently used SavedVars (DB) object.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#GetDefaults">GetDefaults ()</a></td>
-	<td class="summary">Returns the default settings for the initial startup or manual/automatic resets during verification.</td>
-	</tr>
-	<tr>
 	<td class="name" nowrap><a href="#GetItemEffectID">GetItemEffectID (itemID)</a></td>
 	<td class="summary">Returns the item spell effect ID for a given itemID</td>
 	</tr>
@@ -164,14 +161,6 @@
 	<td class="name" nowrap><a href="#GetReference">GetReference ()</a></td>
 	<td class="summary">Returns a reference to the top-level DB object.</td>
 	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#RestoreDefaults">RestoreDefaults ()</a></td>
-	<td class="summary">Reset settings to their default values.</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#UnignoreAllSpecs">UnignoreAllSpecs ([fqcn])</a></td>
-	<td class="summary">Removes all specs from the ignored specs list for a given character (defaults to currently used character if none is given)</td>
-	</tr>
 </table>
 <h2><a href="#Scanner_lua">Scanner.lua </a></h2>
 <table class="function_list">
@@ -182,6 +171,33 @@
 	<tr>
 	<td class="name" nowrap><a href="#RegexEscapeChar">RegexEscapeChar (c)</a></td>
 	<td class="summary">Looks up string-characters to find their regexp pattern string (purely for ease of use and readability)</td>
+	</tr>
+</table>
+<h2><a href="#Settings_lua">Settings.lua </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GetDefaults">GetDefaults ()</a></td>
+	<td class="summary">Returns the default settings for first startup or manual/automatic resets during validation at a later point in time</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#GetReference">GetReference ()</a></td>
+	<td class="summary">Retrieve the table containing all of the addon's settings for the currently active profile (managed by AceDB)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#MigrateToAceDB">MigrateToAceDB (savedVars)</a></td>
+	<td class="summary">Migrate existing saved variables to the AceDB profiles table</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#RestoreDefaults">RestoreDefaults ()</a></td>
+	<td class="summary">Reset all settings to their default values</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Validate">Validate ()</a></td>
+	<td class="summary">Validate all settings and reset those that weren't found to be corret to their default values (while printing a debug message)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ValidateTable">ValidateTable (t[, relPath[, v]])</a></td>
+	<td class="summary">Validates the given table by calling a validator function for the given path</td>
 	</tr>
 </table>
 
@@ -197,8 +213,8 @@
           </div>
     <dl class="function">
     <dt>
-    <a name = "AceAddon:OnDisable"></a>
-    <strong>AceAddon:OnDisable ()</strong>
+    <a name = "Addon:OnDisable"></a>
+    <strong>Addon:OnDisable ()</strong>
     </dt>
     <dd>
     Called when addon is unloaded or disabled manually
@@ -211,8 +227,8 @@
 
 </dd>
     <dt>
-    <a name = "AceAddon:OnEnable"></a>
-    <strong>AceAddon:OnEnable ()</strong>
+    <a name = "Addon:OnEnable"></a>
+    <strong>Addon:OnEnable ()</strong>
     </dt>
     <dd>
     Called on PLAYER_LOGIN or ADDON_LOADED (if addon is loaded-on-demand)
@@ -225,8 +241,8 @@
 
 </dd>
     <dt>
-    <a name = "AceAddon:OnInitialize"></a>
-    <strong>AceAddon:OnInitialize ()</strong>
+    <a name = "Addon:OnInitialize"></a>
+    <strong>Addon:OnInitialize ()</strong>
     </dt>
     <dd>
     Called on ADDON_LOADED
@@ -562,6 +578,28 @@
 
 </dd>
     <dt>
+    <a name = "UnignoreAllSpecs"></a>
+    <strong>UnignoreAllSpecs ([fqcn])</strong>
+    </dt>
+    <dd>
+    Removes all specs from the ignored specs list for a given character (defaults to currently used character if none is given)
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fqcn</span>
+          Fully-qualified character name that will have their specs "IsIgnored" setting reset
+ TODO: This doesn't belong here
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "UpdateEntry"></a>
     <strong>UpdateEntry (fqcn, specID, updateValues)</strong>
     </dt>
@@ -647,34 +685,6 @@
 
 </dd>
     <dt>
-    <a name = "GetDB"></a>
-    <strong>GetDB ()</strong>
-    </dt>
-    <dd>
-    Returns a reference to the currently used SavedVars (DB) object.  Temporary crutch for ongoing refactoring/migration of modules :)
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "GetDefaults"></a>
-    <strong>GetDefaults ()</strong>
-    </dt>
-    <dd>
-    Returns the default settings for the initial startup or manual/automatic resets during verification.  Temporary crutch for ongoing refactoring/migration of modules :)
-
-
-
-
-
-
-
-</dd>
-    <dt>
     <a name = "GetItemEffectID"></a>
     <strong>GetItemEffectID (itemID)</strong>
     </dt>
@@ -721,41 +731,6 @@
     Returns a reference to the top-level DB object.  Temporary crutch for ongoing refactoring/migration of modules :)
 
 
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "RestoreDefaults"></a>
-    <strong>RestoreDefaults ()</strong>
-    </dt>
-    <dd>
-    Reset settings to their default values.  Overwrites the SavedVars part responsible for storing the user's settings
-
-
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "UnignoreAllSpecs"></a>
-    <strong>UnignoreAllSpecs ([fqcn])</strong>
-    </dt>
-    <dd>
-    Removes all specs from the ignored specs list for a given character (defaults to currently used character if none is given)
-
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">fqcn</span>
-          Fully-qualified character name that will have their specs "IsIgnored" setting reset
-         (<em>optional</em>)
-        </li>
-    </ul>
 
 
 
@@ -825,13 +800,144 @@
 
 </dd>
 </dl>
+    <h2 class="section-header has-description"><a name="Settings_lua"></a>Settings.lua </h2>
+
+          <div class="section-description">
+
+ Provides an interface for the addon's settings database (i.e., all settings stored in the SavedVariables\TotalAP.lua file)
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "GetDefaults"></a>
+    <strong>GetDefaults ()</strong>
+    </dt>
+    <dd>
+    Returns the default settings for first startup or manual/automatic resets during validation at a later point in time
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table containing the default values for all settings
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "GetReference"></a>
+    <strong>GetReference ()</strong>
+    </dt>
+    <dd>
+    Retrieve the table containing all of the addon's settings for the currently active profile (managed by AceDB)
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Reference to the settings table
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "MigrateToAceDB"></a>
+    <strong>MigrateToAceDB (savedVars)</strong>
+    </dt>
+    <dd>
+    Migrate existing saved variables to the AceDB profiles table
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">savedVars</span>
+         A reference to the saved variables table
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        True if migration completed without errors, false otherwise
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "RestoreDefaults"></a>
+    <strong>RestoreDefaults ()</strong>
+    </dt>
+    <dd>
+    Reset all settings to their default values
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Validate"></a>
+    <strong>Validate ()</strong>
+    </dt>
+    <dd>
+    Validate all settings and reset those that weren't found to be corret to their default values (while printing a debug message)
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ValidateTable"></a>
+    <strong>ValidateTable (t[, relPath[, v]])</strong>
+    </dt>
+    <dd>
+    Validates the given table by calling a validator function for the given path
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         The table that is going to be validated
+        </li>
+        <li><span class="parameter">relPath</span>
+         The relative path of the current node in the table; defaults to "" (empty string) if none is given
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">v</span>
+         The list (table) of validator functions; uses a predefined list if none is given
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">ValidateTable(settings) -&gt; Validates all entries <span class="keyword">in</span> the addon's settings, dropping deprecated values <span class="keyword">and</span> replacing invalid ones with their default value (Note: This is an expensive operation <span class="keyword">and</span> should <span class="keyword">not</span> happen too much)</pre>
+    </ul>
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2017-07-01 12:33:13 </i>
+<i style="float:right;">Last updated 2017-07-03 14:18:59 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
