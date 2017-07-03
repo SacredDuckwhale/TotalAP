@@ -225,9 +225,7 @@ local validators = {
 	
 }	
 
- 
 
- 
 --- Validates the given table by calling a validator function for the given path
 -- @param t The table that is going to be validated
 -- @param[opt] relPath The relative path of the current node in the table; defaults to "" (empty string) if none is given
