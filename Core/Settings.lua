@@ -396,43 +396,6 @@ local function Validate()
 	
 end
 
-local function IsValidKey(field)
-
-end
-
-local function IsValidValue(field, value)
-
-end
-
-local function GetDefaultValue(field)
-
-end
-
-
-local function IsDefaultValue(field, value)
-
-end
-
---- Get value of a given field from the addon's settings
--- @param field String representing the field that is to be returned
--- @returns Value of said field if it exists; nil otherwise
-local function GetValue(field)
-
-	return getfield(field, GetReference())
-
-end
-
--- @param field String representing the field that is to be returned
--- @param[opt] value Value that the field is to be set to (uses that field's defaultValue if none was given)
--- @return true if the value was valid and could be set; nil otherwise
-local function SetValue(field, value)
-
-	-- Validate before setting it
-	
-	-- Print debug msg if value was invalid and could not be set
-	
-end
-
 -- Initialises the addon's settings and validates them (run at startup)
 local function Initialise()
 	
