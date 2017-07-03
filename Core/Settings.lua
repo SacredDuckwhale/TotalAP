@@ -321,60 +321,6 @@ local function GetDefaults()
 	
 end
 
---- Resets a given field in the settings to its default value
--- @param path The field name (string) to the setting
--- @usage ResetValue("tooltip.enabled") -> Sets the saved vars entry for tooltip.enabled to its default value
-local function ResetValue(path)
-
-	local settings = GetReference()
-	
-	-- TODO: Invalid field(path)?
-	
-	-- local oldValue = getfield(path, settings)
-	-- local defaultValue = getfield(path, defaultSettings)
-	-- local setfield(path, defaultValue, settings)
-	
-	return nil
-	
-	-- Experimental stuff - TODO: Delete it later
-	-- if false then
-	
-		-- local matches = path:gmatch("(.+)%.")
-		
-		-- print("#matches = " .. #matches)
-		-- local currentNode = defaultSettings
-		
-		-- for index, key in ipairs(matches) do --  Traverse default settings to follow the given path of keys (as far as it exists)
-			
-			-- print("Key: " .. key .. " (index: " .. index)
-			-- currentNode = currentNode.key
-			-- if currentNode == nil then -- Invalid key -> Stop traversion
-				
-				-- return
-				
-			-- end
-			
-		-- end
-		
-		-- If this point is reached, the key must be a valid one -> Set it to its default value
-	-- end
-
-	-- local keys = { ... }
-	-- local n = #keys
-	
-	-- if n > 0 then -- check if all given keys are strings, and exist in the defaults table
-		-- for i=1, n-2 do --
-		-- end
-	-- end
-
-	-- if settings.key ~= nil and defaultValues.key ~= nil then -- Replace key with its default value
-		
-		-- if type(defaultValues.key == "table") then -- copy table, don't pass a reference
-			-- settings.key = defaultValues.key
-		-- end
-	-- end
-end
-
 --- Reset all settings to their default values
 local function RestoreDefaults()
 
@@ -383,8 +329,65 @@ local function RestoreDefaults()
 
 end
 
+--- Migrate existing saved variables to the AceDB profiles table
+-- @param savedVars A reference to the saved variables table
+-- @return True if migration completed without errors, false otherwise
+local function MigrateToAceDB(savedVars)
+
+	-- Skip if SV aren't handled by AceDB at all (must be a wrong reference being passed), or if they are empty (which also shouldn't happen normally, as they have been initialised before this is called)
+	if savedVars and savedVars.profiles ~= nil and savedVars.profiles.Default ~= nil then -- SV exist and are handled by AceDB (Default profile should always exist)
+	
+		if savedVars.actionButton ~= nil then -- Since this is the most basic addon feature, it can be safely assumed that there are other settings on the top-level as well
+		
+			-- Migrate existing settings
+			local defaultSettings = GetDefaults()
+			local settings = GetReference()
+			
+			for key, value in pairs(savedVars) do -- Check if this setting is still required (not all are, as some might be outdated -> Those will be dropped by the validation routine once they are in the AceDB profiles table)
+			
+				TotalAP.Debug("MigrateToAceDB -> Checking key = " .. key .. " with value = " .. tostring(value))
+			
+				if not (key == "profiles" or key == "profileKeys") and value ~= nil then -- It's not a key that was set by AceDB -> Migrate it
+				
+					TotalAP.Debug("Current value in AceDB: " .. tostring(settings[key]))
+					settings[key] = value -- Migrate to AceDB profile
+					savedVars[key] = nil -- Drop obsolete entry
+					TotalAP.Debug("MigrateToAceDB -> Dropped obsolete entry for key = " .. key .. " after copying it to AceDB profile")
+				
+				end
+			
+			end
+		
+		else
+			
+			TotalAP.Debug("MigrateToAceDB -> Failed - No top-level entries exist")
+			return false
+		
+		end
+	
+	else
+				
+		TotalAP.Debug("MigrateToAceDB -> Failed - SavedVars are not currently managed by AceDB")
+		return false
+				
+	end
+	
+	return true
+	
+end
+
 --- Validate all settings and reset those that weren't found to be corret to their default values (while printing a debug message)
 local function Validate()
+
+	-- Migrate settings to AceDB format if some are still in the old format
+	local savedVars = TotalArtifactPowerSettings -- direct reference to the saved vars that are now handled by AceDB
+	local migratedSuccessfully = MigrateToAceDB(savedVars)
+	
+	if migratedSuccessfully then
+		TotalAP.Debug("Migration completed successfully")
+	else
+		TotalAP.Debug("Migration aborted before it could finish")
+	end
 
 	-- Validate existing entries
 	local settings = GetReference()
@@ -422,9 +425,11 @@ local function Initialise()
 	
 end
 	
+
 TotalAP.Settings.GetReference = GetReference
 TotalAP.Settings.GetDefaults = GetDefaults
 TotalAP.Settings.Initialise = Initialise
+TotalAP.Settings.MigrateToAceDB = MigrateToAceDB
 TotalAP.Settings.RestoreDefaults = RestoreDefaults
 TotalAP.Settings.Validate = Validate
 
