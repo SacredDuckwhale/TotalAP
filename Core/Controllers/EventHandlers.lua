@@ -42,6 +42,83 @@ local function OnInventoryUpdate()
 
 	TotalAP.ChatMsg("OnInventoryUpdate triggered")
 
+	
+	-- Re-scan inventory and update all stored values
+	local foundTome = false -- For BoA tomes -> The display must display them before any AP tokens if any were found 
+	
+	 -- Temporary values that will be overwritten with the next item
+	local bag, slot, tempItemLink, tempItemID, tempItemTexture
+	local isTome, isToken = false, false -- Refers to current item
+	
+	-- To be saved in the Inventory cache
+	local displayItem = {} -- The item that is going to be displayed on the actionButton (after the next call to GUI.Update())
+	local numItems, inBagsAP = 0, 0 -- These are for the current scan
+	local spellDescription, spellID, artifactPowerValue -- These are for the current item
+	
+	for bag = 0, NUM_BAG_SLOTS do -- Iterate over this bag's contents
+	
+		for slot = 1, GetContainerNumSlots(bag) do -- Compare items in the current bag with DB entries to detect AP tokens
+	
+			tempItemLink = GetContainerItemLink(bag, slot)
+
+			if tempItemLink and tempItemLink:match("item:%d") then -- Is a valid item
+			
+					tempItemID = GetItemInfoInstant(tempItemLink)
+					
+					isTome = TotalAP.DB.IsKnowledgeTome(tempItemID)
+					isToken TotalAP.DB.IsArtifactPowerToken(tempItemID)
+
+					-- TODO: Move this to DB\ResearchTomes or something, and access via helper function (similar to artifacts)
+					if isTome then -- AK Tome is available for use -> Display button regardless of current AP tokens
+					
+						TotalAP.Debug("Found Artifact Research tome -> Displaying it instead of potential AP items")
+						foundTome = true
+						
+					end
+					
+					if isToken then -- Found token -> Use it in calculations
+
+						numItems = numItems + 1
+						
+						-- Extract AP amount (after AK) from the description
+						spellID = TotalAP.DB.GetItemSpellEffect(tempItemID)
+						spellDescription = GetSpellDescription(spellID) -- Always contains the AP number, as only AP tokens are in the LUT 
+						
+						artifactPowerValue = TotalAP.Scanner.ParseSpellDesc(spellDescription) -- Scans spell description and extracts AP amount based on locale (as they use slightly different formats to display the numbers)
+
+						inBagsAP = inBagsAP + tonumber(artifactPowerValue)
+
+					end
+				
+					if isTome or (isToken and not foundTome) then -- Set this item as the currently displayed one (so that the GUI can use it)
+					
+						displayItem.ID = tempItemID
+						displayItem.link = tempItemLink
+						displayItem.texture = GetItemIcon(displayItem.ID)
+						displayItem.isToken = isTome
+						displayItem.isTome = isTome
+						displayItem.artifactPowerValue = artifactPowerValue
+						
+					end
+					
+				end
+					
+		end
+	
+	end
+	
+	
+	-- Update inventory cache (stored in addon table so that other modules can access it)
+	local inventoryCache = TotalAP.InventoryCache.
+	inventoryCache.foundTome = foundTome
+	inventoryCache.displayItem = displayItem
+	inventoryCache.numItems = numItems
+	inventoryCache.inBagsAP = InBagsAP
+	
+	
+	-- Update GUI to display the most current information
+	TotalAP.GUI.Update()
+	
 end
 
 -- Re-cache contents of the player's bank
