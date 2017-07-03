@@ -30,6 +30,82 @@ local addonname, TotalAP = ...
 if not TotalAP then return end
 
 
+
+
+
+-- Default settings (to check against when valdiating the saved vars, and as default values for AceDB)
+local defaultSettings =	{	
+
+		-- General addon options
+		debugMode = false,
+		verbose = true,
+		showLoginMessage = true,
+		enabled = true,		-- This controls the entire display, but NOT the individual parts (which will be hidden, but their settings won't be overridden)
+		hideInCombat = true,
+		numberFormat = GetLocale(),
+		
+		-- Display options for the action button
+		actionButton = {
+			enabled = true,
+			showGlowEffect = true,
+			minResize = 20,
+			maxResize = 100,
+			showText = true
+		},
+
+		-- Display options for the spec icons
+		specIcons = {
+			enabled = true,
+			showGlowEffect = true,
+			size = 18,
+			border = 1,
+			inset = 1,
+			
+			alignment = "center", -- TODO: Provide option via GUI (AceConfig)
+		},
+		
+		-- Controls what information is displayed in the tooltip
+		tooltip = {
+			enabled = true, 
+			showProgressReport = true,
+			showNumItems = true
+		},
+		
+		-- Display options for the bar displays
+		infoFrame = {
+			enabled = true,
+			barTexture = "Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar.blp", -- Default texture. TODO. SharedMedia
+			barHeight = 16,
+			border = 1,
+			inset = 1,
+			showMiniBar = true,
+			alignment = "center", -- TODO: Provide option via GUI (AceConfig)
+			
+			progressBar = {
+				red = 250,
+				green = 250,
+				blue = 250,
+				alpha = 0.2
+			},
+			
+			unspentBar = {
+				red = 50,
+				green = 150,
+				blue = 250,
+				alpha = 1
+			},
+			
+			inBagsBar = {
+				red = 50,
+				green = 95,
+				blue = 150,
+				alpha = 1
+			}
+		}
+		
+	}
+	
+
 -- Validator functions
 local function IsBoolean(value)
 	return type(value) == "boolean"
@@ -245,86 +321,6 @@ local function ValidateTable(t, relPath, v)
 	
 end
 
-	
--- Default settings (to check against, and load from if corrupted/rendered invalid by version updates)
-local defaultSettings =	{	
-		-- General options
-		
-		-- controls what output will be printed in the chat frame
-		debugMode = false,
-		verbose = true,
-		showLoginMessage = true,
-		enabled = true,		-- This controls the entire display, but NOT the individual parts (which will be hidden, but their settings won't be overridden)
-		hideInCombat = true,
-		numberFormat = GetLocale(),
-		
-	--	showNumItems = true, -- TODO: Deprecated
-		--showProgressReport = true, -- TODO: Deprecated
-		
-		--showActionButton = true, -- TODO: Toggles everything. That should be changed
-		
-		--showButtonGlowEffect = true, -- TODO: actionButton
-		
-		actionButton = {
-			enabled = true,
-			showGlowEffect = true,
-			minResize = 20,
-			maxResize = 100,
-			showText = true
-		},
-
-		-- Display options for the spec icons
-		specIcons = {
-			enabled = true,
-			showGlowEffect = true,
-			size = 18,
-			border = 1,
-			inset = 1,
-			
-			alignment = "center", -- TODO: Provide option via GUI (AceConfig)
-		},
-		
-		-- Controls what information is displayed in the tooltip
-		tooltip = {
-			enabled = true, 
-			showProgressReport = true,
-			showNumItems = true
-		},
-		
-		-- Display options for the bar displays
-		infoFrame = {
-			enabled = true,
-			barTexture = "Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar.blp", -- Default texture. TODO. SharedMedia
-			barHeight = 16,
-			border = 1,
-			inset = 1,
-			showMiniBar = true,
-			alignment = "center", -- TODO: Provide option via GUI (AceConfig)
-			
-			progressBar = {
-				red = 250,
-				green = 250,
-				blue = 250,
-				alpha = 0.2
-			},
-			
-			unspentBar = {
-				red = 50,
-				green = 150,
-				blue = 250,
-				alpha = 1
-			},
-			
-			inBagsBar = {
-				red = 50,
-				green = 95,
-				blue = 150,
-				alpha = 1
-			}
-		}
-		
-	}
-	
 --- Retrieve the table containing all of the addon's settings for the currently active profile (managed by AceDB)
 -- @return Reference to the settings table
 local function GetReference()
