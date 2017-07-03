@@ -1688,6 +1688,7 @@ end);
 -- Standard methods (via AceAddon) -> They use the local object and not the shared container variable (which are for the modularised functions in other lua files)
 -- TODO: Use AceConfig to create slash commands automatically for simplicity?
 
+
 function Addon:OnProfileChanged(event, database, newProfileKey)
 
 	TotalAP.Debug("Profile changed!")
@@ -1733,7 +1734,11 @@ function Addon:OnEnable()
 	
 	TotalAP.Debug(format("Registering button update events"));
 	RegisterUpdateEvents();
-			
+	
+	-- Register all events (both combat and update events are required)
+	TotalAP.EventHandlers.RegisterAllEvents()
+	
+	
 end
 
 --- Called when addon is unloaded or disabled manually

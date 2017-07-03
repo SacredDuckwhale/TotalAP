@@ -78,6 +78,7 @@ Core\GUI\Views\TabbedView.lua
 Core\GUI\Config.lua
 Core\GUI\Tooltips.lua
 
+Core\Controllers\EventHandlers.lua
 Core\Controllers\GUI.lua
 Core\Controllers\Keybinds.lua
 Core\Controllers\SlashCommands.lua

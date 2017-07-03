@@ -34,6 +34,7 @@ TotalAP.Settings = {}
 
 -- Controllers & Input handling
 TotalAP.Controllers = {}
+TotalAP.EventHandlers = {}
 
 -- User Interface & Views
 TotalAP.GUI = {}
