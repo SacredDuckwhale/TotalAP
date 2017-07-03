@@ -44,7 +44,6 @@ L["Resets ignored specs for the currently active character"] = true
 L["Right-click to ignore this spec"] = true
 L["Secondary progress bars are now hidden."] = true
 L["Secondary progress bars are now shown."] = true
-L["Settings couldn't be verified... Default values have been loaded."] = true
 L["Shipments ready for pickup: %d/%d"] = true
 L["Show/Hide All Displays"] = true
 L["Show/Hide Bar Display"] = true
