@@ -280,7 +280,7 @@ local function ValidateTable(t, relPath, v)
 				TotalAP.Debug("ValidateTable -> Validation failed for key: " .. key .. " (lookup = " .. absPath .. ")")
 				
 				-- Load default value
-				t[key] = getfield(absPath, defaultSettings) -- VERY slow, but it shouldn't really happen all that often that a saved variable gets corrupted or otherwise messed up
+				t[key] = TotalAP.Utils.FieldLookup(absPath, defaultSettings) -- VERY slow, but it shouldn't really happen all that often that a saved variable gets corrupted or otherwise messed up
 				TotalAP.Debug("ValidateTable -> Restored default value for key = " .. key)
 				
 			else -- Validation was successful -> Everything is in order
