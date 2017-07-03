@@ -116,30 +116,6 @@ local function GetArtifactProgressPercent()
 
 end
 
--- Load default settings (will overwrite SavedVars)
-local function RestoreDefaultSettings()
-
-	TotalArtifactPowerSettings = TotalAP.Settings.GetDefaults()
-	settings = TotalAP.Settings.GetReference();
-	
-end
-
-
--- Verify saved variables and reset them in case something was corrupted/tampered with/accidentally screwed up while updating (using recursion)
--- TODO: Doesn't remove outdated SavedVars (minor waste of disk space, not a high priority issue I guess) as it checks the master table against savedvars but not the other way around
-local function VerifySettings()
-	
-	-- TODO: Test this and then remove when possible
-	if settings.numberFormat == "default" then -- replace outdated value with one that works in future versions (TODO: This can be avoided if aceDB handles it?)
-	
-		TotalAP.Debug("Replaced invalid value \"default\" for key \"numberFormat\" with updated value \"legacy\"") -- TODO: Do this for all values automatically
-		settings.numberFormat = "legacy"
-		
-	end
-	
-	return true;
-	
-end
 
 -- Load saved vars and DB files, attempt to verify SavedVars
 local function LoadSettings()
