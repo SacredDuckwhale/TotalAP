@@ -166,7 +166,6 @@ local function IsAlignmentString(value)
 	
 end
 
-
 -- LUT for validator functions
 local validators = {
 	
@@ -226,22 +225,7 @@ local validators = {
 	
 }	
 
---- Dynamic name lookup (read) - from the Lua manual - Used as a helper function, but only rarely because it is extremely slow
--- @param f The dynamic field name (string) that should be looked up
--- @param[opt] t The table that the field should be set in (defaults to _G)
--- @usage getfield("some.field", defaultSettings) -> value of defaultSettings["some"]["field"]
--- @usage getfield("some.field") -> value of _G["some"]["field"]
-function getfield (f, t)
-	
-	local v = t or _G    -- start with the table of globals
  
-		for w in string.gmatch(f, "[%w_]+") do
-			v = v[w]
-		end
-      
-	return v
- 
- end
 
  
 --- Validates the given table by calling a validator function for the given path
