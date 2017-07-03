@@ -106,17 +106,5 @@ TotalAP.DB.GetItemEffectID = GetItemEffectID
 -- Keep these private, unless they're needed elsewhere?
 -- TotalAP.DB.GetArtifactWeapons = GetArtifactWeapons
 
-
---- Returns a reference to the currently used SavedVars (DB) object. Temporary crutch for ongoing refactoring/migration of modules :)
-local function GetDB()
-
-	return TotalArtifactPowerSettings
-	
-end
-
-
-
-
-
-return TotalAP.DBHandler
+return TotalAP.DB
 
