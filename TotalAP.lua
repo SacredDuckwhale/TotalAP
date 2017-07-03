@@ -145,7 +145,7 @@ end
 
 			if tempItemLink and tempItemLink:match("item:%d")  then
 					tempItemID = GetItemInfoInstant(tempItemLink);
-					local spellID = TotalAP.DB.GetItemEffectID(tempItemID)
+					local spellID = TotalAP.DB.GetItemSpellEffect(tempItemID)
 				
 				-- TODO: Move this to DB\ResearchTomes or something, and access via helper function (similar to artifacts)
 				if tempItemID == 139390 		-- Artifact Research Notes (max. AK 25) TODO: obsolete? Seem to be replaced by the AK 50 version entirely
@@ -1636,7 +1636,7 @@ GameTooltip:HookScript('OnTooltipSetItem', function(self)
 
 		tempItemID = GetItemInfoInstant(tempItemLink);
 		
-		if TotalAP.DB.GetItemEffectID(tempItemID) then -- Only display tooltip addition for AP tokens
+		if TotalAP.DB.GetItemSpellEffect(tempItemID) then -- Only display tooltip addition for AP tokens
 			
 			local artifactID, _, artifactName = C_ArtifactUI.GetEquippedArtifactInfo();
 			

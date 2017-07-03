@@ -69,9 +69,15 @@ local function GetArtifactItemID(classID, specID)
 	
 end	
 
+-- TODO: Not really needed right now?
+local function IsArtifactWeapon(itemID)
+
+end
+
 -- Artifact items (tokens) DB // TODO: Actually, itemEffectsDB would be a more fitting name... but it serves as DB for the items themselves
 
 --- Returns a reference to the item effects DB (spell effects). For internal use only
+-- @return A reference to the ItemEffectsDB
 local function GetItemEffects()
 	
 	local db = GetReference()
@@ -79,10 +85,10 @@ local function GetItemEffects()
 	
 end
 
---- Returns the item spell effect ID for a given itemID
+--- Returns the item spell effect for a given itemID
 -- @param itemID The identifier for a specific artifact power item
 -- @return ID of the spell effect corresponding to the given artifact power item's "Empowering" spell (which is how AP is applied to the currently equipped artifact ingame); NIL if the itemID was invalid or no DB entry exists
-local function GetItemEffectID(itemID)
+local function GetItemSpellEffect(itemID)
 
 	local itemEffects = GetItemEffects()
 	
@@ -96,12 +102,47 @@ local function GetItemEffectID(itemID)
 
 end
 
+
+--- Returns whether or not an item is an Artifact Power Token
+-- @param itemLink The item ID of an item
+-- @return true if the item is an AP token; false otherwise
+local function IsArtifactPowerToken(itemID)
+					
+	local spellID = GetItemSpellEffect(itemID)
+	
+	return spellID and type(spellID) == "number"
+	
+end
+
+
 ---- ULA items DB (TODO)
+
+--- Returns a reference to the  Research Tomes DB (for AK research). For internal use only
+-- @return A reference to the ResearchTomesDB
+local function GetResearchTomes()
+	
+	local db = GetReference()
+	return db["ResearchTomes"]
+
+end
+
+--- Returns whether or not an item is a Research Tome
+-- @param itemID The item ID of an item
+-- @return true if the item is a reseach tome; false otherwise
+local function IsResearchTome(itemID)
+
+	local researchTomesDB = GetResearchTomes()
+	
+	return itemID and type(itemID) == "number" and researchTomesDB(itemID) ~= nil
+
+end
 
 
 -- Public methods
 TotalAP.DB.GetArtifactItemID = GetArtifactItemID
-TotalAP.DB.GetItemEffectID = GetItemEffectID
+TotalAP.DB.GetItemSpellEffect = GetItemSpellEffect
+TotalAP.DB.IsResearchTome = IsResearchTome
+TotalAP.DB.IsArtifactPowerToken = IsArtifactPowerToken
 
 -- Keep these private, unless they're needed elsewhere?
 -- TotalAP.DB.GetArtifactWeapons = GetArtifactWeapons
