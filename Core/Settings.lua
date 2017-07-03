@@ -189,7 +189,7 @@ local function ValidateTable(t, relPath, v)
 	
 	end
 	
-	if t ~= nil or not type(t) == "table" then -- Skip validation for invalid table parameter
+	if t == nil or not type(t) == "table" then -- Skip validation for invalid table parameter
 	
 		TotalAP.Debug("ValidateTable -> Skipped validation because an invalid table parameter was supplied (with relPath = " .. relPath .. ")")
 		return
