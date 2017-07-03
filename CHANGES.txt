@@ -1,6 +1,15 @@
 ------------------------------------------------------------------------
-## TotalAP v1.3.2 - Recent changes (3 releases)
+## TotalAP v1.4.0 - Recent changes (3 releases)
 ------------------------------------------------------------------------
+
+r23:
+	Added support for artifact power items that are stored in the player's bank (experimental). They will be cached whenever the bank tab is opened, and the respective progress bars can be disabled with the /ap scanbank command
+	
+	Saved variables are now managed differently. They should be migrated to the new format automatically, but if something goes wrong, the settings might have to be reset. In that case, apologies! ()Also, please let me know so I can fix it)
+	The progress bar tooltip will now indicate when a tier 1 artifact can be updated to its maximum rank. Additionally, the respective miniBar will no longer be displayed in those cases
+	
+	Fixed an issue where glow effects for the specIcons would not be applied correctly for tier 1 artifacts when too many traits were available
+	
 
 r22:
 	Added option to toggle between using the international and localised number formats for each locale (experimental). It is accessible via slash command: /ap numberformat
@@ -10,6 +19,7 @@ r22:
 	Fixed an issue that could cause high numbers of artifact power (> 2.14b) to break the addon's output under certain circumstances
 	Fixed a bug that would cause tier 1 artifacts (those that haven't yet been upgraded via the Dalaran Council's quest chain) to display inaccurate values beyond the final, 54th trait
 	Fixed a graphics glitch that caused the buttonText to collide with the bar display when using locales with a larger-than-normal default font size (koKR, zhCN, zhTW mainly) - this workaround is not ideal, and somewhat experimental
+	
 	
 r21:
 	Added slash command to hide the secondary progress bars ("MiniBar") -> /ap minibar
@@ -25,15 +35,3 @@ r21:
 	Fixed an issue where the displayed shipment info for Artifact Research Notes could be inaccurate
 	
 	
-r20:
-	Added secondary progress bar ("MiniBar"), which is displayed whenever more than one new trait is available
-	
-	ALT-clicking should now correctly allow dragging of the entire display, no matter which part was being clicked on (progress bars and spec icons included)
-	Individual displays can no longer be dragged off-screen, and their anchor now resizes dynamically to make sure they fit even in the tightest corners ;)
-	The action button now remains visible if artifact research notes (or similar tomes) are available, even if the active spec is being ignored
-
-	Fixed broken localization for the recently-added progress tooltip
-	Fixed various localization issues (such as a broken deDE translation and formatting mishaps)
-	Fixed an oversight that would cause the initialisation routine to break on the very first login (or if the saved variables were deleted manually)
-
-
