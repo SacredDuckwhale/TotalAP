@@ -22,8 +22,8 @@
 -- @section TotalAP
 
 
--- Libraries: If they fail to load, TotalAP shouldn't load either
-local AceAddon = LibStub("AceAddon-3.0"):NewAddon("TotalAP", "AceConsole-3.0"); -- AceAddon object -> local because it's not really needed elsewhere
+-- Libraries
+local Addon = LibStub("AceAddon-3.0"):NewAddon("TotalAP", "AceConsole-3.0"); -- AceAddon object -> local because it's not really needed elsewhere
 local SharedMedia = LibStub("LibSharedMedia-3.0");  -- TODO: Not implemented yet... But "soon" (TM) -> allow styling of bars and font strings (I'm really just waiting until the config/options are done properly for this -> AceConfig)
 local Masque = LibStub("Masque", true); -- optional (will use default client style if not found)
 
@@ -35,7 +35,7 @@ if not T then return end
 TotalAP = T -- Make modules available globally (for keybinds etc.)
 local TotalAP = TotalAP -- ... but use local copy to avoid lookups in global environment
 local L = T.L -- Localization table
-
+T.Addon = Addon -- to allow access to settings
 
 -- Shorthands: Those don't do anything except save me work :P
 local aUI = C_ArtifactUI -- also avoids global lookups as a side effect
@@ -59,7 +59,7 @@ local maxArtifactTraits = 54; -- Only applied to tier 1 artifacts in 7.2 -- TODO
 local settings, cache = {}, {}; -- will be loaded from savedVars later
 
 
-local defaultSettings = TotalAP.DBHandler.GetDefaults() -- TODO: remove (crutch while in migration)
+--local defaultSettings = TotalAP.Settings.GetDefaults() -- TODO: remove (crutch while in migration)
 
 -- Calculate the total number of purchaseable traits (using AP from both the equipped artifact and from AP tokens in the player's inventory)
 local function GetNumAvailableTraits()
@@ -116,63 +116,10 @@ local function GetArtifactProgressPercent()
 
 end
 
--- Load default settings (will overwrite SavedVars)
-local function RestoreDefaultSettings()
-
-	
-	TotalArtifactPowerSettings = TotalAP.DBHandler.GetDefaults()
-	-- TotalAP.DBHandler.RestoreDefaults() -- TODO: remove
-	settings = TotalArtifactPowerSettings;
-	
-end
-
-
--- Verify saved variables and reset them in case something was corrupted/tampered with/accidentally screwed up while updating (using recursion)
--- TODO: Doesn't remove outdated SavedVars (minor waste of disk space, not a high priority issue I guess) as it checks the master table against savedvars but not the other way around
-local function VerifySettings()
-	
-	settings = TotalArtifactPowerSettings;
-	
-	-- TODO: Optimise this, and add checks for 1.2 savedVars (bars etc)
-	
-	if settings == nil or not type(settings) == "table" then
-		RestoreDefaultSettings();
-		return false;
-	end
-	
---	return true;
-	
-	local masterTable, targetTable = defaultSettings, settings;
-	
-	-- Check default settings (= always up-to-date) against SavedVars, and add missing keys from the defaults. TODO: This leaves some remnants of deprecated options, also it would be easier with Ace
-	TotalAP.Utils.CompareTables(masterTable, targetTable, targetTable, nil);
-	
-	if settings.numberFormat == "default" then -- replace outdated value with one that works in future versions (TODO: This can be avoided if aceDB handles it?)
-	
-		TotalAP.Debug("Replaced invalid value \"default\" for key \"numberFormat\" with updated value \"legacy\"") -- TODO: Do this for all values automatically
-		settings.numberFormat = "legacy"
-		
-	end
-	
-	return true;
-	
-end
 
 -- Load saved vars and DB files, attempt to verify SavedVars
 local function LoadSettings()
-	
-	-- Check & verify default settings before loading them
-	settings = TotalArtifactPowerSettings;
-	if not settings then 	-- Load default settings
-		RestoreDefaultSettings(); 
-	else -- check for types and proper values 
-		if not VerifySettings() then
-			TotalAP.ChatMsg(L["Settings couldn't be verified... Default values have been loaded."]);
-		else
-			TotalAP.Debug("SavedVars verified (and loaded) successfully.");
-		end
-	end
-	
+
 	-- Load cached AP progress if is has been saved before (will be updated as soon as the spec is enabled again)
 	if TotalArtifactPowerCache == nil or type(TotalArtifactPowerCache) ~= "table" then -- First login / SavedVars were deleted
 		-- TODO: Initialise Cache
@@ -573,7 +520,7 @@ local function UpdateSpecIcons()
 		   MasqueUpdate(TotalAPSpecIconButtons[i], "specIcons");
 		   
 			
-				if numTraitsAvailable > 0 and settings.specIcons.showGlowEffect and not (v["artifactTier"] == 1 and v["numTraitsPurchased"] < maxArtifactTraits) then -- Text and glow effect are independent of each other; combining them bugs out one or the other (apparently :P)
+				if numTraitsAvailable > 0 and settings.specIcons.showGlowEffect and (v["artifactTier"] > 1 or v["numTraitsPurchased"] < maxArtifactTraits) then -- Text and glow effect are independent of each other; combining them bugs out one or the other (apparently :P)
 					
 					-- -- TODO: Confusing, comment and naming conventions.
 					-- local ol = TotalAPSpecIconButtons[k].overlay;
@@ -868,8 +815,8 @@ local function UpdateInfoFrame()
 			if not TotalAPMiniBars[k].texture then -- Create texture object
 				TotalAPMiniBars[k].texture = TotalAPMiniBars[k]:CreateTexture();
 			end
-			
-			if maxAttainableRank > v["numTraitsPurchased"] and progressPercent > 0 and settings.infoFrame.showMiniBar then -- Display secondary bar
+
+			if maxAttainableRank > v["numTraitsPurchased"] and progressPercent > 0 and settings.infoFrame.showMiniBar and (v["artifactTier"] > 1 or maxAttainableRank < maxArtifactTraits) then -- Display secondary bar
 
 				TotalAPMiniBars[k]:SetSize(progressPercent, 2) -- TODO: options....
 				TotalAPMiniBars[k]:ClearAllPoints()
@@ -1741,8 +1688,18 @@ end);
 -- Standard methods (via AceAddon) -> They use the local object and not the shared container variable (which are for the modularised functions in other lua files)
 -- TODO: Use AceConfig to create slash commands automatically for simplicity?
 
+function Addon:OnProfileChanged(event, database, newProfileKey)
+
+	TotalAP.Debug("Profile changed!")
+	
+end
+
 --- Called on ADDON_LOADED
-function AceAddon:OnInitialize() -- Called on ADDON_LOADED
+function Addon:OnInitialize() -- Called on ADDON_LOADED
+	
+	-- Initialise settings (saved variables), handled via AceDB
+	TotalAP.Settings.Initialise()
+	settings = TotalAP.Settings.GetReference()
 	
 	LoadSettings();  -- from saved vars
 	CreateAnchorFrame(); -- anchor for all other frames -> needs to be loaded before PLAYER_LOGIN to have the game save its position and size -- TODO: move to GUI/AceGUI
@@ -1763,24 +1720,24 @@ function AceAddon:OnInitialize() -- Called on ADDON_LOADED
 end
 
 --- Called on PLAYER_LOGIN or ADDON_LOADED (if addon is loaded-on-demand)
-function AceAddon:OnEnable()
+function Addon:OnEnable()
 
 	local clientVersion, clientBuild = GetBuildInfo();
 
 			-- Those could be created earlier, BUT: Talent info isn't available sooner, and those frames are anchored to the AnchorFrame anyway -> Initial position doesn't matter as it is updated automatically (TODO: TALENT or SPEC info?)
-			
-			CreateInfoFrame();
-			CreateSpecIcons(); 
-			
-			if settings.showLoginMessage then TotalAP.ChatMsg(format(L["%s %s for WOW %s loaded!"], addonName, TotalAP.versionString, clientVersion)); end
-			
-			TotalAP.Debug(format("Registering button update events"));
-			RegisterUpdateEvents();
+	
+	CreateInfoFrame();
+	CreateSpecIcons(); 
+	
+	if settings.showLoginMessage then TotalAP.ChatMsg(format(L["%s %s for WOW %s loaded!"], addonName, TotalAP.versionString, clientVersion)); end
+	
+	TotalAP.Debug(format("Registering button update events"));
+	RegisterUpdateEvents();
 			
 end
 
 --- Called when addon is unloaded or disabled manually
-function AceAddon:OnDisable()
+function Addon:OnDisable()
 	
 	-- Shed a tear because the addon was disabled ;'(
 	

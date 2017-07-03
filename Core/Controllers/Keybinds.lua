@@ -108,8 +108,8 @@ local function KeybindHandler(action, isUserInput)
 	local actionHandler = keybindHandlers[action] 
 	if actionHandler then
 		TotalAP.Debug("Recognized keybind: " .. action .. " - calling action handler with isUserInput = " .. tostring(isUserInput))
-		local db = TotalAP.DBHandler.GetDB() -- Load saved vars (at runtime - they won't be available if loaded beforehand as this module is read before the actual ADDON_LOADED event occurs)
-		actionHandler(db)
+		local settings = TotalAP.Settings.GetReference() -- Load saved vars (at runtime - they won't be available if loaded beforehand as this module is read before the actual ADDON_LOADED event occurs)
+		actionHandler(settings)
 	else
 		TotalAP.Debug("Keybind not recognized: " .. action .. " - skipping call to action handler because none exists for this keybind")
 	end

@@ -23,54 +23,27 @@
 
 
 local addonName, T = ...
-
-
---- Compares two tables, and replaces mismatching entries in t2 with those from t1 (with t2 and t2 being used recursively, while targetTable remains the original table reference)
--- @p t1 The master table
--- @p t2 The table that is to be checked against the master table
--- @p targetTable Temporary table based on t2 that will have mismatching entries replaced by those from t1[lastTableKey]
--- @p lastTableKey The key last used before entering a new recursion
-local function CompareTables(t1, t2, targetTable, lastTableKey)
-   
-   if not lastTableKey then lastTableKey = "<none>" end
-   
-   if type(t1) == "table" and type(t2) == "table" then
-      for k, v in pairs(t1) do
-    --     print("checking key, value pair:")
-      --   print(k, v)
-         if type(v) == "table" then
-            -- lastTableKey = k
-            CompareTables(v, t2[k], targetTable, k)
-         else
-        --    print("comparing values:")
-        --    print(v, t2[k])
-            if type(v) == type(t2[k]) then
-           --    print("v eq t2[k]")
-            else
-           --    print("v not eq t2[k]")
-               t2[k] = v
-            end
-         end
-         
-      end
-      
-   else
- --     print("comparing values:")
-   --   print(t1, t2)
-      if type(t1) == type(t2) then
-     --    print("t1 eq t2")
-      else
-      --   print("t1 not eq t2")
-     --    print("lastTableKey: " ..lastTableKey)
-         targetTable[lastTableKey] = t1
-      end
-      
-   end
-   
-end
-
-
 if not T then return end
-T.Utils.CompareTables = CompareTables
 
-return CompareTables
+
+--- Dynamic name lookup (read) - from the Lua manual - Used as a helper function, but only rarely because it is extremely slow
+-- @param f The dynamic field name (string) that should be looked up
+-- @param[opt] t The table that the field should be set in (defaults to _G)
+-- @usage getfield("some.field", defaultSettings) -> value of defaultSettings["some"]["field"]
+-- @usage getfield("some.field") -> value of _G["some"]["field"]
+local function FieldLookup (f, t)
+	
+	local v = t or _G    -- start with the table of globals
+ 
+		for w in string.gmatch(f, "[%w_]+") do
+			v = v[w]
+		end
+      
+	return v
+ 
+ end
+ 
+ 
+T.Utils.FieldLookup = FieldLookup
+
+return FieldLookup

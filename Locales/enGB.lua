@@ -31,6 +31,7 @@ L["Item counter enabled."] = true
 L["Load default settings (will overwrite any changes made)"] = true
 L["Login message is now hidden."] = true
 L["Login message is now shown."] = true
+L["Maximum number of traits unlocked"] = true
 L["New trait available - Use AP now to level up!"] = true
 L["Next in: %s"] = true
 L["No further research necessary"] = true
