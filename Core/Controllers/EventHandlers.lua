@@ -38,7 +38,7 @@ local function OnArtifactUpdate()
 end
 
 -- Re-scan the contents of the player's inventory
-local function OnInventoryUpdated()
+local function OnInventoryUpdate()
 
 	TotalAP.ChatMsg("OnInventoryUpdate triggered")
 
