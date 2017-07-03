@@ -129,22 +129,7 @@ end
 -- TODO: Doesn't remove outdated SavedVars (minor waste of disk space, not a high priority issue I guess) as it checks the master table against savedvars but not the other way around
 local function VerifySettings()
 	
-	settings = TotalAP.Settings.GetReference()
-	
-	-- TODO: Optimise this, and add checks for 1.2 savedVars (bars etc)
-	
-	if settings == nil or not type(settings) == "table" then
-		TotalAP.Settings.RestoreDefaults()
-		return false;
-	end
-	
---	return true;
-	
-	--local masterTable, targetTable = defaultSettings, settings;
-	
-	-- Check default settings (= always up-to-date) against SavedVars, and add missing keys from the defaults. TODO: This leaves some remnants of deprecated options, also it would be easier with Ace
-	--TotalAP.Utils.CompareTables(masterTable, targetTable, targetTable, nil);
-	
+	-- TODO: Test this and then remove when possible
 	if settings.numberFormat == "default" then -- replace outdated value with one that works in future versions (TODO: This can be avoided if aceDB handles it?)
 	
 		TotalAP.Debug("Replaced invalid value \"default\" for key \"numberFormat\" with updated value \"legacy\"") -- TODO: Do this for all values automatically
@@ -158,23 +143,7 @@ end
 
 -- Load saved vars and DB files, attempt to verify SavedVars
 local function LoadSettings()
-	
-	-- -- Check & verify default settings before loading them
-	--settings = TotalAP.Settings.GetReference()
-	
-	-- if not settings then -- Load default settings
-		-- TotalAP.Settings.RestoreDefaults() 
-	-- else -- check for types and proper values 
-		
-		-- if not TotalAP.Settings.Validate() then
-		-- --if not VerifySettings() then
-			-- --TotalAP.ChatMsg(L["Settings couldn't be verified... Default values have been loaded."]);
-			-- TotalAP.Debug("Settings couldn't be validated. A manual reset might be in order?")
-		-- else
-			-- TotalAP.Debug("Settings were validated (and loaded) successfully.");
-		-- end
-	-- end
-	
+
 	-- Load cached AP progress if is has been saved before (will be updated as soon as the spec is enabled again)
 	if TotalArtifactPowerCache == nil or type(TotalArtifactPowerCache) ~= "table" then -- First login / SavedVars were deleted
 		-- TODO: Initialise Cache
