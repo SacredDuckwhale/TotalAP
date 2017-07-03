@@ -43,6 +43,7 @@ DB\Init.lua
 DB\Artifacts.lua
 DB\ItemEffects.lua
 #DB\UnderlightAngler.lua
+DB\ResearchTomes.lua
 
 Locales\Locales.xml
 Locales\NumberFormats.lua
