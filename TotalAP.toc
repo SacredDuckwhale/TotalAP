@@ -25,15 +25,16 @@
 ## X-Revision: @project-version@
 ## X-Date: @project-date-iso@
 ## X-License: GPL3
-## X-Embeds: LibStub, AceAddon-3.0, AceConsole-3.0, AceDB-3.0, AceLocale-3.0, LibSharedMedia-3.0
+## X-Embeds: LibStub, AceAddon-3.0, AceConsole-3.0, AceDB-3.0, AceEvent-3.0, AceLocale-3.0, LibSharedMedia-3.0
 ## X-Website: http://www.curse.com/addons/wow/totalap
 
-## OptionalDeps:LibStub, AceAddon-3.0, AceConsole-3.0, AceDB-3.0, AceLocale-3.0, LibSharedMedia-3.0, Masque
+## OptionalDeps:LibStub, AceAddon-3.0, AceConsole-3.0, AceDB-3.0, AceEvent-3.0, AceLocale-3.0, LibSharedMedia-3.0, Masque
 #@no-lib-strip@
 Libs\LibStub\LibStub.lua
 Libs\AceAddon-3.0\AceAddon-3.0.xml
 Libs\AceConsole-3.0\AceConsole-3.0.xml
 Libs\AceDB-3.0\AceDB-3.0.xml
+Libs\AceEvent-3.0\AceEvent-3.0.xml
 Libs\AceLocale-3.0\AceLocale-3.0.xml
 Libs\LibSharedMedia-3.0\lib.xml
 #@end-no-lib-strip@
