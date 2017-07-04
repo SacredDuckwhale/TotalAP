@@ -65,8 +65,8 @@ local function OnInventoryUpdate()
 			
 					tempItemID = GetItemInfoInstant(tempItemLink)
 					
-					isTome = TotalAP.DB.IsKnowledgeTome(tempItemID)
-					isToken TotalAP.DB.IsArtifactPowerToken(tempItemID)
+					isTome = TotalAP.DB.IsResearchTome(tempItemID)
+					isToken = TotalAP.DB.IsArtifactPowerToken(tempItemID)
 
 					-- TODO: Move this to DB\ResearchTomes or something, and access via helper function (similar to artifacts)
 					if isTome then -- AK Tome is available for use -> Display button regardless of current AP tokens
@@ -95,7 +95,7 @@ local function OnInventoryUpdate()
 						displayItem.ID = tempItemID
 						displayItem.link = tempItemLink
 						displayItem.texture = GetItemIcon(displayItem.ID)
-						displayItem.isToken = isTome
+						displayItem.isToken = isToken
 						displayItem.isTome = isTome
 						displayItem.artifactPowerValue = artifactPowerValue
 						
@@ -117,7 +117,7 @@ local function OnInventoryUpdate()
 	
 	
 	-- Update GUI to display the most current information
-	TotalAP.GUI.Update()
+	TotalAP.Controllers.UpdateGUI()
 	
 end
 

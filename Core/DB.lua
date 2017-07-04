@@ -133,7 +133,7 @@ local function IsResearchTome(itemID)
 
 	local researchTomesDB = GetResearchTomes()
 	
-	return itemID and type(itemID) == "number" and researchTomesDB(itemID) ~= nil
+	return itemID and type(itemID) == "number" and researchTomesDB[itemID] ~= nil
 
 end
 
