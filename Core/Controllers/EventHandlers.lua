@@ -40,7 +40,7 @@ end
 -- Re-scan the contents of the player's inventory
 local function OnInventoryUpdate()
 
-	TotalAP.ChatMsg("OnInventoryUpdate triggered")
+	TotalAP.Debug("EventHandlers -> OnInventoryUpdate triggered")
 
 	
 	-- Re-scan inventory and update all stored values

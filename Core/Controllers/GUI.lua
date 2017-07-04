@@ -65,8 +65,6 @@ end
 -- Updates the GUI (by refreshing / re-rendering the active view)
 local function UpdateGUI()
 
-	TotalAP.ChatMsg("Triggered GUI Update")
-	
 	-- Outdated view concept (TODO: Remove once views are working properly with the new one)
 	-- if not TotalAP.GUI.GetActiveView() then -- No view exists -> GUI likely not initialised yet
 	
