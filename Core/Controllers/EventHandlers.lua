@@ -109,7 +109,7 @@ local function OnInventoryUpdate()
 	
 	
 	-- Update inventory cache (stored in addon table so that other modules can access it)
-	local inventoryCache = TotalAP.InventoryCache.
+	local inventoryCache = TotalAP.inventoryCache
 	inventoryCache.foundTome = foundTome
 	inventoryCache.displayItem = displayItem
 	inventoryCache.numItems = numItems
