@@ -88,11 +88,11 @@
 	<td class="summary">Returns the number of Artifact Research Notes that are ready for pickup</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GetNumRanksPurchasableWithAP">GetNumRanksPurchasableWithAP (rank, power, tier)</a></td>
+	<td class="name" nowrap><a href="#GetNumRanksPurchasableWithAP">GetNumRanksPurchasableWithAP (rank, artifactPowerValue, tier)</a></td>
 	<td class="summary">Returns the number of traits that can be purchased</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#GetProgressTowardsNextRank">GetProgressTowardsNextRank (rank, power, tier)</a></td>
+	<td class="name" nowrap><a href="#GetProgressTowardsNextRank">GetProgressTowardsNextRank (rank, artifactPowerValue, tier)</a></td>
 	<td class="summary">Returns progress towards the next trait (after considering all available "level ups")</td>
 	</tr>
 	<tr>
@@ -106,6 +106,10 @@
 </table>
 <h2><a href="#Cache_lua">Cache.lua </a></h2>
 <table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#GetBankCache">GetBankCache ([fqcn])</a></td>
+	<td class="summary">Returns the amount of banked AP that was saved between sessions</td>
+	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#GetDefaults">GetDefaults ()</a></td>
 	<td class="summary">Returns the base structure for an "empty" cache entry.</td>
@@ -133,6 +137,10 @@
 	<tr>
 	<td class="name" nowrap><a href="#UnignoreAllSpecs">UnignoreAllSpecs ([fqcn])</a></td>
 	<td class="summary">Removes all specs from the ignored specs list for a given character (defaults to currently used character if none is given)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#UpdateBankCache">UpdateBankCache ([fqcn])</a></td>
+	<td class="summary">Update the bankCache from saved variables if one has been stored in a previous session</td>
 	</tr>
 	<tr>
 	<td class="name" nowrap><a href="#UpdateEntry">UpdateEntry (fqcn, specID, updateValues)</a></td>
@@ -316,7 +324,7 @@
 </dd>
     <dt>
     <a name = "GetNumRanksPurchasableWithAP"></a>
-    <strong>GetNumRanksPurchasableWithAP (rank, power, tier)</strong>
+    <strong>GetNumRanksPurchasableWithAP (rank, artifactPowerValue, tier)</strong>
     </dt>
     <dd>
     Returns the number of traits that can be purchased
@@ -327,7 +335,7 @@
         <li><span class="parameter">rank</span>
          The current artifact level (number of purchased traits)
         </li>
-        <li><span class="parameter">power</span>
+        <li><span class="parameter">artifactPowerValue</span>
          Number of unspent artifact power applied to the weapon
         </li>
         <li><span class="parameter">tier</span>
@@ -347,7 +355,7 @@
 </dd>
     <dt>
     <a name = "GetProgressTowardsNextRank"></a>
-    <strong>GetProgressTowardsNextRank (rank, power, tier)</strong>
+    <strong>GetProgressTowardsNextRank (rank, artifactPowerValue, tier)</strong>
     </dt>
     <dd>
     Returns progress towards the next trait (after considering all available "level ups")
@@ -358,7 +366,7 @@
         <li><span class="parameter">rank</span>
          The current artifact level (number of purchased traits)
         </li>
-        <li><span class="parameter">power</span>
+        <li><span class="parameter">artifactPowerValue</span>
          Number of unspent artifact power applied to the weapon
         </li>
         <li><span class="parameter">tier</span>
@@ -437,6 +445,27 @@
           </div>
     <dl class="function">
     <dt>
+    <a name = "GetBankCache"></a>
+    <strong>GetBankCache ([fqcn])</strong>
+    </dt>
+    <dd>
+    Returns the amount of banked AP that was saved between sessions
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fqcn</span>
+         The fully-qualified character name (defaults to currently logged in character if omitted)
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
     <a name = "GetDefaults"></a>
     <strong>GetDefaults ()</strong>
     </dt>
@@ -479,6 +508,11 @@
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+        The table representing the cache entry if one exists; nil otherwise
+    </ol>
 
 
 
@@ -523,6 +557,11 @@
 
 
 
+    <h3>Returns:</h3>
+    <ol>
+
+        A reference to the cache database table itself
+    </ol>
 
 
 
@@ -580,6 +619,11 @@
         </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
+
+        The newly-created entry (as a table) if creation was successful; nil otherwise
+    </ol>
 
 
 
@@ -602,6 +646,27 @@
         <li><span class="parameter">fqcn</span>
           Fully-qualified character name that will have their specs "IsIgnored" setting reset
  TODO: This doesn't belong here
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "UpdateBankCache"></a>
+    <strong>UpdateBankCache ([fqcn])</strong>
+    </dt>
+    <dd>
+    Update the bankCache from saved variables if one has been stored in a previous session
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">fqcn</span>
+         The fully-qualified character name (defaults to currently logged in character if omitted)
          (<em>optional</em>)
         </li>
     </ul>
@@ -1023,7 +1088,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2017-07-09 08:55:27 </i>
+<i style="float:right;">Last updated 2017-07-09 14:45:51 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

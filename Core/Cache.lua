@@ -45,7 +45,7 @@ local function GetDefaults() -- TODO Is this even necessary? Surely the ignore m
 end
 
 --- Returns a reference to the underlying SavedVars (cache) object
--- @returns  A reference to the cache database table itself
+-- @return A reference to the cache database table itself
 local function GetReference() -- TODO: AceDB can handle this
 
 	return TotalArtifactPowerCache
@@ -55,7 +55,7 @@ end
 --- Returns the entire cache entry for a given character and spec
 -- @param fqcn Fully-qualified character name, to be used as the key
 -- @param specID Specialization ID, to be used as the secondary key
--- @returns The table representing the cache entry if one exists; nil otherwise
+-- @return The table representing the cache entry if one exists; nil otherwise
 -- @usage GetEntry("Duckwhale - Outland", 1) ->  { ["numTraitsPurchased"] = 15, ["thisLevelUnspentAP"] = 235000, ["artifactTier"] = 1, ["isIgnored"] = false }
 local function GetEntry(fqcn, specID)
 
@@ -76,7 +76,7 @@ end
 -- @param fqcn Fully-qualified character name, to be used as the primary key
 -- @param specID Specialization ID, to be used as the secondary key
 -- @param[opt] defaults A table containing default entries that should be used
--- @returns The newly-created entry (as a table) if creation was successful; nil otherwise
+-- @return The newly-created entry (as a table) if creation was successful; nil otherwise
 -- @usage NewEntry("Duckwhale - Outland", 2) ->  { ["numTraitsPurchased"] = nil, ["thisLevelUnspentAP"] = nil, ["artifactTier"] = nil, ["isIgnored"] = false }
 local function NewEntry(fqcn, specID, defaults)
 	
@@ -212,9 +212,8 @@ local function GetBankCache(fqcn)
 	
 end
 
---- Sets the amount of banked AP that will be saved between sessions
+--- Update the bankCache from saved variables if one has been stored in a previous session
 -- @param[opt] fqcn The fully-qualified character name (defaults to currently logged in character if omitted)
--- @param[opt] amount The amount of banked AP (defaults to 0 if omitted)
 local function UpdateBankCache(fqcn)
 
 	local cache = GetReference()

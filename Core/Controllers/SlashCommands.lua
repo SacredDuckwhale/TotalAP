@@ -65,14 +65,14 @@ local slashCommands = {
 	
 }
 
---- Undocumented (hidden) slash commands that are temporary at best. They won't be listed (and there is no need to translate them either), hence the separation
+-- Undocumented (hidden) slash commands that are temporary at best. They won't be listed (and there is no need to translate them either), hence the separation
 local hiddenSlashCommands = {
 	["align-top"] = "",
 	["align-bottom"] = "",
 	["align-center"] = "",
 }
 
---- Actual handling of slash commands occurs in the functions listed in this table
+-- Actual handling of slash commands occurs in the functions listed in this table
 local slashHandlers = {
 
 	["counter"] = function(settings) -- Toggle counter display in tooltip
@@ -258,7 +258,7 @@ local slashHandlers = {
 	end,
 
 	
---- Hidden slash commands
+-- Hidden slash commands
 	["align-top"] = function(settings) -- Align bars and spec icons to the top
 		 TotalAP.Controllers.AlignGUI("top")
 	end,
@@ -306,23 +306,28 @@ local slashHandlers = {
 
 
 --- Returns the handler function for a given slash command (if it exists)
+-- @param command The slash command that is to be accessed
+-- @return The function that should be called
 local function GetSlashHandlerFunction(command)
 	return slashHandlers[command]
 end
 
 --- Returns the currently used (main) slash command
+-- @return The slash command that is currently assigned to the addon
 local function GetSlashCommand()
 	return slashCommand
 end
 
 
 --- Returns shorthand (alias) for the currently used slash command
+-- @return A shorter command that is also assigned to the addon, but may be overwritten by other addons more easily
 local function GetSlashCommandAlias()
 	return slashCommandAlias
 end
 
 
 --- Prints a list of all available slash commands to the DEFAULT_CHAT_FRAME (using addon-specific print methods with colour-coding)
+-- @param usedAlias Whether or not the actual (primary) slash command has been used
 local function PrintSlashCommands(usedAlias)
 
 		-- TODO: Could use AceConsole:print(f) for this, but... meh. It would have to format the output manually to adhere to the addon's standards (as set in Core\ChatMsg), and who has time for that?
@@ -397,7 +402,6 @@ local function SlashCommandHandler(input, usedAlias)
 end
 
 --- Notify slash command handler that the alias slash command was used instead of the regular one before calling it
--- TODO: I don't like this, but since AceConsole doesn't allow the option of differentiating between commands via parameters this should get the job done
 local function SlashCommandHandler_UsedAlias(input)
 	SlashCommandHandler(input, true)
 end

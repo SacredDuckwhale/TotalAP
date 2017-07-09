@@ -118,7 +118,7 @@ end
 
 --- Returns the number of traits that can be purchased
 -- @param rank The current artifact level (number of purchased traits)
--- @param power Number of unspent artifact power applied to the weapon
+-- @param artifactPowerValue Number of unspent artifact power applied to the weapon
 -- @param tier Artifact tier (defaults to 1; new tiers unlock additional traits)
 -- @return Number of traits that can be purchased
 local function GetNumRanksPurchasableWithAP(rank, artifactPowerValue, tier)
@@ -137,7 +137,7 @@ end
 
 --- Returns progress towards the next trait (after considering all available "level ups")
 -- @param rank The current artifact level (number of purchased traits)
--- @param power Number of unspent artifact power applied to the weapon
+-- @param artifactPowerValue Number of unspent artifact power applied to the weapon
 -- @param tier Artifact tier (defaults to 1; new tiers unlock additional traits)
 -- @return Percentage towards the next available trait (after buying as many as possible)
 local function GetProgressTowardsNextRank(rank, artifactPowerValue, tier)
