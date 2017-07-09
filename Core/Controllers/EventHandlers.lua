@@ -36,7 +36,7 @@ local function ScanInventory(scanBank)
 	local foundTome = false -- For BoA tomes -> The display must display them before any AP tokens if any were found 
 	
 	 -- Temporary values that will be overwritten with the next item
-	local bag, maxBag, slot, tempItemLink, tempItemID, tempItemTexture
+	local bagID, maxBagID, tempItemLink, tempItemID, tempItemTexture
 	local isTome, isToken = false, false -- Refers to current item
 	
 	-- To be saved in the Inventory cache
@@ -44,27 +44,33 @@ local function ScanInventory(scanBank)
 	local numItems, artifactPowerSum = 0, 0 -- These are for the current scan
 	local spellDescription, spellID, artifactPowerValue = nil, nil, 0  -- These are for the current item
 	
+		-- Queue IDs for all relevant bag that need to be scanned (this is mainly because the generic bank slot counts as a different "bag", but needs to be scanned as well)
+	local bagSlots = {}
+	
 	if scanBank then -- Scan generic bank and set bag IDs 
 	
-		-- Scan generic bank container once
-		--BANK_CONTAINER
-		TotalAP.ChatMsg("Scanning generic bank contents")
-	
 		-- Set bag IDs to only scan bank bags
-		bag = NUM_BAG_SLOTS + 1
-		maxBag = NUM_BAG_SLOTS + NUM_BANKBAGSLOTS
+		bagSlots[1] = BANK_CONTAINER
+		for i = NUM_BAG_SLOTS + 1, NUM_BAG_SLOTS + NUM_BANKBAGSLOTS do -- Add all bags of the actual bank to the queue
+		
+			bagSlots[#bagSlots + 1] = i -- Add new entry for all regular bank bags (while preserving the generic one)
+		
+		end
 	
 	else -- Scan inventory bags
 	
 		-- Set bag IDs to only scan inventory bags
-		bag = BACKPACK_CONTAINER
-		maxBag = NUM_BAG_SLOTS
+		for i = BACKPACK_CONTAINER, NUM_BAG_SLOTS do -- Add all bags of the actual bank to the queue
+		
+			bagSlots[#bagSlots + 1] = i -- Add new entry for all regular bank bags (while preserving the generic one)
+		
+		end
 		
 		-- TODO: If Tome was found in bank, can't use it but will it be displayed?
 	
 	end
 	
-	for bag = bag, maxBag do -- Iterate over this bag's contents
+	for index, bag in ipairs(bagSlots) do -- Iterate over this bag's contents
 	
 		for slot = 1, GetContainerNumSlots(bag) do -- Compare items in the current bag with DB entries to detect AP tokens
 	
