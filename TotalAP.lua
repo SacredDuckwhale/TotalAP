@@ -129,86 +129,6 @@ local function LoadSettings()
 	
 end
 
--- Check for artifact power tokens in the player's bags
--- TODO: Move to Core\Inventory? or sth (model or controllers?) 
- local function CheckBags()
-
-	local bag, slot;
-	numItems, inBagsTotalAP, currentItemAP = 0, 0, 0; -- Each scan has to reset the (global) counter used by the tooltip and update handlers
-	foundKnowledgeTome = false -- AK tomes will later overwrite the AP progress in some displays, but not prevent it from being saved and used for others (tooltip display/bars)
-	
-	-- Check all the items in bag against AP token LUT (via their respective spell effect = itemEffectsDB)to find matches
-	for bag = 0, NUM_BAG_SLOTS do
-		for slot = 1, GetContainerNumSlots(bag) do
-			tempItemLink = GetContainerItemLink(bag, slot);
-
-			if tempItemLink and tempItemLink:match("item:%d")  then
-					tempItemID = GetItemInfoInstant(tempItemLink);
-					local spellID = TotalAP.DB.GetItemSpellEffect(tempItemID)
-				
-				-- TODO: Move this to DB\ResearchTomes or something, and access via helper function (similar to artifacts)
-				if tempItemID == 139390 		-- Artifact Research Notes (max. AK 25) TODO: obsolete? Seem to be replaced by the AK 50 version entirely
-					or tempItemID == 146745	-- Artifact Research Notes (max. AK 50)
-					or tempItemID == 147860 	-- Empowered Elven Tome (7.2)
-					or tempItemID == 144433	--  Artifact Research Compendium: Volume I
-					or tempItemID == 144434	-- Artifact Research Compendium: Volumes I & II
-					or tempItemID == 144431	-- Artifact Research Compendium: Volumes I-III
-					or tempItemID == 144395	-- Artifact Research Synopsis
-					or tempItemID == 147852	-- Artifact Research Compendium: Volumes I-V
-					or tempItemID == 147856	-- Artifact Research Compendium: Volumes I-IX
-					or tempItemID == 147855	-- Artifact Research Compendium: Volumes I-VIII
-					or tempItemID == 144435	-- Artifact Research Compendium: Volumes I-IV
-					or tempItemID == 147853	-- Artifact Research Compendium: Volumes I-VI
-					or tempItemID == 147854	-- Artifact Research Compendium: Volumes I-VII
-					or tempItemID == 141335	-- Lost Research Notes (TODO: Is this even ingame? -> Part of the obsolete Mage quest "Hidden History", perhaps?)
-				then -- Artifact Research items available for use
-					TotalAP.Debug("Found Artifact Research items in inventory -> Displaying them instead of AP items");
-				
-					currentItemLink = tempItemLink;
-					currentItemID = tempItemID;
-					currentItemTexture = GetItemIcon(currentItemID);
-				
-					TotalAP.Debug(format("Set currentItemTexture to %s", currentItemTexture));
-					foundKnowledgeTome = true
-					--numItems = 1; -- TODO: This is technically wrong! But it will update to the correct amount once research notes have been used, anyway (and is used by other displays at times, which might not be the best practice...)
-					--currentItemAP = 0 -- to overwrite the last item's amount (would be displayed as the research tome's AP value instead, which is misleading --  TODO: Proper handling of tomes -> resume scan but flag for display only (so that the tooltip info remains correct)
-					--return true; -- Stop scanning and display this item instead
-				end
-				
-				if spellID then	-- Found AP token :D	
-					numItems = numItems + 1
-					
-					-- Extract AP amount (after AK) from the description
-					local spellDescription = GetSpellDescription(spellID); -- Always contains the AP number, as only AP tokens are in the LUT 
-					
-					local n = TotalAP.Scanner.ParseSpellDesc(spellDescription) -- Scans spell description and extracts AP amount based on locale (as they use slightly different formats to display the numbers)
-
-					inBagsTotalAP = inBagsTotalAP + tonumber(n);
-					
-					-- AK Tomes should override button display/button text
-					if not foundKnowledgeTome then -- Set button to current AP item
-						currentItemAP = n;
-						
-						-- Store current AP item in globals (to display in button, use via keybind, etc.)
-						currentItemLink = tempItemLink;
-						currentItemID = tempItemID;
-						currentItemTexture = GetItemIcon(currentItemID);
-						
-						TotalAP.Debug(format("Set currentItemTexture to %s", currentItemTexture));
-						
-						TotalAP.Debug(format("Found item: %s (%d) with texture %d",	currentItemLink, currentItemID, currentItemTexture)); 
-					end
-					
-				end
-			end
-		end
-	end
-
-	-- Add to shared vars so other modules can access it
-	TotalAP.inBagsTotalAP = inBagsTotalAP
-
-end
-
 -- Toggle spell overlay (glow effect) on an action button
 local function FlashActionButton(button, showGlowEffect, showAnts)
 	
@@ -1550,7 +1470,7 @@ local function CreateAnchorFrame()
 			if event == "BAG_UPDATE_DELAYED" then  -- inventory has changed -> recheck bags for AP items and update button display
 
 				TotalAP.Debug("Scanning bags and updating action button after BAG_UPDATE_DELAYED...");
-				CheckBags();
+				--CheckBags();
 				UpdateEverything();
 				
 			elseif event == "PLAYER_REGEN_DISABLED" or event == "PET_BATTLE_OPENING_START" or (event == "UNIT_ENTERED_VEHICLE" and unit == "player") then -- Hide button while AP items can't be used
@@ -1575,7 +1495,7 @@ local function CreateAnchorFrame()
 				--TotalAP.Debug("Player left combat , vehicle, or pet battle... Showing button!");
 				-- end
 				TotalAP.Debug("Scanning bags and updating action button after combat/pet battle/vehicle status ended...");
-				CheckBags();	-- TODO: Fixes the issue with WQ / world bosses that complete, but lock the player in combat for a longer period -> needs to be tested with AP reward WQ at a world boss still, but it should suffice
+				--CheckBags();	-- TODO: Fixes the issue with WQ / world bosses that complete, but lock the player in combat for a longer period -> needs to be tested with AP reward WQ at a world boss still, but it should suffice
 				UpdateEverything();
 				
 				self:RegisterEvent("BAG_UPDATE_DELAYED");
@@ -1583,7 +1503,7 @@ local function CreateAnchorFrame()
 			elseif event == "ARTIFACT_XP_UPDATE" or event == "ARTIFACT_UPDATE" then -- Recalculate tooltip display and update button when AP items are used or new traits purchased
 				
 				TotalAP.Debug("Updating action button after ARTIFACT_UPDATE or ARTIFACT_XP_UPDATE...");
-				CheckBags();
+				--CheckBags();
 				UpdateEverything();
 				
 	
