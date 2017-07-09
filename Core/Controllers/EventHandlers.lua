@@ -140,12 +140,24 @@ local function OnLeaveCombat()
 
 end
 
+--- Called when pet battle begins
 local function OnPetBattleStart()
-	TotalAP.ChatMsg("OnPetBattleStart triggered")
+
+	TotalAP.Debug("OnPetBattleStart triggered")
+	
+	-- Update GUI to show/hide displays when necessary
+	TotalAP.Controllers.UpdateGUI()
+	
 end
 
+--- Called when pet battle ends
 local function OnPetBattleEnd()
-	TotalAP.ChatMsg("OnPetBattleEnd triggered")
+
+	TotalAP.Debug("OnPetBattleEnd triggered")
+	
+	-- Update GUI to show/hide displays when necessary
+	TotalAP.Controllers.UpdateGUI()
+	
 end
 
 -- Called when unit enters vehicle
