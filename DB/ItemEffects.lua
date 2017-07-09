@@ -1,5 +1,5 @@
 --[[ List of artifact empowerment items and their spell IDs (currently 471 entries)
-Auto-generated on June 15, 2017, 12:20 am ]]--
+Auto-generated on July 9, 2017, 10:48 am ]]--
 
 local itemEffects = {
 	[130152] = 228957,
@@ -473,6 +473,7 @@ local itemEffects = {
 	[151920] = 248847,
 	[151921] = 248848,
 	[151922] = 248849,
+	[152504] = 251039, -- TODO: Manually added - something's not quite right (item not part of client DB files for some reason?)
  };
 
 local addonName, TotalAP = ...
