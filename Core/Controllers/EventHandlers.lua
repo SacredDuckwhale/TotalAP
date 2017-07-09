@@ -203,6 +203,14 @@ local function OnBankOpened()
 	
 end
 
+--- Called when player closes the bank
+local function OnBankClosed()
+	
+	TotalAP.Debug("OnBankClosed triggered")
+	isBankOpen = true
+	
+end
+
 --- Called when player switches bags or changes items in the generic bank storage (not inside of bags, though!)
 local function OnPlayerBankSlotsChanged()
 
@@ -320,6 +328,7 @@ local eventList = {
 	
 	-- Scan bank contents
 	["BANKFRAME_OPENED"] = OnBankOpened,
+	["BANKFRAME_CLOSED"] = OnBankClosed,
 	["PLAYERBANKSLOTS_CHANGED"] = OnPlayerBankSlotsChanged, -- generic slots OR bags (not item in bags) have changed
 	
 	-- Toggle GUI and start/stop scanning or updating
