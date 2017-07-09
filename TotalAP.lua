@@ -85,7 +85,8 @@ local function GetNumAvailableTraits()
 		
 	local thisLevelUnspentAP, numTraitsPurchased, _, _, _, _, _, _, tier = select(5, aUI.GetEquippedArtifactInfo());	
 	--local tier = aUI.GetArtifactTier() or 2; -- Assuming 2 as per usual (see other calls and comments for GetArtifactTier) - only defaults to this when artifact is not available/opened?
-	local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(numTraitsPurchased, thisLevelUnspentAP + TotalAP.inventoryCache.inBagsAP, tier)
+	
+	local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(numTraitsPurchased, thisLevelUnspentAP + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), tier)
 	TotalAP.Debug(format("Called GetNumAvailableTraits -> %s new traits available!", numTraitsAvailable or 0));
 	
 	return numTraitsAvailable or 0;
@@ -106,7 +107,8 @@ local function GetArtifactProgressPercent()
 		local nextLevelRequiredAP = aUI.GetCostForPointAtRank(numTraitsPurchased, tier); 
 		
 		--if considerBags then -- TODO: This is ugly. I can do better, oh great one!
-		local percentageOfCurrentLevelUp = (thisLevelUnspentAP + TotalAP.inventoryCache.inBagsAP) / nextLevelRequiredAP*100;
+		
+		local percentageOfCurrentLevelUp = (thisLevelUnspentAP + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0)) / nextLevelRequiredAP*100;
 		TotalAP.Debug(format("Called GetArtifactProgressPercent -> Progress is: %s%% towards next trait!", percentageOfCurrentLevelUp or 0)); -- TODO: > 100% becomes inaccurate due to only using cost for THIS level, not next etc?
 		return percentageOfCurrentLevelUp or 0;
 	--	else 
@@ -420,9 +422,9 @@ local function UpdateSpecIcons()
 		
 			TotalAP.Debug(format("Updating spec icons for spec %i from cached data"), i);
 			-- Calculate available traits and progress using the cached data
-			local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(v["numTraitsPurchased"],  v["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP, v["artifactTier"])
+			local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(v["numTraitsPurchased"],  v["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), v["artifactTier"])
 			local nextLevelRequiredAP = aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]); 
-			local percentageOfCurrentLevelUp = (v["thisLevelUnspentAP"]  + TotalAP.inventoryCache.inBagsAP) / nextLevelRequiredAP*100;
+			local percentageOfCurrentLevelUp = (v["thisLevelUnspentAP"]  + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0)) / nextLevelRequiredAP*100;
 			
 			TotalAP.Debug(format("Calculated progress using cached data for spec %s: %d traits available - %d%% towards next trait using AP from bags", k, numTraitsAvailable, percentageOfCurrentLevelUp)); -- TODO: > 100% becomes inaccurate due to only using cost for THIS level, not next etc?
 		
@@ -627,7 +629,7 @@ local function UpdateInfoFrame()
 		if v["thisLevelUnspentAP"] and v["numTraitsPurchased"] then -- spec has been scanned, but could possibly be ignored // TODO: Detect initialised specs (by the Cache:NewEntry() function) that have seemingly valid data, even though they aren't scanned yet
 			
 			local percentageUnspentAP = min(100, math.floor(v["thisLevelUnspentAP"] / aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100)); -- cap at 100 or bar will overflow
-			local percentageInBagsAP = min(math.floor(TotalAP.inventoryCache.inBagsAP / aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100), 100 - percentageUnspentAP); -- AP from bags should fill up the bar, but not overflow it
+			local percentageInBagsAP = min(math.floor(TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0)/ aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100), 100 - percentageUnspentAP); -- AP from bags should fill up the bar, but not overflow it
 			TotalAP.Debug(format("Updating percentage for bar display... spec %d: unspentAP = %s, inBags = %s" , k, percentageUnspentAP, percentageInBagsAP));
 			
 			local inset, border = settings.infoFrame.inset or 1, settings.infoFrame.border or 1; -- TODO
@@ -728,8 +730,8 @@ local function UpdateInfoFrame()
 
 
 			-- Display secondary bar on top of the actual progress bar to indicate progress when multiple ranks are available
-			local maxAttainableRank =  v["numTraitsPurchased"] + TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(v["numTraitsPurchased"],  v["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP,  v["artifactTier"]) 
-			local progressPercent = TotalAP.ArtifactInterface.GetProgressTowardsNextRank(v["numTraitsPurchased"] , v["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP, v["artifactTier"])
+			local maxAttainableRank =  v["numTraitsPurchased"] + TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(v["numTraitsPurchased"],  v["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0),  v["artifactTier"]) 
+			local progressPercent = TotalAP.ArtifactInterface.GetProgressTowardsNextRank(v["numTraitsPurchased"] , v["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), v["artifactTier"])
 
 			if not TotalAPMiniBars[k].texture then -- Create texture object
 				TotalAPMiniBars[k].texture = TotalAPMiniBars[k]:CreateTexture();
@@ -1562,6 +1564,8 @@ GameTooltip:HookScript('OnTooltipSetItem', function(self)
 				else
 					self:AddLine(format("\n" .. L["%s Artifact Power in bags"], TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat)) , 230/255, 204/255, 128/255);
 				end
+				
+				-- TODO: Bank summary
 			
 				-- Calculate progress towards next trait
 				if HasArtifactEquipped() and settings.tooltip.showProgressReport then
