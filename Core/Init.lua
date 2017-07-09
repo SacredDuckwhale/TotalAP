@@ -34,6 +34,7 @@ TotalAP.Settings = {}
 
 -- Controllers & Input handling
 TotalAP.Controllers = {}
+TotalAP.EventHandlers = {}
 
 -- User Interface & Views
 TotalAP.GUI = {}
@@ -44,6 +45,24 @@ TotalAP.Utils = {}
 -- Localization table
 TotalAP.L = LibStub("AceLocale-3.0"):GetLocale("TotalAP", false)
 
+-- Volatile data storage (caches)
+TotalAP.artifactCache = {} -- formerly "ArtifactProgressCache" -> Will be used to update saved variables cache when the session ends
+TotalAP.bankCache = {
+
+	inBankAP = 0,
+	numItems = 0,
+
+}
+TotalAP.inventoryCache = {
+
+	inBagsAP = 0,
+	numItems = 0,
+	foundTome = false,
+
+	displayItem = {
+		
+	}
+}
 
 
 -- Global functions (TODO: Move to separate file if there will be more?)
