@@ -130,14 +130,21 @@ end
 
 local function OnEnterCombat()
 
-	TotalAP.ChatMsg("OnEnterCombat triggered")
+	TotalAP.Debug("OnEnterCombat triggered")
 
+	-- Update GUI to show/hide displays when necessary
+	TotalAP.Controllers.UpdateGUI()
+	
 end
 
+--- Called when player leaves combat
 local function OnLeaveCombat()
 
-	TotalAP.ChatMsg("OnLeaveCombat triggered")
-
+	TotalAP.Debug("OnLeaveCombat triggered")
+	
+	-- Update GUI to show/hide displays when necessary
+	TotalAP.Controllers.UpdateGUI()
+	
 end
 
 --- Called when pet battle begins
