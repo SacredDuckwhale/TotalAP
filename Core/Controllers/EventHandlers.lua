@@ -41,8 +41,8 @@ local function ScanInventory(scanBank)
 	
 	-- To be saved in the Inventory cache
 	local displayItem = {} -- The item that is going to be displayed on the actionButton (after the next call to GUI.Update())
-	local numItems, inBagsAP, inBankAP = 0, 0, 0 -- These are for the current scan
-	local spellDescription, spellID, artifactPowerValue -- These are for the current item
+	local numItems, artifactPowerSum = 0, 0 -- These are for the current scan
+	local spellDescription, spellID, artifactPowerValue = nil, nil, 0  -- These are for the current item
 	
 	if scanBank then -- Scan generic bank and set bag IDs 
 	
@@ -94,7 +94,10 @@ local function ScanInventory(scanBank)
 						spellDescription = GetSpellDescription(spellID) -- Always contains the AP number, as only AP tokens are in the LUT 
 						
 						artifactPowerValue = TotalAP.Scanner.ParseSpellDesc(spellDescription) -- Scans spell description and extracts AP amount based on locale (as they use slightly different formats to display the numbers)
-							
+						artifactPowerSum = artifactPowerSum + artifactPowerValue
+						
+						TotalAP.Debug("Found AP token: " .. tempItemLink .. " -> numItems = " .. numItems .. ", artifactPowerSum = " .. artifactPowerSum)	
+						
 					end
 				
 					if not scanBank and isTome or (isToken and not foundTome) then -- Set this item as the currently displayed one (so that the GUI can use it)
@@ -115,22 +118,18 @@ local function ScanInventory(scanBank)
 	end
 	
 		if scanBank then -- Calculate AP value for bank bags and update bankCache so that other modules can access it)
-		
-			inBankAP = inBankAP + tonumber(artifactPowerValue) -- TODO: Merge inBankAP and inBagsAP
 			
 			local bankCache = TotalAP.bankCache
 			bankCache.numItems = numItems
-			bankCache.inBankAP = inBankAP
-			
+			bankCache.inBankAP = artifactPowerSum
+	
 		else	-- Calculate AP value for inventory bags and update inventory cache so that other modules can access it)
-		
-			inBagsAP = inBagsAP + tonumber(artifactPowerValue)
 	
 			local inventoryCache = TotalAP.inventoryCache
 			inventoryCache.foundTome = foundTome
 			inventoryCache.displayItem = displayItem
 			inventoryCache.numItems = numItems
-			inventoryCache.inBagsAP = inBagsAP
+			inventoryCache.inBagsAP = artifactPowerSum
 			
 		end
 	
