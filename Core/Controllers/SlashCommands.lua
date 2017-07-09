@@ -33,12 +33,12 @@ local slashCommandAlias = "ap"
 -- AceLocale localisation table -> used for console output
 local L = TotalAP.L
 
--- TODO: Use AceDB for this
 
+-- TODO: combine all the LUT into just one? Might be too chaotic, though
 -- TODO: settings in slashHandlers is a workaround from incomplete migration issues -> it's not final and should probably be reworked after migration is complete
 
 
--- Match commands to locale table keys (the actual strings are NOT used, except to look up the correct translation)
+-- Lookup table that is used to match commands to localization table keys
 local slashCommands = {
 	
 	["counter"] = L["Toggle display of the item counter"],
@@ -64,14 +64,14 @@ local slashCommands = {
 	
 }
 
--- Undocumented -> Won't be listed (and there is no need to translate them either)
+--- Undocumented (hidden) slash commands that are temporary at best. They won't be listed (and there is no need to translate them either), hence the separation
 local hiddenSlashCommands = {
 	["align-top"] = "",
 	["align-bottom"] = "",
 	["align-center"] = "",
 }
 
--- Actual handling of slash commands (TODO: Not fully migrated yet -> most won't work until it is done)
+--- Actual handling of slash commands occurs in the functions listed in this table
 local slashHandlers = {
 
 	["counter"] = function(settings) -- Toggle counter display in tooltip
@@ -293,24 +293,24 @@ local slashHandlers = {
 }
 
 
--- Returns handler function for a given slash command (if it exists) -- TODO: It's private, as it's only used in here currently - does it need to be exposed for something?
+--- Returns the handler function for a given slash command (if it exists)
 local function GetSlashHandlerFunction(command)
 	return slashHandlers[command]
 end
 
--- Returns the currently used (main) slash command
+--- Returns the currently used (main) slash command
 local function GetSlashCommand()
 	return slashCommand
 end
 
 
--- Returns shorthand (alias) for the currently used slash command
+--- Returns shorthand (alias) for the currently used slash command
 local function GetSlashCommandAlias()
 	return slashCommandAlias
 end
 
 
--- Prints a list of all available slash commands to the DEFAULT_CHAT_FRAME (using the addon-specific print methods with colour-coding)
+--- Prints a list of all available slash commands to the DEFAULT_CHAT_FRAME (using addon-specific print methods with colour-coding)
 local function PrintSlashCommands(usedAlias)
 
 		-- TODO: Could use AceConsole:print(f) for this, but... meh. It would have to format the output manually to adhere to the addon's standards (as set in Core\ChatMsg), and who has time for that?
@@ -328,7 +328,7 @@ local function PrintSlashCommands(usedAlias)
 end
 
 
--- Handles console input (slash commands)
+--- Handles console input (slash commands). Called via AceConsole mainly
 -- TODO: Only one argument is supported currently (use AceConsole:GetArgs to parse them more easily)
 local function SlashCommandHandler(input, usedAlias)
 
@@ -384,7 +384,7 @@ local function SlashCommandHandler(input, usedAlias)
 	
 end
 
--- Notify slash command handler that the alias slash command was used instead of the regular one before calling it
+--- Notify slash command handler that the alias slash command was used instead of the regular one before calling it
 -- TODO: I don't like this, but since AceConsole doesn't allow the option of differentiating between commands via parameters this should get the job done
 local function SlashCommandHandler_UsedAlias(input)
 	SlashCommandHandler(input, true)
