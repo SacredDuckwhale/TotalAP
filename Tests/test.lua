@@ -62,7 +62,7 @@ function readTOC(filePath) -- TODO: Split this up into TOC Parser and Lua Loader
 			
 		end
 	end	
-	print("\nA total of " .. #addonFiles .. " files were added to the loader after parsing the TOC")
+	print("\nA total of " .. #addonFiles .. " files were added to the loader after parsing " .. toc .. ".\n\nBreakdown:")
 	file:close()
 
 	 -- Load addon files in order (simulating the client's behaviour)
@@ -74,7 +74,7 @@ function readTOC(filePath) -- TODO: Split this up into TOC Parser and Lua Loader
 		G.addonName[#G.addonName+1] = loadfile(root .. fileName)(addonName, T)
 		
 	end
-	print("Added " .. #G.addonName .. " files to the (simulated) global environment")
+	print("\nSummary: Added " .. #G.addonName .. " files to the (simulated) global environment")
 
 end
 
