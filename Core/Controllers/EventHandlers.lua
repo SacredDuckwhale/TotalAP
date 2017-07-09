@@ -145,10 +145,6 @@ end
 
 --- Scan bank contents and update the addon's bankCache accordingly
 local function ScanBank()
-
-	--NUM_BANKBAGSLOTS
-	--NUM_BANKGENERIC_SLOTS  = Default bank slots (no bags)
-	-- bank slot is a bag
 	
 	ScanInventory(true)
 	
@@ -183,6 +179,9 @@ local function OnInventoryUpdate()
 	
 	-- Re-scan inventory and update all stored values
 	ScanBags()
+	if isBankOpen then -- Update bankCache also (in case items were moved between inventory and bank)
+		ScanBank()
+	end
 	
 	-- Update GUI to display the most current information
 	TotalAP.Controllers.UpdateGUI()
