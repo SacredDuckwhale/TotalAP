@@ -27,35 +27,43 @@ if not TotalAP then return end
 
 -- Actual event handlers
 
-local function UpdateGUI()
 
-	TotalAP.ChatMsg("UpdateGUI triggered")
+--- Scans the contents of either the player's inventory, or their bank
+-- @param[opt] scanBank Whether or not the bank should be scanned instead of the player's inventory (defaults to false)
+local function ScanInventory(scanBank)
 
-end
-
-local function OnArtifactUpdate()
-	TotalAP.ChatMsg("OnArtifactUpdate triggered")
-end
-
--- Re-scan the contents of the player's inventory
-local function OnInventoryUpdate()
-
-	TotalAP.Debug("EventHandlers -> OnInventoryUpdate triggered")
-
-	
-	-- Re-scan inventory and update all stored values
 	local foundTome = false -- For BoA tomes -> The display must display them before any AP tokens if any were found 
 	
 	 -- Temporary values that will be overwritten with the next item
-	local bag, slot, tempItemLink, tempItemID, tempItemTexture
+	local bag, maxBag, slot, tempItemLink, tempItemID, tempItemTexture
 	local isTome, isToken = false, false -- Refers to current item
 	
 	-- To be saved in the Inventory cache
 	local displayItem = {} -- The item that is going to be displayed on the actionButton (after the next call to GUI.Update())
-	local numItems, inBagsAP = 0, 0 -- These are for the current scan
+	local numItems, inBagsAP, inBankAP = 0, 0, 0 -- These are for the current scan
 	local spellDescription, spellID, artifactPowerValue -- These are for the current item
 	
-	for bag = 0, NUM_BAG_SLOTS do -- Iterate over this bag's contents
+	if scanBank then -- Scan generic bank and set bag IDs 
+	
+		-- Scan generic bank container once
+		--BANK_CONTAINER
+		TotalAP.ChatMsg("Scanning generic bank contents")
+	
+		-- Set bag IDs to only scan bank bags
+		bag = NUM_BAG_SLOTS + 1
+		maxBag = NUM_BAG_SLOTS + NUM_BANKBAGSLOTS
+	
+	else -- Scan inventory bags
+	
+		-- Set bag IDs to only scan inventory bags
+		bag = BACKPACK_CONTAINER
+		maxBag = NUM_BAG_SLOTS
+		
+		-- TODO: If Tome was found in bank, can't use it but will it be displayed?
+	
+	end
+	
+	for bag = bag, maxBag do -- Iterate over this bag's contents
 	
 		for slot = 1, GetContainerNumSlots(bag) do -- Compare items in the current bag with DB entries to detect AP tokens
 	
@@ -85,12 +93,10 @@ local function OnInventoryUpdate()
 						spellDescription = GetSpellDescription(spellID) -- Always contains the AP number, as only AP tokens are in the LUT 
 						
 						artifactPowerValue = TotalAP.Scanner.ParseSpellDesc(spellDescription) -- Scans spell description and extracts AP amount based on locale (as they use slightly different formats to display the numbers)
-
-						inBagsAP = inBagsAP + tonumber(artifactPowerValue)
-
+							
 					end
 				
-					if isTome or (isToken and not foundTome) then -- Set this item as the currently displayed one (so that the GUI can use it)
+					if not scanBank and isTome or (isToken and not foundTome) then -- Set this item as the currently displayed one (so that the GUI can use it)
 					
 						displayItem.ID = tempItemID
 						displayItem.link = tempItemLink
@@ -107,14 +113,75 @@ local function OnInventoryUpdate()
 	
 	end
 	
+		if scanBank then -- Calculate AP value for bank bags and update bankCache so that other modules can access it)
+		
+			inBankAP = inBankAP + tonumber(artifactPowerValue) -- TODO: Merge inBankAP and inBagsAP
+			
+			local bankCache = TotalAP.bankCache
+			bankCache.numItems = numItems
+			bankCache.inBankAP = inBankAP
+			
+		else	-- Calculate AP value for inventory bags and update inventory cache so that other modules can access it)
+		
+			inBagsAP = inBagsAP + tonumber(artifactPowerValue)
 	
-	-- Update inventory cache (stored in addon table so that other modules can access it)
-	local inventoryCache = TotalAP.inventoryCache
-	inventoryCache.foundTome = foundTome
-	inventoryCache.displayItem = displayItem
-	inventoryCache.numItems = numItems
-	inventoryCache.inBagsAP = InBagsAP
+			local inventoryCache = TotalAP.inventoryCache
+			inventoryCache.foundTome = foundTome
+			inventoryCache.displayItem = displayItem
+			inventoryCache.numItems = numItems
+			inventoryCache.inBagsAP = inBagsAP
+			
+		end
 	
+end
+
+--- Scan inventory contents and update the addon's inventoryCache accordingly
+local function ScanBags()
+
+		ScanInventory(false)
+	
+end
+
+--- Scan bank contents and update the addon's bankCache accordingly
+local function ScanBank()
+
+	--NUM_BANKBAGSLOTS
+	--NUM_BANKGENERIC_SLOTS  = Default bank slots (no bags)
+	-- bank slot is a bag
+	
+	ScanInventory(true)
+	
+end
+
+--- Toggle a GUI Update (which is handled by the GUI controller and not the Event controller itself)
+local function UpdateGUI()
+
+	TotalAP.Controllers.UpdateGUI()
+	
+end
+
+--- Scan the currently equipped artifact and update the addon's artifactCache accordingly
+local function OnArtifactUpdate()
+	
+	-- TODO: Is this necessary or will OnInventoryUpdate cover this? Maybe scan artifact data here only instead of having it scanned with every item change (Bag update)?
+	
+	TotalAP.Debug("OnArtifactUpdate triggered")
+	
+	-- Re-scan inventory and update all stored values
+	ScanBags()
+	
+	-- Update GUI to display the most current information
+	UpdateGUI()
+	
+end
+
+--- Called when an inventory update finishes
+local function OnInventoryUpdate()
+
+	TotalAP.Debug("OnInventoryUpdate triggered")
+	
+	-- Re-scan inventory and update all stored values
+	ScanBags()
 	
 	-- Update GUI to display the most current information
 	TotalAP.Controllers.UpdateGUI()
