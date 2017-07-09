@@ -188,11 +188,30 @@ local function OnInventoryUpdate()
 	
 end
 
--- Re-cache contents of the player's bank
+--- Called when player accesses the bank
 local function OnBankOpened()
 
-	TotalAP.ChatMsg("OnBankOpened triggered")
+	TotalAP.Debug("OnBankOpened triggered")
 
+	-- Re-scan bank and update all stored values
+	ScanBank()
+	
+	-- Update GUI to display the most current information
+	TotalAP.Controllers.UpdateGUI()
+	
+end
+
+--- Called when player switches bags or changes items in the generic bank storage (not inside of bags, though!)
+local function OnPlayerBankSlotsChanged()
+
+	TotalAP.Debug("OnPlayerBankSlotsChanged triggered")
+	
+		-- Re-scan bank and update all stored values
+	ScanBank()
+	
+	-- Update GUI to display the most current information
+	TotalAP.Controllers.UpdateGUI()
+	
 end
 
 local function OnEnterCombat()
@@ -290,6 +309,7 @@ local eventList = {
 	
 	-- Scan bank contents
 	["BANKFRAME_OPENED"] = OnBankOpened,
+	["PLAYERBANKSLOTS_CHANGED"] = OnPlayerBankSlotsChanged, -- generic slots OR bags (not item in bags) have changed
 	
 	-- Toggle GUI and start/stop scanning or updating
 	["PLAYER_REGEN_DISABLED"] = OnEnterCombat,
