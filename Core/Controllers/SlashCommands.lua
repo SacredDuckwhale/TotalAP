@@ -45,6 +45,7 @@ local slashCommands = {
 	["progress"] = L["Toggle display of the progress report"],
 	["glow"] = L["Toggle spell overlay notification (glow effect) when new traits are available"],
 	["buttontext"] = L["Toggle short summary of the tooltip information as an additional display next to the action button"],
+	["scanbank"] = L["Include items stored in the bank and show an additional progress bar for them"],
 	
 	["hide"] = L["Toggle all displays (will override the individual display's settings)"],
 	["button"] = L["Toggle button visibility (tooltip visibility is unaffected)"],
@@ -129,9 +130,20 @@ local slashHandlers = {
 
 	end,
 	
+	["scanbank"] = function(settings) -- Display additional progress bars for items stored in the player's bank, and include the bankCache in all calculations
+	
+	if settings.scanBank then -- Disable bank scanning (technically, it will still scan them but simply ignore the bankCache in calculations)
+		TotalAP.ChatMsg(L["Items stored in the bank are now being ignored"])
+	else
+		TotalAP.ChatMsg(L["Items stored in the bank are now being included"])
+	end
+	
+	settings.scanBank = not settings.scanBank
+	
+	end,
+	
 	["hide"] = function(settings)  -- Toggle all displays
 		
-	
 		if settings.enabled then
 			TotalAP.ChatMsg(L["All displays are now being hidden."])
 		else

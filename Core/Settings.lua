@@ -30,9 +30,6 @@ local addonname, TotalAP = ...
 if not TotalAP then return end
 
 
-
-
-
 -- Default settings (to check against when valdiating the saved vars, and as default values for AceDB)
 local defaultSettings =	{	
 
@@ -43,6 +40,7 @@ local defaultSettings =	{
 		enabled = true,		-- This controls the entire display, but NOT the individual parts (which will be hidden, but their settings won't be overridden)
 		hideInCombat = true,
 		numberFormat = GetLocale(),
+		scanBank = true,
 		
 		-- Display options for the action button
 		actionButton = {
@@ -175,6 +173,7 @@ local validators = {
 	["numberFormat"] = IsNumberFormat,
 	["showLoginMessage"] = IsBoolean,
 	["verbose"] = IsBoolean,
+	["scanBank"] = IsBoolean,
 	
 	["actionButton"] = IsTable,
 	["actionButton.enabled"] = IsBoolean,
