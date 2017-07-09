@@ -148,20 +148,32 @@ local function OnPetBattleEnd()
 	TotalAP.ChatMsg("OnPetBattleEnd triggered")
 end
 
+-- Called when unit enters vehicle
 local function OnUnitVehicleEnter(...)
 
 	local args = { ... }
-	local unit = args[3]
+	local unit = args[2]
 	
-	TotalAP.ChatMsg("OnUnitVehicleEnter triggered")
-	TotalAP.ChatMsg("unit = " .. unit)
+	TotalAP.Debug("OnUnitVehicleEnter triggered for unit = " .. tostring(unit))
+	
+	-- Update GUI to show/hide displays when necessary
+	TotalAP.Controllers.UpdateGUI()
 	
 end
 
+-- Called when unit exits vehicle
 local function OnUnitVehicleExit(...)
 
 	local args = { ... }
-	local unit = args[3]
+	local unit = args[2]
+	
+	TotalAP.Debug("OnUnitVehicleExit triggered for unit = " .. tostring(unit))
+	
+	-- Update GUI to show/hide displays when necessary
+	TotalAP.Controllers.UpdateGUI()
+	
+end
+
 -- Called when player uses flight master taxi services
 local function OnPlayerControlLost()
 
