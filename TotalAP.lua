@@ -861,9 +861,21 @@ local function UpdateActionButton()
 		--if settings.actionButton.showText and TotalAP.inventoryCache.inBagsAP > 0 and currentItemAP > 0 then
 			
 			if TotalAP.inventoryCache.numItems > 1 then -- Display total AP in bags
-				TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(TotalAP.inventoryCache.displayItem.artifactPowerValue, true, settings.numberFormat) .. "\n(" .. TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat) .. ")") -- TODO: More options/HUD setup - planned once advanced config is implemented via AceConfig
+				
+				if settings.scanBank and TotalAP.bankCache.numItems > 0 and TotalAP.bankCache.inBankAP > 0 then -- Also include banked AP
+					TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(TotalAP.inventoryCache.displayItem.artifactPowerValue, true, settings.numberFormat) .. "\n(" .. TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat) .. ")\n[" .. TotalAP.Utils.FormatShort(TotalAP.bankCache.inBankAP, true, settings.numberFormat) .. "]")
+				else
+					TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(TotalAP.inventoryCache.displayItem.artifactPowerValue, true, settings.numberFormat) .. "\n(" .. TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat) .. ")") -- TODO: More options/HUD setup - planned once advanced config is implemented via AceConfig
+				 end
+				 
 			else
-				TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(TotalAP.inventoryCache.displayItem.artifactPowerValue, true, settings.numberFormat))
+			
+				if settings.scanBank and TotalAP.bankCache.numItems > 0 and TotalAP.bankCache.inBankAP > 0 then -- Also include banked AP
+					TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(TotalAP.inventoryCache.displayItem.artifactPowerValue, true, settings.numberFormat) .. ")\n[" .. TotalAP.Utils.FormatShort(TotalAP.bankCache.inBankAP, true, settings.numberFormat) .. "]")
+				else
+					TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(TotalAP.inventoryCache.displayItem.artifactPowerValue, true, settings.numberFormat))
+				end
+				
 			end
 				
 		else
