@@ -330,7 +330,7 @@ local function RegisterAllEvents()
 	for key, eventHandler in pairs(eventList) do -- Register this handler for the respective event (via AceEvent-3.0)
 	
 		TotalAP.Addon:RegisterEvent(key, eventHandler)
-		TotalAP.ChatMsg("Registered for event = " .. key)
+		TotalAP.Debug("Registered for event = " .. key)
 	
 	end
 	
