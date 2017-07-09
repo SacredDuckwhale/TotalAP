@@ -27,6 +27,7 @@ if not TotalAP then return end
 
 -- Actual event handlers
 
+local isBankOpen, isPlayerUsingVehicle, isPlayerEngagedInCombat, isPetBattleInProgress, hasPlayerLostControl
 
 --- Scans the contents of either the player's inventory, or their bank
 -- @param[opt] scanBank Whether or not the bank should be scanned instead of the player's inventory (defaults to false)
@@ -192,7 +193,8 @@ end
 local function OnBankOpened()
 
 	TotalAP.Debug("OnBankOpened triggered")
-
+	isBankOpen = true
+	
 	-- Re-scan bank and update all stored values
 	ScanBank()
 	
@@ -218,6 +220,7 @@ end
 local function OnEnterCombat()
 
 	TotalAP.Debug("OnEnterCombat triggered")
+	isPlayerEngagedInCombat = true
 
 	-- Update GUI to show/hide displays when necessary
 	TotalAP.Controllers.UpdateGUI()
@@ -228,6 +231,7 @@ end
 local function OnLeaveCombat()
 
 	TotalAP.Debug("OnLeaveCombat triggered")
+	isPlayerEngagedInCombat = false
 	
 	-- Update GUI to show/hide displays when necessary
 	TotalAP.Controllers.UpdateGUI()
@@ -238,6 +242,7 @@ end
 local function OnPetBattleStart()
 
 	TotalAP.Debug("OnPetBattleStart triggered")
+	isPetBattleInProgress = true
 	
 	-- Update GUI to show/hide displays when necessary
 	TotalAP.Controllers.UpdateGUI()
@@ -248,6 +253,7 @@ end
 local function OnPetBattleEnd()
 
 	TotalAP.Debug("OnPetBattleEnd triggered")
+	isPetBattleInProgress = false
 	
 	-- Update GUI to show/hide displays when necessary
 	TotalAP.Controllers.UpdateGUI()
@@ -261,6 +267,7 @@ local function OnUnitVehicleEnter(...)
 	local unit = args[2]
 	
 	TotalAP.Debug("OnUnitVehicleEnter triggered for unit = " .. tostring(unit))
+	isPlayerUsingVehicle = true
 	
 	-- Update GUI to show/hide displays when necessary
 	TotalAP.Controllers.UpdateGUI()
@@ -274,6 +281,7 @@ local function OnUnitVehicleExit(...)
 	local unit = args[2]
 	
 	TotalAP.Debug("OnUnitVehicleExit triggered for unit = " .. tostring(unit))
+	isPlayerUsingVehicle = false
 	
 	-- Update GUI to show/hide displays when necessary
 	TotalAP.Controllers.UpdateGUI()
@@ -284,6 +292,7 @@ end
 local function OnPlayerControlLost()
 
 	TotalAP.Debug("OnPlayerControlLost triggered")
+	hasPlayerLostControl = true
 	
 	-- Update GUI to show/hide displays when necessary
 	TotalAP.Controllers.UpdateGUI()
@@ -294,6 +303,7 @@ end
 local function OnPlayerControlGained()
 
 	TotalAP.Debug("OnPlayerControlGained triggered")
+	hasPlayerLostControl = false
 
 	-- Update GUI to show/hide displays when necessary
 	TotalAP.Controllers.UpdateGUI()
