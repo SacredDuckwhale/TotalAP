@@ -42,9 +42,8 @@ local aUI = C_ArtifactUI -- also avoids global lookups as a side effect
 
 
 -- Shared variables (TODO: They shouldn't be in this file, but migration is not yet complete)
-local tempItemLink, tempItemID, currentItemLink, currentItemID, currentItemTexture, currentItemAP; -- used for bag scanning and tooltip display
-local numItems, inBagsTotalAP, numTraitsAvailable, artifactProgressPercent = 0, 0, 0, 0; -- used for tooltip text
-local foundKnowledgeTome -- buttonText (TODO -> workaround for display inconsistencies)
+local tooltipItemID -- Used for tooltip display
+local numTraitsAvailable, artifactProgressPercent = 0, 0; -- used for tooltip text
 local numTraitsFontString, specIconFontStrings = nil, {}; -- Used for the InfoFrame
 
 -- One-time checks (per login... not stored otherwise)
@@ -86,7 +85,7 @@ local function GetNumAvailableTraits()
 		
 	local thisLevelUnspentAP, numTraitsPurchased, _, _, _, _, _, _, tier = select(5, aUI.GetEquippedArtifactInfo());	
 	--local tier = aUI.GetArtifactTier() or 2; -- Assuming 2 as per usual (see other calls and comments for GetArtifactTier) - only defaults to this when artifact is not available/opened?
-	local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(numTraitsPurchased, thisLevelUnspentAP + inBagsTotalAP, tier)
+	local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(numTraitsPurchased, thisLevelUnspentAP + TotalAP.inventoryCache.inBagsAP, tier)
 	TotalAP.Debug(format("Called GetNumAvailableTraits -> %s new traits available!", numTraitsAvailable or 0));
 	
 	return numTraitsAvailable or 0;
@@ -107,7 +106,7 @@ local function GetArtifactProgressPercent()
 		local nextLevelRequiredAP = aUI.GetCostForPointAtRank(numTraitsPurchased, tier); 
 		
 		--if considerBags then -- TODO: This is ugly. I can do better, oh great one!
-		local percentageOfCurrentLevelUp = (thisLevelUnspentAP + inBagsTotalAP) / nextLevelRequiredAP*100;
+		local percentageOfCurrentLevelUp = (thisLevelUnspentAP + TotalAP.inventoryCache.inBagsAP) / nextLevelRequiredAP*100;
 		TotalAP.Debug(format("Called GetArtifactProgressPercent -> Progress is: %s%% towards next trait!", percentageOfCurrentLevelUp or 0)); -- TODO: > 100% becomes inaccurate due to only using cost for THIS level, not next etc?
 		return percentageOfCurrentLevelUp or 0;
 	--	else 
@@ -501,9 +500,9 @@ local function UpdateSpecIcons()
 		
 			TotalAP.Debug(format("Updating spec icons for spec %i from cached data"), i);
 			-- Calculate available traits and progress using the cached data
-			local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(v["numTraitsPurchased"],  v["thisLevelUnspentAP"] + inBagsTotalAP, v["artifactTier"])
+			local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(v["numTraitsPurchased"],  v["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP, v["artifactTier"])
 			local nextLevelRequiredAP = aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]); 
-			local percentageOfCurrentLevelUp = (v["thisLevelUnspentAP"]  + inBagsTotalAP) / nextLevelRequiredAP*100;
+			local percentageOfCurrentLevelUp = (v["thisLevelUnspentAP"]  + TotalAP.inventoryCache.inBagsAP) / nextLevelRequiredAP*100;
 			
 			TotalAP.Debug(format("Calculated progress using cached data for spec %s: %d traits available - %d%% towards next trait using AP from bags", k, numTraitsAvailable, percentageOfCurrentLevelUp)); -- TODO: > 100% becomes inaccurate due to only using cost for THIS level, not next etc?
 		
@@ -708,7 +707,7 @@ local function UpdateInfoFrame()
 		if v["thisLevelUnspentAP"] and v["numTraitsPurchased"] then -- spec has been scanned, but could possibly be ignored // TODO: Detect initialised specs (by the Cache:NewEntry() function) that have seemingly valid data, even though they aren't scanned yet
 			
 			local percentageUnspentAP = min(100, math.floor(v["thisLevelUnspentAP"] / aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100)); -- cap at 100 or bar will overflow
-			local percentageInBagsAP = min(math.floor(inBagsTotalAP / aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100), 100 - percentageUnspentAP); -- AP from bags should fill up the bar, but not overflow it
+			local percentageInBagsAP = min(math.floor(TotalAP.inventoryCache.inBagsAP / aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100), 100 - percentageUnspentAP); -- AP from bags should fill up the bar, but not overflow it
 			TotalAP.Debug(format("Updating percentage for bar display... spec %d: unspentAP = %s, inBags = %s" , k, percentageUnspentAP, percentageInBagsAP));
 			
 			local inset, border = settings.infoFrame.inset or 1, settings.infoFrame.border or 1; -- TODO
@@ -809,8 +808,8 @@ local function UpdateInfoFrame()
 
 
 			-- Display secondary bar on top of the actual progress bar to indicate progress when multiple ranks are available
-			local maxAttainableRank =  v["numTraitsPurchased"] + TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(v["numTraitsPurchased"],  v["thisLevelUnspentAP"] + inBagsTotalAP,  v["artifactTier"]) 
-			local progressPercent = TotalAP.ArtifactInterface.GetProgressTowardsNextRank(v["numTraitsPurchased"] , v["thisLevelUnspentAP"] + inBagsTotalAP, v["artifactTier"])
+			local maxAttainableRank =  v["numTraitsPurchased"] + TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(v["numTraitsPurchased"],  v["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP,  v["artifactTier"]) 
+			local progressPercent = TotalAP.ArtifactInterface.GetProgressTowardsNextRank(v["numTraitsPurchased"] , v["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP, v["artifactTier"])
 
 			if not TotalAPMiniBars[k].texture then -- Create texture object
 				TotalAPMiniBars[k].texture = TotalAPMiniBars[k]:CreateTexture();
@@ -875,67 +874,51 @@ local function UpdateActionButton()
 	end
 
 	-- Hide button if spec is being ignored (unless research notes need to be used) -- TODO: Instead of hiding, give visual indicator? (greyed out icon or sth.)
-	if not foundKnowledgeTome and artifactProgressCache[spec] ~= nil and artifactProgressCache[spec]["isIgnored"] then
+	if not TotalAP.inventoryCache.foundTome and artifactProgressCache[spec] ~= nil and artifactProgressCache[spec]["isIgnored"] then
 		TotalAP.Debug("Hiding action button because the current spec is set to being ignored")
 		TotalAPButton:Hide();
 		return
 	end
 	
 	-- Also only show button if AP items were found, an artifact weapon is equipped in the first place, settings allow it, addons aren't locked from the player being in combat, and the artifact UI is available
-	if (numItems > 0 or foundKnowledgeTome) and TotalAPButton and not InCombatLockdown() and settings.actionButton.enabled and currentItemID and aUI and HasCorrectSpecArtifactEquipped() then
+	if (TotalAP.inventoryCache.numItems > 0 or TotalAP.inventoryCache.foundTome) and TotalAPButton and not InCombatLockdown() and settings.actionButton.enabled and TotalAP.inventoryCache.displayItem.ID and aUI and HasCorrectSpecArtifactEquipped() then
 	--and (HasArtifactEquipped()  and not IsEquippedItem(133755)) then  -- TODO: Proper support for the Underlight Angler artifact (rare fish instead of AP items)
 		
-		currentItemTexture = GetItemIcon(currentItemID) or "";
-		TotalAPButton.icon:SetTexture(currentItemTexture);
-		TotalAP.Debug(format("Set currentItemTexture to %s", currentItemTexture));
+		TotalAP.inventoryCache.displayItem.texture = GetItemIcon(TotalAP.inventoryCache.displayItem.ID) or ""
+		TotalAPButton.icon:SetTexture(TotalAP.inventoryCache.displayItem.texture);
+		TotalAP.Debug(format("Set currentItemTexture to %s", TotalAP.inventoryCache.displayItem.texture));
 	
-		local itemName = GetItemInfo(currentItemLink) or "";
+		local itemName = GetItemInfo(TotalAP.inventoryCache.displayItem.link) or "";
 		if itemName == "" then -- item isn't cached yet -> skip update until the next BAG_UPDATE_DELAYED (should only happen after a fresh login, when for some reason there are two subsequent BUD events)
 			TotalAP.Debug("itemName not cached yet. Skipping this update...");
 			return false;
 		end
 
-		TotalAP.Debug(format("Current item bound to action button: %s = % s", itemName, currentItemLink));
+		TotalAP.Debug(format("Current item bound to action button: %s = % s", itemName, TotalAP.inventoryCache.displayItem.link))
 		
 		TotalAPButton:SetAttribute("type", "item");
 		TotalAPButton:SetAttribute("item", itemName);
 		
-		TotalAP.Debug(format("Changed item bound to action button to: %s = % s", itemName, currentItemLink));
+		TotalAP.Debug(format("Changed item bound to action button to: %s = % s", itemName, TotalAP.inventoryCache.displayItem.link))
 		
 		MasqueUpdate(TotalAPButton, "itemUseButton");
 		
 		
 	
 		-- Transfer cooldown animation to the button (would otherwise remain static when items are used, which feels artificial)
-		local start, duration, enabled = GetItemCooldown(currentItemID)
+		local start, duration, enabled = GetItemCooldown(TotalAP.inventoryCache.displayItem.ID)
 		if duration > 0 then
 				TotalAPButton.cooldown:SetCooldown(start, duration)
 		end
 	
 		-- Display tooltip when mouse hovers over the action button
 		if TotalAPButton:IsMouseOver() then 
-			GameTooltip:SetHyperlink(currentItemLink);
+			GameTooltip:SetHyperlink(TotalAP.inventoryCache.displayItem.link)
 		end
 		
 		-- Update available traits and trigger spell overlay effect if necessary
 		numTraitsAvailable = GetNumAvailableTraits(); 
-		if settings.actionButton.showGlowEffect and numTraitsAvailable > 0 or
-			-- TODO: DRY - once all AK items are working properly, this should be refactored along with the tooltip check
-			currentItemID == 139390		-- Artifact Research Notes (max. AK 25)
-			or currentItemID == 146745	-- Artifact Research Notes (max. AK 50)
-			or currentItemID == 147860 	-- Empowered Elven Tome (7.2)
-			or currentItemID == 144433	--  Artifact Research Compendium: Volume I
-			or currentItemID == 144434	-- Artifact Research Compendium: Volumes I & II
-			or currentItemID == 144431	-- Artifact Research Compendium: Volumes I-III
-			or currentItemID == 144395	-- Artifact Research Synopsis
-			or currentItemID == 147852	-- Artifact Research Compendium: Volumes I-V
-			or currentItemID == 147856	-- Artifact Research Compendium: Volumes I-IX
-			or currentItemID == 147855	-- Artifact Research Compendium: Volumes I-VIII
-			or currentItemID == 144435	-- Artifact Research Compendium: Volumes I-IV
-			or currentItemID == 147853	-- Artifact Research Compendium: Volumes I-VI
-			or currentItemID == 147854	-- Artifact Research Compendium: Volumes I-VII
-			or currentItemID == 141335	-- Lost Research Notes (TODO: Is this even ingame? -> Part of the obsolete Mage quest "Hidden History", perhaps?)
-			then -- research notes -> always flash regardless of current progress
+		if settings.actionButton.showGlowEffect and numTraitsAvailable > 0 or TotalAP.DB.IsResearchTome(TotalAP.inventoryCache.displayItem.ID) then -- research notes -> always flash regardless of current progress
 			FlashActionButton(TotalAPButton, true);
 			TotalAP.Debug("Activating button glow effect while processing UpdateActionButton...");
 		else
@@ -944,13 +927,13 @@ local function UpdateActionButton()
 		end
 		
 		-- Add current item's AP value as text (if enabled)
-		if settings.actionButton.showText and not foundKnowledgeTome then
-		--if settings.actionButton.showText and inBagsTotalAP > 0 and currentItemAP > 0 then
+		if settings.actionButton.showText and not TotalAP.inventoryCache.foundTome then
+		--if settings.actionButton.showText and TotalAP.inventoryCache.inBagsAP > 0 and currentItemAP > 0 then
 			
-			if numItems > 1 then -- Display total AP in bags
-				TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(currentItemAP, true, settings.numberFormat) .. "\n(" .. TotalAP.Utils.FormatShort(inBagsTotalAP, true, settings.numberFormat) .. ")") -- TODO: More options/HUD setup - planned once advanced config is implemented via AceConfig
+			if TotalAP.inventoryCache.numItems > 1 then -- Display total AP in bags
+				TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(TotalAP.inventoryCache.displayItem.artifactPowerValue, true, settings.numberFormat) .. "\n(" .. TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat) .. ")") -- TODO: More options/HUD setup - planned once advanced config is implemented via AceConfig
 			else
-				TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(currentItemAP, true, settings.numberFormat))
+				TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(TotalAP.inventoryCache.displayItem.artifactPowerValue, true, settings.numberFormat))
 			end
 				
 		else
@@ -1432,24 +1415,24 @@ local function CreateActionButton()
 		TotalAPButton:SetMinResize(settings.actionButton.minResize, settings.actionButton.minResize); -- Let's not go there and make it TINY, shall we?
 		TotalAPButton:SetMaxResize(settings.actionButton.maxResize, settings.actionButton.maxResize); -- ... but no one likes a stretched, giant button either)
 		
-		currentItemTexture = GetItemIcon(currentItemID) or "";
-		TotalAPButton.icon:SetTexture(currentItemTexture);
-		TotalAP.Debug(format("Set currentItemTexture to %s", currentItemTexture));
+		TotalAP.inventoryCache.displayItem.texture = GetItemIcon(TotalAP.inventoryCache.displayItem.ID) or ""
+		TotalAPButton.icon:SetTexture(TotalAP.inventoryCache.displayItem.texture);
+		TotalAP.Debug(format("Set currentItemTexture to %s", TotalAP.inventoryCache.displayItem.texture));
 		
-		TotalAP.Debug(format("Created button with currentItemTexture = %s (currentItemID = %d)", currentItemTexture, currentItemID));
+		TotalAP.Debug(format("Created button with currentItemTexture = %s (currentItemID = %d)", TotalAP.inventoryCache.displayItem.texture, TotalAP.inventoryCache.displayItem.ID));
 		
 
 		-- [[ Action handlers ]] --
 		TotalAPButton:SetScript("OnEnter", function(self)  -- (to show the tooltip on mouseover)
 		
-			if currentItemID then
+			if TotalAP.inventoryCache.displayItem.ID then
 			
 				GameTooltip:SetOwner(TotalAPButton, "ANCHOR_RIGHT");
-				GameTooltip:SetHyperlink(currentItemLink);
-				TotalAP.Debug(format("OnEnter -> mouse entered TotalAPButton... Displaying tooltip for currentItemID = %s.", currentItemID));
+				GameTooltip:SetHyperlink(TotalAP.inventoryCache.displayItem.link)
+				TotalAP.Debug(format("OnEnter -> mouse entered TotalAPButton... Displaying tooltip for currentItemID = %s.", TotalAP.inventoryCache.displayItem.ID));
 				
-				local itemName = GetItemInfo(currentItemLink) or "<none>";
-				TotalAP.Debug(format("Current item bound to action button: %s = % s", itemName, currentItemLink));
+				local itemName = GetItemInfo(TotalAP.inventoryCache.displayItem.link) or "<none>";
+				TotalAP.Debug(format("Current item bound to action button: %s = % s", itemName, TotalAP.inventoryCache.displayItem.link));
 				TotalAP.Debug(format("Attributes: type = %s, item = %s", self:GetAttribute("type") or "<none>", self:GetAttribute("item") or "<none>"));
 			
 			else  TotalAP.Debug("OnEnter  -> mouse entered TotalAPButton... but currentItemID is nil so a tooltip can't be displayed!"); end
@@ -1581,7 +1564,7 @@ local function CreateAnchorFrame()
 				
 			elseif not UnitInVehicle("player") and event == "PLAYER_REGEN_ENABLED" or event == "PET_BATTLE_CLOSE" or (event == "UNIT_EXITED_VEHICLE" and unit == "player") then -- Show button once they are usable again
 			
-				--if numItems > 0 and not InCombatLockdown() and settings.showActionButton then 
+				--if TotalAP.inventoryCache.numItems > 0 and not InCombatLockdown() and settings.showActionButton then 
 				TotalAP.Debug("Player left combat , vehicle, or pet battle... Updating action button!");
 				if not InCombatLockdown() then
 					self:Show(); 
@@ -1634,9 +1617,9 @@ GameTooltip:HookScript('OnTooltipSetItem', function(self)
 	local _, tempItemLink = self:GetItem();
 	if type(tempItemLink) == "string" then
 
-		tempItemID = GetItemInfoInstant(tempItemLink);
+		tooltipItemID = GetItemInfoInstant(tempItemLink);
 		
-		if TotalAP.DB.GetItemSpellEffect(tempItemID) then -- Only display tooltip addition for AP tokens
+		if TotalAP.DB.GetItemSpellEffect(tooltipItemID) then -- Only display tooltip addition for AP tokens
 			
 			local artifactID, _, artifactName = C_ArtifactUI.GetEquippedArtifactInfo();
 			
@@ -1654,10 +1637,10 @@ GameTooltip:HookScript('OnTooltipSetItem', function(self)
 		
 		
 				-- Display AP summary
-				if numItems > 1 and settings.tooltip.showNumItems then
-					self:AddLine(format("\n" .. L["%s Artifact Power in bags (%d items)"], TotalAP.Utils.FormatShort(inBagsTotalAP, true, settings.numberFormat), numItems), 230/255, 204/255, 128/255);
+				if TotalAP.inventoryCache.numItems > 1 and settings.tooltip.showNumItems then
+					self:AddLine(format("\n" .. L["%s Artifact Power in bags (%d items)"], TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat), TotalAP.inventoryCache.numItems), 230/255, 204/255, 128/255);
 				else
-					self:AddLine(format("\n" .. L["%s Artifact Power in bags"], TotalAP.Utils.FormatShort(inBagsTotalAP, true, settings.numberFormat)) , 230/255, 204/255, 128/255);
+					self:AddLine(format("\n" .. L["%s Artifact Power in bags"], TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat)) , 230/255, 204/255, 128/255);
 				end
 			
 				-- Calculate progress towards next trait
