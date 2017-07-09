@@ -129,6 +129,14 @@ local function LoadSettings()
 	
 	cache = TotalArtifactPowerCache;
 	
+	
+	local fqcn = TotalAP.Utils.GetFQCN()
+	local bankCache = TotalAP.Cache.GetBankCache(fqcn)
+	
+	-- Restore banked values from saved vars if possible
+	if bankCache then -- bankCache was saved on a previous session and can be restored
+		TotalAP.bankCache = bankCache
+	end
 end
 
 -- Toggle spell overlay (glow effect) on an action button

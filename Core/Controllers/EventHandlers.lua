@@ -127,6 +127,8 @@ local function ScanInventory(scanBank)
 			local bankCache = TotalAP.bankCache
 			bankCache.numItems = numItems
 			bankCache.inBankAP = artifactPowerSum
+			
+			TotalAP.Cache.UpdateBankCache()
 	
 		else	-- Calculate AP value for inventory bags and update inventory cache so that other modules can access it)
 	
