@@ -1566,6 +1566,17 @@ GameTooltip:HookScript('OnTooltipSetItem', function(self)
 				end
 				
 				-- TODO: Bank summary
+				if settings.scanBank and settings.tooltip.showNumItems then -- Display bank summary as well
+					
+					if TotalAP.bankCache.numItems > 1 then
+						self:AddLine(format(L["%s Artifact Power in bank (%d items)"], TotalAP.Utils.FormatShort(TotalAP.bankCache.inBankAP, true, settings.numberFormat), TotalAP.bankCache.numItems), 230/255, 204/255, 128/255)
+					else
+						if TotalAP.bankCache.inBankAP > 0 then
+							self:AddLine(format(L["%s Artifact Power in bank"], TotalAP.Utils.FormatShort(TotalAP.bankCache.inBankAP, true, settings.numberFormat)), 230/255, 204/255, 128/255)
+						end
+					end
+					
+				end
 			
 				-- Calculate progress towards next trait
 				if HasArtifactEquipped() and settings.tooltip.showProgressReport then
