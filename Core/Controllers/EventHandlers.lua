@@ -25,7 +25,7 @@ local addonName, TotalAP = ...
 if not TotalAP then return end
 
 
--- Actual event handlers
+-- TODO: LDoc, Test Suite
 
 local isBankOpen, isPlayerUsingVehicle, isPlayerEngagedInCombat, isPetBattleInProgress, hasPlayerLostControl
 
@@ -347,6 +347,31 @@ local eventList = {
 	
 }
 
+-- Maps event handlers to categories so that they can be toggled indivually, by category, AND globally
+local eventCategories = {
+
+	-- Values need to be updated as new information could have been made available
+	["ARTIFACT_XP"] = "Update",
+	["ARTIFACT_UPDATE"] = "Update",
+	["BAG_UPDATE_DELAYED"] = "Update",
+	
+	-- These don't affect the player's ability to use items
+	["BANKFRAME_OPENED"] = "Manual",
+	["BANKFRAME_CLOSED"] = "Manual",
+	["PLAYERBANKSLOTS_CHANGED"] = "Manual",
+	
+	-- "Loss of control" events that make using items impossible
+	["PLAYER_REGEN_DISABLED"] = "Combat",
+	["PLAYER_REGEN_ENABLED"] = "Combat",
+	["PET_BATTLE_OPENING_START"] = "PetBattle",
+	["PET_BATTLE_CLOSE"] = "PetBattle",
+	["UNIT_ENTERED_VEHICLE"] = "Vehicle",
+	["UNIT_EXITED_VEHICLE"] = "Vehicle",
+	["PLAYER_CONTROL_LOST"] = "Vehicle",
+	["PLAYER_CONTROL_GAINED"] = "Vehicle",
+
+}
+
 -- Register listeners for all relevant events
 local function RegisterAllEvents()
 	
@@ -361,14 +386,38 @@ end
 
 -- Unregister listeners for all relevant events
 local function UnregisterAllEvents()
+
+	for key, eventHandler in pairs(eventList) do -- Unregister this handler for the respective event (via AceEvent-3.0)
+	
+		TotalAP.Addon:RegisterEvent(key, eventHandler)
+		TotalAP.Debug("Unregistered for event = " .. key)
+	
+	end
+
 end
 
 -- Unregister listeners for all combat-related events (they stop the addon from updating to prevent taint issues)
 local function UnregisterCombatEvents()
+
+	for key, eventHandler in pairs(eventList) do -- Unregister this handler for the respective event (via AceEvent-3.0)
+	
+		TotalAP.Addon:RegisterEvent(key, eventHandler)
+		TotalAP.Debug("Unregistered for event = " .. key)
+	
+	end
+
 end
 
 -- Unregister listeners for all update-relevant events (GUI need to be updated)
 local function UnregisterUpdateEvents()
+
+	for key, eventHandler in pairs(eventList) do -- Unregister this handler for the respective event (via AceEvent-3.0)
+	
+		TotalAP.Addon:RegisterEvent(key, eventHandler)
+		TotalAP.Debug("Unregistered for event = " .. key)
+	
+	end
+
 end
 
 -- Make functions available in the addon namespace
