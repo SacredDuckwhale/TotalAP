@@ -162,9 +162,23 @@ local function OnUnitVehicleExit(...)
 
 	local args = { ... }
 	local unit = args[3]
+-- Called when player uses flight master taxi services
+local function OnPlayerControlLost()
+
+	TotalAP.Debug("OnPlayerControlLost triggered")
 	
-	TotalAP.ChatMsg("OnUnitVehicleExit triggered")
-	TotalAP.ChatMsg("unit = " .. unit)
+	-- Update GUI to show/hide displays when necessary
+	TotalAP.Controllers.UpdateGUI()
+	
+end
+
+-- Called when player finishes using flight master taxi services
+local function OnPlayerControlGained()
+
+	TotalAP.Debug("OnPlayerControlGained triggered")
+
+	-- Update GUI to show/hide displays when necessary
+	TotalAP.Controllers.UpdateGUI()
 	
 end
 
@@ -186,6 +200,8 @@ local eventList = {
 	["PET_BATTLE_CLOSE"] = OnPetBattleEnd,
 	["UNIT_ENTERED_VEHICLE"] = OnUnitVehicleEnter,
 	["UNIT_EXITED_VEHICLE"] = OnUnitVehicleExit,
+	["PLAYER_CONTROL_LOST"] = OnPlayerControlLost,
+	["PLAYER_CONTROL_GAINED"] = OnPlayerControlGained,
 	
 }
 
