@@ -23,7 +23,7 @@
 
 local addonName, TotalAP = ...
 if not TotalAP then return end
-
+-- State indicators (to detect transitions)
 
 -- TODO: LDoc, Test Suite
 
@@ -215,7 +215,7 @@ local function OnBankClosed()
 	
 end
 
---- Called when player switches bags or changes items in the generic bank storage (not inside of bags, though!)
+--- Called when player switches bags or changes items in the generic bank storage
 local function OnPlayerBankSlotsChanged()
 
 	TotalAP.Debug("OnPlayerBankSlotsChanged triggered")

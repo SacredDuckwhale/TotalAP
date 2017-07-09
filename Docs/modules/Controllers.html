@@ -30,6 +30,10 @@
   <li><a href="../index.html">Index</a></li>
 </ul>
 
+<h2>Contents</h2>
+<ul>
+<li><a href="#EventHandlers_lua">EventHandlers.lua </a></li>
+</ul>
 
 
 <h2>Modules</h2>
@@ -53,18 +57,270 @@
 <p></p>
 
 
+<h2><a href="#EventHandlers_lua">EventHandlers.lua </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#OnArtifactUpdate">OnArtifactUpdate ()</a></td>
+	<td class="summary">Scan the currently equipped artifact and update the addon's artifactCache accordingly</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#OnBankClosed">OnBankClosed ()</a></td>
+	<td class="summary">Called when player closes the bank</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#OnBankOpened">OnBankOpened ()</a></td>
+	<td class="summary">Called when player accesses the bank</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#OnEnterCombat">OnEnterCombat ()</a></td>
+	<td class="summary">Called when player enters combat</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#OnInventoryUpdate">OnInventoryUpdate ()</a></td>
+	<td class="summary">Called when an inventory update finishes</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#OnLeaveCombat">OnLeaveCombat ()</a></td>
+	<td class="summary">Called when player leaves combat</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#OnPetBattleEnd">OnPetBattleEnd ()</a></td>
+	<td class="summary">Called when pet battle ends</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#OnPetBattleStart">OnPetBattleStart ()</a></td>
+	<td class="summary">Called when pet battle begins</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#OnPlayerBankSlotsChanged">OnPlayerBankSlotsChanged ()</a></td>
+	<td class="summary">Called when player switches bags or changes items in the generic bank storage</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ScanBags">ScanBags ()</a></td>
+	<td class="summary">Scan inventory contents and update the addon's inventoryCache accordingly</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ScanBank">ScanBank ()</a></td>
+	<td class="summary">Scan bank contents and update the addon's bankCache accordingly</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ScanInventory">ScanInventory ([scanBank])</a></td>
+	<td class="summary">Scans the contents of either the player's inventory, or their bank</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#UpdateGUI">UpdateGUI ()</a></td>
+	<td class="summary">Toggle a GUI Update (which is handled by the GUI controller and not the Event controller itself)</td>
+	</tr>
+</table>
 
 <br/>
 <br/>
 
 
+    <h2 class="section-header has-description"><a name="EventHandlers_lua"></a>EventHandlers.lua </h2>
+
+          <div class="section-description">
+
+ Provides a simple interface to toggle specific categories of event triggers and react to them according to the addon's needs. Only events that are caused by some player action are covered here.
+          </div>
+    <dl class="function">
+    <dt>
+    <a name = "OnArtifactUpdate"></a>
+    <strong>OnArtifactUpdate ()</strong>
+    </dt>
+    <dd>
+    Scan the currently equipped artifact and update the addon's artifactCache accordingly
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "OnBankClosed"></a>
+    <strong>OnBankClosed ()</strong>
+    </dt>
+    <dd>
+    Called when player closes the bank
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "OnBankOpened"></a>
+    <strong>OnBankOpened ()</strong>
+    </dt>
+    <dd>
+    Called when player accesses the bank
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "OnEnterCombat"></a>
+    <strong>OnEnterCombat ()</strong>
+    </dt>
+    <dd>
+    Called when player enters combat
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "OnInventoryUpdate"></a>
+    <strong>OnInventoryUpdate ()</strong>
+    </dt>
+    <dd>
+    Called when an inventory update finishes
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "OnLeaveCombat"></a>
+    <strong>OnLeaveCombat ()</strong>
+    </dt>
+    <dd>
+    Called when player leaves combat
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "OnPetBattleEnd"></a>
+    <strong>OnPetBattleEnd ()</strong>
+    </dt>
+    <dd>
+    Called when pet battle ends
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "OnPetBattleStart"></a>
+    <strong>OnPetBattleStart ()</strong>
+    </dt>
+    <dd>
+    Called when pet battle begins
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "OnPlayerBankSlotsChanged"></a>
+    <strong>OnPlayerBankSlotsChanged ()</strong>
+    </dt>
+    <dd>
+    Called when player switches bags or changes items in the generic bank storage
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ScanBags"></a>
+    <strong>ScanBags ()</strong>
+    </dt>
+    <dd>
+    Scan inventory contents and update the addon's inventoryCache accordingly
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ScanBank"></a>
+    <strong>ScanBank ()</strong>
+    </dt>
+    <dd>
+    Scan bank contents and update the addon's bankCache accordingly
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ScanInventory"></a>
+    <strong>ScanInventory ([scanBank])</strong>
+    </dt>
+    <dd>
+    Scans the contents of either the player's inventory, or their bank
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">scanBank</span>
+         Whether or not the bank should be scanned instead of the player's inventory (defaults to false)
+         (<em>optional</em>)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "UpdateGUI"></a>
+    <strong>UpdateGUI ()</strong>
+    </dt>
+    <dd>
+    Toggle a GUI Update (which is handled by the GUI controller and not the Event controller itself)
+
+
+
+
+
+
+
+</dd>
+</dl>
 
 
 </div> <!-- id="content" -->
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2017-07-03 14:18:59 </i>
+<i style="float:right;">Last updated 2017-07-09 08:55:27 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>
