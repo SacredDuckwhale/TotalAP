@@ -214,6 +214,7 @@ local function OnPlayerBankSlotsChanged()
 	
 end
 
+--- Called when player enters combat
 local function OnEnterCombat()
 
 	TotalAP.Debug("OnEnterCombat triggered")
