@@ -98,6 +98,13 @@ local defaultSettings =	{
 				green = 95,
 				blue = 150,
 				alpha = 1
+			},
+			
+			inBankBar = {
+				red = 50,
+				green = 95,
+				blue = 95,
+				alpha = 1
 			}
 		}
 		
@@ -208,6 +215,12 @@ local validators = {
 	["infoFrame.inBagsBar.green"] = IsRGB,
 	["infoFrame.inBagsBar.blue"] = IsRGB,
 	["infoFrame.inBagsBar.alpha"] = IsDecimalFraction,
+	
+	["infoFrame.inBankBar"] = IsTable,
+	["infoFrame.inBankBar.red"] = IsRGB,
+	["infoFrame.inBankBar.green"] = IsRGB,
+	["infoFrame.inBankBar.blue"] = IsRGB,
+	["infoFrame.inBankBar.alpha"] = IsDecimalFraction,
 	
 	["specIcons"] = IsTable,
 	["specIcons.alignment"] = IsAlignmentString,

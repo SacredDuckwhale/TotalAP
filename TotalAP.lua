@@ -573,12 +573,13 @@ local function UpdateInfoFrame()
 			TotalAPProgressBars[k]:Hide()
 			TotalAPUnspentBars[k]:Hide()
 			TotalAPInBagsBars[k]:Hide()
+			TotalAPInBankBars[k]:Hide()
 		else
 		
 			TotalAPProgressBars[k]:Show()
 			TotalAPUnspentBars[k]:Show()
 			TotalAPInBagsBars[k]:Show()
-		
+			TotalAPInBankBars[k]:Show()
 		end
 	
 	end
@@ -638,6 +639,7 @@ local function UpdateInfoFrame()
 			
 			local percentageUnspentAP = min(100, math.floor(v["thisLevelUnspentAP"] / aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100)); -- cap at 100 or bar will overflow
 			local percentageInBagsAP = min(math.floor(TotalAP.inventoryCache.inBagsAP/ aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100), 100 - percentageUnspentAP); -- AP from bags should fill up the bar, but not overflow it
+			local percentageInBankAP = min(math.floor(TotalAP.bankCache.inBankAP/ aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100), 100 - percentageUnspentAP - percentageInBagsAP); -- AP from bags should fill up the bar, but not overflow it
 			TotalAP.Debug(format("Updating percentage for bar display... spec %d: unspentAP = %s, inBags = %s" , k, percentageUnspentAP, percentageInBagsAP));
 			
 			local inset, border = settings.infoFrame.inset or 1, settings.infoFrame.border or 1; -- TODO
@@ -736,7 +738,25 @@ local function UpdateInfoFrame()
 			TotalAPInBagsBars[k]:ClearAllPoints();
 			TotalAPInBagsBars[k]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPLEFT", 1 + inset + TotalAPUnspentBars[k]:GetWidth(), - ( (2 * displayOrder[k] - 1)  * inset + displayOrder[k] * border + (displayOrder[k] - 1) * settings.infoFrame.barHeight))
 
+			-- Bar 3 -> Display AP available in bank
+			if not TotalAPInBankBars[k].texture  then   
+			  TotalAPInBankBars[k].texture = TotalAPInBankBars[k]:CreateTexture();
+			end
+																					   
+			TotalAPInBankBars[k].texture:SetAllPoints(TotalAPInBankBars[k]);
+			TotalAPInBankBars[k].texture:SetTexture(barTexture);
+		
+			if percentageInBankAP > 0 and settings.scanBank then 
+				TotalAPInBankBars[k].texture:SetVertexColor(settings.infoFrame.inBankBar.red/255, settings.infoFrame.inBankBar.green/255, settings.infoFrame.inBankBar.blue/255, settings.infoFrame.inBankBar.alpha);
+			else
+				TotalAPInBankBars[k].texture:SetVertexColor(0, 0, 0, 0); -- Hide vertexes to avoid graphics glitch
+			end
+			
+			TotalAPInBankBars[k]:SetSize(percentageInBankAP, settings.infoFrame.barHeight);
+			TotalAPInBankBars[k]:ClearAllPoints();
+			TotalAPInBankBars[k]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPLEFT", 1 + inset + TotalAPInBagsBars[k]:GetWidth(), - ( (2 * displayOrder[k] - 1)  * inset + displayOrder[k] * border + (displayOrder[k] - 1) * settings.infoFrame.barHeight))
 
+			
 			-- Display secondary bar on top of the actual progress bar to indicate progress when multiple ranks are available
 			local maxAttainableRank =  v["numTraitsPurchased"] + TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(v["numTraitsPurchased"],  v["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0),  v["artifactTier"]) 
 			local progressPercent = TotalAP.ArtifactInterface.GetProgressTowardsNextRank(v["numTraitsPurchased"] , v["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), v["artifactTier"])
@@ -768,6 +788,7 @@ local function UpdateInfoFrame()
 				TotalAPUnspentBars[k]:SetSize(100, settings.infoFrame.barHeight); -- maximize bar to take up all the available space
 				TotalAPUnspentBars[k].texture:SetVertexColor(239/255, 229/255, 176/255, 1); -- turns it white; TODO: settings.infoFrame.progressBar.maxRed etc to allow setting a custom colour for maxed artifacts (later on)
 				TotalAPInBagsBars[k].texture:SetVertexColor(settings.infoFrame.progressBar.red/255, settings.infoFrame.progressBar.green/255, settings.infoFrame.progressBar.blue/255, 0); -- turns it invisible (alpha = 0%)
+				TotalAPInBankBars[k].texture:SetVertexColor(settings.infoFrame.progressBar.red/255, settings.infoFrame.progressBar.green/255, settings.infoFrame.progressBar.blue/255, 0); -- turns it invisible (alpha = 0%)
 			end
 			
 		end
@@ -1247,7 +1268,7 @@ local function CreateInfoFrame()
 
 	-- Create progress bars for all available specs
 	local numSpecs = GetNumSpecializations(); 
-	TotalAPProgressBars, TotalAPUnspentBars, TotalAPInBagsBars, TotalAPMiniBars = {}, {}, {}, {}
+	TotalAPProgressBars, TotalAPUnspentBars, TotalAPInBagsBars, TotalAPInBankBars, TotalAPMiniBars = {}, {}, {}, {}, {}
 	for i = 1, numSpecs do -- Create bar frames
 	
 		-- Empty bar texture
@@ -1261,6 +1282,10 @@ local function CreateInfoFrame()
 		-- AP in bags 
 		TotalAPInBagsBars[i] = CreateFrame("Frame", "TotalAPInBagsBar" .. i, TotalAPProgressBars[i]);
 		TotalAPInBagsBars[i]:SetFrameStrata("LOW")
+		
+		-- AP in bank 
+		TotalAPInBankBars[i] = CreateFrame("Frame", "TotalAPInBankBar" .. i, TotalAPProgressBars[i]);
+		TotalAPInBankBars[i]:SetFrameStrata("LOW")
 		
 		-- Secondary progress bars 
 		TotalAPMiniBars[i] = CreateFrame("Frame", "TotalAPMiniBar" .. i, TotalAPProgressBars[i])
