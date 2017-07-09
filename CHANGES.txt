@@ -3,9 +3,10 @@
 ------------------------------------------------------------------------
 
 r23:
-	Added support for artifact power items that are stored in the player's bank (experimental). They will be cached whenever the bank tab is opened, and the respective progress bars can be disabled with the /ap scanbank command
+	Added support for artifact power items that are stored in the player's bank (experimental). They will be cached whenever the bank tab is opened, and the respective progress bars/tooltip lines can be disabled with the /ap scanbank command
+	Added quest reward from the "Pillars of Creation" (Tomb of Sargeras) quest line to the addon's database. Somehow this wasn't added with all the other items from 7.2.5
 	
-	Saved variables are now managed differently. They should be migrated to the new format automatically, but if something goes wrong, the settings might have to be reset. In that case, apologies! ()Also, please let me know so I can fix it)
+	Saved variables are now managed differently. They should be migrated to the new format automatically; if something unexpectedly goes wrong, simply resetting them should fix it
 	The progress bar tooltip will now indicate when a tier 1 artifact can be updated to its maximum rank. Additionally, the respective miniBar will no longer be displayed in those cases
 	
 	Fixed an issue where glow effects for the specIcons would not be applied correctly for tier 1 artifacts when too many traits were available

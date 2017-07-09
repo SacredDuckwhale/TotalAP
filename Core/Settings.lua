@@ -30,9 +30,6 @@ local addonname, TotalAP = ...
 if not TotalAP then return end
 
 
-
-
-
 -- Default settings (to check against when valdiating the saved vars, and as default values for AceDB)
 local defaultSettings =	{	
 
@@ -43,6 +40,7 @@ local defaultSettings =	{
 		enabled = true,		-- This controls the entire display, but NOT the individual parts (which will be hidden, but their settings won't be overridden)
 		hideInCombat = true,
 		numberFormat = GetLocale(),
+		scanBank = true,
 		
 		-- Display options for the action button
 		actionButton = {
@@ -99,6 +97,13 @@ local defaultSettings =	{
 				red = 50,
 				green = 95,
 				blue = 150,
+				alpha = 1
+			},
+			
+			inBankBar = {
+				red = 50,
+				green = 95,
+				blue = 95,
 				alpha = 1
 			}
 		}
@@ -175,6 +180,7 @@ local validators = {
 	["numberFormat"] = IsNumberFormat,
 	["showLoginMessage"] = IsBoolean,
 	["verbose"] = IsBoolean,
+	["scanBank"] = IsBoolean,
 	
 	["actionButton"] = IsTable,
 	["actionButton.enabled"] = IsBoolean,
@@ -209,6 +215,12 @@ local validators = {
 	["infoFrame.inBagsBar.green"] = IsRGB,
 	["infoFrame.inBagsBar.blue"] = IsRGB,
 	["infoFrame.inBagsBar.alpha"] = IsDecimalFraction,
+	
+	["infoFrame.inBankBar"] = IsTable,
+	["infoFrame.inBankBar.red"] = IsRGB,
+	["infoFrame.inBankBar.green"] = IsRGB,
+	["infoFrame.inBankBar.blue"] = IsRGB,
+	["infoFrame.inBankBar.alpha"] = IsDecimalFraction,
 	
 	["specIcons"] = IsTable,
 	["specIcons.alignment"] = IsAlignmentString,

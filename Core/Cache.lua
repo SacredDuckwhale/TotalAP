@@ -102,6 +102,7 @@ local function NewEntry(fqcn, specID, defaults)
 	if not cache[fqcn] then -- Create new entry, without adding spec data
 	
 		cache[fqcn] = {}
+		cache[fqcn]["bankedAP"] = 0
 		
 	end
 	
@@ -190,6 +191,48 @@ local function IgnoreSpec(fqcn, spec)
 
 end
 
+--- Returns the amount of banked AP that was saved between sessions
+-- @param[opt] fqcn The fully-qualified character name (defaults to currently logged in character if omitted)
+local function GetBankCache(fqcn)
+
+	local cache = GetReference()
+
+	if not fqcn then -- Use logged in character name/realm
+		fqcn = TotalAP.Utils.GetFQCN()
+	end
+	
+	if not (cache and cache[fqcn] and cache[fqcn]["bankCache"]) then -- Entry does not exist -> Abort
+		
+		TotalAP.Debug("Attempted to retrieve bankCache for cache entry with key = " .. tostring(fqcn))
+		return
+		
+	end
+
+	return cache[fqcn]["bankCache"]
+	
+end
+
+--- Sets the amount of banked AP that will be saved between sessions
+-- @param[opt] fqcn The fully-qualified character name (defaults to currently logged in character if omitted)
+-- @param[opt] amount The amount of banked AP (defaults to 0 if omitted)
+local function UpdateBankCache(fqcn)
+
+	local cache = GetReference()
+
+	if not fqcn then -- Use logged in character name/realm
+		fqcn = TotalAP.Utils.GetFQCN()
+	end
+	
+	if not (cache and cache[fqcn]) then -- Abort, abort!
+	
+		TotalAP.Debug("Failed to update bankCache for key = " .. tostring(fqcn))
+		return
+		
+	end
+	
+	cache[fqcn]["bankCache"] = TotalAP.bankCache
+
+end
 
 --- Returns the number of ignored specs for a given character (defaults to currently used character if none is given)
 -- @param[opt] fqcn Fully qualified character name, to be used as the primary key
@@ -258,6 +301,8 @@ TotalAP.Cache.NewEntry = NewEntry
 TotalAP.Cache.GetEntry = GetEntry
 TotalAP.Cache.UpdateEntry = UpdateEntry
 TotalAP.Cache.GetValue = GetValue
+TotalAP.Cache.GetBankCache = GetBankCache
+TotalAP.Cache.UpdateBankCache = UpdateBankCache
 TotalAP.Cache.GetNumIgnoredSpecs = GetNumIgnoredSpecs
 TotalAP.Cache.UnignoreAllSpecs = UnignoreAllSpecs
 

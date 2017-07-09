@@ -85,7 +85,8 @@ local function GetNumAvailableTraits()
 		
 	local thisLevelUnspentAP, numTraitsPurchased, _, _, _, _, _, _, tier = select(5, aUI.GetEquippedArtifactInfo());	
 	--local tier = aUI.GetArtifactTier() or 2; -- Assuming 2 as per usual (see other calls and comments for GetArtifactTier) - only defaults to this when artifact is not available/opened?
-	local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(numTraitsPurchased, thisLevelUnspentAP + TotalAP.inventoryCache.inBagsAP, tier)
+	
+	local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(numTraitsPurchased, thisLevelUnspentAP + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), tier)
 	TotalAP.Debug(format("Called GetNumAvailableTraits -> %s new traits available!", numTraitsAvailable or 0));
 	
 	return numTraitsAvailable or 0;
@@ -106,7 +107,8 @@ local function GetArtifactProgressPercent()
 		local nextLevelRequiredAP = aUI.GetCostForPointAtRank(numTraitsPurchased, tier); 
 		
 		--if considerBags then -- TODO: This is ugly. I can do better, oh great one!
-		local percentageOfCurrentLevelUp = (thisLevelUnspentAP + TotalAP.inventoryCache.inBagsAP) / nextLevelRequiredAP*100;
+		
+		local percentageOfCurrentLevelUp = (thisLevelUnspentAP + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0)) / nextLevelRequiredAP*100;
 		TotalAP.Debug(format("Called GetArtifactProgressPercent -> Progress is: %s%% towards next trait!", percentageOfCurrentLevelUp or 0)); -- TODO: > 100% becomes inaccurate due to only using cost for THIS level, not next etc?
 		return percentageOfCurrentLevelUp or 0;
 	--	else 
@@ -127,6 +129,14 @@ local function LoadSettings()
 	
 	cache = TotalArtifactPowerCache;
 	
+	
+	local fqcn = TotalAP.Utils.GetFQCN()
+	local bankCache = TotalAP.Cache.GetBankCache(fqcn)
+	
+	-- Restore banked values from saved vars if possible
+	if bankCache then -- bankCache was saved on a previous session and can be restored
+		TotalAP.bankCache = bankCache
+	end
 end
 
 -- Toggle spell overlay (glow effect) on an action button
@@ -420,9 +430,9 @@ local function UpdateSpecIcons()
 		
 			TotalAP.Debug(format("Updating spec icons for spec %i from cached data"), i);
 			-- Calculate available traits and progress using the cached data
-			local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(v["numTraitsPurchased"],  v["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP, v["artifactTier"])
+			local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(v["numTraitsPurchased"],  v["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), v["artifactTier"])
 			local nextLevelRequiredAP = aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]); 
-			local percentageOfCurrentLevelUp = (v["thisLevelUnspentAP"]  + TotalAP.inventoryCache.inBagsAP) / nextLevelRequiredAP*100;
+			local percentageOfCurrentLevelUp = (v["thisLevelUnspentAP"]  + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0)) / nextLevelRequiredAP*100;
 			
 			TotalAP.Debug(format("Calculated progress using cached data for spec %s: %d traits available - %d%% towards next trait using AP from bags", k, numTraitsAvailable, percentageOfCurrentLevelUp)); -- TODO: > 100% becomes inaccurate due to only using cost for THIS level, not next etc?
 		
@@ -563,12 +573,13 @@ local function UpdateInfoFrame()
 			TotalAPProgressBars[k]:Hide()
 			TotalAPUnspentBars[k]:Hide()
 			TotalAPInBagsBars[k]:Hide()
+			TotalAPInBankBars[k]:Hide()
 		else
 		
 			TotalAPProgressBars[k]:Show()
 			TotalAPUnspentBars[k]:Show()
 			TotalAPInBagsBars[k]:Show()
-		
+			TotalAPInBankBars[k]:Show()
 		end
 	
 	end
@@ -627,7 +638,8 @@ local function UpdateInfoFrame()
 		if v["thisLevelUnspentAP"] and v["numTraitsPurchased"] then -- spec has been scanned, but could possibly be ignored // TODO: Detect initialised specs (by the Cache:NewEntry() function) that have seemingly valid data, even though they aren't scanned yet
 			
 			local percentageUnspentAP = min(100, math.floor(v["thisLevelUnspentAP"] / aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100)); -- cap at 100 or bar will overflow
-			local percentageInBagsAP = min(math.floor(TotalAP.inventoryCache.inBagsAP / aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100), 100 - percentageUnspentAP); -- AP from bags should fill up the bar, but not overflow it
+			local percentageInBagsAP = min(math.floor(TotalAP.inventoryCache.inBagsAP/ aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100), 100 - percentageUnspentAP); -- AP from bags should fill up the bar, but not overflow it
+			local percentageInBankAP = min(math.floor(TotalAP.bankCache.inBankAP/ aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100), 100 - percentageUnspentAP - percentageInBagsAP); -- AP from bags should fill up the bar, but not overflow it
 			TotalAP.Debug(format("Updating percentage for bar display... spec %d: unspentAP = %s, inBags = %s" , k, percentageUnspentAP, percentageInBagsAP));
 			
 			local inset, border = settings.infoFrame.inset or 1, settings.infoFrame.border or 1; -- TODO
@@ -726,10 +738,28 @@ local function UpdateInfoFrame()
 			TotalAPInBagsBars[k]:ClearAllPoints();
 			TotalAPInBagsBars[k]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPLEFT", 1 + inset + TotalAPUnspentBars[k]:GetWidth(), - ( (2 * displayOrder[k] - 1)  * inset + displayOrder[k] * border + (displayOrder[k] - 1) * settings.infoFrame.barHeight))
 
+			-- Bar 3 -> Display AP available in bank
+			if not TotalAPInBankBars[k].texture  then   
+			  TotalAPInBankBars[k].texture = TotalAPInBankBars[k]:CreateTexture();
+			end
+																					   
+			TotalAPInBankBars[k].texture:SetAllPoints(TotalAPInBankBars[k]);
+			TotalAPInBankBars[k].texture:SetTexture(barTexture);
+		
+			if percentageInBankAP > 0 and settings.scanBank then 
+				TotalAPInBankBars[k].texture:SetVertexColor(settings.infoFrame.inBankBar.red/255, settings.infoFrame.inBankBar.green/255, settings.infoFrame.inBankBar.blue/255, settings.infoFrame.inBankBar.alpha);
+			else
+				TotalAPInBankBars[k].texture:SetVertexColor(0, 0, 0, 0); -- Hide vertexes to avoid graphics glitch
+			end
+			
+			TotalAPInBankBars[k]:SetSize(percentageInBankAP, settings.infoFrame.barHeight);
+			TotalAPInBankBars[k]:ClearAllPoints();
+			TotalAPInBankBars[k]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPLEFT", 1 + inset + TotalAPInBagsBars[k]:GetWidth(), - ( (2 * displayOrder[k] - 1)  * inset + displayOrder[k] * border + (displayOrder[k] - 1) * settings.infoFrame.barHeight))
 
+			
 			-- Display secondary bar on top of the actual progress bar to indicate progress when multiple ranks are available
-			local maxAttainableRank =  v["numTraitsPurchased"] + TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(v["numTraitsPurchased"],  v["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP,  v["artifactTier"]) 
-			local progressPercent = TotalAP.ArtifactInterface.GetProgressTowardsNextRank(v["numTraitsPurchased"] , v["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP, v["artifactTier"])
+			local maxAttainableRank =  v["numTraitsPurchased"] + TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(v["numTraitsPurchased"],  v["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0),  v["artifactTier"]) 
+			local progressPercent = TotalAP.ArtifactInterface.GetProgressTowardsNextRank(v["numTraitsPurchased"] , v["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), v["artifactTier"])
 
 			if not TotalAPMiniBars[k].texture then -- Create texture object
 				TotalAPMiniBars[k].texture = TotalAPMiniBars[k]:CreateTexture();
@@ -758,6 +788,7 @@ local function UpdateInfoFrame()
 				TotalAPUnspentBars[k]:SetSize(100, settings.infoFrame.barHeight); -- maximize bar to take up all the available space
 				TotalAPUnspentBars[k].texture:SetVertexColor(239/255, 229/255, 176/255, 1); -- turns it white; TODO: settings.infoFrame.progressBar.maxRed etc to allow setting a custom colour for maxed artifacts (later on)
 				TotalAPInBagsBars[k].texture:SetVertexColor(settings.infoFrame.progressBar.red/255, settings.infoFrame.progressBar.green/255, settings.infoFrame.progressBar.blue/255, 0); -- turns it invisible (alpha = 0%)
+				TotalAPInBankBars[k].texture:SetVertexColor(settings.infoFrame.progressBar.red/255, settings.infoFrame.progressBar.green/255, settings.infoFrame.progressBar.blue/255, 0); -- turns it invisible (alpha = 0%)
 			end
 			
 		end
@@ -851,9 +882,21 @@ local function UpdateActionButton()
 		--if settings.actionButton.showText and TotalAP.inventoryCache.inBagsAP > 0 and currentItemAP > 0 then
 			
 			if TotalAP.inventoryCache.numItems > 1 then -- Display total AP in bags
-				TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(TotalAP.inventoryCache.displayItem.artifactPowerValue, true, settings.numberFormat) .. "\n(" .. TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat) .. ")") -- TODO: More options/HUD setup - planned once advanced config is implemented via AceConfig
+				
+				if settings.scanBank and TotalAP.bankCache.numItems > 0 and TotalAP.bankCache.inBankAP > 0 then -- Also include banked AP
+					TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(TotalAP.inventoryCache.displayItem.artifactPowerValue, true, settings.numberFormat) .. "\n(" .. TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat) .. ")\n[" .. TotalAP.Utils.FormatShort(TotalAP.bankCache.inBankAP, true, settings.numberFormat) .. "]")
+				else
+					TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(TotalAP.inventoryCache.displayItem.artifactPowerValue, true, settings.numberFormat) .. "\n(" .. TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat) .. ")") -- TODO: More options/HUD setup - planned once advanced config is implemented via AceConfig
+				 end
+				 
 			else
-				TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(TotalAP.inventoryCache.displayItem.artifactPowerValue, true, settings.numberFormat))
+			
+				if settings.scanBank and TotalAP.bankCache.numItems > 0 and TotalAP.bankCache.inBankAP > 0 then -- Also include banked AP
+					TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(TotalAP.inventoryCache.displayItem.artifactPowerValue, true, settings.numberFormat) .. ")\n[" .. TotalAP.Utils.FormatShort(TotalAP.bankCache.inBankAP, true, settings.numberFormat) .. "]")
+				else
+					TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(TotalAP.inventoryCache.displayItem.artifactPowerValue, true, settings.numberFormat))
+				end
+				
 			end
 				
 		else
@@ -1225,7 +1268,7 @@ local function CreateInfoFrame()
 
 	-- Create progress bars for all available specs
 	local numSpecs = GetNumSpecializations(); 
-	TotalAPProgressBars, TotalAPUnspentBars, TotalAPInBagsBars, TotalAPMiniBars = {}, {}, {}, {}
+	TotalAPProgressBars, TotalAPUnspentBars, TotalAPInBagsBars, TotalAPInBankBars, TotalAPMiniBars = {}, {}, {}, {}, {}
 	for i = 1, numSpecs do -- Create bar frames
 	
 		-- Empty bar texture
@@ -1239,6 +1282,10 @@ local function CreateInfoFrame()
 		-- AP in bags 
 		TotalAPInBagsBars[i] = CreateFrame("Frame", "TotalAPInBagsBar" .. i, TotalAPProgressBars[i]);
 		TotalAPInBagsBars[i]:SetFrameStrata("LOW")
+		
+		-- AP in bank 
+		TotalAPInBankBars[i] = CreateFrame("Frame", "TotalAPInBankBar" .. i, TotalAPProgressBars[i]);
+		TotalAPInBankBars[i]:SetFrameStrata("LOW")
 		
 		-- Secondary progress bars 
 		TotalAPMiniBars[i] = CreateFrame("Frame", "TotalAPMiniBar" .. i, TotalAPProgressBars[i])
@@ -1561,6 +1608,19 @@ GameTooltip:HookScript('OnTooltipSetItem', function(self)
 					self:AddLine(format("\n" .. L["%s Artifact Power in bags (%d items)"], TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat), TotalAP.inventoryCache.numItems), 230/255, 204/255, 128/255);
 				else
 					self:AddLine(format("\n" .. L["%s Artifact Power in bags"], TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat)) , 230/255, 204/255, 128/255);
+				end
+				
+				-- TODO: Bank summary
+				if settings.scanBank and settings.tooltip.showNumItems then -- Display bank summary as well
+					
+					if TotalAP.bankCache.numItems > 1 then
+						self:AddLine(format(L["%s Artifact Power in bank (%d items)"], TotalAP.Utils.FormatShort(TotalAP.bankCache.inBankAP, true, settings.numberFormat), TotalAP.bankCache.numItems), 230/255, 204/255, 128/255)
+					else
+						if TotalAP.bankCache.inBankAP > 0 then
+							self:AddLine(format(L["%s Artifact Power in bank"], TotalAP.Utils.FormatShort(TotalAP.bankCache.inBankAP, true, settings.numberFormat)), 230/255, 204/255, 128/255)
+						end
+					end
+					
 				end
 			
 				-- Calculate progress towards next trait
