@@ -637,7 +637,7 @@ local function UpdateInfoFrame()
 		if v["thisLevelUnspentAP"] and v["numTraitsPurchased"] then -- spec has been scanned, but could possibly be ignored // TODO: Detect initialised specs (by the Cache:NewEntry() function) that have seemingly valid data, even though they aren't scanned yet
 			
 			local percentageUnspentAP = min(100, math.floor(v["thisLevelUnspentAP"] / aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100)); -- cap at 100 or bar will overflow
-			local percentageInBagsAP = min(math.floor(TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0)/ aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100), 100 - percentageUnspentAP); -- AP from bags should fill up the bar, but not overflow it
+			local percentageInBagsAP = min(math.floor(TotalAP.inventoryCache.inBagsAP/ aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100), 100 - percentageUnspentAP); -- AP from bags should fill up the bar, but not overflow it
 			TotalAP.Debug(format("Updating percentage for bar display... spec %d: unspentAP = %s, inBags = %s" , k, percentageUnspentAP, percentageInBagsAP));
 			
 			local inset, border = settings.infoFrame.inset or 1, settings.infoFrame.border or 1; -- TODO
