@@ -23,10 +23,9 @@
 
 local addonName, TotalAP = ...
 if not TotalAP then return end
+
+
 -- State indicators (to detect transitions)
-
--- TODO: LDoc, Test Suite
-
 local isBankOpen, isPlayerUsingVehicle, isPlayerEngagedInCombat, isPetBattleInProgress, hasPlayerLostControl
 
 --- Scans the contents of either the player's inventory, or their bank
@@ -116,7 +115,7 @@ local function ScanInventory(scanBank)
 						displayItem.artifactPowerValue = artifactPowerValue
 						
 					end
-					
+				
 				end
 					
 		end
