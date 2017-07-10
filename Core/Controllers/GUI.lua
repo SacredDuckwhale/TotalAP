@@ -83,11 +83,13 @@ end
 local function AlignGUI(alignment)
 
 	local validAlignments = { "center", "bottom", "top" }
+	local settings = TotalAP.Settings.GetReference()
+	
 	for k, v in pairs(validAlignments) do
 	
 	if alignment == v then -- Update SavedVars and align UI as requested
-				TotalArtifactPowerSettings["infoFrame"]["alignment"] = v
-				TotalArtifactPowerSettings["specIcons"]["alignment"] = v
+				settings["infoFrame"]["alignment"] = v
+				settings["specIcons"]["alignment"] = v
 				TotalAP.Controllers.UpdateGUI() -- TODO: Unnecessary?
 				return true
 		end
