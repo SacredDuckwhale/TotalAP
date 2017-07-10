@@ -1210,7 +1210,7 @@ local function CreateSpecIcons()
 				return
 			 end
 			 
-			 TotalAP.ChatMsg(format(L["Ignoring spec %d (%s) for character %s"], i, select(2, GetSpecializationInfo(GetSpecialization())), key))
+			 TotalAP.ChatMsg(format(L["Ignoring spec %d (%s) for character %s"], i, select(2, GetSpecializationInfo(i)), key))
 			if not specIgnoredWarningGiven then
 				TotalAP.ChatMsg(format(L["Type %s to reset all currently ignored specs for this character"], "/" .. TotalAP.Controllers.GetSlashCommandAlias() .. " unignore"))
 				specIgnoredWarningGiven = true
