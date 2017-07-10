@@ -1,23 +1,18 @@
-<p><strong>TotalAP</strong> provides an all-in-one solution for your Artifact Power needs.
-It displays relevant information related to your artifact, for all specs, such as the total amount of AP available for use, progress towards the next trait, and more.</p>
+<p><strong>TotalAP</strong> provides an all-in-one solution for your Artifact Power needs. It displays relevant information related to your artifact, for all specs, such as the total amount of AP available for use, progress towards the next trait, and more.</p>
 <p>Use AP tokens easily by assigning keybinds or simply clicking the provided button - No more searching for that one last item in the unfathomable depths of your bags!</p>
-
 <h2>Features</h2>
 <p>All of the main features can be disabled/toggled via keybindings and slash commands, allowing you to change the way most of the information is displayed. You can keep as little functionality as you require, without any fluff, if that is what you prefer.</p>
-
 <h3>Tooltip Enhancement</h3>
 <p>Adds tooltip information for artifact power items. Currently, the following can be displayed:</p>
 <ul>
 <li>Number of artifact power tokens in the player's inventory</li>
-<li>Total artifact power in bags</li>
+<li>Total artifact power in bags, and bank (optional)</li>
 <li>Progress towards next trait</li>
 <li>Available number of traits (if applicable)</li>
 </ul>
 <p>The tooltip can be customized somewhat, allowing you to decide which parts (if any) you want to include.</p>
-
 <h3>Action Button</h3>
-<p>TotalAP also displays a button whenever artifact power items are in your inventory.
-It can be used to quickly use any AP items without having to find, and click, them manually.</p>
+<p>TotalAP also displays a button whenever artifact power items are in your inventory. It can be used to quickly use any AP items without having to find, and click, them manually.</p>
 <ul>
 <li>Indicates that new traits are available via spell overlay (glow effect similar to that of spell procs)</li>
 <li>Includes keybinds (via Blizzard's KeybindUI) to use AP items, or hide the button manually</li>
@@ -30,7 +25,8 @@ It can be used to quickly use any AP items without having to find, and click, th
 <ul>
 <li>Separate colours indicate the amount of artifact power used on the weapon vs. AP items that still remain unused</li>
 <li>A secondary progress bar can be displayed, tracking progress while you accumulate more ranks without having to visit the artifact forge just to level up your weapon</li>
-<li>Each specialization's progress will be cached when activated, and persist throughout sessions </li>
+<li>Each specialization's progress will be cached when activated, and persist throughout sessions</li>
+<li>The contents of your bank will similarly be cached upon opening it, and optionally be displayed as well</li>
 <li>Hold ALT-Click while dragging to move the bars, along with the rest of the display</li>
 </ul>
 <p>Initially, offspecs won't be cached (or they may display outdated information if the addon had been disabled). Switching to them will update the display.</p>
@@ -40,21 +36,18 @@ It can be used to quickly use any AP items without having to find, and click, th
 <li>Indicate that new traits are available via similar spell overlay (glow effect) as the action button</li>
 <li>Display progress and number of available traits as text next to each icon</li>
 <li>Clicking the icon for a particular specialization activates it, while right-clicking ignores it and hides the corresponding displays</li>
-<li>Supports skinning via the  <a href="https://mods.curse.com/addons/wow/masque">Masque</a> (ButtonFacade) addon library</li>
+<li>Supports skinning via the <a href="https://mods.curse.com/addons/wow/masque">Masque</a> (ButtonFacade) addon library</li>
 <li>Hold ALT-Click while dragging to move them, along with the rest of the display</li>
 </ul>
 <p>While designed to work in unison with bars as the main display, they can serve as a handy shortcut to quickly switch between specializations on their own.</p>
-
 <h3>Slash Commands</h3>
 <p>The following slash commands are provided: <strong>/totalap</strong> and <strong>/ap</strong> (alias)</p>
 <p>A more detailed list will be printed ingame upon using the main command (see screenshots for examples).</p>
-
 <h2>Issues/Feature Requests</h2>
-<p>While I try to monitor the comments on this page, I don't always get notified of them. Therefore, I kindly ask you to use the <a href="https://wow.curseforge.com/projects/totalap/issues">Issue Tracker</a> on the Project Site when appropriate  (You can use the same Curse account you use to comment here for that).</p>
-
+<p>While I try to monitor the comments on this page, I don't always get notified of them. Therefore, I kindly ask you to use the <a href="https://wow.curseforge.com/projects/totalap/issues">Issue Tracker</a> on the Project Site when appropriate (You can use the same Curse account you use to comment here for that).</p>
+<p>&nbsp;</p>
 <p>Before you decide to do that, however, please check if your issue isn't already mentioned on the <a href="https://wow.curseforge.com/projects/totalap/pages/faq">Frequently Asked Questions</a> page.</p>
-
-
 <h2>Localisation</h2>
 <p>A proper localisation system is implemented, but many locales aren't fully translated (yet). If you can help out, it will be appreciated!</p>
-<p> You can check on the current translation progress here: <a href="https://wow.curseforge.com/projects/totalap/localization">Project site</a></p>
+<p>&nbsp;</p>
+<p>You can check on the current translation progress here: <a href="https://wow.curseforge.com/projects/totalap/localization">Project Site</a></p>
