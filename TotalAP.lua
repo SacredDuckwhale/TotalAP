@@ -640,7 +640,7 @@ local function UpdateInfoFrame()
 			local percentageUnspentAP = min(100, math.floor(v["thisLevelUnspentAP"] / aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100)); -- cap at 100 or bar will overflow
 			local percentageInBagsAP = min(math.floor(TotalAP.inventoryCache.inBagsAP/ aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100), 100 - percentageUnspentAP); -- AP from bags should fill up the bar, but not overflow it
 			local percentageInBankAP = min(math.floor(TotalAP.bankCache.inBankAP/ aUI.GetCostForPointAtRank(v["numTraitsPurchased"], v["artifactTier"]) * 100), 100 - percentageUnspentAP - percentageInBagsAP); -- AP from bags should fill up the bar, but not overflow it
-			TotalAP.Debug(format("Updating percentage for bar display... spec %d: unspentAP = %s, inBags = %s" , k, percentageUnspentAP, percentageInBagsAP));
+			TotalAP.Debug(format("Updating percentage for bar display... spec %d: unspentAP = %s, inBags = %s, inBank = %s" , k, percentageUnspentAP, percentageInBagsAP, percentageInBankAP));
 			
 			local inset, border = settings.infoFrame.inset or 1, settings.infoFrame.border or 1; -- TODO
 
@@ -754,7 +754,7 @@ local function UpdateInfoFrame()
 			
 			TotalAPInBankBars[k]:SetSize(percentageInBankAP, settings.infoFrame.barHeight);
 			TotalAPInBankBars[k]:ClearAllPoints();
-			TotalAPInBankBars[k]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPLEFT", 1 + inset + TotalAPInBagsBars[k]:GetWidth(), - ( (2 * displayOrder[k] - 1)  * inset + displayOrder[k] * border + (displayOrder[k] - 1) * settings.infoFrame.barHeight))
+			TotalAPInBankBars[k]:SetPoint("TOPLEFT", TotalAPInfoFrame, "TOPLEFT", 1 + inset + TotalAPUnspentBars[k]:GetWidth() + TotalAPInBagsBars[k]:GetWidth(), - ( (2 * displayOrder[k] - 1)  * inset + displayOrder[k] * border + (displayOrder[k] - 1) * settings.infoFrame.barHeight))
 
 			
 			-- Display secondary bar on top of the actual progress bar to indicate progress when multiple ranks are available
