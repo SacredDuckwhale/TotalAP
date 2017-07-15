@@ -1517,75 +1517,6 @@ local function RegisterUpdateEvents()
 end
 
 	
--- Display tooltip when hovering over an AP item
--- TODO: Secure hook (if possible) to avoid taint? Haven't seen any issues but it could become one later
-GameTooltip:HookScript('OnTooltipSetItem', function(self)
-	
-	local _, tempItemLink = self:GetItem();
-	if type(tempItemLink) == "string" then
-
-		tooltipItemID = GetItemInfoInstant(tempItemLink);
-		
-		if TotalAP.DB.GetItemSpellEffect(tooltipItemID) then -- Only display tooltip addition for AP tokens
-			
-			local artifactID, _, artifactName = C_ArtifactUI.GetEquippedArtifactInfo();
-			
-			if artifactID and artifactName and settings.tooltip.enabled then
-				-- Display spec and artifact info in tooltip
-				local spec = GetSpecialization();
-				if spec then
-					local _, specName, _, specIcon, _, specRole = GetSpecializationInfo(spec);
-					local classDisplayName, classTag, classID = UnitClass("player");
-					
-					if specIcon then
-						self:AddLine(format('\n|T%s:%d|t [%s]', specIcon,  settings.specIconSize, artifactName), 230/255, 204/255, 128/255); -- TODO: Colour green/red or something if it's the offspec? Can use classTag or ID for this
-					end
-				end
-		
-		
-				-- Display AP summary
-				if TotalAP.inventoryCache.numItems > 1 and settings.tooltip.showNumItems then
-					self:AddLine(format("\n" .. L["%s Artifact Power in bags (%d items)"], TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat), TotalAP.inventoryCache.numItems), 230/255, 204/255, 128/255);
-				else
-					self:AddLine(format("\n" .. L["%s Artifact Power in bags"], TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat)) , 230/255, 204/255, 128/255);
-				end
-				
-				-- TODO: Bank summary
-				if settings.scanBank and settings.tooltip.showNumItems then -- Display bank summary as well
-					
-					if TotalAP.bankCache.numItems > 1 then
-						self:AddLine(format(L["%s Artifact Power in bank (%d items)"], TotalAP.Utils.FormatShort(TotalAP.bankCache.inBankAP, true, settings.numberFormat), TotalAP.bankCache.numItems), 230/255, 204/255, 128/255)
-					else
-						if TotalAP.bankCache.inBankAP > 0 then
-							self:AddLine(format(L["%s Artifact Power in bank"], TotalAP.Utils.FormatShort(TotalAP.bankCache.inBankAP, true, settings.numberFormat)), 230/255, 204/255, 128/255)
-						end
-					end
-					
-				end
-			
-				-- Calculate progress towards next trait
-				if HasArtifactEquipped() and settings.tooltip.showProgressReport then
-						
-						-- Recalculate progress percentage and number of available traits before actually showing the tooltip
-						numTraitsAvailable = GetNumAvailableTraits(); 
-						artifactProgressPercent = GetArtifactProgressPercent();
-							
-						-- Display progress in tooltip
-						if numTraitsAvailable > 1 then -- several new traits are available
-							self:AddLine(format(L["%d new traits available - Use AP now to level up!"], numTraitsAvailable), 0/255, 255/255, 0/255);
-						elseif numTraitsAvailable > 0 then -- exactly one new is trait available
-							self:AddLine(format(L["New trait available - Use AP now to level up!"]), 0/255, 255/255, 0/255);
-						else -- No traits available - too bad :(
-							self:AddLine(format(L["Progress towards next trait: %d%%"], artifactProgressPercent));
-						end
-				end
-			end
-			
-		self:Show();
-		
-		end
-	end
-end);
 
  
 -- Standard methods (via AceAddon) -> They use the local object and not the shared container variable (which are for the modularised functions in other lua files)
@@ -1621,6 +1552,10 @@ function Addon:OnInitialize() -- Called on ADDON_LOADED
 	
 	-- Add keybinds to Blizzard's KeybindUI
 	TotalAP.Controllers.RegisterKeybinds()
+	
+	-- Hook script handler to display tooltip additions when hovering over an AP item (and the action button itself)
+	GameTooltip:HookScript('OnTooltipSetItem', TotalAP.GUI.Tooltips.ShowActionButtonTooltip)
+
 end
 
 --- Called on PLAYER_LOGIN or ADDON_LOADED (if addon is loaded-on-demand)

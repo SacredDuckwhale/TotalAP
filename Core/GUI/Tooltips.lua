@@ -179,12 +179,108 @@ local function HideSpecIconTooltip(self, button)
 
 end
 
+--- Tooltip that is displayed on mouseover for the action button (used to consume AP items)
+-- @param self The frame the tooltip will be attached to
+-- @param button The button that has been used to toggle the triggering event (Note: This isn't actually relevant here)
+-- @param[opt] hide Whether or not the tooltip will be hidden. Defaults to false
+local function ActionButtonTooltipFunction(self, button, hide)  
+
+	local _, tempItemLink = self:GetItem()
+	if type(tempItemLink) == "string" then -- Is a valid item link -> Check if it's an Artifact Power item
+
+		tooltipItemID = GetItemInfoInstant(tempItemLink);
+		
+		if TotalAP.DB.GetItemSpellEffect(tooltipItemID) then -- Only display tooltip addition for AP tokens
+			
+			local artifactID, _, artifactName = C_ArtifactUI.GetEquippedArtifactInfo()
+			
+			local settings = TotalAP.Settings.GetReference()
+			if artifactID and artifactName and settings.tooltip.enabled then -- Display spec and artifact info in tooltip
+				
+				local spec = GetSpecialization()
+				if spec then -- Display artifact name and icon for this spec
+				
+					local _, specName, _, specIcon, _, specRole = GetSpecializationInfo(spec)
+					local classDisplayName, classTag, classID = UnitClass("player")
+					
+					if specIcon then self:AddLine(format('\n|T%s:%d|t [%s]', specIcon,  settings.specIconSize, artifactName), 230/255, 204/255, 128/255) end
+
+				end
+		
+		
+				-- Display AP summary
+				if TotalAP.inventoryCache.numItems > 1 and settings.tooltip.showNumItems then
+					self:AddLine(format("\n" .. L["%s Artifact Power in bags (%d items)"], TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat), TotalAP.inventoryCache.numItems), 230/255, 204/255, 128/255);
+				else
+					self:AddLine(format("\n" .. L["%s Artifact Power in bags"], TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat)) , 230/255, 204/255, 128/255);
+				end
+				
+				-- TODO: Bank summary
+				if settings.scanBank and settings.tooltip.showNumItems then -- Display bank summary as well
+					
+					if TotalAP.bankCache.numItems > 1 then
+						self:AddLine(format(L["%s Artifact Power in bank (%d items)"], TotalAP.Utils.FormatShort(TotalAP.bankCache.inBankAP, true, settings.numberFormat), TotalAP.bankCache.numItems), 230/255, 204/255, 128/255)
+					else
+						if TotalAP.bankCache.inBankAP > 0 then
+							self:AddLine(format(L["%s Artifact Power in bank"], TotalAP.Utils.FormatShort(TotalAP.bankCache.inBankAP, true, settings.numberFormat)), 230/255, 204/255, 128/255)
+						end
+					end
+					
+				end
+			
+				-- Calculate progress towards next trait
+				if HasArtifactEquipped() and settings.tooltip.showProgressReport then
+						
+						-- Recalculate progress percentage and number of available traits before actually showing the tooltip
+						numTraitsAvailable = TotalAP.ArtifactInterface.GetNumAvailableTraits()
+						artifactProgressPercent = TotalAP.ArtifactInterface.GetArtifactProgressPercent() -- TODO. Is this necessary to display in tooltips, now that the progress bar tooltip is available?
+							
+						-- Display progress in tooltip
+						if numTraitsAvailable > 1 then -- several new traits are available
+							self:AddLine(format(L["%d new traits available - Use AP now to level up!"], numTraitsAvailable), 0/255, 255/255, 0/255);
+						elseif numTraitsAvailable > 0 then -- exactly one new is trait available
+							self:AddLine(format(L["New trait available - Use AP now to level up!"]), 0/255, 255/255, 0/255);
+						else -- No traits available - too bad :(
+							self:AddLine(format(L["Progress towards next trait: %d%%"], artifactProgressPercent));
+						end
+				end
+			end
+			
+			self:SetShown(not hide)
+
+		end
+		
+	end
+	
+end
+
+--- Show action button tooltip (alias for SpecIconTooltipFunction with hide = false)
+-- @param self The frame the tooltip will be attached to
+-- @param button The button that has been used to toggle the triggering event (Note: This isn't actually relevant here)
+local function ShowActionButtonTooltip(self, button)
+
+	ActionButtonTooltipFunction(self, button)
+
+end
+
+--- Show action button tooltip (alias for SpecIconTooltipFunction with hide = true)
+-- @param self The frame the tooltip will be attached to
+-- @param button The button that has been used to toggle the triggering event (Note: This isn't actually relevant here)
+local function HideActionButtonTooltip(self, button)
+
+	ActionButtonTooltipFunction(self, button, true)
+
+end
+
+
 
 TotalAP.GUI.Tooltips = {
 	ShowSpecIconTooltip = ShowSpecIconTooltip,
 	HideSpecIconTooltip = HideSpecIconTooltip,
 	ShowArtifactKnowledgeTooltip = ShowArtifactKnowledgeTooltip,
 	HideArtifactKnowledgeTooltip = HideArtifactKnowledgeTooltip,
+	ShowActionButtonTooltip = ShowActionButtonTooltip,
+	HideActionButtonTooltip = HideActionButtonTooltip,
 }
 
 
