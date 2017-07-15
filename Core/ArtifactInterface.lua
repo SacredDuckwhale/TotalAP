@@ -135,6 +135,25 @@ local function GetNumRanksPurchasableWithAP(rank, artifactPowerValue, tier)
 	
 end
 
+--- Calculates the total number of purchaseable traits (using AP from both the equipped artifact and from AP tokens in the player's inventory and bank)
+-- @return The number of available traits using AP from all available sources
+local function GetNumAvailableTraits()
+	
+	if not aUI or not HasArtifactEquipped() then
+		TotalAP.Debug("ArtifactInterface -> Attempted to calculate number of available traits, but the artifact UI was not available (No/wrong artifact weapon?)")
+		return
+	end
+	
+	local settings = TotalAP.Settings.GetReference()
+	local thisLevelUnspentAP, numTraitsPurchased, _, _, _, _, _, _, tier = select(5, aUI.GetEquippedArtifactInfo())
+	local numTraitsAvailable = GetNumRanksPurchasableWithAP(numTraitsPurchased, thisLevelUnspentAP + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), tier) or 0
+	TotalAP.Debug(format("ArtifactInterface -> %s new traits available from all sources", numTraitsAvailable))
+	
+	return numTraitsAvailable
+	
+end
+
+
 --- Returns progress towards the next trait (after considering all available "level ups")
 -- @param rank The current artifact level (number of purchased traits)
 -- @param artifactPowerValue Number of unspent artifact power applied to the weapon
@@ -160,7 +179,7 @@ T.ArtifactInterface.GetTimeUntilNextResearchNoteIsReady = GetTimeUntilNextResear
 --T.ArtifactInterface.GetNumRanksPurchased = GetNumRanksPurchased
 T.ArtifactInterface.GetNumRanksPurchasableWithAP = GetNumRanksPurchasableWithAP
 T.ArtifactInterface.GetProgressTowardsNextRank = GetProgressTowardsNextRank
-
+T.ArtifactInterface.GetNumAvailableTraits = GetNumAvailableTraits
 
 -- Keep this private, since it isn't used anywhere else
 -- T.ArtifactInterface.GetResearchNotesShipmentInfo = GetResearchNotesShipmentInfo

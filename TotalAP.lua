@@ -60,38 +60,6 @@ local settings, cache = {}, {}; -- will be loaded from savedVars later
 
 --local defaultSettings = TotalAP.Settings.GetDefaults() -- TODO: remove (crutch while in migration)
 
--- Calculate the total number of purchaseable traits (using AP from both the equipped artifact and from AP tokens in the player's inventory)
-local function GetNumAvailableTraits()
-	
-	if not aUI or not HasArtifactEquipped() then
-		TotalAP.Debug("Called GetNumAvailableTraits, but the artifact UI is unavailable... Is an artifact equipped?");
-		return 0;
-	end
-	
-	-- TODO: 
-	-- function MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(pointsSpent, artifactXP, artifactTier)
-	-- local numPoints = 0;
-	-- local xpForNextPoint = C_ArtifactUI.GetCostForPointAtRank(pointsSpent, artifactTier);
-	-- while artifactXP >= xpForNextPoint and xpForNextPoint > 0 do
-		-- artifactXP = artifactXP - xpForNextPoint;
-
-		-- pointsSpent = pointsSpent + 1;
-		-- numPoints = numPoints + 1;
-
-		-- xpForNextPoint = C_ArtifactUI.GetCostForPointAtRank(pointsSpent, artifactTier);
-	-- end
-	-- return numPoints, artifactXP, xpForNextPoint;
--- end
-		
-	local thisLevelUnspentAP, numTraitsPurchased, _, _, _, _, _, _, tier = select(5, aUI.GetEquippedArtifactInfo());	
-	--local tier = aUI.GetArtifactTier() or 2; -- Assuming 2 as per usual (see other calls and comments for GetArtifactTier) - only defaults to this when artifact is not available/opened?
-	
-	local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(numTraitsPurchased, thisLevelUnspentAP + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), tier)
-	TotalAP.Debug(format("Called GetNumAvailableTraits -> %s new traits available!", numTraitsAvailable or 0));
-	
-	return numTraitsAvailable or 0;
-end
-
 -- Calculate progress towards next artifact trait (for the equipped artifact). TODO: Function GetArtifactProgressData -> unspentAP, numAvailableTraits, progressPercent
 local function GetArtifactProgressPercent()
 		
@@ -868,7 +836,7 @@ local function UpdateActionButton()
 		end
 		
 		-- Update available traits and trigger spell overlay effect if necessary
-		numTraitsAvailable = GetNumAvailableTraits(); 
+		numTraitsAvailable = TotalAP.ArtifactInterface.GetNumAvailableTraits()
 		if settings.actionButton.showGlowEffect and numTraitsAvailable > 0 or TotalAP.DB.IsResearchTome(TotalAP.inventoryCache.displayItem.ID) then -- research notes -> always flash regardless of current progress
 			FlashActionButton(TotalAPButton, true);
 			TotalAP.Debug("Activating button glow effect while processing UpdateActionButton...");
