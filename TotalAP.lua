@@ -58,34 +58,6 @@ local maxArtifactTraits = 54; -- Only applied to tier 1 artifacts in 7.2 -- TODO
 local settings, cache = {}, {}; -- will be loaded from savedVars later
 
 
---local defaultSettings = TotalAP.Settings.GetDefaults() -- TODO: remove (crutch while in migration)
-
--- Calculate progress towards next artifact trait (for the equipped artifact). TODO: Function GetArtifactProgressData -> unspentAP, numAvailableTraits, progressPercent
-local function GetArtifactProgressPercent()
-		
-		--if not considerBags then considerBags = true; -- Only ignore bags if explicitly told so (i.e., for cache operations, chiefly)
-		
-		if not aUI or not HasArtifactEquipped() then
-			TotalAP.Debug("Called GetArtifactProgressPercent, but the artifact UI is unavailable (is an artifact equipped?)...");
-			return 0;
-		end
-	
-		local thisLevelUnspentAP, numTraitsPurchased, _, _, _, _, _, _, tier  = select(5, aUI.GetEquippedArtifactInfo());	
-		--local tier = aUI.GetArtifactTier() or 2; -- TODO: Assume 2 for 7.2 yatta yatta (new traits after <1h of playtime so everybody should have them) in case caching failes (aUi not available). Problematic for lower level offspecs (<35 traits) as they are actually "tier 1"
-		local nextLevelRequiredAP = aUI.GetCostForPointAtRank(numTraitsPurchased, tier); 
-		
-		--if considerBags then -- TODO: This is ugly. I can do better, oh great one!
-		
-		local percentageOfCurrentLevelUp = (thisLevelUnspentAP + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0)) / nextLevelRequiredAP*100;
-		TotalAP.Debug(format("Called GetArtifactProgressPercent -> Progress is: %s%% towards next trait!", percentageOfCurrentLevelUp or 0)); -- TODO: > 100% becomes inaccurate due to only using cost for THIS level, not next etc?
-		return percentageOfCurrentLevelUp or 0;
-	--	else 
-		--	return thisLevelUnspentAP, nextLevelRequiredAP;
-	--	end
-
-end
-
-
 -- Load saved vars and DB files, attempt to verify SavedVars
 local function LoadSettings()
 
