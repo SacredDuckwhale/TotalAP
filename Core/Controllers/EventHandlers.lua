@@ -85,9 +85,14 @@ local function ScanInventory(scanBank)
 					-- TODO: Move this to DB\ResearchTomes or something, and access via helper function (similar to artifacts)
 					if isTome then -- AK Tome is available for use -> Display button regardless of current AP tokens
 					
-						TotalAP.Debug("Found Artifact Research tome -> Displaying it instead of potential AP items")
-						foundTome = true
+						foundTome = not (UnitLevel("player") < 110) -- Only display tomes for max level characters (alts can't use them before level 110)
 						
+						if not foundTome then
+							TotalAP.Debug("Found Artifact Research tome -> Ignoring it, as it's unusable by low-level characters")
+						else
+							TotalAP.Debug("Found Artifact Research tome -> Displaying it instead of potential AP items")
+						end
+
 					end
 					
 					if isToken then -- Found token -> Use it in calculations
@@ -105,7 +110,7 @@ local function ScanInventory(scanBank)
 						
 					end
 				
-					if not scanBank and isTome or (isToken and not foundTome) then -- Set this item as the currently displayed one (so that the GUI can use it)
+					if not scanBank and (isTome and foundTome) or (isToken and not foundTome) then -- Set this item as the currently displayed one (so that the GUI can use it)
 					
 						displayItem.ID = tempItemID
 						displayItem.link = tempItemLink
