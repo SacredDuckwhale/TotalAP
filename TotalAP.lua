@@ -58,66 +58,6 @@ local maxArtifactTraits = 54; -- Only applied to tier 1 artifacts in 7.2 -- TODO
 local settings, cache = {}, {}; -- will be loaded from savedVars later
 
 
---local defaultSettings = TotalAP.Settings.GetDefaults() -- TODO: remove (crutch while in migration)
-
--- Calculate the total number of purchaseable traits (using AP from both the equipped artifact and from AP tokens in the player's inventory)
-local function GetNumAvailableTraits()
-	
-	if not aUI or not HasArtifactEquipped() then
-		TotalAP.Debug("Called GetNumAvailableTraits, but the artifact UI is unavailable... Is an artifact equipped?");
-		return 0;
-	end
-	
-	-- TODO: 
-	-- function MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(pointsSpent, artifactXP, artifactTier)
-	-- local numPoints = 0;
-	-- local xpForNextPoint = C_ArtifactUI.GetCostForPointAtRank(pointsSpent, artifactTier);
-	-- while artifactXP >= xpForNextPoint and xpForNextPoint > 0 do
-		-- artifactXP = artifactXP - xpForNextPoint;
-
-		-- pointsSpent = pointsSpent + 1;
-		-- numPoints = numPoints + 1;
-
-		-- xpForNextPoint = C_ArtifactUI.GetCostForPointAtRank(pointsSpent, artifactTier);
-	-- end
-	-- return numPoints, artifactXP, xpForNextPoint;
--- end
-		
-	local thisLevelUnspentAP, numTraitsPurchased, _, _, _, _, _, _, tier = select(5, aUI.GetEquippedArtifactInfo());	
-	--local tier = aUI.GetArtifactTier() or 2; -- Assuming 2 as per usual (see other calls and comments for GetArtifactTier) - only defaults to this when artifact is not available/opened?
-	
-	local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(numTraitsPurchased, thisLevelUnspentAP + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), tier)
-	TotalAP.Debug(format("Called GetNumAvailableTraits -> %s new traits available!", numTraitsAvailable or 0));
-	
-	return numTraitsAvailable or 0;
-end
-
--- Calculate progress towards next artifact trait (for the equipped artifact). TODO: Function GetArtifactProgressData -> unspentAP, numAvailableTraits, progressPercent
-local function GetArtifactProgressPercent()
-		
-		--if not considerBags then considerBags = true; -- Only ignore bags if explicitly told so (i.e., for cache operations, chiefly)
-		
-		if not aUI or not HasArtifactEquipped() then
-			TotalAP.Debug("Called GetArtifactProgressPercent, but the artifact UI is unavailable (is an artifact equipped?)...");
-			return 0;
-		end
-	
-		local thisLevelUnspentAP, numTraitsPurchased, _, _, _, _, _, _, tier  = select(5, aUI.GetEquippedArtifactInfo());	
-		--local tier = aUI.GetArtifactTier() or 2; -- TODO: Assume 2 for 7.2 yatta yatta (new traits after <1h of playtime so everybody should have them) in case caching failes (aUi not available). Problematic for lower level offspecs (<35 traits) as they are actually "tier 1"
-		local nextLevelRequiredAP = aUI.GetCostForPointAtRank(numTraitsPurchased, tier); 
-		
-		--if considerBags then -- TODO: This is ugly. I can do better, oh great one!
-		
-		local percentageOfCurrentLevelUp = (thisLevelUnspentAP + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0)) / nextLevelRequiredAP*100;
-		TotalAP.Debug(format("Called GetArtifactProgressPercent -> Progress is: %s%% towards next trait!", percentageOfCurrentLevelUp or 0)); -- TODO: > 100% becomes inaccurate due to only using cost for THIS level, not next etc?
-		return percentageOfCurrentLevelUp or 0;
-	--	else 
-		--	return thisLevelUnspentAP, nextLevelRequiredAP;
-	--	end
-
-end
-
-
 -- Load saved vars and DB files, attempt to verify SavedVars
 local function LoadSettings()
 
@@ -868,7 +808,7 @@ local function UpdateActionButton()
 		end
 		
 		-- Update available traits and trigger spell overlay effect if necessary
-		numTraitsAvailable = GetNumAvailableTraits(); 
+		numTraitsAvailable = TotalAP.ArtifactInterface.GetNumAvailableTraits()
 		if settings.actionButton.showGlowEffect and numTraitsAvailable > 0 or TotalAP.DB.IsResearchTome(TotalAP.inventoryCache.displayItem.ID) then -- research notes -> always flash regardless of current progress
 			FlashActionButton(TotalAPButton, true);
 			TotalAP.Debug("Activating button glow effect while processing UpdateActionButton...");
@@ -1577,75 +1517,6 @@ local function RegisterUpdateEvents()
 end
 
 	
--- Display tooltip when hovering over an AP item
--- TODO: Secure hook (if possible) to avoid taint? Haven't seen any issues but it could become one later
-GameTooltip:HookScript('OnTooltipSetItem', function(self)
-	
-	local _, tempItemLink = self:GetItem();
-	if type(tempItemLink) == "string" then
-
-		tooltipItemID = GetItemInfoInstant(tempItemLink);
-		
-		if TotalAP.DB.GetItemSpellEffect(tooltipItemID) then -- Only display tooltip addition for AP tokens
-			
-			local artifactID, _, artifactName = C_ArtifactUI.GetEquippedArtifactInfo();
-			
-			if artifactID and artifactName and settings.tooltip.enabled then
-				-- Display spec and artifact info in tooltip
-				local spec = GetSpecialization();
-				if spec then
-					local _, specName, _, specIcon, _, specRole = GetSpecializationInfo(spec);
-					local classDisplayName, classTag, classID = UnitClass("player");
-					
-					if specIcon then
-						self:AddLine(format('\n|T%s:%d|t [%s]', specIcon,  settings.specIconSize, artifactName), 230/255, 204/255, 128/255); -- TODO: Colour green/red or something if it's the offspec? Can use classTag or ID for this
-					end
-				end
-		
-		
-				-- Display AP summary
-				if TotalAP.inventoryCache.numItems > 1 and settings.tooltip.showNumItems then
-					self:AddLine(format("\n" .. L["%s Artifact Power in bags (%d items)"], TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat), TotalAP.inventoryCache.numItems), 230/255, 204/255, 128/255);
-				else
-					self:AddLine(format("\n" .. L["%s Artifact Power in bags"], TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat)) , 230/255, 204/255, 128/255);
-				end
-				
-				-- TODO: Bank summary
-				if settings.scanBank and settings.tooltip.showNumItems then -- Display bank summary as well
-					
-					if TotalAP.bankCache.numItems > 1 then
-						self:AddLine(format(L["%s Artifact Power in bank (%d items)"], TotalAP.Utils.FormatShort(TotalAP.bankCache.inBankAP, true, settings.numberFormat), TotalAP.bankCache.numItems), 230/255, 204/255, 128/255)
-					else
-						if TotalAP.bankCache.inBankAP > 0 then
-							self:AddLine(format(L["%s Artifact Power in bank"], TotalAP.Utils.FormatShort(TotalAP.bankCache.inBankAP, true, settings.numberFormat)), 230/255, 204/255, 128/255)
-						end
-					end
-					
-				end
-			
-				-- Calculate progress towards next trait
-				if HasArtifactEquipped() and settings.tooltip.showProgressReport then
-						
-						-- Recalculate progress percentage and number of available traits before actually showing the tooltip
-						numTraitsAvailable = GetNumAvailableTraits(); 
-						artifactProgressPercent = GetArtifactProgressPercent();
-							
-						-- Display progress in tooltip
-						if numTraitsAvailable > 1 then -- several new traits are available
-							self:AddLine(format(L["%d new traits available - Use AP now to level up!"], numTraitsAvailable), 0/255, 255/255, 0/255);
-						elseif numTraitsAvailable > 0 then -- exactly one new is trait available
-							self:AddLine(format(L["New trait available - Use AP now to level up!"]), 0/255, 255/255, 0/255);
-						else -- No traits available - too bad :(
-							self:AddLine(format(L["Progress towards next trait: %d%%"], artifactProgressPercent));
-						end
-				end
-			end
-			
-		self:Show();
-		
-		end
-	end
-end);
 
  
 -- Standard methods (via AceAddon) -> They use the local object and not the shared container variable (which are for the modularised functions in other lua files)
@@ -1681,6 +1552,10 @@ function Addon:OnInitialize() -- Called on ADDON_LOADED
 	
 	-- Add keybinds to Blizzard's KeybindUI
 	TotalAP.Controllers.RegisterKeybinds()
+	
+	-- Hook script handler to display tooltip additions when hovering over an AP item (and the action button itself)
+	GameTooltip:HookScript('OnTooltipSetItem', TotalAP.GUI.Tooltips.ShowActionButtonTooltip)
+
 end
 
 --- Called on PLAYER_LOGIN or ADDON_LOADED (if addon is loaded-on-demand)

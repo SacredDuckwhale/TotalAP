@@ -135,6 +135,25 @@ local function GetNumRanksPurchasableWithAP(rank, artifactPowerValue, tier)
 	
 end
 
+--- Calculates the total number of purchaseable traits (using AP from both the equipped artifact and from AP tokens in the player's inventory and bank)
+-- @return The number of available traits using AP from all available sources
+local function GetNumAvailableTraits()
+	
+	if not aUI or not HasArtifactEquipped() then
+		TotalAP.Debug("ArtifactInterface -> Attempted to calculate number of available traits, but the artifact UI was not available (No/wrong artifact weapon?)")
+		return
+	end
+	
+	local settings = TotalAP.Settings.GetReference()
+	local thisLevelUnspentAP, numTraitsPurchased, _, _, _, _, _, _, tier = select(5, aUI.GetEquippedArtifactInfo())
+	local numTraitsAvailable = GetNumRanksPurchasableWithAP(numTraitsPurchased, thisLevelUnspentAP + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), tier) or 0
+	TotalAP.Debug(format("ArtifactInterface -> %s new traits available from all sources", numTraitsAvailable))
+	
+	return numTraitsAvailable
+	
+end
+
+
 --- Returns progress towards the next trait (after considering all available "level ups")
 -- @param rank The current artifact level (number of purchased traits)
 -- @param artifactPowerValue Number of unspent artifact power applied to the weapon
@@ -152,6 +171,28 @@ local function GetProgressTowardsNextRank(rank, artifactPowerValue, tier)
 end
 
 
+--- Calculates progress towards next artifact trait (for the equipped artifact). Only used to calculate progress for the current artifact level (0 to 100%); GetProgressTowardsNextRank is used therwise
+-- @return The percentage towards the next artifact trait for the currently equipped artifact (Maxes out at 100)
+local function GetArtifactProgressPercent()
+	
+	if not aUI or not HasArtifactEquipped() then
+		TotalAP.Debug("ArtifactInterface -> Attempted to calculate artifact progress, but the artifact UI was not available (No/wrong artifact weapon?)");
+		return
+	end
+
+	local thisLevelUnspentAP, numTraitsPurchased, _, _, _, _, _, _, tier  = select(5, aUI.GetEquippedArtifactInfo())	
+
+	local nextLevelRequiredAP = aUI.GetCostForPointAtRank(numTraitsPurchased, tier)
+	local settings = TotalAP.Settings.GetReference()
+	local percentageOfCurrentLevelUp = (thisLevelUnspentAP + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0)) / nextLevelRequiredAP * 100
+	
+	TotalAP.Debug(format("ArtifactInterface -> Calculated progress towards next trait to be  %s%% ", percentageOfCurrentLevelUp or 0)) 
+	
+	return min(100, percentageOfCurrentLevelUp or 0)
+	
+end
+
+
 -- Public methods
 T.ArtifactInterface.GetNumAvailableResearchNotes = GetNumAvailableResearchNotes
 --T.ArtifactInterface.GetArtifactKnowledgeMultiplier = GetArtifactKnowledgeMultiplier
@@ -160,7 +201,8 @@ T.ArtifactInterface.GetTimeUntilNextResearchNoteIsReady = GetTimeUntilNextResear
 --T.ArtifactInterface.GetNumRanksPurchased = GetNumRanksPurchased
 T.ArtifactInterface.GetNumRanksPurchasableWithAP = GetNumRanksPurchasableWithAP
 T.ArtifactInterface.GetProgressTowardsNextRank = GetProgressTowardsNextRank
-
+T.ArtifactInterface.GetNumAvailableTraits = GetNumAvailableTraits
+T.ArtifactInterface.GetArtifactProgressPercent = GetArtifactProgressPercent
 
 -- Keep this private, since it isn't used anywhere else
 -- T.ArtifactInterface.GetResearchNotesShipmentInfo = GetResearchNotesShipmentInfo
