@@ -62,6 +62,7 @@ Core\DB.lua
 Core\Scanner.lua
 Core\Settings.lua
 
+Core\GUI\Views\Prototype.lua
 Core\GUI\Tooltips.lua
 
 Core\Controllers\EventHandlers.lua
