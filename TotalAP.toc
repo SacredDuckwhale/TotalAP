@@ -62,21 +62,6 @@ Core\DB.lua
 Core\Scanner.lua
 Core\Settings.lua
 
-Core\GUI\WidgetTypes\DisplayFrame.lua
-Core\GUI\WidgetTypes\BackgroundFrame.lua
-Core\GUI\WidgetTypes\ItemUseButton.lua
-Core\GUI\WidgetTypes\ProgressBar.lua
-Core\GUI\WidgetTypes\SpecIcon.lua
-Core\GUI\WidgetTypes\TextDisplay.lua
-
-Core\GUI\Views\Prototype.lua
-Core\GUI\Views\CompactView.lua
-Core\GUI\Views\DefaultView.lua
-Core\GUI\Views\MinimalisticView.lua
-Core\GUI\Views\PrimarySpecView.lua
-Core\GUI\Views\TabbedView.lua
-
-Core\GUI\Config.lua
 Core\GUI\Tooltips.lua
 
 Core\Controllers\EventHandlers.lua
