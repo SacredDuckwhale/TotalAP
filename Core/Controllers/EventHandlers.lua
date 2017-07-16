@@ -164,6 +164,16 @@ end
 --- Toggle a GUI Update (which is handled by the GUI controller and not the Event controller itself)
 local function UpdateGUI()
 
+	-- Update event states so that the GUI controller can hide/show frames accordingly
+	TotalAP.EventHandlers.states = {
+		isBankOpen = isBankOpen,
+		isPlayerUsingVehicle = isPlayerUsingVehicle,
+		isPlayerEngagedInCombat = isPlayerEngagedInCombat,
+		isPetBattleInProgress = isPetBattleInProgress,
+		hasPlayerLostControl = hasPlayerLostControl,
+	} 
+	
+	-- Force update, using the most recent available information to render the GUI
 	TotalAP.Controllers.UpdateGUI()
 	
 end
