@@ -39,6 +39,8 @@ local function CreateNew(self)
 	
 end
 
-TotalAP.Views.DefaultView = DefaultView
+DefaultView.CreateNew = CreateNew
+
+TotalAP.GUI.DefaultView = DefaultView
 
 return DefaultView
