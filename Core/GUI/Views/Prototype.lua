@@ -56,7 +56,7 @@ local function SetName(self, name)
 
 end
 
---- Renders all the elements that are part of the view, according to their attribute. This displays the GUI  if the view is active, but doesn't show anything otherwise
+--- Renders all the elements that are part of the view, according to their attribute. This displays the GUI if the view is active, but doesn't show anything otherwise
 -- @param self Reference to the ViewObject representing the View
 local function Render(self)
 
@@ -114,7 +114,6 @@ View.SetName = SetName
 View.Render = Render
 View.Update = Update
 View.GetNumElements = GetNumElements
--- TODO: GetNumActiveElements (Enabled elements)
 
 
 TotalAP.GUI.View = View
