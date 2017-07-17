@@ -46,6 +46,11 @@ local function CreateNew(self)
 	AnchorFrame:SetSize(100, 100)
 	
 	AnchorFrame:EnableMouse() -- AnchorFrame.EnableMouse(self) -> AnchorFrame.EnableMouse(FrameObject.self) = Anchorframe.FrameObject:EnableMouse()
+	ViewObject.elementsList = { 	-- This is the actual view, which consists of individual DisplayFrame objects and their properties
+	
+		AnchorFrameContainer,
+
+	}
 	
 	return ViewObject
 	
