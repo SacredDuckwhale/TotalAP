@@ -34,6 +34,7 @@ local View = {}
 local function CreateNew()
 
 	-- Nothing because a) prototype and b) only preset views are supported yet, but not entirely custom ones (TODO) :P
+	TotalAP.Debug("Attempted to instantiate Prototype View object -> Something's not quite right!")
 	return
 	
 end
