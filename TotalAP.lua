@@ -1535,8 +1535,11 @@ function Addon:OnInitialize() -- Called on ADDON_LOADED
 	-- Initialise settings (saved variables), handled via AceDB
 	TotalAP.Settings.Initialise()
 	settings = TotalAP.Settings.GetReference()
-	
 	LoadSettings();  -- from saved vars
+	
+	-- Make sure at least one View is usable (TODO: Pointless for now; Always prepares the DefaultView, as others aren't implemented yet)
+	TotalAP.Controllers.InitialiseGUI()
+	
 	CreateAnchorFrame(); -- anchor for all other frames -> needs to be loaded before PLAYER_LOGIN to have the game save its position and size -- TODO: move to GUI/AceGUI
 	CreateActionButton() -- Ditto, as its size is being saved by the client
 	
@@ -1563,7 +1566,7 @@ function Addon:OnEnable()
 
 	local clientVersion, clientBuild = GetBuildInfo();
 
-			-- Those could be created earlier, BUT: Talent info isn't available sooner, and those frames are anchored to the AnchorFrame anyway -> Initial position doesn't matter as it is updated automatically (TODO: TALENT or SPEC info?)
+	TotalAP.Controllers.RenderGUI()
 	
 	CreateInfoFrame();
 	CreateSpecIcons(); 
