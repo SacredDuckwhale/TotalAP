@@ -24,7 +24,7 @@
 local addonName, TotalAP = ...
 if not TotalAP then return end
 
-DefaultView = {}
+local DefaultView = {}
 
 local function CreateNew(self)
 	
