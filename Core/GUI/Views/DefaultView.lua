@@ -26,6 +26,9 @@ if not TotalAP then return end
 
 local DefaultView = {}
 
+--- Creates a new ViewObject
+-- @param self Reference to the caller
+-- @return A representation of the View (ViewObject)
 local function CreateNew(self)
 	
 	local ViewObject = {}
