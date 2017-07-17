@@ -34,6 +34,15 @@ local function CreateNew(self)
 	self.__index = TotalAP.GUI.View -- ... and this class inherits from the generic View template
 	
 	-- TODO...
+	-- Create frames and store them for later use
+	
+	local AnchorFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_AnchorFrame")
+	local AnchorFrame = AnchorFrameContainer:GetFrameObject()
+	
+	AnchorFrameContainer:SetBackdropColour("#9CCCF8")
+	AnchorFrame:SetSize(100, 100)
+	
+	AnchorFrame:EnableMouse() -- AnchorFrame.EnableMouse(self) -> AnchorFrame.EnableMouse(FrameObject.self) = Anchorframe.FrameObject:EnableMouse()
 	
 	return ViewObject
 	
