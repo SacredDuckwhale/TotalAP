@@ -242,7 +242,12 @@ local function Render(self)
 			FrameObject:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", posX, posY)
 			
 		else -- Is top level frame and mustn't be reset, as its position is stored in WOW's Layout Cache
-		
+			
+			local numPoints = FrameObject:GetNumPoints()
+			if numPoints == 0 then -- Frame isn't anchored anywhere and therefore invisible (can happen after errors occur somehow?)
+				FrameObject:SetPoint("CENTER", UIParent, "CENTER")
+			end
+			
 		end
 		
 	end
