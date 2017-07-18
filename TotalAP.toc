@@ -63,6 +63,7 @@ Core\Scanner.lua
 Core\Settings.lua
 
 Core\GUI\WidgetTypes\DisplayFrame.lua
+Core\GUI\WidgetTypes\BackgroundFrame.lua
 
 Core\GUI\Views\Prototype.lua
 Core\GUI\Views\DefaultView.lua
