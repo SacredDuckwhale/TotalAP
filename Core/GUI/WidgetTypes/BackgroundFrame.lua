@@ -221,7 +221,7 @@ local function Render(self)
 	
 	-- Make sure Frame is created properly (and BackgroundFrame was instantiated at some point)
 	if not FrameObject then
-		TotalAP.ChatMsg("FrameObject not found (called Render() before CreateNew()?) -> aborting...")
+		TotalAP.Debug("FrameObject not found (called Render() before CreateNew()?) -> aborting...")
 		return
 	end
 	
@@ -230,13 +230,25 @@ local function Render(self)
 	
 		-- TODO: Do this in CreateNew, as it doesn't usually change?
 		FrameObject:SetFrameStrata("BACKGROUND") 
-		FrameObject:SetPoint("CENTER")
 		
-			-- Set backdrop
+		-- Set backdrop
 		FrameObject:SetBackdrop( { bgFile = self:GetBackdropFile(),  edgeFile = self:GetEdgeFile(),  tile = self:IsTiled(), tileSize = self:GetTileSize(), edgeSize = self:GetEdgeSize(), insets = self:GetInsets() } )
 		local r, g, b = TotalAP.Utils.HexToRGB(self:GetBackdropColour())
 		FrameObject:SetBackdropColor(r/255, g/255, b/255, self:GetBackdropAlpha())
-		--FrameObject:SetBackdrop( { bgFile = "Interface\\GLUES\\COMMON\\Glue-Tooltip-Background.blp", edgeFile = "Interface/Tooltips/UI-Tooltip-Border",  tile = true, tileSize = 16, edgeSize = 16,  insets = { left = 4, right = 4, top = 4, bottom = 4 } }) 
+		
+		-- Reposition 
+		if self:GetParent() ~= "UIParent" then -- Position relatively to its parent and the given settings to have it align automatically
+		
+			FrameObject:ClearAllPoints()
+			local posX, posY = unpack(self:GetRelativePosition())
+
+			FrameObject:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", posX, posY)
+			
+		else -- Is top level frame and mustn't be reset, as its position is stored in WOW's Layout Cache
+		
+		end
+		
+		
 	end
 
 	-- Show or hide frame depending on whether it is enabled
