@@ -213,30 +213,6 @@ local function SetInsets(self, insetsArray)
 
 end
 
--- Updates a background frame to display any changes made to its BackgroundFrame container instance
-local function Update(self)
-
-	TotalAP.Debug("Updating frame " .. self:GetName() .. " (type = BackgroundFrame)")
-
-		-- Make sure Frame is created properly (and BackgroundFrame was instantiated at some point)
-	if not self.FrameObject then
-		TotalAP.Debug("FrameObject not found (called Update() before Render()?) -> aborting..")
-		return false
-	end
-	
-	-- Set backdrop of actual Frame
-	self:SetBackdrop( { bgFile = self.backdropFile,  edgeFile = self.edgeFile,  tile = self.isTiled, tileSize = self.tileSize, edgeSize = self.tileSize, insets = self.insets } )
-	self:SetBackdropColor( TotalAP.Utils.HexToRGB(self.backgroundColor), self.backdropAlpha)
-	
-	-- Show actual Frame if it is required
-	if self:IsEnabled() and self.FrameObject and not self:IsShown() then
-		self.FrameObject:SetParent(self:GetParent()) -- Set saved parent to actual Frame
-		self:Show()
-	end
-
-end
-
-
 --- Applies all the contained information to the underlying FrameObject to display them ingame
 -- @param self Reference to the caller
 local function Render(self)
