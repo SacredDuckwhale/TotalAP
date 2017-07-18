@@ -68,17 +68,25 @@ local function CreateNew(self)
 			
 			if self:IsMovable() and IsAltKeyDown() then -- Move display
 				self:StartMoving()
+				AnchorFrameContainer:SetBackdropColour("#D0D0D0")
+				AnchorFrameContainer:SetBackdropAlpha(1)
+				AnchorFrameContainer:Render()
+				
 			end
 			
 			self.isMoving = true
 		
 		end)
 		
-		AnchorFrame:SetScript("OnDragStop", function(self) -- Stopping to drag keeps the display at its new location
+		AnchorFrame:SetScript("OnDragStop", function(self) -- Stopping to drag leaves the display at its new location
 			
 			self:StopMovingOrSizing()
 			self.isMoving = false
-		
+			
+			AnchorFrameContainer:SetBackdropColour("#D0D0D0")
+			AnchorFrameContainer:SetBackdropAlpha(0.5)
+			AnchorFrameContainer:Render()
+			
 		end)
 		
 	end
