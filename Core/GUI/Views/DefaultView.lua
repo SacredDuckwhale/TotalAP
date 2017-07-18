@@ -91,11 +91,26 @@ local function CreateNew(self)
 		
 	end
 	
+	local UnderlightAnglerFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_UnderlightAnglerFrame", "_DefaultView_AnchorFrame")
+	local UnderlightAnglerFrame = UnderlightAnglerFrameContainer:GetFrameObject()
+	do -- UnderlightAnglerFrame
+	
+		-- Layout and visuals
+		UnderlightAnglerFrameContainer:SetBackdropColour("#9CCCF8")
+		UnderlightAnglerFrameContainer:SetRelativePosition(4 * (stateIconsSize + hSpace), 0)
+		
+		UnderlightAnglerFrame:SetSize(barWidth, barHeight)
+		
+		
+	end
+	
 	
 	ViewObject.elementsList = { 	-- This is the actual view, which consists of individual DisplayFrame objects and their properties
 	
 		AnchorFrameContainer,
 
+		UnderlightAnglerFrameContainer,
+		
 	}
 	
 	return ViewObject
