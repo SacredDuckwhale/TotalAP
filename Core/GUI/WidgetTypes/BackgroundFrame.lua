@@ -234,7 +234,9 @@ local function Render(self)
 		FrameObject:SetPoint("CENTER")
 		
 			-- Set backdrop
-		FrameObject:SetBackdropColor(TotalAP.Utils.HexToRGB(self:GetBackdropColour()), self:GetBackdropAlpha())
+		FrameObject:SetBackdrop( { bgFile = self:GetBackdropFile(),  edgeFile = self:GetEdgeFile(),  tile = self:IsTiled(), tileSize = self:GetTileSize(), edgeSize = self:GetEdgeSize(), insets = self:GetInsets() } )
+		local r, g, b = TotalAP.Utils.HexToRGB(self:GetBackdropColour())
+		FrameObject:SetBackdropColor(r/255, g/255, b/255, self:GetBackdropAlpha())
 		--FrameObject:SetBackdrop( { bgFile = "Interface\\GLUES\\COMMON\\Glue-Tooltip-Background.blp", edgeFile = "Interface/Tooltips/UI-Tooltip-Border",  tile = true, tileSize = 16, edgeSize = 16,  insets = { left = 4, right = 4, top = 4, bottom = 4 } }) 
 	end
 
