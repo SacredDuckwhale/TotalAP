@@ -90,7 +90,7 @@ end
 -- @returns A reference to the parent frame if the contained FrameObject has been rendered; The name of the one that will be applied to the FrameObject when it is being rendered otherwise
 local function GetParent(self)
 
-	if self.FrameObject.GetParent then return self.FrameObject:GetParent() end
+	if self.FrameObject.GetParent then return self.FrameObject:GetParent():GetName() end
 	
 	return self.Parent
 
