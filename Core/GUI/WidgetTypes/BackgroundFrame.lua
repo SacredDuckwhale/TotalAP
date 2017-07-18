@@ -228,12 +228,14 @@ local function Render(self)
 	local isEnabled = self:GetEnabled()
 	if isEnabled then -- Display Frame and apply changes where necessary
 	
-		FrameObject:SetBackdropColor(TotalAP.Utils.HexToRGB(self:GetBackdropColour()), self:GetBackdropAlpha())
-	--	FrameObject:SetBackdrop(self:GetBackdropFile()) TODO: Proper format for table
 		-- TODO: Do this in CreateNew, as it doesn't usually change?
 		FrameObject:SetFrameStrata("BACKGROUND") 
 		FrameObject:ClearAllPoints()
 		FrameObject:SetPoint("CENTER")
+		
+			-- Set backdrop
+		FrameObject:SetBackdrop( { bgFile = FrameObject:GetBackdropFile(),  edgeFile = FrameObject:GetEdgeFile(),  tile = FrameObject:isTiled(), tileSize = FrameObject:GetTileSize(), edgeSize = FrameObject:GetEdgeSize(), insets = FrameObject:GetInsets() } )
+		FrameObject:SetBackdropColor(TotalAP.Utils.HexToRGB(self:GetBackdropColour()), self:GetBackdropAlpha())
 		--FrameObject:SetBackdrop( { bgFile = "Interface\\GLUES\\COMMON\\Glue-Tooltip-Background.blp", edgeFile = "Interface/Tooltips/UI-Tooltip-Border",  tile = true, tileSize = 16, edgeSize = 16,  insets = { left = 4, right = 4, top = 4, bottom = 4 } }) 
 	end
 
