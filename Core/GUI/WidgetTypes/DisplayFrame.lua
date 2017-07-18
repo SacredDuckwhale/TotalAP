@@ -41,18 +41,7 @@ mt.__index = function(table, key)
 	
 end
 
--- local isEnabled -- NOT the same as shown, for which an API exist. Disabled = Display not part of the view, which is independent of the actual frame's visibility status (although disabled elements aren't supposed to be rendered = shown)
--- local FrameObject = {}
--- local numInstances = 0
--- local parent -- Saved in case the Frame is disabled
--- local name -- will be used for the Frame's name, but also applies to the DisplayFrame object
 
-
--- local isEnabled -- NOT the same as shown, for which an API exist. Disabled = Display not part of the view, which is independent of the actual frame's visibility status (although disabled elements aren't supposed to be rendered = shown)
--- local FrameObject = {}
--- local numInstances = 0
--- local parent -- Saved in case the Frame is disabled
--- local name -- will be used for the Frame's name, but also applies to the DisplayFrame object
 --- Retrieves the enabled status for this object
 -- @param self Reference to the caller
 -- @return Whether or not the contained FrameObject should be rendered as part of the View
