@@ -230,7 +230,6 @@ local function Render(self)
 	
 		-- TODO: Do this in CreateNew, as it doesn't usually change?
 		FrameObject:SetFrameStrata("BACKGROUND") 
-		FrameObject:ClearAllPoints()
 		FrameObject:SetPoint("CENTER")
 		
 			-- Set backdrop
