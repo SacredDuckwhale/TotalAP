@@ -39,7 +39,7 @@ local function CreateNew(self)
 	
 	-- TODO: Get those from the settings, so that they can be changed in the options GUI (under tab: Views -> DefaultView, along with enabling/disabling/repositioning individual display components)
 	local hSpace, vSpace = 5, 5 -- space between display elements
-	local barWidth, barHeight = 100, 18
+	local barWidth, barHeight, barInset = 100, 18, 1
 	local maxButtonSize = 100
 	local specIconSize = 16
 	local specIconBorderWidth = 1
@@ -146,7 +146,7 @@ local function CreateNew(self)
 	
 		-- Layout and visuals
 		UnderlightAnglerFrameContainer:SetBackdropColour("#9CCCF8")
-		UnderlightAnglerFrameContainer:SetRelativePosition(4 * (stateIconSize + hSpace), 0)
+		UnderlightAnglerFrameContainer:SetRelativePosition(barInset + 4 * (stateIconSize + hSpace), -barInset)
 		
 		UnderlightAnglerFrame:SetSize(barWidth, barHeight)
 		
