@@ -250,20 +250,6 @@ local function Render(self)
 		
 		
 	end
-
-	-- Show or hide frame depending on whether it is enabled
-	--FrameObject:SetShown(isEnabled)
-
-		-- -- Setting the size
-	-- Position and size are saved by the client (or are they? Since this isn't technically a frame, but FrameObject is - TODO)
-	
-	--self:Hide()
-	--self.parent = parent --TODO: Not necessary, or is it important to save the ORIGINAL parent when it can easily be set via API later?
-	--self:SetParent(nil)
-	--self:SetParent(self:GetParent()) -- This looks odd, but what it does is set the WOW Frame's parent to the DisplayFrame's saved parent (since no Frame exists, it falls back on the class method and not Frame:GetParent())
-	
-	-- ... then call Update, because for a background frame, no additional setup needs to be done (as opposed to some other GUI elements)
-	--self:Update()
 	
 end
 
