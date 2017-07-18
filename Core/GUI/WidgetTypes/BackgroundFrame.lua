@@ -116,46 +116,102 @@ local function SetBackdropFile(self, newFile)
 end
 
 
--- local function GetEdgeFile(self)
+--- Retrieves currently used edge file (path)
+-- @param self Reference to the caller
+-- @return Edge file path (as a relative path in the WOW client)
+local function GetEdgeFile(self)
 
--- end
+	return self.edgeFile or defaultValues.edgeFile
+	
+end
 
--- local function SetEdgeFile(self, newFile)
+--- Sets the edge file that will be applied upon rendering the contained FrameObject
+-- @param self Reference to the caller
+-- @param newFile New edge file path (as a relative path in the WOW client)
+local function SetEdgeFile(self, newFile)
 
--- end
+	self.edgeFile = newFile or self.edgeFile
+	
+end
 
--- local function GetEdgzeSize(self)
+--- Retrieves currently used size of the edge
+-- @param self Reference to the caller
+-- @return Size of the Frame's edge (in pixels)
+local function GetEdgeSize(self)
+	
+	return self.edgeSize or defaultValues.edgeSize
+	
+end
 
--- end
+--- Sets the edge size that will be applied upon rendering the contained FrameObject
+-- @param self Reference to the caller
+-- @param newSize New size of the edge (in pixels)
+local function SetEdgeSize(self, newSize)
 
--- local function SetEdgeSize(self, newSize)
+	self.edgeSize = newSize or self.edgeSize
 
--- end
+end
 
--- local function IsTiled(self)
+-- Returns whether or not the background image is tiled
+-- @param self Reference to the caller
+-- @returns Whether or not the backdrop image is set to be displayed as tiles
+local function GetTiled(self)
 
--- end
+	return self.isTiled or defaultValues.isTiled
 
--- local function SetTiled(self, tiledFlag)
+end
 
--- end
+--- Alias for GetTiled()
+local function IsTiled(self)
 
--- local function GetTileSize(self)
+	return GetTiled(self)
 
--- end
+end
 
--- local function SetTileSize(self, newSize)
+--- Sets whether or not tiling should be applied upon rendering the contained FrameObject
+-- @param self Reference to the caller
+-- @param tiledFlag Whether or not the backdrop image should be tiled
+local function SetTiled(self, tiledFlag)
 
--- end
+	self.isTiled = tiledFlag or self.isTiled
 
--- local function GetInsets(self)
+end
 
--- end
+--- Retrieves the current size of each tile (only applies if tiling is enabled)
+-- @param self Reference to the caller
+-- @return Size of each tile (in pixels)
+local function GetTileSize(self)
 
--- local function SetInsets(self, insetsArray)
+	return self.tileSize or defaultValues.tileSize
 
--- end
+end
 
+--- Sets how large each tile should be (if tiling is enabled) upon applied upon rendering the contained FrameObject
+-- @param self Reference to the caller
+-- @param newSize New size of each tile (in pixels)
+local function SetTileSize(self, newSize)
+
+	self.tileSize = newSize or self.tileSize
+
+end
+
+--- Returns array containing the currently used insets
+-- @param self Reference to the caller
+-- @return An array containing the insets
+local function GetInsets(self)
+
+	return self.insets or defaultValues.insets
+
+end
+
+--- Sets the insets that will be applied upon rendering the contained FrameObject
+-- @param self Reference to the caller
+-- @param insetsArray An array of insets. Must contain valid insets, such as 1, 2, or 4 integer values (for "universal", "horizontal/vertical", and "individual" edge sizes, respectively)
+local function SetInsets(self, insetsArray)
+
+	self.insets = insetsArray or self.insets
+
+end
 
 -- Updates a background frame to display any changes made to its BackgroundFrame container instance
 local function Update(self)
@@ -273,7 +329,6 @@ local function CreateNew(self, name, parent)
 end
 
 
-
 -- Public methods (interface table -> accessible by the View and GUI Controller)
 BackgroundFrame.CreateNew = CreateNew
 BackgroundFrame.GetBackdropColour = GetBackdropColour
@@ -282,6 +337,17 @@ BackgroundFrame.GetBackdropAlpha = GetBackdropAlpha
 BackgroundFrame.SetBackdropAlpha = SetBackdropAlpha
 BackgroundFrame.GetBackdropFile = GetBackdropFile
 BackgroundFrame.SetBackdropFile = SetBackdropFile
+BackgroundFrame.GetEdgeFile = GetEdgeFile
+BackgroundFrame.SetEdgeFile = SetEdgeFile
+BackgroundFrame.GetEdgeSize = GetEdgeSize
+BackgroundFrame.SetEdgeSize = SetEdgeSize
+BackgroundFrame.GetTiled = GetTiled
+BackgroundFrame.SetTiled = SetTiled
+BackgroundFrame.IsTiled = IsTiled
+BackgroundFrame.GetTileSize = GetTileSize
+BackgroundFrame.SetTileSize = SetTileSize
+BackgroundFrame.GetInsets = GetInsets
+BackgroundFrame.SetInsets = SetInsets
 BackgroundFrame.Render = Render
 
 -- Make class available in the addon namespace
