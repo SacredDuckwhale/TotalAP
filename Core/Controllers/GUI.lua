@@ -172,23 +172,7 @@ local function RenderGUI()
 		return
 	end
 
-	local elementsList = ActiveViewObject.elementsList
-	
-	if not elementsList or not (#elementsList > 0) then -- No elements that could be rendered
-		TotalAP.ChatMsg("Failed to render GUI -> No elements exist for activeView = " .. tostring(activeView))
-		return
-	end
-	
-	-- Disable all elements that can't be shown due to event state restrictions (combat, pet battle, vehicle, loss of control)
-	
-	
-	-- Render all enabled elements (show frames) 
-	for index, Element in ipairs(elementsList) do
-		if Element ~= nil then
-			TotalAP.ChatMsg("Rendering GUI element " .. index .. ": " .. Element:GetName())
-			Element:Render()
-		end
-	end
+	ActiveViewObject:Render()
 	
 end
 
