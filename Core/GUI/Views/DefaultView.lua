@@ -24,6 +24,7 @@
 local addonName, TotalAP = ...
 if not TotalAP then return end
 
+
 local DefaultView = {}
 
 --- Creates a new ViewObject
@@ -36,16 +37,44 @@ local function CreateNew(self)
 	setmetatable(ViewObject, self) -- The new object inherits from this class
 	self.__index = TotalAP.GUI.View -- ... and this class inherits from the generic View template
 	
-	-- TODO...
 	-- Create frames and store them for later use
 	
+	-- Anchor frame: Parent of all displays and buttons (used to toggle the entire addon, as well as move its displays)
 	local AnchorFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_AnchorFrame")
 	local AnchorFrame = AnchorFrameContainer:GetFrameObject()
+	do -- AnchorFrame
 	
-	AnchorFrameContainer:SetBackdropColour("#9CCCF8")
-	AnchorFrame:SetSize(100, 100)
+		-- Layout and visuals
+		AnchorFrame:SetFrameStrata("BACKGROUND")
+		AnchorFrameContainer:SetBackdropColour("#9CCCF8")
+		AnchorFrame:SetSize(220, 15)
+		
+		-- Player interaction
+		AnchorFrame:SetMovable(true) 
+		AnchorFrame:EnableMouse(true)
+		AnchorFrame:RegisterForDrag("LeftButton")
+		
+		-- Script handlers
+		AnchorFrame:SetScript("OnDragStart", function(self) -- Dragging moves the entire display (ALT + Click)
+			
+			if self:IsMovable() and IsAltKeyDown() then -- Move display
+				self:StartMoving()
+			end
+			
+			self.isMoving = true
+		
+		end)
+		
+		AnchorFrame:SetScript("OnDragStop", function(self) -- Stopping to drag keeps the display at its new location
+			
+			self:StopMovingOrSizing()
+			self.isMoving = false
+		
+		end)
+		
+	end
 	
-	AnchorFrame:EnableMouse() -- AnchorFrame.EnableMouse(self) -> AnchorFrame.EnableMouse(FrameObject.self) = Anchorframe.FrameObject:EnableMouse()
+	
 	ViewObject.elementsList = { 	-- This is the actual view, which consists of individual DisplayFrame objects and their properties
 	
 		AnchorFrameContainer,
