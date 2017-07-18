@@ -32,11 +32,11 @@ local defaultValues = {
 	backdropFile = "Interface\\CHATFRAME\\CHATFRAMEBACKGROUND.BLP",
 
 --	TODO: Edges not supported yet, ditto for tiling (because I couldn't be bothered right now. All Views use simple backgrounds for the time being) -> Create Get/Set methods and voilá
-	edgeFile = "Interface/Tooltips/UI-Tooltip-Border", -- Interface/Tooltips/UI-Tooltip-Border
-	edgeSize = 15,
-	isTiled = true, -- Stretched otherwise
-	tileSize = 16,
-	insets = { 4, 4, 4, 4 },
+	edgeFile = "", -- Interface/Tooltips/UI-Tooltip-Border
+	edgeSize = 0,
+	isTiled = false, -- Stretched otherwise
+	tileSize = 0,
+	insets = { 0, 0, 0, 0 },
 
 }
 
