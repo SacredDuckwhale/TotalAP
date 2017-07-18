@@ -28,6 +28,7 @@ local defaultValues = {
 	numInstances = 0,
 	Parent = "UIParent",
 	name = "",
+	position = { 0, 0 },
 	
 }
 
@@ -151,6 +152,27 @@ local function GetFrameObject(self)
 end
 
 
+--- Retrieves position of the contained FrameObject relative to its parent frame
+-- @param self Reference to the caller
+-- @return Position as array { posX, posY } - use unpack() if necessary
+local function GetRelativePosition(self)
+	
+	return self.position or defaultValues.position
+	
+end
+
+--- Sets position of the contained FrameObject relative to its parent frame
+-- @param self Reference to the caller
+-- @param[opt] posX X-Offset (defaults to 0)
+-- @param[opt] posY X-Offset (defaults to 0)
+local function SetRelativePosition(self, posX, posY)
+
+	local pos = { posX or 0, posY or 0 }
+
+	self.position = pos
+	
+end
+
 -- Public methods (interface table)
 DisplayFrame.CreateNew = CreateNew
 DisplayFrame.GetEnabled = GetEnabled
@@ -164,7 +186,8 @@ DisplayFrame.SetParent = SetParent
 DisplayFrame.SetName = SetName
 DisplayFrame.GetName = GetName
 DisplayFrame.GetFrameObject = GetFrameObject
-
+DisplayFrame.GetRelativePosition = GetRelativePosition
+DisplayFrame.SetRelativePosition = SetRelativePosition
 
 TotalAP.GUI.DisplayFrame = DisplayFrame
 
