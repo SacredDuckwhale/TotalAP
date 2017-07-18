@@ -44,7 +44,7 @@ local function CreateNew(self)
 	local specIconSize = 16
 	local specIconBorderWidth = 1
 	local specIconTextWidth = 40
-	local stateIconsSize = 20
+	local stateIconSize = 20
 	local sliderHeight = 20
 	
 	-- Anchor frame: Parent of all displays and buttons (used to toggle the entire addon, as well as move its displays)
@@ -91,13 +91,62 @@ local function CreateNew(self)
 		
 	end
 	
+	-- Event state icons: Indicate state of events that affect the ability to use AP items (TODO: Settings to show/hide and style these)
+	local CombatStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_CombatStateIcon", "_DefaultView_AnchorFrame")
+	local CombatStateIcon = CombatStateIconContainer:GetFrameObject()
+	do -- CombatStateIcon
+		
+		-- Layout and visuals
+		CombatStateIconContainer:SetRelativePosition(0, 0)
+		CombatStateIconContainer:SetBackdropColour("#EC3413")
+		
+		CombatStateIcon:SetSize(stateIconSize, stateIconSize)
+		
+	end
+	
+	local PetBattleStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_PetBattleStateIcon", "_DefaultView_AnchorFrame")
+	local PetBattleStateIcon = PetBattleStateIconContainer:GetFrameObject()
+	do -- PetBattleStateIcon
+		
+		-- Layout and visuals
+		PetBattleStateIconContainer:SetRelativePosition(stateIconSize + hSpace, 0)
+		PetBattleStateIconContainer:SetBackdropColour("#F05238")
+		
+		PetBattleStateIcon:SetSize(stateIconSize, stateIconSize)
+		
+	end
+	
+	local VehicleStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_VehicleStateIcon", "_DefaultView_AnchorFrame")
+	local VehicleStateIcon = VehicleStateIconContainer:GetFrameObject()
+	do -- VehicleStateIcon
+		
+		-- Layout and visuals
+		VehicleStateIconContainer:SetRelativePosition(2 * (stateIconSize + hSpace), 0)
+		VehicleStateIconContainer:SetBackdropColour("#F3725D")
+		
+		VehicleStateIcon:SetSize(stateIconSize, stateIconSize)
+		
+	end
+	
+	local PlayerControlStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_PlayerControlStateIcon", "_DefaultView_AnchorFrame")
+	local PlayerControlStateIcon = PlayerControlStateIconContainer:GetFrameObject()
+	do -- PlayerControlStateIcon
+	
+		-- Layout and visuals
+		PlayerControlStateIconContainer:SetRelativePosition(3 * (stateIconSize + hSpace), 0)
+		PlayerControlStateIconContainer:SetBackdropColour("#F69282")
+		
+		PlayerControlStateIcon:SetSize(stateIconSize, stateIconSize)
+	
+	end
+	
 	local UnderlightAnglerFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_UnderlightAnglerFrame", "_DefaultView_AnchorFrame")
 	local UnderlightAnglerFrame = UnderlightAnglerFrameContainer:GetFrameObject()
 	do -- UnderlightAnglerFrame
 	
 		-- Layout and visuals
 		UnderlightAnglerFrameContainer:SetBackdropColour("#9CCCF8")
-		UnderlightAnglerFrameContainer:SetRelativePosition(4 * (stateIconsSize + hSpace), 0)
+		UnderlightAnglerFrameContainer:SetRelativePosition(4 * (stateIconSize + hSpace), 0)
 		
 		UnderlightAnglerFrame:SetSize(barWidth, barHeight)
 		
@@ -108,7 +157,10 @@ local function CreateNew(self)
 	ViewObject.elementsList = { 	-- This is the actual view, which consists of individual DisplayFrame objects and their properties
 	
 		AnchorFrameContainer,
-
+		CombatStateIconContainer,
+		PetBattleStateIconContainer,
+		VehicleStateIconContainer,
+		PlayerControlStateIconContainer,
 		UnderlightAnglerFrameContainer,
 		
 	}
