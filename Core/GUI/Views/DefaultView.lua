@@ -37,7 +37,15 @@ local function CreateNew(self)
 	setmetatable(ViewObject, self) -- The new object inherits from this class
 	self.__index = TotalAP.GUI.View -- ... and this class inherits from the generic View template
 	
-	-- Create frames and store them for later use
+	-- TODO: Get those from the settings, so that they can be changed in the options GUI (under tab: Views -> DefaultView, along with enabling/disabling/repositioning individual display components)
+	local hSpace, vSpace = 5, 5 -- space between display elements
+	local barWidth, barHeight = 100, 18
+	local maxButtonSize = 100
+	local specIconSize = 16
+	local specIconBorderWidth = 1
+	local specIconTextWidth = 40
+	local stateIconsSize = 20
+	local sliderHeight = 20
 	
 	-- Anchor frame: Parent of all displays and buttons (used to toggle the entire addon, as well as move its displays)
 	local AnchorFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_AnchorFrame")
@@ -46,8 +54,9 @@ local function CreateNew(self)
 	
 		-- Layout and visuals
 		AnchorFrame:SetFrameStrata("BACKGROUND")
-		AnchorFrameContainer:SetBackdropColour("#9CCCF8")
-		AnchorFrame:SetSize(220, 15)
+		AnchorFrameContainer:SetBackdropColour("#D0D0D0")
+		AnchorFrameContainer:SetBackdropAlpha(0.5)
+		AnchorFrame:SetSize(maxButtonSize + hSpace + barWidth + hSpace + specIconSize + 2 * specIconBorderWidth + hSpace + specIconTextWidth, barHeight + vSpace + maxButtonSize + vSpace + sliderHeight) -- TODO: Update dynamically (script handlers?) to account for variable number of specs
 		
 		-- Player interaction
 		AnchorFrame:SetMovable(true) 
