@@ -291,9 +291,8 @@ local function CreateNew(self, name, parent)
 	end
 	
 	-- Create actual WOW Frame (will be invisible, as backdrop etc. will only be applied when rendering, which happens later)
-	-- Create actual WOW Frame
 	name = addonName .. (name or (self:GetName() or "BackgroundFrame" .. self:GetNumInstances()))  -- e.g., "TotalAPBackgroundFrame1" if no other name was provided
-	parent = parent or "UIParent"
+	parent = (parent and (addonName .. parent)) or parent or "UIParent"
 	TotalAP.Debug("CreateNew -> Creating frame with name = " .. name .. ", parent = " .. parent) 
 	
 	BackgroundFrameObject:SetName(name)
@@ -301,7 +300,7 @@ local function CreateNew(self, name, parent)
 	BackgroundFrameObject.FrameObject = CreateFrame("Frame", name, _G[parent] or UIParent) 
 	
 	self.numInstances =  self:GetNumInstances() + 1 -- As this new frame is added to the pool, future frames should not use its number to avoid potential name clashes (even though there is no guarantee this ID is actually used, wasting some makes little difference)
-	
+
 	return BackgroundFrameObject
 	
 end
