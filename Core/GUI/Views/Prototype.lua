@@ -61,33 +61,24 @@ end
 -- @param self Reference to the ViewObject representing the View
 local function Render(self)
 
-	-- if self:GetName()  ~= TotalAP.Controllers.GetActiveView() then return end
-
-	-- Render (and display),enabled elements that are part of the view
-	for index, Element in ipairs(elementsList) do 
-		
-		TotalAP.Debug("Rendering view element " .. index .. ": " .. Element:GetName() or "<unnamed>") -- Element:GetName() will look up the attached FrameObject and return the WOW Frame's name
-		if Element:IsEnabled() then 
-			Element:Render()
-		end
-		
+	local elementsList = self.elementsList
+	
+	if not elementsList or not (#elementsList > 0) then -- No elements that could be rendered
+		TotalAP.ChatMsg("Failed to render View -> No elements exist for View = " .. self:GetName())
+		return
 	end
 	
-end
-
---- Updates the existing (and already rendered = created) view to display correct information (won't do anything if view isn't active either)
--- @param self Reference to the ViewObject representing the View
-local function Update(self)
-
-	-- Update,enabled elements that are part of the view
+	-- Disable all elements that can't be shown due to event state restrictions (combat, pet battle, vehicle, loss of control)
+	
+	
+	-- Render all enabled elements (show frames) 
 	for index, Element in ipairs(elementsList) do
-		
-		TotalAP.Debug("Updating view element " .. index .. ": " .. Element:GetName() or "<unnamed>") -- Element:GetName() will look up the attached FrameObject and return the WOW Frame's name
-		if Element:IsEnabled() then 
-			Element:Update()
+		if Element ~= nil then
+			TotalAP.Debug("Rendering View element " .. index .. ": " .. Element:GetName())
+			Element:Render()
 		end
-		
 	end
+	
 end
 
 --- Get the number of elements that make up this view (Only enabled elements count)
