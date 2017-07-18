@@ -228,9 +228,6 @@ local function Render(self)
 	local isEnabled = self:GetEnabled()
 	if isEnabled then -- Display Frame and apply changes where necessary
 	
-		-- TODO: Do this in CreateNew, as it doesn't usually change?
-		FrameObject:SetFrameStrata("BACKGROUND") 
-		
 		-- Set backdrop
 		FrameObject:SetBackdrop( { bgFile = self:GetBackdropFile(),  edgeFile = self:GetEdgeFile(),  tile = self:IsTiled(), tileSize = self:GetTileSize(), edgeSize = self:GetEdgeSize(), insets = self:GetInsets() } )
 		local r, g, b = TotalAP.Utils.HexToRGB(self:GetBackdropColour())
@@ -247,7 +244,6 @@ local function Render(self)
 		else -- Is top level frame and mustn't be reset, as its position is stored in WOW's Layout Cache
 		
 		end
-		
 		
 	end
 	
@@ -296,7 +292,8 @@ local function CreateNew(self, name, parent)
 	BackgroundFrameObject:SetName(name)
 	BackgroundFrameObject:SetParent(parent)
 	BackgroundFrameObject.FrameObject = CreateFrame("Frame", name, _G[parent] or UIParent) 
-	
+	BackgroundFrameObject.FrameObject:SetFrameStrata("BACKGROUND") 
+		
 	self.numInstances =  self:GetNumInstances() + 1 -- As this new frame is added to the pool, future frames should not use its number to avoid potential name clashes (even though there is no guarantee this ID is actually used, wasting some makes little difference)
 
 	return BackgroundFrameObject
