@@ -116,45 +116,45 @@ local function SetBackdropFile(self, newFile)
 end
 
 
-local function GetEdgeFile(self)
+-- local function GetEdgeFile(self)
 
-end
+-- end
 
-local function SetEdgeFile(self, newFile)
+-- local function SetEdgeFile(self, newFile)
 
-end
+-- end
 
-local function GetEdgzeSize(self)
+-- local function GetEdgzeSize(self)
 
-end
+-- end
 
-local function SetEdgeSize(self, newSize)
+-- local function SetEdgeSize(self, newSize)
 
-end
+-- end
 
-local function IsTiled(self)
+-- local function IsTiled(self)
 
-end
+-- end
 
-local function SetTiled(self, tiledFlag)
+-- local function SetTiled(self, tiledFlag)
 
-end
+-- end
 
-local function GetTileSize(self)
+-- local function GetTileSize(self)
 
-end
+-- end
 
-local function SetTileSize(self, newSize)
+-- local function SetTileSize(self, newSize)
 
-end
+-- end
 
-local function GetInsets(self)
+-- local function GetInsets(self)
 
-end
+-- end
 
-local function SetInsets(self, insetsArray)
+-- local function SetInsets(self, insetsArray)
 
-end
+-- end
 
 
 -- Updates a background frame to display any changes made to its BackgroundFrame container instance
@@ -207,6 +207,26 @@ local function Render(self)
 
 	-- Show or hide frame depending on whether it is enabled
 	--FrameObject:SetShown(isEnabled)
+
+		-- -- Setting the size
+	-- Position and size are saved by the client (or are they? Since this isn't technically a frame, but FrameObject is - TODO)
+	
+	--self:Hide()
+	--self.parent = parent --TODO: Not necessary, or is it important to save the ORIGINAL parent when it can easily be set via API later?
+	--self:SetParent(nil)
+	--self:SetParent(self:GetParent()) -- This looks odd, but what it does is set the WOW Frame's parent to the DisplayFrame's saved parent (since no Frame exists, it falls back on the class method and not Frame:GetParent())
+	
+	-- ... then call Update, because for a background frame, no additional setup needs to be done (as opposed to some other GUI elements)
+	--self:Update()
+	
+end
+
+
+--- Create (and return) a new BackgroundFrame widget
+-- @param self Reference to the caller
+-- @param[opt] name Name of the contained FrameObject; defaults to TotalAPBackgroundFrameN (where N is the number of instances) if omitted
+-- @param[opt] parent Name of the parent frame; defaults to "UIParent" if omitted
+-- @return BackgroundFrameObject representing the frame's container
 local function CreateNew(self, name, parent)
 
 	local BackgroundFrameObject = {
