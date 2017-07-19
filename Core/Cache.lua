@@ -165,14 +165,14 @@ local function GetValue(fqcn, specID, key)
 	
 	if not (cache and cache[fqcn] and cache[fqcn][specID]) then -- Cache entry doesn't exist
 	
-		TotalAP.Debug("Attempted to update cache entry for fqcn = " .. fqcn .. " and spec = " .. specID .. ", but it didn't exist")
+		TotalAP.Debug("Attempted to retrieve cache entry for fqcn = " .. fqcn .. " and spec = " .. specID .. ", but it didn't exist")
 		return
 		
 	end
 	
 	local entry = GetEntry(fqcn, specID)
 	
-	if not (entry ~= nil and key and entry[key]) then -- Key is invalid or entry doesn't exist
+	if not (entry and key and entry[key] ~= nil) then -- Key is invalid or entry doesn't exist
 	
 		TotalAP.Debug("Attempted to retrieve cache entry for key = " .. key .. ", but key is invalid or entry doesn't exist")
 		return
