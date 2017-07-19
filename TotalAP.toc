@@ -64,6 +64,8 @@ Core\Settings.lua
 
 Core\GUI\WidgetTypes\DisplayFrame.lua
 Core\GUI\WidgetTypes\BackgroundFrame.lua
+Core\GUI\WidgetTypes\ItemUseButton.lua
+Core\GUI\WidgetTypes\SpecIcon.lua
 
 Core\GUI\Views\Prototype.lua
 Core\GUI\Views\DefaultView.lua
