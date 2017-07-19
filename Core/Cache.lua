@@ -260,8 +260,8 @@ local function UpdateBankCache(fqcn)
 
 end
 
---- Returns the number of ignored specs for a given character (defaults to currently used character if none is given)
--- @param[opt] fqcn Fully qualified character name, to be used as the primary key
+--- Returns the number of ignored specs for a given character
+-- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if none is given)
 -- @return Number of ignored specs; 0 if none are cached
 local function GetNumIgnoredSpecs(fqcn)
 	
