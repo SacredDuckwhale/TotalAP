@@ -24,6 +24,7 @@ local DisplayFrame = {}
 local defaultValues = {
 	
 	isEnabled = true,
+	assignedSpec = 0, -- 0 -> Part of the display for all specs
 --	FrameObject = {}, -- This should be overwritten by the instanced classes to replace it with an actual WOW Frame object
 	numInstances = 0,
 	Parent = "UIParent",
@@ -126,6 +127,24 @@ local function GetName(self)
 
 end
 
+--- Retrieves the currently assigned spec number
+-- @param self Reference to the caller
+-- @returns The number of the spec that is assigned to this container
+local function GetAssignedSpec(self)
+
+	return self.assignedSpec or defaultValues.assignedSpec
+
+end
+
+--- Assigns a spec number to this container
+-- @param self Reference to the caller
+-- @param assignedSpec The spec number (1-4) that this container will be assigned to
+local function SetAssignedSpec(self, assignedSpec)
+
+	self.assignedSpec = assignedSpec or self.assignedSpec
+
+end
+
 --- Prototype method. Must be overwritten by derived classes to be useful, as rendering is different for each frame type
 local function Render()
 
@@ -185,6 +204,8 @@ DisplayFrame.GetParent = GetParent
 DisplayFrame.SetParent = SetParent
 DisplayFrame.SetName = SetName
 DisplayFrame.GetName = GetName
+DisplayFrame.GetAssignedSpec = GetAssignedSpec
+DisplayFrame.SetAssignedSpec = SetAssignedSpec
 DisplayFrame.GetFrameObject = GetFrameObject
 DisplayFrame.GetRelativePosition = GetRelativePosition
 DisplayFrame.SetRelativePosition = SetRelativePosition

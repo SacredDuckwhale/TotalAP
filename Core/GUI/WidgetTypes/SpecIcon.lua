@@ -28,7 +28,6 @@ local SpecIcon = {}
 local defaultValues = {
 
 	icon = "",
-	specNo = 0,
 	isFlashing = false,
 	borderTexture = "",
 
@@ -69,24 +68,6 @@ end
 local function SetIcon(self, icon)
 
 	self.icon = icon or self.icon
-
-end
-
---- Retrieves the currently assigned spec number
--- @param self Reference to the caller
--- @returns The number of the spec that is assigned to this container
-local function GetSpecNo(self)
-
-	return self.specNo or defaultValues.specNo
-
-end
-
---- Assigns a spec number to this container
--- @param self Reference to the caller
--- @param specNo The spec number (1-4) that this container will be assigned to
-local function SetSpecNo(self, specNo)
-
-	self.specNo = specNo or self.specNo
 
 end
 
@@ -138,19 +119,21 @@ local function Render(self)
 		return
 	end
 	
-	-- Skip icons that can't be assigned to actual specs (the maximum no. is always created, but not all of them need to be rendered for every class)
-	if self:GetSpecNo() > GetNumSpecializations() then -- Disable this icon, as the player's class has fewer specs
-		self:SetEnabled(false)
-		return
-	end
+	
+	-- Skip icons which correspond to specs that are set to be ignored
+	
+	
 	local isEnabled = self:GetEnabled()
 	if isEnabled then -- Display Frame and apply changes where necessary
 	
 		-- Set icon
 		
+		
 		-- Set border
-
+		
+		
 		-- Masque update (if required)
+		
 		
 		-- Apply or remove glow effect
 		
@@ -227,8 +210,6 @@ end
 SpecIcon.CreateNew = CreateNew
 SpecIcon.GetIcon = GetIcon
 SpecIcon.SetIcon = SetIcon
-SpecIcon.GetSpecNo = GetSpecNo
-SpecIcon.SetSpecNo = SetSpecNo
 SpecIcon.GetFlashing = GetFlashing
 SpecIcon.SetFlashing = SetFlashing
 SpecIcon.GetBorder = GetBorder
