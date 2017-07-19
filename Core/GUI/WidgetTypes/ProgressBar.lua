@@ -300,7 +300,12 @@ end
 local function CreateNew(self, name, parent)
 
 	local ProgressBarObject = {
-		FrameObject = {} -- holds the actual WOW Frame object (userdata) that is unique to each instance of this class
+		FrameObject = {}, -- holds the actual WOW Frame object (userdata) that is unique to each instance of this class
+		-- child frames (needn't be accessed directly from the outside)
+		UnspentBar = {},
+		InBagsBar = {},
+		InBankBar = {},
+		MiniBar = {},
 	}
 	
 	setmetatable(ProgressBarObject, self)  -- Set newly created object to inherit from ProgressBar (template, as defined here)
@@ -319,12 +324,24 @@ local function CreateNew(self, name, parent)
 	name = addonName .. (name or (self:GetName() or "ProgressBar" .. self:GetNumInstances()))  -- e.g., "TotalAPProgressBar1" if no other name was provided
 	parent = (parent and (addonName .. parent)) or parent or "UIParent"
 	TotalAP.Debug("CreateNew -> Creating frame with name = " .. name .. ", parent = " .. parent) 
-	
 	ProgressBarObject:SetName(name)
 	ProgressBarObject:SetParent(parent)
 	ProgressBarObject.FrameObject = CreateFrame("Frame", name, _G[parent] or UIParent) 
 	ProgressBarObject.FrameObject:SetFrameStrata("BACKGROUND") 
-		
+	
+	-- Create frames for the contained bars
+	ProgressBarObject.UnspentBar = CreateFrame("Frame", name .. "UnspentBar", ProgressBarObject.FrameObject) 
+	ProgressBarObject.InBagsBar = CreateFrame("Frame", name .. "InBagsBar", ProgressBarObject.FrameObject) 
+	ProgressBarObject.InBankBar = CreateFrame("Frame", name .. "InBankBar", ProgressBarObject.FrameObject) 
+	ProgressBarObject.MiniBar = CreateFrame("Frame", name .. "MiniBar", ProgressBarObject.FrameObject) 
+	
+	-- Create empty texture objects
+	ProgressBarObject.FrameObject.texture = ProgressBarObject.FrameObject:CreateTexture()
+	ProgressBarObject.UnspentBar.texture = ProgressBarObject.UnspentBar:CreateTexture()
+	ProgressBarObject.InBagsBar.texture = ProgressBarObject.InBagsBar:CreateTexture()
+	ProgressBarObject.InBankBar.texture = ProgressBarObject.InBankBar:CreateTexture()
+	ProgressBarObject.MiniBar.texture = ProgressBarObject.MiniBar:CreateTexture()
+	
 	self.numInstances =  self:GetNumInstances() + 1 -- As this new frame is added to the pool, future frames should not use its number to avoid potential name clashes (even though there is no guarantee this ID is actually used, wasting some makes little difference)
 
 	return ProgressBarObject
