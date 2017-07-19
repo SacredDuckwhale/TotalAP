@@ -290,10 +290,51 @@ local function GetNumIgnoredSpecs(fqcn)
 	
 end
 
+--- Returns whether or not a spec is being ignored for a given character
+-- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if none is given)
+-- @param[opt] specNo Spec number (defaults to current spec if omitted)
+-- @return Whether or not the spec is set to being ignored
+local function IsSpecIgnored(fqcn, specNo)
+
+	fqcn = fqcn or TotalAP.Utils.GetFQCN() 
+	specNo = specNo or GetSpecialization()
 	
+	return GetValue(fqcn, specNo, "isIgnored")
 	
+end
+
+--- Returns whether or not the currently active spec is being ignored for the logged-in character
+-- @return Whether or not the current spec is set to being ignored
+local function IsCurrentSpecIgnored()
+
+	return IsSpecIgnored(nil, GetSpecialization())
+
+end
+
+--- Ignores a spec for the given character
+-- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if none is given)
+-- @param[opt] specNo Spec number (defaults to current spec if omitted)
+local function IgnoreSpec(fqcn, specNo)
+
+	fqcn = fqcn or TotalAP.Utils.GetFQCN() 
+	specNo = specNo or GetSpecialization()
 	
+	SetValue(fqcn, specNo, "isIgnored", true)
+
+end
+
+--- Unignores a spec for the given character
+-- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if none is given)
+-- @param[opt] specNo Spec number (defaults to current spec if omitted)
+local function UnignoreSpec(fqcn, specNo)
+
+	fqcn = fqcn or TotalAP.Utils.GetFQCN() 
+	specNo = specNo or GetSpecialization()
 	
+	SetValue(fqcn, specNo, "isIgnored", false)
+
+end
+
 --- Removes all specs from the ignored specs list for a given character
 -- @param[opt] fqcn Fully-qualified character name (defaults to currently used character if none is given)
 local function UnignoreAllSpecs(fqcn)
@@ -319,6 +360,10 @@ TotalAP.Cache.GetBankCache = GetBankCache
 TotalAP.Cache.UpdateBankCache = UpdateBankCache
 TotalAP.Cache.GetNumIgnoredSpecs = GetNumIgnoredSpecs
 TotalAP.Cache.UnignoreAllSpecs = UnignoreAllSpecs
+TotalAP.Cache.IsSpecIgnored = IsSpecIgnored
+TotalAP.Cache.IsCurrentSpecIgnored = IsCurrentSpecIgnored
+TotalAP.Cache.IgnoreSpec = IgnoreSpec
+TotalAP.Cache.UnignoreSpec = UnignoreSpec
 
 -- Keep these private
 -- TotalAP.Cache.GetReference = GetReference
