@@ -27,9 +27,6 @@ local ProgressBar = {}
 --- Default values that are applied to newly created frames automatically
 local defaultValues = {
 
-	backdropColour = "#C0C0C0", -- Saved as HEX code (different format from the API, and also it doesn't provide a Get() method for this)
-	backdropAlpha = 1,
-	backdropFile = "Interface\\CHATFRAME\\CHATFRAMEBACKGROUND.BLP",
 
 }
 
@@ -48,154 +45,12 @@ TotalAP.GUI.DisplayFrame.__index = function(table, key)
 		return TotalAP.GUI.DisplayFrame[key]
 	else
 		TotalAP.Debug("- Key " .. key .. " wasn't found in DisplayFrame, using the FrameObject instead")
-		return --table.FrameObject[key]
+		return
 	end
 	
 end
 
 
---- Retrieves currently used backdrop colour as HTML-style hex code
--- @param self Reference to the caller
--- @return The colour used as the FrameObject's backdrop if it has been rendered; the one that will be applied to it otherwise
-local function GetBackdropColour(self)
-
-	return self.backdropColour or defaultValues.backdropColour
-	
-end
-
---- Sets backdrop colour that will be applied upon rendering the contained FrameObject
--- @param self Reference to the caller
--- @param hexString HTML-style colour code that represents the background colour
-local function SetBackdropColour(self, hexString)
-
-	self.backdropColour = hexString or self.backdropColour
-	
-end
-
---- Retrieves currently used backdrop alpha value (opacity)
--- @param self Reference to the caller
--- @return Alpha value as a percentage, i.e., between 0 and 1
-local function GetBackdropAlpha(self)
-
-	return self.backdropAlpha or defaultValues.backdropAlpha
-	
-end
-
---- Sets backdrop alpha value (opacity) that will be applied upon rendering the contained FrameObject
--- @param self Reference to the caller
--- @param newAlphaValue New alpha value as a percentage, i.e., between 0 and 1
-local function SetBackdropAlpha(self, newAlphaValue)
-
-	self.backdropAlpha = newAlphaValue or self.backdropAlpha
-	
-end
-
---- Retrieves currently used backdrop file (path)
--- @param self Reference to the caller
--- @return Backdrop file path (as a relative path in the WOW client) 
-local function GetBackdropFile(self)
-
-	return self.backdropFile or defaultValues.backdropFile
-	
-end
-
---- Sets the backdrop file that will be applied upon rendering the contained FrameObject
--- @param self Reference to the caller
--- @param newFile New backdrop file path (as a relative path in the WOW client)
-local function SetBackdropFile(self, newFile)
-
-	self.backdropFile = newFile or self.backdropFile
-	
-end
-
-
---- Retrieves currently used edge file (path)
--- @param self Reference to the caller
--- @return Edge file path (as a relative path in the WOW client)
-local function GetEdgeFile(self)
-
-	return self.edgeFile or defaultValues.edgeFile
-	
-end
-
---- Sets the edge file that will be applied upon rendering the contained FrameObject
--- @param self Reference to the caller
--- @param newFile New edge file path (as a relative path in the WOW client)
-local function SetEdgeFile(self, newFile)
-
-	self.edgeFile = newFile or self.edgeFile
-	
-end
-
---- Retrieves currently used size of the edge
--- @param self Reference to the caller
--- @return Size of the Frame's edge (in pixels)
-local function GetEdgeSize(self)
-	
-	return self.edgeSize or defaultValues.edgeSize
-	
-end
-
---- Sets the edge size that will be applied upon rendering the contained FrameObject
--- @param self Reference to the caller
--- @param newSize New size of the edge (in pixels)
-local function SetEdgeSize(self, newSize)
-
-	self.edgeSize = newSize or self.edgeSize
-
-end
-
--- Returns whether or not the background image is tiled
--- @param self Reference to the caller
--- @returns Whether or not the backdrop image is set to be displayed as tiles
-local function GetTiled(self)
-
-	return self.isTiled or defaultValues.isTiled
-
-end
-
---- Alias for GetTiled()
-local function IsTiled(self)
-
-	return GetTiled(self)
-
-end
-
---- Sets whether or not tiling should be applied upon rendering the contained FrameObject
--- @param self Reference to the caller
--- @param tiledFlag Whether or not the backdrop image should be tiled
-local function SetTiled(self, tiledFlag)
-
-	self.isTiled = tiledFlag or self.isTiled
-
-end
-
---- Retrieves the current size of each tile (only applies if tiling is enabled)
--- @param self Reference to the caller
--- @return Size of each tile (in pixels)
-local function GetTileSize(self)
-
-	return self.tileSize or defaultValues.tileSize
-
-end
-
---- Sets how large each tile should be (if tiling is enabled) upon applied upon rendering the contained FrameObject
--- @param self Reference to the caller
--- @param newSize New size of each tile (in pixels)
-local function SetTileSize(self, newSize)
-
-	self.tileSize = newSize or self.tileSize
-
-end
-
---- Returns array containing the currently used insets
--- @param self Reference to the caller
--- @return An array containing the insets
-local function GetInsets(self)
-
-	return self.insets or defaultValues.insets
-
-end
 
 --- Sets the insets that will be applied upon rendering the contained FrameObject
 -- @param self Reference to the caller
@@ -301,23 +156,6 @@ end
 
 -- Public methods (interface table -> accessible by the View and GUI Controller)
 ProgressBar.CreateNew = CreateNew
-ProgressBar.GetBackdropColour = GetBackdropColour
-ProgressBar.SetBackdropColour = SetBackdropColour
-ProgressBar.GetBackdropAlpha = GetBackdropAlpha
-ProgressBar.SetBackdropAlpha = SetBackdropAlpha
-ProgressBar.GetBackdropFile = GetBackdropFile
-ProgressBar.SetBackdropFile = SetBackdropFile
-ProgressBar.GetEdgeFile = GetEdgeFile
-ProgressBar.SetEdgeFile = SetEdgeFile
-ProgressBar.GetEdgeSize = GetEdgeSize
-ProgressBar.SetEdgeSize = SetEdgeSize
-ProgressBar.GetTiled = GetTiled
-ProgressBar.SetTiled = SetTiled
-ProgressBar.IsTiled = IsTiled
-ProgressBar.GetTileSize = GetTileSize
-ProgressBar.SetTileSize = SetTileSize
-ProgressBar.GetInsets = GetInsets
-ProgressBar.SetInsets = SetInsets
 ProgressBar.Render = Render
 
 -- Make class available in the addon namespace
