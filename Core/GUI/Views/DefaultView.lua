@@ -111,7 +111,7 @@ local function CreateNew(self)
 		CombatStateIconContainer:SetRelativePosition(0, 0)
 		CombatStateIconContainer:SetBackdropColour("#EC3413")
 		
-		CombatStateIcon:SetSize(stateIconSize, stateIconSize)
+		CombatStateIcon:SetSize(stateIconWidth, stateIconHeight)
 		
 	end
 	
@@ -120,10 +120,10 @@ local function CreateNew(self)
 	do -- PetBattleStateIcon
 		
 		-- Layout and visuals
-		PetBattleStateIconContainer:SetRelativePosition(stateIconSize + hSpace, 0)
+		PetBattleStateIconContainer:SetRelativePosition(stateIconWidth + vSpace, 0)
 		PetBattleStateIconContainer:SetBackdropColour("#F05238")
 		
-		PetBattleStateIcon:SetSize(stateIconSize, stateIconSize)
+		PetBattleStateIcon:SetSize(stateIconWidth, stateIconHeight)
 		
 	end
 	
@@ -132,10 +132,10 @@ local function CreateNew(self)
 	do -- VehicleStateIcon
 		
 		-- Layout and visuals
-		VehicleStateIconContainer:SetRelativePosition(2 * (stateIconSize + hSpace), 0)
+		VehicleStateIconContainer:SetRelativePosition(2 * (stateIconWidth + vSpace), 0)
 		VehicleStateIconContainer:SetBackdropColour("#F3725D")
 		
-		VehicleStateIcon:SetSize(stateIconSize, stateIconSize)
+		VehicleStateIcon:SetSize(stateIconWidth, stateIconHeight)
 		
 	end
 	
@@ -144,10 +144,10 @@ local function CreateNew(self)
 	do -- PlayerControlStateIcon
 	
 		-- Layout and visuals
-		PlayerControlStateIconContainer:SetRelativePosition(3 * (stateIconSize + hSpace), 0)
+		PlayerControlStateIconContainer:SetRelativePosition(3 * (stateIconWidth + vSpace), 0)
 		PlayerControlStateIconContainer:SetBackdropColour("#F69282")
 		
-		PlayerControlStateIcon:SetSize(stateIconSize, stateIconSize)
+		PlayerControlStateIcon:SetSize(stateIconWidth, stateIconHeight)
 	
 	end
 	
@@ -157,10 +157,11 @@ local function CreateNew(self)
 	
 		-- Layout and visuals
 		UnderlightAnglerFrameContainer:SetBackdropColour("#9CCCF8")
-		UnderlightAnglerFrameContainer:SetRelativePosition(barInset + 4 * (stateIconSize + hSpace), -barInset)
+		UnderlightAnglerFrameContainer:SetRelativePosition(barInset + 4 * (stateIconWidth + vSpace), -barInset)
 		
 		UnderlightAnglerFrame:SetSize(barWidth, barHeight)
 		
+	end
 	
 	local ActionButtonFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_ActionButtonFrameContainer", "_DefaultView_AnchorFrame")
 	local ActionButtonFrame = ActionButtonFrameContainer:GetFrameObject()
@@ -187,9 +188,67 @@ local function CreateNew(self)
 		
 	end
 	
+	local SpecIcon1FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon1Container", "_DefaultView_AnchorFrame")
+	local SpecIcon1Frame = SpecIcon1FrameContainer:GetFrameObject()
+	local SpecIcon2FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon2Container", "_DefaultView_AnchorFrame")
+	local SpecIcon2Frame = SpecIcon2FrameContainer:GetFrameObject()
+	local SpecIcon3FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon3Container", "_DefaultView_AnchorFrame")
+	local SpecIcon3Frame = SpecIcon3FrameContainer:GetFrameObject()
+	local SpecIcon4FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon4Container", "_DefaultView_AnchorFrame")
+	local SpecIcon4Frame = SpecIcon4FrameContainer:GetFrameObject()
+	do -- SpecIconFrames
+	
+		-- Layout and visuals
+		SpecIcon1FrameContainer:SetBackdropColour("#654321")
+		SpecIcon2FrameContainer:SetBackdropColour("#654321")
+		SpecIcon3FrameContainer:SetBackdropColour("#654321")
+		SpecIcon4FrameContainer:SetBackdropColour("#654321")
+		SpecIcon1FrameContainer:SetRelativePosition(maxButtonSize + vSpace + barWidth + vSpace, - ( barHeight + barInset + hSpace + 0 * (specIconSize + specIconBorderWidth + hSpace)))
+		SpecIcon2FrameContainer:SetRelativePosition(maxButtonSize + vSpace + barWidth + vSpace, - ( barHeight + barInset + hSpace + 1 * (specIconSize + specIconBorderWidth + hSpace)))
+		SpecIcon3FrameContainer:SetRelativePosition(maxButtonSize + vSpace + barWidth + vSpace, - ( barHeight + barInset + hSpace + 2 * (specIconSize + specIconBorderWidth + hSpace)))
+		SpecIcon4FrameContainer:SetRelativePosition(maxButtonSize + vSpace + barWidth + vSpace, - ( barHeight + barInset + hSpace + 3 * (specIconSize + specIconBorderWidth + hSpace)))
+		SpecIcon1Frame:SetSize(specIconSize + 2 * specIconBorderWidth, specIconSize + 2 * specIconBorderWidth)
+		SpecIcon2Frame:SetSize(specIconSize + 2 * specIconBorderWidth, specIconSize + 2 * specIconBorderWidth)
+		SpecIcon3Frame:SetSize(specIconSize + 2 * specIconBorderWidth, specIconSize + 2 * specIconBorderWidth)
+		SpecIcon4Frame:SetSize(specIconSize + 2 * specIconBorderWidth, specIconSize + 2 * specIconBorderWidth)
+		
+		-- Player interaction
+		SpecIcon1FrameContainer:SetAssignedSpec(1)
+		SpecIcon2FrameContainer:SetAssignedSpec(2)
+		SpecIcon3FrameContainer:SetAssignedSpec(3)
+		SpecIcon4FrameContainer:SetAssignedSpec(4)
 		
 	end
 	
+	local SpecIcon1Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon1", "_DefaultView_SpecIcon1Container")
+	local SpecIcon1 = SpecIcon1Container:GetFrameObject()
+	local SpecIcon2Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon2", "_DefaultView_SpecIcon2Container")
+	local SpecIcon2 = SpecIcon2Container:GetFrameObject()
+	local SpecIcon3Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon3", "_DefaultView_SpecIcon3Container")
+	local SpecIcon3 = SpecIcon3Container:GetFrameObject()
+	local SpecIcon4Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon4", "_DefaultView_SpecIcon4Container")
+	local SpecIcon4 = SpecIcon4Container:GetFrameObject()
+	do -- SpecIcons
+		
+		-- Layout and visuals
+		SpecIcon1Container:SetRelativePosition(specIconBorderWidth, -specIconBorderWidth)
+		SpecIcon2Container:SetRelativePosition(specIconBorderWidth, -specIconBorderWidth)
+		SpecIcon3Container:SetRelativePosition(specIconBorderWidth, -specIconBorderWidth)
+		SpecIcon4Container:SetRelativePosition(specIconBorderWidth, -specIconBorderWidth)
+		SpecIcon1:SetSize(specIconSize, specIconSize)
+		SpecIcon2:SetSize(specIconSize, specIconSize)
+		SpecIcon3:SetSize(specIconSize, specIconSize)
+		SpecIcon4:SetSize(specIconSize, specIconSize)
+		
+		-- Player interaction
+		SpecIcon1Container:SetAssignedSpec(1)
+		SpecIcon2Container:SetAssignedSpec(2)
+		SpecIcon3Container:SetAssignedSpec(3)
+		SpecIcon4Container:SetAssignedSpec(4)
+		
+		-- Script handlers
+		
+	end
 	
 	ViewObject.elementsList = { 	-- This is the actual view, which consists of individual DisplayFrame objects and their properties
 	
@@ -201,6 +260,14 @@ local function CreateNew(self)
 		UnderlightAnglerFrameContainer,
 		ActionButtonFrameContainer,
 		ActionButtonContainer,
+		SpecIcon1FrameContainer,
+		SpecIcon1Container,
+		SpecIcon2FrameContainer,
+		SpecIcon2Container,
+		SpecIcon3FrameContainer,
+		SpecIcon3Container,
+		SpecIcon4FrameContainer,
+		SpecIcon4Container,
 	}
 	
 	return ViewObject
