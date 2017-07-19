@@ -264,28 +264,34 @@ local function Render(self)
 	
 	local isEnabled = self:GetEnabled()
 	if isEnabled then -- Display Frame and apply changes where necessary
+		-- Shorthands
+		local UnspentBar = self.UnspentBar
+		local InBagsBar = self.InBagsBar
+		local InBankBar = self.InBankBar
+		local MiniBar = self.MiniBar
 	
-		-- Set backdrop
-		FrameObject:SetBackdrop( { bgFile = self:GetBackdropFile(),  edgeFile = self:GetEdgeFile(),  tile = self:IsTiled(), tileSize = self:GetTileSize(), edgeSize = self:GetEdgeSize(), insets = self:GetInsets() } )
-		local r, g, b = TotalAP.Utils.HexToRGB(self:GetBackdropColour())
-		FrameObject:SetBackdropColor(r/255, g/255, b/255, self:GetBackdropAlpha())
+		-- Set texture
+		FrameObject.texture:SetTexture(self:GetTexture())
+		FrameObject.texture:SetAllPoints(FrameObject)
+		local r, g, b = TotalAP.Utils.HexToRGB(self:GetColour())
+		FrameObject.texture:SetVertexColor(r / 255, g / 255, b / 255, self:GetAlpha())
 		
-		-- Reposition 
-		if self:GetParent() ~= "UIParent" then -- Position relatively to its parent and the given settings to have it align automatically
+		UnspentBar.texture:SetTexture(self:GetTexture())
+		local r, g, b = TotalAP.Utils.HexToRGB(self:GetColour("UnspentBar"))
+		UnspentBar.texture:SetVertexColor(r / 255, g / 255, b / 255, self:GetAlpha("UnspentBar"))
 		
-			FrameObject:ClearAllPoints()
-			local posX, posY = unpack(self:GetRelativePosition())
 
-			FrameObject:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", posX, posY)
-			
-		else -- Is top level frame and mustn't be reset, as its position is stored in WOW's Layout Cache
-			
-			local numPoints = FrameObject:GetNumPoints()
-			if numPoints == 0 then -- Frame isn't anchored anywhere and therefore invisible (can happen after errors occur somehow?)
-				FrameObject:SetPoint("CENTER", UIParent, "CENTER")
-			end
-			
-		end
+		-- Reposition 
+		FrameObject:ClearAllPoints()
+		UnspentBar:ClearAllPoints()
+		
+		local posX, posY = unpack(self:GetRelativePosition())
+		FrameObject:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", posX, posY)
+		UnspentBar:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT") -- TODO: Insets?
+		
+		-- Resize
+		FrameObject:SetSize(self:GetWidth(), self:GetHeight())
+		UnspentBar:SetSize(self:GetWidth("UnspentBar"), self:GetHeight("UnspentBar"))
 		
 	end
 	
