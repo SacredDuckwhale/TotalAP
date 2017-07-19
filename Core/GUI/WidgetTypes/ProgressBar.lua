@@ -37,7 +37,7 @@ local defaultValues = {
 	alpha = 0.2,
 	
 	-- UnspentBar (AP applied to artifact but not used)
-	unspentBar = {
+	UnspentBar = {
 	
 		enabled = true,
 		width = 0,
@@ -47,7 +47,7 @@ local defaultValues = {
 	},
 	
 	-- InBagsBar (AP in the player's inventory)
-	inBagsBar = {
+	InBagsBar = {
 	
 		enabled = true,
 		width = 0,
@@ -57,7 +57,7 @@ local defaultValues = {
 	},
 	
 	-- InBankBar (AP in the player's bank)
-	inBankBar = {
+	InBankBar = {
 		
 		enabled = true,
 		width = 0,
@@ -67,7 +67,7 @@ local defaultValues = {
 	},
 	
 	-- MiniBar (small "carry" display)
-	miniBar = {
+	MiniBar = {
 	
 		enabled = true,
 		width = 0,
