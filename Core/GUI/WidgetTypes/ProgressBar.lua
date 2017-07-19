@@ -92,12 +92,9 @@ end
 
 
 
---- Sets the insets that will be applied upon rendering the contained FrameObject
 -- @param self Reference to the caller
--- @param insetsArray An array of insets. Must contain valid insets, such as 1, 2, or 4 integer values (for "universal", "horizontal/vertical", and "individual" edge sizes, respectively)
 local function SetInsets(self, insetsArray)
 
-	self.insets = insetsArray or self.insets
 
 end
 
