@@ -38,24 +38,24 @@ local function CreateNew(self)
 	self.__index = TotalAP.GUI.View -- ... and this class inherits from the generic View template
 	
 	-- TODO: Get those from the settings, so that they can be changed in the options GUI (under tab: Views -> DefaultView, along with enabling/disabling/repositioning individual display components)
-	do -- Stuff that needs to be moved to AceConfig settings
+	-- Stuff that needs to be moved to AceConfig settings
 	
-		local hSpace, vSpace = 2, 5 -- space between display elements
+	local hSpace, vSpace = 2, 5 -- space between display elements
+	
+	local barWidth, barHeight, barInset = 100, 18, 1
+	
+	local maxButtonSize = 80
+	local buttonSize = 40 -- TODO: Layout Cache or via settings?
+	
+	local specIconSize = 18
+	local specIconBorderWidth = 1
+	local specIconTextWidth = 40
+	
+	local stateIconWidth, stateIconHeight = (maxButtonSize - 3 * vSpace) / 4, barHeight + barInset
+	
+	local sliderHeight = 20
 		
-		local barWidth, barHeight, barInset = 100, 18, 1
-		
-		local maxButtonSize = 80
-		local buttonSize = 40 -- TODO: Layout Cache or via settings?
-		
-		local specIconSize = 18
-		local specIconBorderWidth = 1
-		local specIconTextWidth = 40
-		
-		local stateIconWidth, stateIconHeight = (maxButtonSize - 3 * vSpace) / 4, barHeight + barInset
-		
-		local sliderHeight = 20
-		
-	end -- End stuff that needs to be moved to AceConfig settings
+	-- End stuff that needs to be moved to AceConfig settings
 	
 	
 	-- Anchor frame: Parent of all displays and buttons (used to toggle the entire addon, as well as move its displays)
