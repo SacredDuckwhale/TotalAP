@@ -1401,7 +1401,6 @@ local function CreateAnchorFrame()
 	
 		TotalAPAnchorFrame = CreateFrame("Frame", "TotalAPAnchorFrame", UIParent);
 		TotalAPAnchorFrame:SetFrameStrata("BACKGROUND");
-		TotalAPAnchorFrame:SetClampedToScreen(true);
 		
 		-- TotalAPButton:SetSize(settings.actionButtonSize, settings.actionButtonSize); 
 		TotalAPAnchorFrame:SetPoint("CENTER");
