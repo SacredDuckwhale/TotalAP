@@ -161,6 +161,32 @@ local function CreateNew(self)
 		
 		UnderlightAnglerFrame:SetSize(barWidth, barHeight)
 		
+	
+	local ActionButtonFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_ActionButtonFrameContainer", "_DefaultView_AnchorFrame")
+	local ActionButtonFrame = ActionButtonFrameContainer:GetFrameObject()
+	do -- ActionButtonFrame
+	
+		-- Layout and visuals
+		ActionButtonFrameContainer:SetBackdropColour("#123456")
+		ActionButtonFrameContainer:SetRelativePosition(0, - ( barHeight + barInset + hSpace ))
+		
+		ActionButtonFrame:SetSize(maxButtonSize, maxButtonSize)
+		
+	end
+	
+	local ActionButtonContainer = TotalAP.GUI.ItemUseButton:CreateNew("_DefaultView_ActionButton", "_DefaultView_ActionButtonFrameContainer")
+	local ActionButton = ActionButtonContainer:GetFrameObject()
+	do -- ActionButton
+		
+		-- Layout and visuals
+		ActionButtonContainer:SetRelativePosition(max(0, (maxButtonSize - ActionButton:GetWidth()) / 2) , - ( maxButtonSize - ActionButton:GetHeight()) / 2)
+	
+		-- Player interaction
+		
+		-- Script handlers
+		
+	end
+	
 		
 	end
 	
@@ -173,7 +199,8 @@ local function CreateNew(self)
 		VehicleStateIconContainer,
 		PlayerControlStateIconContainer,
 		UnderlightAnglerFrameContainer,
-		
+		ActionButtonFrameContainer,
+		ActionButtonContainer,
 	}
 	
 	return ViewObject
