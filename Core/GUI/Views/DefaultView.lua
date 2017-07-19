@@ -274,10 +274,10 @@ local function CreateNew(self)
 	do -- ProgressBars
 	
 		-- Layout and visuals
-		ProgressBar1Container:SetRelativePosition(barInset, barInset + 0 * (barHeight + hSpace))
-		ProgressBar2Container:SetRelativePosition(barInset, barInset + 1 * (barHeight + hSpace))
-		ProgressBar3Container:SetRelativePosition(barInset, barInset + 2 * (barHeight + hSpace))
-		ProgressBar4Container:SetRelativePosition(barInset, barInset + 3 * (barHeight + hSpace))
+		ProgressBar1Container:SetRelativePosition(barInset, - barInset - 0 * (barHeight + hSpace))
+		ProgressBar2Container:SetRelativePosition(barInset, - barInset - 1 * (barHeight + hSpace))
+		ProgressBar3Container:SetRelativePosition(barInset, - barInset - 2 * (barHeight + hSpace))
+		ProgressBar4Container:SetRelativePosition(barInset, - barInset - 3 * (barHeight + hSpace))
 		
 		-- Player interaction
 		ProgressBar1Container:SetAssignedSpec(1)
