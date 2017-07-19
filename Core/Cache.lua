@@ -183,12 +183,39 @@ local function GetValue(fqcn, specID, key)
 
 end
 
+--- Sets the cached value of the respective character and spec for a given key
+-- @param fqcn Fully-qualified character name, to be used as the primary key
+-- @param specID Specialization ID, to be used as the secondary key
+-- @param key The key used to look up values inside of the cache entry
 local function SetValue(fqcn, specID, key, value)
+	
+	if not (fqcn and specID) then -- Parameters given were invalid
+	
+		TotalAP.Debug("Attempted to set Cache entry, but either fqcn or specID given were invalid")
+		return
+	
+	end
 
-end
-
-local function IgnoreSpec(fqcn, spec)
-
+	local cache = GetReference()
+	
+	if not (cache and cache[fqcn] and cache[fqcn][specID]) then -- Cache entry doesn't exist
+	
+		TotalAP.Debug("Attempted to set cache entry for fqcn = " .. fqcn .. " and spec = " .. specID .. ", but it didn't exist")
+		return
+		
+	end
+	
+	local entry = GetEntry(fqcn, specID)
+	
+	if not (entry and key and entry[key] ~= nil	) then -- Key is invalid or entry doesn't exist
+	
+		TotalAP.Debug("Attempted to set cache entry for key = " .. key .. ", but key is invalid or entry doesn't exist")
+		return
+		
+	end
+	
+	entry[key] = value
+	
 end
 
 --- Returns the amount of banked AP that was saved between sessions
@@ -300,6 +327,7 @@ TotalAP.Cache.NewEntry = NewEntry
 TotalAP.Cache.GetEntry = GetEntry
 TotalAP.Cache.UpdateEntry = UpdateEntry
 TotalAP.Cache.GetValue = GetValue
+TotalAP.Cache.SetValue = SetValue
 TotalAP.Cache.GetBankCache = GetBankCache
 TotalAP.Cache.UpdateBankCache = UpdateBankCache
 TotalAP.Cache.GetNumIgnoredSpecs = GetNumIgnoredSpecs
