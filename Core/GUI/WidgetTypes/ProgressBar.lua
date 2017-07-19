@@ -27,7 +27,56 @@ local ProgressBar = {}
 --- Default values that are applied to newly created frames automatically
 local defaultValues = {
 
+	-- General settings (applied to all bars)
+	texture = "Interface\\PaperDollInfoFrame\\UI-Character-Skills-Bar.blp",
+	width = 100,
+	height = 16,
 
+	-- Empty bar (background)
+	colour = "#FAFAFA",
+	alpha = 0.2,
+	
+	-- UnspentBar (AP applied to artifact but not used)
+	unspentBar = {
+	
+		enabled = true,
+		width = 0,
+		alpha = 1,
+		colour = "#3296FA",
+		
+	},
+	
+	-- InBagsBar (AP in the player's inventory)
+	inBagsBar = {
+	
+		enabled = true,
+		width = 0,
+		alpha = 1,
+		colour = "#325FFA",
+	
+	},
+	
+	-- InBankBar (AP in the player's bank)
+	inBankBar = {
+		
+		enabled = true,
+		width = 0,
+		alpha = 1,
+		colour = "#325F5F",
+		
+	},
+	
+	-- MiniBar (small "carry" display)
+	miniBar = {
+	
+		enabled = true,
+		width = 0,
+		height = 2,
+		alpha = 1,
+		colour = "#EFE5B0",
+	
+	}
+	
 }
 
 
