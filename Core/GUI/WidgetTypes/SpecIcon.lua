@@ -138,6 +138,11 @@ local function Render(self)
 		return
 	end
 	
+	-- Skip icons that can't be assigned to actual specs (the maximum no. is always created, but not all of them need to be rendered for every class)
+	if self:GetSpecNo() > GetNumSpecializations() then -- Disable this icon, as the player's class has fewer specs
+		self:SetEnabled(false)
+		return
+	end
 	local isEnabled = self:GetEnabled()
 	if isEnabled then -- Display Frame and apply changes where necessary
 	
