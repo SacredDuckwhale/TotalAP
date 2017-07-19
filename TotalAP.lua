@@ -832,7 +832,7 @@ local function UpdateActionButton()
 			else
 			
 				if settings.scanBank and TotalAP.bankCache.numItems > 0 and TotalAP.bankCache.inBankAP > 0 then -- Also include banked AP
-					TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(TotalAP.inventoryCache.displayItem.artifactPowerValue, true, settings.numberFormat) .. ")\n[" .. TotalAP.Utils.FormatShort(TotalAP.bankCache.inBankAP, true, settings.numberFormat) .. "]")
+					TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(TotalAP.inventoryCache.displayItem.artifactPowerValue, true, settings.numberFormat) .. "\n[" .. TotalAP.Utils.FormatShort(TotalAP.bankCache.inBankAP, true, settings.numberFormat) .. "]")
 				else
 					TotalAPButtonFontString:SetText(TotalAP.Utils.FormatShort(TotalAP.inventoryCache.displayItem.artifactPowerValue, true, settings.numberFormat))
 				end
