@@ -43,6 +43,24 @@ mt.__index = function(table, key)
 	
 end
 
+-- This lookup is used by objects of derived classes
+DisplayFrame.__index = function(table, key)
+
+	-- Don't look up FrameObjects, as they're unique to each instance and can't be shared
+	if key == "FrameObject" then return end
+	
+	TotalAP.Debug("Meta lookup of key " .. key .. " in DisplayFrame")
+	
+	if TotalAP.GUI.DisplayFrame[key] ~= nil then
+	--	TotalAP.Debug("Key " .. key .. " was found in DisplayFrame, using it")
+		return TotalAP.GUI.DisplayFrame[key]
+	else
+		--TotalAP.Debug("- Key " .. key .. " wasn't found in DisplayFrame")
+		return 
+	end
+	
+end
+
 
 --- Retrieves the enabled status for this object
 -- @param self Reference to the caller

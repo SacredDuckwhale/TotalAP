@@ -82,18 +82,9 @@ local defaultValues = {
 
 -- ProgressBar inherits from DisplayFrame
 setmetatable(ProgressBar, TotalAP.GUI.DisplayFrame) 
-TotalAP.GUI.DisplayFrame.__index = function(table, key)
 
-	-- Don't look up FrameObjects, as they're unique to each instance and can't be shared
-	if key == "FrameObject" then return end
 	
-	TotalAP.Debug("ProgressBar -> Meta lookup of key " .. key .. " in DisplayFrame")
 	
-	if TotalAP.GUI.DisplayFrame[key] ~= nil then
-		TotalAP.Debug("Key " .. key .. " was found in DisplayFrame, using it")
-		return TotalAP.GUI.DisplayFrame[key]
-	else
-		TotalAP.Debug("- Key " .. key .. " wasn't found in DisplayFrame, using the FrameObject instead")
 		return
 	end
 	
@@ -170,17 +161,6 @@ local function CreateNew(self, name, parent)
 		if self[key] then -- Key exists in ProgressBar class (or DisplayFrame) -> Use it (no need to look anything up, really)
 		
 			return self[key]  -- DisplayFrame is the actual superclass, but the Frame API calls should be used on a FrameObject instead
-			
-		else -- Key will have to be looked up in the WOW Frame object
-		
-			TotalAP.Debug("Key " .. key .. " not found in ProgressBar or DisplayFrame, checking for FrameObject now")
-			
-			if table.FrameObject and table.FrameObject[key] then -- This ProgressBar has a valid FrameObject being stored -> Use it
-			
-				TotalAP.ChatMsg("CreateNew -> " .. key .. " will be looked up in FrameObject")
-				return table.FrameObject[key]
-				
-			end
 			
 		end
 

@@ -36,22 +36,6 @@ local defaultValues = {
 
 -- SpecIcon inherits from DisplayFrame
 setmetatable(SpecIcon, TotalAP.GUI.DisplayFrame) 
-TotalAP.GUI.DisplayFrame.__index = function(table, key)
-
-	-- Don't look up FrameObjects, as they're unique to each instance and can't be shared
-	if key == "FrameObject" then return end
-	
-	TotalAP.Debug("SpecIcon -> Meta lookup of key " .. key .. " in DisplayFrame")
-	
-	if TotalAP.GUI.DisplayFrame[key] ~= nil then
-		TotalAP.Debug("Key " .. key .. " was found in DisplayFrame, using it")
-		return TotalAP.GUI.DisplayFrame[key]
-	else
-		TotalAP.Debug("- Key " .. key .. " wasn't found in DisplayFrame, using the FrameObject instead")
-		return --table.FrameObject[key]
-	end
-	
-end
 
 --- Retrieves the currently used icon texture
 -- @param self Reference to the caller

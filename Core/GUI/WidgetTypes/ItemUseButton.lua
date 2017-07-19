@@ -34,23 +34,6 @@ local defaultValues = {
 
 -- ItemUseButton inherits from DisplayFrame
 setmetatable(ItemUseButton, TotalAP.GUI.DisplayFrame) 
-TotalAP.GUI.DisplayFrame.__index = function(table, key)
-
-	-- Don't look up FrameObjects, as they're unique to each instance and can't be shared
-	if key == "FrameObject" then return end
-	
-	TotalAP.Debug("ItemUseButton -> Meta lookup of key " .. key .. " in DisplayFrame")
-	
-	if TotalAP.GUI.DisplayFrame[key] ~= nil then
-		TotalAP.Debug("Key " .. key .. " was found in DisplayFrame, using it")
-		return TotalAP.GUI.DisplayFrame[key]
-	else
-		TotalAP.Debug("- Key " .. key .. " wasn't found in DisplayFrame, using the FrameObject instead")
-		return --table.FrameObject[key]
-	end
-	
-end
-
 
 --- Applies all the contained information to the underlying FrameObject to display them ingame
 -- @param self Reference to the caller
