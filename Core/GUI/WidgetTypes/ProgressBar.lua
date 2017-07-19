@@ -83,19 +83,172 @@ local defaultValues = {
 -- ProgressBar inherits from DisplayFrame
 setmetatable(ProgressBar, TotalAP.GUI.DisplayFrame) 
 
+--- Returns the value for a given bar and key (for internal use only)
+-- @param self Reference to the caller
+-- @param key Key that is to be looked up
+-- @param[opt] bar Name of the bar (defaults to the empty bar if omitted)
+local function GetValue(self, key, bar)
 	
+	--TotalAP.Debug("GetValue with key = " .. tostring(key) .. " and bar = " .. tostring(bar))
+	local value = nil
 	
-		return
+	if bar then -- Return width for this bar
+		
+		if self[bar] then
+			value= self[bar][key] or defaultValues[bar][key]
+		else
+			value = defaultValues[bar][key]
+		end
+		
 	end
 	
+	value = value or rawget(self, key) or defaultValues[key]
+	
+	--TotalAP.Debug("Result: " .. tostring(value))
+	return value
+
 end
 
+--- Sets the value for a given bar and key (for internal use only)
+-- @param self Reference to the caller
+-- @param key Key that is to be looked up
+-- @param value Value this key is to be set to
+-- @param[opt] bar Name of the bar (defaults to the empty bar if omitted)
+local function SetValue(self, key, value, bar)
 
+	if bar and self[bar] then -- Set width for this bar
+		self[bar][key] = value
+		return
+	end
 
+	rawset(self, key, value or self[key])
+
+end
+
+--- Retrieves currently used bar texture
+-- @param self Reference to the caller
+-- @return Currently used texture for all bars
+local function GetTexture(self)
+
+	return rawget(self, "texture") or defaultValues.texture
+
+end
+
+--- Sets bar texture
+-- @param self Reference to the caller
+-- @param newTexture Texture that will be applied
+local function SetTexture(self, texture)
+
+	self.texture = texture or self.texture
+
+end
+
+--- Retrieves currently used width for a given bar
+-- @param self Reference to the caller
+-- @param[opt] bar Name of the bar (defaults to the empty bar if omitted)
+-- @return Currently used width for the given bar
+local function GetWidth(self, bar)
+	
+	return GetValue(self, "width", bar)
+	
+end
+
+--- Sets width used for a given bar
+-- @param self Reference to the caller
+-- @param width The width of the bar
+-- @param[opt] bar Name of the bar (defaults to the empty bar if omitted)
+local function SetWidth(self, width, bar)
+
+	SetValue(self, "width", width, bar)
+	
+end
+
+---
+-- @param self Reference to the caller
+-- @param[opt] bar Name of the bar (defaults to the empty bar if omitted)
+local function GetHeight(self, bar)
+
+	return GetValue(self, "height", bar)
+
+end
+
+---
 -- @param self Reference to the caller
 
+-- @param[opt] bar Name of the bar (defaults to the empty bar if omitted)
+local function SetHeight(self, height, bar)
+
+	SetValue(self, "height", height, bar)
 
 end
+
+---
+-- @param self Reference to the caller
+-- @param[opt] bar Name of the bar (defaults to the empty bar if omitted)
+local function GetColour(self, bar)
+
+	return GetValue(self, "colour", bar)
+
+end
+
+---
+-- @param self Reference to the caller
+
+-- @param[opt] bar Name of the bar (defaults to the empty bar if omitted)
+local function SetColour(self, bar, colour)
+
+	SetValue(self, "colour", colour, bar)
+
+end
+
+---
+-- @param self Reference to the caller
+-- @param[opt] bar Name of the bar (defaults to the empty bar if omitted)
+local function GetAlpha(self, bar)
+
+	return GetValue(self, "alpha", bar)
+	
+end
+
+---
+-- @param self Reference to the caller
+
+-- @param[opt] bar Name of the bar (defaults to the empty bar if omitted)
+local function SetAlpha(self, alpha, bar)
+
+	SetValue(self, "alpha", alpha, bar)
+	
+end
+
+---
+-- @param self Reference to the caller
+-- @param[opt] bar Name of the bar (defaults to the empty bar if omitted)
+local function IsBarEnabled(self, bar)
+
+	return GetValue(self, "enabled", bar)
+
+end
+
+---
+-- @param self Reference to the caller
+-- @param[opt] bar Name of the bar (defaults to the empty bar if omitted)
+local function EnableBar(self, bar)
+
+	SetValue(self, "enabled", true, bar)
+
+end
+
+---
+-- @param self Reference to the caller
+-- @param[opt] bar Name of the bar (defaults to the empty bar if omitted)
+local function DisableBar(self, bar)
+
+	SetValue(self, "enabled", false, bar)
+
+end
+
+--- TODO: More aliases?s
+
 
 --- Applies all the contained information to the underlying FrameObject to display them ingame
 -- @param self Reference to the caller
@@ -181,6 +334,19 @@ end
 
 -- Public methods (interface table -> accessible by the View and GUI Controller)
 ProgressBar.CreateNew = CreateNew
+ProgressBar.GetTexture = GetTexture
+ProgressBar.SetTexture = SetTexture
+ProgressBar.GetWidth = GetWidth
+ProgressBar.SetWidth = SetWidth
+ProgressBar.GetHeight = GetHeight
+ProgressBar.SetHeight = SetHeight
+ProgressBar.GetAlpha = GetAlpha
+ProgressBar.SetAlpha = SetAlpha
+ProgressBar.GetColour = GetColour
+ProgressBar.SetColour = SetColour
+ProgressBar.IsBarEnabled = IsBarEnabled
+ProgressBar.EnableBar = GetEnabled
+ProgressBar.DisableBar = DisableBar
 ProgressBar.Render = Render
 
 -- Make class available in the addon namespace
