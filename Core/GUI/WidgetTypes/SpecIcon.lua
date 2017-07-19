@@ -27,7 +27,10 @@ local SpecIcon = {}
 --- Default values that are applied to newly created frames automatically
 local defaultValues = {
 
-
+	icon = "",
+	specNo = 0,
+	isFlashing = false,
+	borderTexture = "",
 
 }
 
@@ -51,6 +54,77 @@ TotalAP.GUI.DisplayFrame.__index = function(table, key)
 	
 end
 
+--- Retrieves the currently used icon texture
+-- @param self Reference to the caller
+-- @return Icon texture path (relative path in the WOW client)
+local function GetIcon(self)
+	
+	return self.icon or defaultValues.icon
+	
+end
+
+--- Sets the icon texture that will be applied upon rendering the contained FrameObject
+-- @param self Reference to the caller
+-- @param icon Icon texture path (relative path in the WOW client)
+local function SetIcon(self, icon)
+
+	self.icon = icon or self.icon
+
+end
+
+--- Retrieves the currently assigned spec number
+-- @param self Reference to the caller
+-- @returns The number of the spec that is assigned to this container
+local function GetSpecNo(self)
+
+	return self.specNo or defaultValues.specNo
+
+end
+
+--- Assigns a spec number to this container
+-- @param self Reference to the caller
+-- @param specNo The spec number (1-4) that this container will be assigned to
+local function SetSpecNo(self, specNo)
+
+	self.specNo = specNo or self.specNo
+
+end
+
+--- Returns whether or not the contained FrameObject is set to be flashing
+-- @param self Reference to the caller
+-- @returns True if the FrameObject is set to be flashing; false otherwise
+local function GetFlashing(self)
+
+	return self.isFlashing or defaultValues.isFlashing
+
+end
+
+--- Toggles the glow effect (flash) that will be applied upon rendering the contained FrameObject
+-- @param self Reference to the caller
+-- @param flashingStatus Whether or not the Frame should be flashed
+local function SetFlashing(self, flashingStatus)
+
+	self.isFlashing = flashingStatus or self.isFlashing
+
+end
+
+--- Retrieves the currently used border texture
+-- @param self Reference to the caller
+-- @return Border texture path (relative path in the WOW client)
+local function GetBorder(self)
+
+	return self.borderTexture or defaultValues.borderTexture
+
+end
+
+--- Sets the border texture that will be applied upon rendering the contained FrameObject
+-- @param self Reference to the caller
+-- @param borderTexture Border texture path (relative path in the WOW client)
+local function SetBorder(self, borderTexture)
+
+	self.borderTexture = borderTexture or self.borderTexture
+
+end
 
 --- Applies all the contained information to the underlying FrameObject to display them ingame
 -- @param self Reference to the caller
@@ -146,7 +220,16 @@ end
 
 -- Public methods (interface table -> accessible by the View and GUI Controller)
 SpecIcon.CreateNew = CreateNew
+SpecIcon.GetIcon = GetIcon
+SpecIcon.SetIcon = SetIcon
+SpecIcon.GetSpecNo = GetSpecNo
+SpecIcon.SetSpecNo = SetSpecNo
+SpecIcon.GetFlashing = GetFlashing
+SpecIcon.SetFlashing = SetFlashing
+SpecIcon.GetBorder = GetBorder
+SpecIcon.SetBorder = SetBorder
 SpecIcon.Render = Render
+
 
 -- Make class available in the addon namespace
 TotalAP.GUI.SpecIcon = SpecIcon
