@@ -256,7 +256,7 @@ local function CreateNew(self)
 	 do -- ProgressBarsFrame
 	 
 		-- Layout and visuals
-		ProgressBarsFrameContainer:SetBackdropColour("#A9A9A9")
+		ProgressBarsFrameContainer:SetBackdropColour("#000000")
 		ProgressBarsFrameContainer:SetRelativePosition(maxButtonSize + vSpace, - ( barHeight + barInset + hSpace))
 		ProgressBarsFrame:SetSize(barWidth, 4 * (barHeight + hSpace))
 		
