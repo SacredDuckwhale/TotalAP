@@ -93,7 +93,6 @@ end
 
 
 -- @param self Reference to the caller
-local function SetInsets(self, insetsArray)
 
 
 end
