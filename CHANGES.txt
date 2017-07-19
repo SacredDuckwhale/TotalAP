@@ -1,6 +1,16 @@
 ------------------------------------------------------------------------
-## TotalAP v1.4.0 - Recent changes (3 releases)
+## TotalAP v1.4.1 - Recent changes (3 releases)
 ------------------------------------------------------------------------
+
+r24:
+	
+	Artifact Research Notes and similar items (catch-up tomes for alts) will now be ignored for players that haven't reached level 110 yet
+
+	Fixed an issue that could prevent the displays from being dragged to the very bottom of the player's interface
+	Fixed an issue where dropping from an instance group could cause the detection of ignored specs to fail temporarily
+	Fixed a minor graphics glitch pertaining to the buttonText, manifesting only when AP items were stored in the bank
+	Fixed the broken /ap reset slash command (caused by the changes made to saved variables handling in r23)
+	
 
 r23:
 	Added support for artifact power items that are stored in the player's bank (experimental). They will be cached whenever the bank tab is opened, and the respective progress bars/tooltip lines can be disabled with the /ap scanbank command
@@ -20,19 +30,5 @@ r22:
 	Fixed an issue that could cause high numbers of artifact power (> 2.14b) to break the addon's output under certain circumstances
 	Fixed a bug that would cause tier 1 artifacts (those that haven't yet been upgraded via the Dalaran Council's quest chain) to display inaccurate values beyond the final, 54th trait
 	Fixed a graphics glitch that caused the buttonText to collide with the bar display when using locales with a larger-than-normal default font size (koKR, zhCN, zhTW mainly) - this workaround is not ideal, and somewhat experimental
-	
-	
-r21:
-	Added slash command to hide the secondary progress bars ("MiniBar") -> /ap minibar
-	
-	Updated DB to include 7.2.5 artifact power items and their spell effects
-	Updated translation for the Traditional Chinese (zhTW) locale - thanks for contributing!
-	Modified progress bar tooltip to indicate when research is idle, and when the maximum AK level has been reached
-	
-	Fixed ingame description for the "/ap progress" slash command
-	Fixed progress bar tooltip for artifact weapons that have never been used before
-	Fixed a graphics glitch that could occur when the buttonText became too long to fit smoothly in its space
-	Fixed a graphics glitch that lead to the MiniBar being displayed over other, arguably more important UI frames
-	Fixed an issue where the displayed shipment info for Artifact Research Notes could be inaccurate
 	
 	
