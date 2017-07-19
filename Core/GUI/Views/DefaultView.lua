@@ -250,6 +250,43 @@ local function CreateNew(self)
 		
 	end
 	
+	 local ProgressBarsFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_ProgressBarsFrame", "_DefaultView_AnchorFrame")
+	 local ProgressBarsFrame = ProgressBarsFrameContainer:GetFrameObject()
+	 
+	 do -- ProgressBarsFrame
+	 
+		-- Layout and visuals
+		ProgressBarsFrameContainer:SetBackdropColour("#A9A9A9")
+		ProgressBarsFrameContainer:SetRelativePosition(maxButtonSize + vSpace, - ( barHeight + barInset + hSpace))
+		ProgressBarsFrame:SetSize(barWidth, 4 * (barHeight + hSpace))
+		
+	 end
+	
+	local ProgressBar1Container = TotalAP.GUI.ProgressBar:CreateNew("_DefaultView_ProgressBar1", "_DefaultView_ProgressBarsContainer")
+	local ProgressBar1 = ProgressBar1Container:GetFrameObject()
+	local ProgressBar2Container = TotalAP.GUI.ProgressBar:CreateNew("_DefaultView_ProgressBar2", "_DefaultView_ProgressBarsContainer")
+	local ProgressBar2 = ProgressBar2Container:GetFrameObject()
+	local ProgressBar3Container = TotalAP.GUI.ProgressBar:CreateNew("_DefaultView_ProgressBar3", "_DefaultView_ProgressBarsContainer")
+	local ProgressBar3 = ProgressBar3Container:GetFrameObject()
+	local ProgressBar4Container = TotalAP.GUI.ProgressBar:CreateNew("_DefaultView_ProgressBar4", "_DefaultView_ProgressBarsContainer")
+	local ProgressBar4 = ProgressBar4Container:GetFrameObject()
+	
+	do -- ProgressBars
+	
+		-- Layout and visuals
+		ProgressBar1Container:SetRelativePosition(barInset, barInset + 0 * (barHeight + hSpace))
+		ProgressBar2Container:SetRelativePosition(barInset, barInset + 1 * (barHeight + hSpace))
+		ProgressBar3Container:SetRelativePosition(barInset, barInset + 2 * (barHeight + hSpace))
+		ProgressBar4Container:SetRelativePosition(barInset, barInset + 3 * (barHeight + hSpace))
+		
+		-- Player interaction
+		ProgressBar1Container:SetAssignedSpec(1)
+		ProgressBar2Container:SetAssignedSpec(2)
+		ProgressBar3Container:SetAssignedSpec(3)
+		ProgressBar4Container:SetAssignedSpec(4)
+
+	end
+	
 	ViewObject.elementsList = { 	-- This is the actual view, which consists of individual DisplayFrame objects and their properties
 	
 		AnchorFrameContainer,
@@ -260,6 +297,11 @@ local function CreateNew(self)
 		UnderlightAnglerFrameContainer,
 		ActionButtonFrameContainer,
 		ActionButtonContainer,
+		ProgressBarsFrameContainer,
+		ProgressBar1Container,
+		ProgressBar2Container,
+		ProgressBar3Container,
+		ProgressBar4Container,
 		SpecIcon1FrameContainer,
 		SpecIcon1Container,
 		SpecIcon2FrameContainer,
