@@ -70,10 +70,15 @@ local function Render(self)
 	
 	-- Disable all elements that can't be shown due to event state restrictions (combat, pet battle, vehicle, loss of control)
 	
-	
 	-- Render all enabled elements (show frames) 
 	for index, Element in ipairs(elementsList) do
 		if Element ~= nil then
+		
+			-- Skip frames that can't be shown due to being assigned to actual specs that don't exist for the current character's class - the maximum no. is always created, but not all of them need to be rendered
+			if Element:GetAssignedSpec() > GetNumSpecializations() then -- Disable this icon, as the player's class has fewer specs
+				Element:SetEnabled(false)
+			end
+		
 			TotalAP.Debug("Rendering View element " .. index .. ": " .. Element:GetName())
 			Element:Render()
 		end
