@@ -80,7 +80,8 @@ local function Render(self)
 			end
 		
 			TotalAP.Debug("Rendering View element " .. index .. ": " .. Element:GetName())
-			Element:Render()
+			Element:Update() -- Prepare internal state to reflect the most current information available to the addon (handled by view)
+			Element:Render() -- Display element according to its internal state (handled by widget class)
 		end
 	end
 	

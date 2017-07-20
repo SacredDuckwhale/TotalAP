@@ -165,6 +165,14 @@ local function SetAssignedSpec(self, assignedSpec)
 
 end
 
+--- Prototype method. Must be overwritten by derived classes to be useful, as update requirements are different for each frame type
+local function Update()
+
+	TotalAP.Debug("Tried to update prototype DisplayFrame -> Something's not quite right...")
+	return
+	
+end
+
 --- Prototype method. Must be overwritten by derived classes to be useful, as rendering is different for each frame type
 local function Render()
 
@@ -246,6 +254,7 @@ DisplayFrame.GetEnabled = GetEnabled
 DisplayFrame.SetEnabled = SetEnabled
 DisplayFrame.Enable = Enable
 DisplayFrame.Disable = Disable
+DisplayFrame.Update = Update
 DisplayFrame.Render = Render
 DisplayFrame.GetNumInstances = GetNumInstances
 DisplayFrame.GetParent = GetParent
