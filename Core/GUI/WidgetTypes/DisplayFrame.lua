@@ -210,6 +210,34 @@ local function SetRelativePosition(self, posX, posY)
 	
 end
 
+---
+local function GetAnchorPoint(self)
+
+	return self.anchorPoint or defaultValues.anchorPoint
+
+end
+
+---
+local function SetAnchorPoint(self, anchorPoint)
+
+	self.anchorPoint = anchorPoint or self.anchorPoint
+
+end
+
+---
+local function GetTargetAnchorPoint(self)
+
+	return self.targetAnchorPoint or defaultValues.targetAnchorPoint
+
+end
+
+---
+local function SetTargetAnchorPoint(self, targetAnchorPoint)
+
+	self.targetAnchorPoint = targetAnchorPoint or self.targetAnchorPoint
+	
+end
+
 -- Public methods (interface table)
 DisplayFrame.CreateNew = CreateNew
 DisplayFrame.GetEnabled = GetEnabled
@@ -227,6 +255,10 @@ DisplayFrame.SetAssignedSpec = SetAssignedSpec
 DisplayFrame.GetFrameObject = GetFrameObject
 DisplayFrame.GetRelativePosition = GetRelativePosition
 DisplayFrame.SetRelativePosition = SetRelativePosition
+DisplayFrame.GetAnchorPoint = GetAnchorPoint
+DisplayFrame.SetAnchorPoint = SetAnchorPoint
+DisplayFrame.GetTargetAnchorPoint = GetTargetAnchorPoint
+DisplayFrame.SetTargetAnchorPoint = SetTargetAnchorPoint
 
 TotalAP.GUI.DisplayFrame = DisplayFrame
 
