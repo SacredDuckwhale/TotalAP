@@ -195,7 +195,7 @@ local function OnInventoryUpdate()
 	end
 	
 	-- Update GUI to display the most current information
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
@@ -209,7 +209,7 @@ local function OnBankOpened()
 	ScanBank()
 	
 	-- Update GUI to display the most current information
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
@@ -217,7 +217,7 @@ end
 local function OnBankClosed()
 	
 	TotalAP.Debug("OnBankClosed triggered")
-	isBankOpen = true
+	isBankOpen = false
 	
 end
 
@@ -230,7 +230,7 @@ local function OnPlayerBankSlotsChanged()
 	ScanBank()
 	
 	-- Update GUI to display the most current information
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
@@ -241,7 +241,7 @@ local function OnEnterCombat()
 	isPlayerEngagedInCombat = true
 
 	-- Update GUI to show/hide displays when necessary
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
@@ -252,7 +252,7 @@ local function OnLeaveCombat()
 	isPlayerEngagedInCombat = false
 	
 	-- Update GUI to show/hide displays when necessary
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
@@ -263,7 +263,7 @@ local function OnPetBattleStart()
 	isPetBattleInProgress = true
 	
 	-- Update GUI to show/hide displays when necessary
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
@@ -274,7 +274,7 @@ local function OnPetBattleEnd()
 	isPetBattleInProgress = false
 	
 	-- Update GUI to show/hide displays when necessary
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
@@ -288,7 +288,7 @@ local function OnUnitVehicleEnter(...)
 	isPlayerUsingVehicle = true
 	
 	-- Update GUI to show/hide displays when necessary
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
@@ -302,7 +302,7 @@ local function OnUnitVehicleExit(...)
 	isPlayerUsingVehicle = false
 	
 	-- Update GUI to show/hide displays when necessary
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
@@ -313,7 +313,7 @@ local function OnPlayerControlLost()
 	hasPlayerLostControl = true
 	
 	-- Update GUI to show/hide displays when necessary
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
@@ -324,7 +324,7 @@ local function OnPlayerControlGained()
 	hasPlayerLostControl = false
 
 	-- Update GUI to show/hide displays when necessary
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
