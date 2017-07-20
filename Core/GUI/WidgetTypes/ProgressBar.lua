@@ -292,6 +292,10 @@ local function Render(self)
 		-- Resize
 		FrameObject:SetSize(self:GetWidth(), self:GetHeight())
 		UnspentBar:SetSize(self:GetWidth("UnspentBar"), self:GetHeight("UnspentBar"))
+		InBagsBar:SetSize(self:GetWidth("InBagsBar"), self:GetHeight("InBagsBar"))
+		InBankBar:SetSize(self:GetWidth("InBankBar"), self:GetHeight("InBankBar"))
+		MiniBar:SetSize(self:GetWidth("MiniBar"), self:GetHeight("MiniBar"))
+		
 		
 	end
 	
