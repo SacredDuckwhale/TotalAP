@@ -53,6 +53,8 @@ local function CreateNew(self)
 	local specIconBorderWidth = 1
 	local specIconTextWidth = 40
 	
+	local specIconTextTemplate = "GameFontNormal"
+	
 	local stateIconWidth, stateIconHeight = (maxButtonSize - 3 * vSpace) / 4, barHeight + barInset
 	
 	local sliderHeight = 20
@@ -264,10 +266,28 @@ local function CreateNew(self)
 		
 	end
 	
-	 local ProgressBarsFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_ProgressBarsFrame", "_DefaultView_AnchorFrame")
-	 local ProgressBarsFrame = ProgressBarsFrameContainer:GetFrameObject()
+	local SpecIcon1TextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_SpecIcon1Text", "_DefaultView_SpecIcon1Container", specIconTextTemplate)
+	local SpecIcon1Text = SpecIcon1TextContainer:GetFrameObject()
+	local SpecIcon2TextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_SpecIcon2Text", "_DefaultView_SpecIcon2Container", specIconTextTemplate)
+	local SpecIcon2Text = SpecIcon2TextContainer:GetFrameObject()
+	local SpecIcon3TextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_SpecIcon3Text", "_DefaultView_SpecIcon3Container", specIconTextTemplate)
+	local SpecIcon3Text = SpecIcon3TextContainer:GetFrameObject()
+	local SpecIcon4TextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_SpecIcon4Text", "_DefaultView_SpecIcon4Container", specIconTextTemplate)
+	local SpecIcon4Text = SpecIcon4TextContainer:GetFrameObject()
+	do -- SpecIconsText
+	
+		-- Layout and visuals
+		SpecIcon1TextContainer:SetRelativePosition(vSpace, 0)
+		SpecIcon1TextContainer:SetAnchorPoint("TOPLEFT")
+		SpecIcon1TextContainer:SetTargetAnchorPoint("TOPRIGHT")
+	
+	end
+	
+	
+	local ProgressBarsFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_ProgressBarsFrame", "_DefaultView_AnchorFrame")
+	local ProgressBarsFrame = ProgressBarsFrameContainer:GetFrameObject()
 	 
-	 do -- ProgressBarsFrame
+	do -- ProgressBarsFrame
 	 
 		-- Layout and visuals
 		ProgressBarsFrameContainer:SetBackdropColour("#000000")
@@ -325,6 +345,10 @@ local function CreateNew(self)
 		SpecIcon3Container,
 		SpecIcon4FrameContainer,
 		SpecIcon4Container,
+		SpecIcon1TextContainer,
+		SpecIcon2TextContainer,
+		SpecIcon3TextContainer,
+		SpecIcon4TextContainer,
 	}
 	
 	return ViewObject
