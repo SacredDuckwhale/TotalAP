@@ -61,6 +61,9 @@ local function CreateNew(self)
 		
 	-- End stuff that needs to be moved to AceConfig settings
 	
+	-- Locals that are required to update individual view elements
+	local settings = TotalAP.Settings.GetReference()
+	
 	
 	-- Anchor frame: Parent of all displays and buttons (used to toggle the entire addon, as well as move its displays)
 	local AnchorFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_AnchorFrame")
@@ -187,6 +190,31 @@ local function CreateNew(self)
 		ActionButtonContainer:SetRelativePosition(max(0, (maxButtonSize - ActionButton:GetWidth()) / 2) , - ( maxButtonSize - ActionButton:GetHeight()) / 2)
 	
 		-- Player interaction
+		ActionButtonContainer.Update = function(self)
+		
+			local hideButton = false
+			
+			-- Hide when:
+			---- Button is disabled via settings
+			---- No AP in inventory
+			---- Current spec is being ignored - TODO: Instead of hiding, give visual indicator? (greyed out icon or sth.)
+			---- Artifact weapon is maxed (54 traits and tier 1)
+			-- don't hide if Research Tome exists, regardless of the other conditions being met 
+			
+			-- if not TotalAP.inventoryCache.foundTome and artifactProgressCache[spec] ~= nil and artifactProgressCache[spec]["isIgnored"] then
+		-- TotalAP.Debug("Hiding action button because the current spec is set to being ignored")
+		-- TotalAPButton:Hide();
+		-- return
+	-- end
+			
+			
+			local flashButton = false
+			
+			-- Flash when:
+			---- Current spec has at least one available trait
+			---- Current item is Research Tome that can be used (level 110, not maxed AK depending on item (TODO)?)
+		
+		end
 		
 		-- Script handlers
 		
