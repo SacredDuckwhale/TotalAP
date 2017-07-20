@@ -44,8 +44,10 @@ local function CreateNew(self)
 	
 	local barWidth, barHeight, barInset = 100, 18, 1
 	
-	local maxButtonSize = 80
+	local maxButtonSize = 60 -- TODO: smaller than 60 looks odd, 80 before? should be 4x size of the bars at most, and 1x at the least to cover all specs
 	local buttonSize = 40 -- TODO: Layout Cache or via settings?
+	
+	local buttonTextTemplate = "GameFontNormal"
 	
 	local specIconSize = 18
 	local specIconBorderWidth = 1
@@ -188,6 +190,18 @@ local function CreateNew(self)
 		
 	end
 	
+	local ActionButtonTextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_ActionButtonText", "_DefaultView_ActionButtonFrameContainer", buttonTextTemplate)
+	local ActionButtonText = ActionButtonTextContainer:GetFrameObject()
+	do -- ActionButtonTextContainer
+	
+		-- Layout and visuals
+		ActionButtonTextContainer:SetRelativePosition(0, - hSpace)
+		ActionButtonTextContainer:SetAnchorPoint("TOPLEFT")
+		ActionButtonTextContainer:SetTargetAnchorPoint("BOTTOMLEFT")
+		ActionButtonTextContainer:SetTextAlignment("center")
+		
+	end
+	
 	local SpecIcon1FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon1Container", "_DefaultView_AnchorFrame")
 	local SpecIcon1Frame = SpecIcon1FrameContainer:GetFrameObject()
 	local SpecIcon2FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon2Container", "_DefaultView_AnchorFrame")
@@ -297,6 +311,7 @@ local function CreateNew(self)
 		UnderlightAnglerFrameContainer,
 		ActionButtonFrameContainer,
 		ActionButtonContainer,
+		ActionButtonTextContainer,
 		ProgressBarsFrameContainer,
 		ProgressBar1Container,
 		ProgressBar2Container,
