@@ -30,6 +30,8 @@ local defaultValues = {
 	Parent = "UIParent",
 	name = "",
 	position = { 0, 0 },
+	anchorPoint = "CENTER",
+	targetAnchorPoint = "CENTER",
 	
 }
 
