@@ -201,6 +201,43 @@ local function CreateNew(self)
 		ActionButtonTextContainer:SetAnchorPoint("TOPLEFT")
 		ActionButtonTextContainer:SetTargetAnchorPoint("BOTTOMLEFT")
 		ActionButtonTextContainer:SetTextAlignment("center")
+		ActionButtonTextContainer.Update = function(self) -- TODO: More options to change the displayed text format - planned once advanced config is implemented via AceConfig
+		
+			local text = ""
+			
+			if settings.actionButton.showText and not TotalAP.inventoryCache.foundTome and TotalAP.inventoryCache.numItems > 0 then -- Display current item's AP value as text (if enabled)
+
+				if TotalAP.inventoryCache.numItems > 1 then -- Display total AP in bags
+			
+					if settings.scanBank and TotalAP.bankCache.numItems > 0 and TotalAP.bankCache.inBankAP > 0 then -- Also include banked AP
+				
+						text = TotalAP.Utils.FormatShort(TotalAP.inventoryCache.displayItem.artifactPowerValue, true, settings.numberFormat) .. "\n(" .. TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat) .. ")\n[" .. TotalAP.Utils.FormatShort(TotalAP.bankCache.inBankAP, true, settings.numberFormat) .. "]" -- e.g., 75m\n(300m)\n[25m] = display current, inBags, and banked AP
+						
+					else -- Only display current item and inventory AP
+			
+						text = TotalAP.Utils.FormatShort(TotalAP.inventoryCache.displayItem.artifactPowerValue, true, settings.numberFormat) .. "\n(" .. TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat) .. ")" -- e.g., 75m\n(300m)
+					 
+					 end
+					 
+				else -- Only display the current item's AP, as well as banked AP if it was saved (i.e., omit inventory AP) - TODO: This seems messy, and should likely be reworked to be more straight-forward / remove duplicate code
+		
+					if settings.scanBank and TotalAP.bankCache.numItems > 0 and TotalAP.bankCache.inBankAP > 0 then -- Also include banked AP
+						
+						text = TotalAP.Utils.FormatShort(TotalAP.inventoryCache.displayItem.artifactPowerValue, true, settings.numberFormat) .. ")\n[" .. TotalAP.Utils.FormatShort(TotalAP.bankCache.inBankAP, true, settings.numberFormat) .. "]"
+					
+					else
+					
+						text = TotalAP.Utils.FormatShort(TotalAP.inventoryCache.displayItem.artifactPowerValue, true, settings.numberFormat)
+						
+					end
+					
+				end
+					
+			end
+			
+			self:SetText(text)
+			
+		end
 		
 	end
 	
