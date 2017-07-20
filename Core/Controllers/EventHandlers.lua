@@ -381,10 +381,6 @@ end
 -- Make functions available in the addon namespace
 TotalAP.EventHandlers.UnregisterAllEvents = UnregisterAllEvents
 TotalAP.EventHandlers.RegisterAllEvents = RegisterAllEvents
-TotalAP.EventHandlers.UnregisterCombatEvents = UnregisterCombatEvents
-TotalAP.EventHandlers.RegisterCombatEvents = RegisterCombatEvents
-TotalAP.EventHandlers.UnregisterUpdateEvents = UnregisterUpdateEvents
-TotalAP.EventHandlers.RegisterUpdateEvents = RegisterUpdateEvents
 
 
 return TotalAP.EventHandlers
