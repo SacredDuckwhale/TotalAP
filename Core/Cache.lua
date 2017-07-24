@@ -22,9 +22,12 @@
 
 
 local addonName, TotalAP = ...
-
 if not TotalAP then return end
 
+
+-- Localized globals
+local _G = _G
+local cacheVarName = "TotalArtifactPowerCache"
 
 --- Returns the base structure for an "empty" cache entry.
 -- It contains values for a spec that hasn't been scanned yet, where all values are nil except "isIgnored" (which is FALSE)
@@ -48,7 +51,7 @@ end
 -- @return A reference to the cache database table itself
 local function GetReference() -- TODO: AceDB can handle this
 
-	return TotalArtifactPowerCache
+	return _G[cacheVarName]
 	
 end
 
