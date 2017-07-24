@@ -127,23 +127,23 @@ local function ScanInventory(scanBank)
 	
 	end
 	
-		if scanBank then -- Calculate AP value for bank bags and update bankCache so that other modules can access it)
-			
-			local bankCache = TotalAP.bankCache
-			bankCache.numItems = numItems
-			bankCache.inBankAP = artifactPowerSum
-			
-			TotalAP.Cache.UpdateBankCache()
-	
-		else	-- Calculate AP value for inventory bags and update inventory cache so that other modules can access it)
-	
-			local inventoryCache = TotalAP.inventoryCache
-			inventoryCache.foundTome = foundTome
-			inventoryCache.displayItem = displayItem
-			inventoryCache.numItems = numItems
-			inventoryCache.inBagsAP = artifactPowerSum
-			
-		end
+	if scanBank then -- Calculate AP value for bank bags and update bankCache so that other modules can access it)
+		
+		local bankCache = TotalAP.bankCache
+		bankCache.numItems = numItems
+		bankCache.inBankAP = artifactPowerSum
+		
+		TotalAP.Cache.UpdateBankCache()
+
+	else	-- Calculate AP value for inventory bags and update inventory cache so that other modules can access it)
+
+		local inventoryCache = TotalAP.inventoryCache
+		inventoryCache.foundTome = foundTome
+		inventoryCache.displayItem = displayItem
+		inventoryCache.numItems = numItems
+		inventoryCache.inBagsAP = artifactPowerSum
+		
+	end
 	
 end
 
