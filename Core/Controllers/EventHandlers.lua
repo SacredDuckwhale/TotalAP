@@ -127,23 +127,23 @@ local function ScanInventory(scanBank)
 	
 	end
 	
-		if scanBank then -- Calculate AP value for bank bags and update bankCache so that other modules can access it)
-			
-			local bankCache = TotalAP.bankCache
-			bankCache.numItems = numItems
-			bankCache.inBankAP = artifactPowerSum
-			
-			TotalAP.Cache.UpdateBankCache()
-	
-		else	-- Calculate AP value for inventory bags and update inventory cache so that other modules can access it)
-	
-			local inventoryCache = TotalAP.inventoryCache
-			inventoryCache.foundTome = foundTome
-			inventoryCache.displayItem = displayItem
-			inventoryCache.numItems = numItems
-			inventoryCache.inBagsAP = artifactPowerSum
-			
-		end
+	if scanBank then -- Calculate AP value for bank bags and update bankCache so that other modules can access it)
+		
+		local bankCache = TotalAP.bankCache
+		bankCache.numItems = numItems
+		bankCache.inBankAP = artifactPowerSum
+		
+		TotalAP.Cache.UpdateBankCache()
+
+	else	-- Calculate AP value for inventory bags and update inventory cache so that other modules can access it)
+
+		local inventoryCache = TotalAP.inventoryCache
+		inventoryCache.foundTome = foundTome
+		inventoryCache.displayItem = displayItem
+		inventoryCache.numItems = numItems
+		inventoryCache.inBagsAP = artifactPowerSum
+		
+	end
 	
 end
 
@@ -158,6 +158,62 @@ end
 local function ScanBank()
 	
 	ScanInventory(true)
+	
+end
+
+--- Scan currently equipped artifact and update the addon's artifactCache accordingly
+local function ScanArtifact()
+
+	if not TotalAP.ArtifactInterface.HasCorrectSpecArtifactEquipped() then -- Player likely didn't have the correct artifact in their inventory, so another spec's artifact is still equipped (but shouldn't be scanned)
+	
+		TotalAP.Debug("ScanArtifact -> Aborted scan because the right artifact weapon was not equipped")
+		return
+	
+	end
+	
+	if IsEquippedItem(133755) then -- TODO: ULA handling here
+		TotalAP.Debug("ScanArtifact -> Detected Underlight Angler being equipped -> Not yet implemented :(")
+		return
+	end
+	
+	local aUI = C_ArtifactUI
+	
+	local specNo = GetSpecialization()
+	local key = TotalAP.Utils.GetFQCN()
+	
+	local unspentAP = select(5, aUI.GetEquippedArtifactInfo())
+	local numTraitsPurchased = select(6, aUI.GetEquippedArtifactInfo())
+	local artifactTier = select(13, aUI.GetEquippedArtifactInfo())
+	-- Only change artifact data and leave isIgnored as it is
+	local isIgnored = false -- TODO: Requires merging the refactor-gui branch to work?
+	
+	
+	-- Assemble cache entry that is to replace the existing values
+	local entry = TotalAP.Cache.GetEntry(fqcn, specNo) or {}
+	entry.thisLevelUnspentAP = unspentAP
+	entry.numTraitsPurchased = numTraitsPurchased
+	entry.artifactTier = artifactTier
+	entry.isIgnored = isIgnored
+
+	
+
+	
+	-- Copy saved variables for all other specs to display their progress even when it hasn't been updated this session
+	for i = 1, GetNumSpecializations() do
+		if  i ~= specNo then -- Is offspec
+			--TotalAP.artifactCache[key][i] = TotalAP.Cache.GetEntry(fqcn, i) -- TODO: Messy and needs revisitng along with the cache rework
+		end
+	end
+	
+	-- Create empty entries in case nothing was saved before
+	TotalAP.artifactCache[key] = TotalAP.artifactCache[key] or {}
+	TotalAP.artifactCache[key][specNo] = entry
+	
+	
+	-- Update saved variables with local cache entry for this spec to make sure it persists throughout session
+	TotalAP.Cache.UpdateArtifactCache(key, specNo)
+
+	
 	
 end
 
@@ -186,8 +242,10 @@ local function OnArtifactUpdate()
 	TotalAP.Debug("OnArtifactUpdate triggered")
 	
 	-- Re-scan inventory and update all stored values
-	ScanBags()
+	--ScanBags() TODO: Is this necessary? I think not.
 	
+	-- Scan equipped artifact
+	ScanArtifact()
 	-- Update GUI to display the most current information
 	UpdateGUI()
 	
@@ -205,7 +263,7 @@ local function OnInventoryUpdate()
 	end
 	
 	-- Update GUI to display the most current information
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
@@ -219,7 +277,7 @@ local function OnBankOpened()
 	ScanBank()
 	
 	-- Update GUI to display the most current information
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
@@ -227,7 +285,7 @@ end
 local function OnBankClosed()
 	
 	TotalAP.Debug("OnBankClosed triggered")
-	isBankOpen = true
+	isBankOpen = false
 	
 end
 
@@ -240,7 +298,7 @@ local function OnPlayerBankSlotsChanged()
 	ScanBank()
 	
 	-- Update GUI to display the most current information
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
@@ -251,7 +309,7 @@ local function OnEnterCombat()
 	isPlayerEngagedInCombat = true
 
 	-- Update GUI to show/hide displays when necessary
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
@@ -262,7 +320,7 @@ local function OnLeaveCombat()
 	isPlayerEngagedInCombat = false
 	
 	-- Update GUI to show/hide displays when necessary
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
@@ -273,7 +331,7 @@ local function OnPetBattleStart()
 	isPetBattleInProgress = true
 	
 	-- Update GUI to show/hide displays when necessary
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
@@ -284,7 +342,7 @@ local function OnPetBattleEnd()
 	isPetBattleInProgress = false
 	
 	-- Update GUI to show/hide displays when necessary
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
@@ -298,7 +356,7 @@ local function OnUnitVehicleEnter(...)
 	isPlayerUsingVehicle = true
 	
 	-- Update GUI to show/hide displays when necessary
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
@@ -312,7 +370,7 @@ local function OnUnitVehicleExit(...)
 	isPlayerUsingVehicle = false
 	
 	-- Update GUI to show/hide displays when necessary
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
@@ -323,7 +381,7 @@ local function OnPlayerControlLost()
 	hasPlayerLostControl = true
 	
 	-- Update GUI to show/hide displays when necessary
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
@@ -334,7 +392,7 @@ local function OnPlayerControlGained()
 	hasPlayerLostControl = false
 
 	-- Update GUI to show/hide displays when necessary
-	TotalAP.Controllers.UpdateGUI()
+	UpdateGUI()
 	
 end
 
@@ -363,31 +421,6 @@ local eventList = {
 	
 }
 
--- Maps event handlers to categories so that they can be toggled indivually, by category, AND globally
-local eventCategories = {
-
-	-- Values need to be updated as new information could have been made available
-	["ARTIFACT_XP"] = "Update",
-	["ARTIFACT_UPDATE"] = "Update",
-	["BAG_UPDATE_DELAYED"] = "Update",
-	
-	-- These don't affect the player's ability to use items
-	["BANKFRAME_OPENED"] = "Manual",
-	["BANKFRAME_CLOSED"] = "Manual",
-	["PLAYERBANKSLOTS_CHANGED"] = "Manual",
-	
-	-- "Loss of control" events that make using items impossible
-	["PLAYER_REGEN_DISABLED"] = "Combat",
-	["PLAYER_REGEN_ENABLED"] = "Combat",
-	["PET_BATTLE_OPENING_START"] = "PetBattle",
-	["PET_BATTLE_CLOSE"] = "PetBattle",
-	["UNIT_ENTERED_VEHICLE"] = "Vehicle",
-	["UNIT_EXITED_VEHICLE"] = "Vehicle",
-	["PLAYER_CONTROL_LOST"] = "Vehicle",
-	["PLAYER_CONTROL_GAINED"] = "Vehicle",
-
-}
-
 -- Register listeners for all relevant events
 local function RegisterAllEvents()
 	
@@ -412,37 +445,10 @@ local function UnregisterAllEvents()
 
 end
 
--- Unregister listeners for all combat-related events (they stop the addon from updating to prevent taint issues)
-local function UnregisterCombatEvents()
-
-	for key, eventHandler in pairs(eventList) do -- Unregister this handler for the respective event (via AceEvent-3.0)
-	
-		TotalAP.Addon:RegisterEvent(key, eventHandler)
-		TotalAP.Debug("Unregistered for event = " .. key)
-	
-	end
-
-end
-
--- Unregister listeners for all update-relevant events (GUI need to be updated)
-local function UnregisterUpdateEvents()
-
-	for key, eventHandler in pairs(eventList) do -- Unregister this handler for the respective event (via AceEvent-3.0)
-	
-		TotalAP.Addon:RegisterEvent(key, eventHandler)
-		TotalAP.Debug("Unregistered for event = " .. key)
-	
-	end
-
-end
 
 -- Make functions available in the addon namespace
 TotalAP.EventHandlers.UnregisterAllEvents = UnregisterAllEvents
 TotalAP.EventHandlers.RegisterAllEvents = RegisterAllEvents
-TotalAP.EventHandlers.UnregisterCombatEvents = UnregisterCombatEvents
-TotalAP.EventHandlers.RegisterCombatEvents = RegisterCombatEvents
-TotalAP.EventHandlers.UnregisterUpdateEvents = UnregisterUpdateEvents
-TotalAP.EventHandlers.RegisterUpdateEvents = RegisterUpdateEvents
 
 
 return TotalAP.EventHandlers

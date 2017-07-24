@@ -334,8 +334,8 @@ end
 --- Reset all settings to their default values
 local function RestoreDefaults()
 
-	local settings = GetReference()
-	settings.ResetProfile()
+	local db = TotalAP.Addon.db
+	db:ResetProfile()
 
 end
 
