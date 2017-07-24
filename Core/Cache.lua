@@ -212,7 +212,7 @@ local function GetBankCache(fqcn)
 	
 end
 
---- Update the bankCache from saved variables if one has been stored in a previous session
+--- Update the saved variables from bankCache for the current session. Should only be called after said cache was updated to prevent overwriting the saved cache with an empty one
 -- @param[opt] fqcn The fully-qualified character name (defaults to currently logged in character if omitted)
 local function UpdateBankCache(fqcn)
 
