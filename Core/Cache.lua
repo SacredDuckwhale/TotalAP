@@ -233,6 +233,32 @@ local function UpdateBankCache(fqcn)
 
 end
 
+--- Update the saved variables from artifactCache for the current session. Should only be called after said cache was updated to prevent overwriting the saved cache with an empty one
+-- @param[opt] fqcn The fully-qualified character name (defaults to currently logged in character if omitted)
+-- @param[opt] specNo The spec number that is to be updated (defaults to current spec if omitted)
+local function UpdateArtifactCache(fqcn, specNo)
+
+	local cache = GetReference()
+
+	if not fqcn then -- Use logged in character name/realm
+		fqcn = TotalAP.Utils.GetFQCN()
+	end
+	
+	if not specNo then -- Use current spec
+		specNo = GetSpecialization()
+	end
+
+	if not (cache and cache[fqcn] and cache[fqcn][specNo] and TotalAP.artifactCache and TotalAP.artifactCache[fqcn] and TotalAP.artifactCache[fqcn][specNo]) then -- Abort, abort!
+	
+		TotalAP.Debug("Failed to update artifactCache for key = " .. tostring(fqcn) .. ", specNo = " .. tostring(specNo))
+		return
+		
+	end
+	-- TODO: If cache entry doesn't exist, create it?
+	cache[fqcn][specNo] = TotalAP.artifactCache[fqcn][specNo] -- Only update the requested spec and leave the others intact
+
+end
+
 --- Returns the number of ignored specs for a given character (defaults to currently used character if none is given)
 -- @param[opt] fqcn Fully qualified character name, to be used as the primary key
 -- @return Number of ignored specs; 0 if none are cached
@@ -304,6 +330,7 @@ TotalAP.Cache.GetBankCache = GetBankCache
 TotalAP.Cache.UpdateBankCache = UpdateBankCache
 TotalAP.Cache.GetNumIgnoredSpecs = GetNumIgnoredSpecs
 TotalAP.Cache.UnignoreAllSpecs = UnignoreAllSpecs
+TotalAP.Cache.UpdateArtifactCache = UpdateArtifactCache
 
 -- Keep these private
 -- TotalAP.Cache.GetReference = GetReference
