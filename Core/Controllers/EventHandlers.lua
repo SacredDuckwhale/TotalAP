@@ -161,6 +161,62 @@ local function ScanBank()
 	
 end
 
+--- Scan currently equipped artifact and update the addon's artifactCache accordingly
+local function ScanArtifact()
+
+	if not TotalAP.ArtifactInterface.HasCorrectSpecArtifactEquipped() then -- Player likely didn't have the correct artifact in their inventory, so another spec's artifact is still equipped (but shouldn't be scanned)
+	
+		TotalAP.Debug("ScanArtifact -> Aborted scan because the right artifact weapon was not equipped")
+		return
+	
+	end
+	
+	if IsEquippedItem(133755) then -- TODO: ULA handling here
+		TotalAP.Debug("ScanArtifact -> Detected Underlight Angler being equipped -> Not yet implemented :(")
+		return
+	end
+	
+	local aUI = C_ArtifactUI
+	
+	local specNo = GetSpecialization()
+	local key = TotalAP.Utils.GetFQCN()
+	
+	local unspentAP = select(5, aUI.GetEquippedArtifactInfo())
+	local numTraitsPurchased = select(6, aUI.GetEquippedArtifactInfo())
+	local artifactTier = select(13, aUI.GetEquippedArtifactInfo())
+	-- Only change artifact data and leave isIgnored as it is
+	local isIgnored = false -- TODO: Requires merging the refactor-gui branch to work?
+	
+	
+	-- Assemble cache entry that is to replace the existing values
+	local entry = TotalAP.Cache.GetEntry(fqcn, specNo) or {}
+	entry.thisLevelUnspentAP = unspentAP
+	entry.numTraitsPurchased = numTraitsPurchased
+	entry.artifactTier = artifactTier
+	entry.isIgnored = isIgnored
+
+	
+
+	
+	-- Copy saved variables for all other specs to display their progress even when it hasn't been updated this session
+	for i = 1, GetNumSpecializations() do
+		if  i ~= specNo then -- Is offspec
+			--TotalAP.artifactCache[key][i] = TotalAP.Cache.GetEntry(fqcn, i) -- TODO: Messy and needs revisitng along with the cache rework
+		end
+	end
+	
+	-- Create empty entries in case nothing was saved before
+	TotalAP.artifactCache[key] = TotalAP.artifactCache[key] or {}
+	TotalAP.artifactCache[key][specNo] = entry
+	
+	
+	-- Update saved variables with local cache entry for this spec to make sure it persists throughout session
+	TotalAP.Cache.UpdateArtifactCache(key, specNo)
+
+	
+	
+end
+
 --- Toggle a GUI Update (which is handled by the GUI controller and not the Event controller itself)
 local function UpdateGUI()
 
@@ -176,8 +232,10 @@ local function OnArtifactUpdate()
 	TotalAP.Debug("OnArtifactUpdate triggered")
 	
 	-- Re-scan inventory and update all stored values
-	ScanBags()
+	--ScanBags() TODO: Is this necessary? I think not.
 	
+	-- Scan equipped artifact
+	ScanArtifact()
 	-- Update GUI to display the most current information
 	UpdateGUI()
 	
