@@ -185,8 +185,7 @@ local function ScanArtifact()
 	local numTraitsPurchased = select(6, aUI.GetEquippedArtifactInfo())
 	local artifactTier = select(13, aUI.GetEquippedArtifactInfo())
 	-- Only change artifact data and leave isIgnored as it is
-	local isIgnored = false -- TODO: Requires merging the refactor-gui branch to work?
-	
+	local isIgnored = TotalAP.Cache.IsCurrentSpecIgnored()
 	
 	-- Assemble cache entry that is to replace the existing values
 	local entry = TotalAP.Cache.GetEntry(fqcn, specNo) or {}
@@ -195,25 +194,11 @@ local function ScanArtifact()
 	entry.artifactTier = artifactTier
 	entry.isIgnored = isIgnored
 
-	
-
-	
-	-- Copy saved variables for all other specs to display their progress even when it hasn't been updated this session
-	for i = 1, GetNumSpecializations() do
-		if  i ~= specNo then -- Is offspec
-			--TotalAP.artifactCache[key][i] = TotalAP.Cache.GetEntry(fqcn, i) -- TODO: Messy and needs revisitng along with the cache rework
-		end
-	end
-	
-	-- Create empty entries in case nothing was saved before
-	TotalAP.artifactCache[key] = TotalAP.artifactCache[key] or {}
+	-- Update local cache first]
 	TotalAP.artifactCache[key][specNo] = entry
-	
 	
 	-- Update saved variables with local cache entry for this spec to make sure it persists throughout session
 	TotalAP.Cache.UpdateArtifactCache(key, specNo)
-
-	
 	
 end
 

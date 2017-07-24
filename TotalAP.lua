@@ -58,27 +58,6 @@ local maxArtifactTraits = 54; -- Only applied to tier 1 artifacts in 7.2 -- TODO
 local settings, cache = {}, {}; -- will be loaded from savedVars later
 
 
--- Load saved vars and DB files, attempt to verify SavedVars
-local function LoadSettings()
-
-	-- Load cached AP progress if is has been saved before (will be updated as soon as the spec is enabled again)
-	if TotalArtifactPowerCache == nil or type(TotalArtifactPowerCache) ~= "table" then -- First login / SavedVars were deleted
-		-- TODO: Initialise Cache
-		TotalArtifactPowerCache = {};
-	end
-	
-	cache = TotalArtifactPowerCache;
-	
-	
-	local fqcn = TotalAP.Utils.GetFQCN()
-	local bankCache = TotalAP.Cache.GetBankCache(fqcn)
-	
-	-- Restore banked values from saved vars if possible
-	if bankCache then -- bankCache was saved on a previous session and can be restored
-		TotalAP.bankCache = bankCache
-	end
-end
-
 -- Toggle spell overlay (glow effect) on an action button
 local function FlashActionButton(button, showGlowEffect, showAnts)
 	

@@ -269,20 +269,23 @@ local function UpdateArtifactCache(fqcn, specNo)
 	local cache = GetReference()
 
 	if not fqcn then -- Use logged in character name/realm
+	
 		fqcn = TotalAP.Utils.GetFQCN()
+		
 	end
 	
 	if not specNo then -- Use current spec
 		specNo = GetSpecialization()
 	end
 
-	if not (cache and cache[fqcn] and cache[fqcn][specNo] and TotalAP.artifactCache and TotalAP.artifactCache[fqcn] and TotalAP.artifactCache[fqcn][specNo]) then -- Abort, abort!
-	
+	if not (cache and cache[fqcn] and TotalAP.artifactCache and TotalAP.artifactCache[fqcn] and TotalAP.artifactCache[fqcn][specNo]) then -- Abort, abort!
+
 		TotalAP.Debug("Failed to update artifactCache for key = " .. tostring(fqcn) .. ", specNo = " .. tostring(specNo))
 		return
 		
 	end
-	-- TODO: If cache entry doesn't exist, create it?
+	
+	if not cache[fqcn][specNo] then cache[fqcn][specNo] = {} end -- in case no entry exists for this spec (as they can't be initialised before spec info is loaded)
 	cache[fqcn][specNo] = TotalAP.artifactCache[fqcn][specNo] -- Only update the requested spec and leave the others intact
 
 end
@@ -378,6 +381,53 @@ local function UnignoreAllSpecs(fqcn)
 end
 
 
+-- Initialises the addon's cache and fills it with data stored in the saved variables (run at startup)
+local function Initialise()
+
+	local fqcn = TotalAP.Utils.GetFQCN()
+	local cache = GetReference()
+	local dummyEntry = GetDefaults()
+		
+	-- Restore banked AP from saved vars if possible
+	local bankCache = TotalAP.Cache.GetBankCache(fqcn)
+	if bankCache then -- bankCache was saved on a previous session and can be restored
+	
+		TotalAP.bankCache = bankCache
+		
+	end
+	
+	-- Initialise caches
+	local fqcn = TotalAP.Utils.GetFQCN()
+	TotalAP.artifactCache[fqcn] = {}
+	
+	if not cache then -- Saved vars cache doesn't exist -> rebuild it
+		_G[cacheVarName] = {}
+		_G[cacheVarName][fqcn] = {}
+
+		return -- No data exists for this character -> Abort (and keep dummy entry created above in local cache, to be saved on the next update)
+
+	else -- cache exists, but may not contain the required entries
+	
+		if not cache[fqcn] then -- Entry for this char doesn't exist -> create it
+			_G[cacheVarName][fqcn] = {}
+
+		end
+	
+	end
+	
+		-- Read existing entries from saved vars and overwrite the dummy entries for those (but leave them for those that have no data)
+	for spec, entry in ipairs(cache[fqcn]) do -- At least some data exists -> merge saved data into local cache
+	
+		-- TODO: Validation and stuff... maybe
+		TotalAP.artifactCache[fqcn][spec] = entry
+
+	end
+	
+	-- End result: Local artifactCache is up-to-date, and savedVars are initialised (will be updated via UpdateArtifactCache method)
+	
+end
+
+
 -- Public methods
 TotalAP.Cache.NewEntry = NewEntry
 TotalAP.Cache.GetEntry = GetEntry
@@ -393,6 +443,7 @@ TotalAP.Cache.IsCurrentSpecIgnored = IsCurrentSpecIgnored
 TotalAP.Cache.IgnoreSpec = IgnoreSpec
 TotalAP.Cache.UnignoreSpec = UnignoreSpec
 TotalAP.Cache.UpdateArtifactCache = UpdateArtifactCache
+TotalAP.Cache.Initialise = Initialise
 
 -- Keep these private
 -- TotalAP.Cache.GetReference = GetReference
