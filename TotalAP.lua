@@ -115,27 +115,6 @@ local function MasqueUpdate(button, subGroup)
 	end
 end
 
--- Check whether the equipped weapon is the active spec's actual artifact weapon
-local function HasCorrectSpecArtifactEquipped()
-	
-	local _, _, classID = UnitClass("player"); -- 1 to 12
-	local specID = GetSpecialization(); -- 1 to 4
-
-	-- Check all artifacts for this spec
-	TotalAP.Debug(format("Checking artifacts for class %d, spec %d", classID, specID));
-	
-	local itemID = TotalAP.DB.GetArtifactItemID(classID, specID)
-	
-
-	if not IsEquippedItem(itemID) then
-		TotalAP.Debug(format("Expected to find artifact weapon %s, but it isn't equipped", GetItemInfo(itemID) or "<none>"));
-		return false 
-	end
-	
-	-- All checks passed -> Looks like the equipped weapon is in fact (one of) the class' artifact weapon 
-	return true;
-	
-end
 
 -- TODO: Desc and bugfix for unavailable artifacts (red font -> scan tooltip?)
 local function UpdateArtifactProgressCache()
@@ -751,7 +730,7 @@ local function UpdateActionButton()
 	end
 	
 	-- Also only show button if AP items were found, an artifact weapon is equipped in the first place, settings allow it, addons aren't locked from the player being in combat, and the artifact UI is available
-	if (TotalAP.inventoryCache.numItems > 0 or TotalAP.inventoryCache.foundTome) and TotalAPButton and not InCombatLockdown() and settings.actionButton.enabled and TotalAP.inventoryCache.displayItem.ID and aUI and HasCorrectSpecArtifactEquipped() then
+	if (TotalAP.inventoryCache.numItems > 0 or TotalAP.inventoryCache.foundTome) and TotalAPButton and not InCombatLockdown() and settings.actionButton.enabled and TotalAP.inventoryCache.displayItem.ID and aUI and TotalAP.ArtifactInterface.HasCorrectSpecArtifactEquipped() then
 	--and (HasArtifactEquipped()  and not IsEquippedItem(133755)) then  -- TODO: Proper support for the Underlight Angler artifact (rare fish instead of AP items)
 		
 		TotalAP.inventoryCache.displayItem.texture = GetItemIcon(TotalAP.inventoryCache.displayItem.ID) or ""
