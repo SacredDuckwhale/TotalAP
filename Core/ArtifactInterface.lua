@@ -141,7 +141,7 @@ local function GetNumAvailableTraits()
 	
 	if not aUI or not HasArtifactEquipped() then
 		TotalAP.Debug("ArtifactInterface -> Attempted to calculate number of available traits, but the artifact UI was not available (No/wrong artifact weapon?)")
-		return
+		return 0
 	end
 	
 	local settings = TotalAP.Settings.GetReference()
