@@ -389,8 +389,7 @@ local function Initialise()
 
 	local fqcn = TotalAP.Utils.GetFQCN()
 	local cache = GetReference()
-	local dummyEntry = GetDefaults()
-		
+
 	-- Restore banked AP from saved vars if possible
 	local bankCache = TotalAP.Cache.GetBankCache(fqcn)
 	if bankCache then -- bankCache was saved on a previous session and can be restored
