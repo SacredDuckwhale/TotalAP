@@ -82,6 +82,26 @@ local function CreateNew(self)
 		AnchorFrame:RegisterForDrag("LeftButton")
 		
 		-- Script handlers
+		
+		-- Script handlers	
+		AnchorFrame:SetScript("OnMouseDown", function(self) -- Show background if user pressed drag modifier to indicate the display can be dragged
+			
+			if IsAltKeyDown() then -- Make background visible
+				
+				AnchorFrameContainer:SetBackdropAlpha(0.5)
+				AnchorFrameContainer:Render()
+				
+			end
+		
+		end)
+		
+		AnchorFrame:SetScript("OnMouseUp", function(self) -- Hide background
+
+			AnchorFrameContainer:SetBackdropAlpha(0)
+			AnchorFrameContainer:Render()
+		
+		end)
+		
 		AnchorFrame:SetScript("OnDragStart", function(self) -- Dragging moves the entire display (ALT + Click)
 			
 			if self:IsMovable() and IsAltKeyDown() then -- Move display
@@ -275,6 +295,31 @@ local function CreateNew(self)
 		end
 		
 		-- Script handlers
+		ActionButton:SetScript("OnMouseDown", function(self) -- Show background if user pressed drag modifier to indicate the display can be dragged
+			
+			if IsAltKeyDown() then -- Make background visible
+				
+				AnchorFrameContainer:SetBackdropAlpha(0.5)
+				AnchorFrameContainer:Render()
+				
+			end
+			
+			if IsShiftKeyDown() then -- Make ActionButton background visible
+		
+				ActionButtonFrameContainer:SetBackdropAlpha(0.5)
+				ActionButtonFrameContainer:Render()
+		
+			end
+		
+		end)
+		
+		ActionButton:SetScript("OnMouseUp", function(self) -- Hide background
+
+			ActionButtonFrameContainer:SetBackdropAlpha(0)
+			ActionButtonFrameContainer:Render()
+			
+		end)
+		
 		ActionButton:SetScript("OnEnter", function(self)  -- (to show the tooltip on mouseover)
 		
 			if TotalAP.inventoryCache.displayItem.ID then -- An item is assigned to the button and can be displayed in the tooltip
@@ -341,6 +386,9 @@ local function CreateNew(self)
 			-- Hide background frame once more
 			ActionButtonFrameContainer:SetBackdropAlpha(0)
 			ActionButtonFrameContainer:Render()
+			
+			AnchorFrameContainer:SetBackdropAlpha(0)
+			AnchorFrameContainer:Render()
 			
 			ActionButtonContainer:Update()
 			ActionButtonContainer:Render()
