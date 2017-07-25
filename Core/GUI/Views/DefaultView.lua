@@ -247,8 +247,13 @@ local function CreateNew(self)
 			if not InCombatLockdown() then -- Flash action button (TODO: Un-taint this if necessary after GUI rework by copying the code)
 				
 				-- TODO: Check for persisting taint issues
-				if flashButton then ActionButton_ShowOverlayGlow(ActionButton)
-				else ActionButton_HideOverlayGlow(ActionButton) end
+				self:SetFlashing(flashButton)
+				if flashButton and not self.isMoving then -- Re-flash to show glow effect properly if button's size changed (and it isn't currently being resized) -- TODO: Maybe this should be done while rendering instead
+					ActionButton_HideOverlayGlow(ActionButton)
+					ActionButton_ShowOverlayGlow(ActionButton)
+				else
+					ActionButton_HideOverlayGlow(ActionButton)
+				end
 				
 			end
 			
