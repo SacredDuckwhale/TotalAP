@@ -157,7 +157,7 @@ local function CreateNew(self, name, parent)
 			
 			if table.FrameObject and table.FrameObject[key] then -- This ItemUseButton has a valid FrameObject being stored -> Use it
 			
-				TotalAP.ChatMsg("CreateNew -> " .. key .. " will be looked up in FrameObject")
+				TotalAP.Debug("CreateNew -> " .. key .. " will be looked up in FrameObject")
 				return table.FrameObject[key]
 				
 			end
