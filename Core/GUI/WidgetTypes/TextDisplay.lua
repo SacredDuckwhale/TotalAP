@@ -137,6 +137,10 @@ local function Render(self)
 		
 	end
 	
+		-- Toggle visibility
+	FrameObject:SetShown(isEnabled)
+
+	
 end
 
 --- Create (and return) a new TextDisplay widget
