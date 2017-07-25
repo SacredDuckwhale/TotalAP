@@ -75,6 +75,20 @@ local function SetFlashing(self, flashingStatus)
 	
 end
 
+--- Toggles the glow effect (flash) and directly applies it to the contained FrameObject without altering the flashing status. Used to re-enable the glow effect without waiting for the next call to Render()
+local function ToggleFlashing(self)
+
+	-- TODO: Move this to DisplayFrame?
+	local FrameObject = self:GetFrameObject()
+	if not FrameObject then return end
+
+	if self:GetFlashing() then -- Turn off glow effect prior to re-enabling it
+	
+		ActionButton_HideOverlayGlow(FrameObject)
+		ActionButton_ShowOverlayGlow(FrameObject)
+		
+	end
+	
 end
 
 --- Retrieves the currently used border texture
@@ -116,8 +130,16 @@ local function Render(self)
 
 		-- Masque update (if required)
 		
-		-- Apply or remove glow effect
-		
+		-- Apply or remove glow effect (TODO: Can this be moved to DisplayFrame?)
+		if self:GetFlashing() then 
+
+			ActionButton_ShowOverlayGlow(FrameObject)
+			
+		else
+
+			ActionButton_HideOverlayGlow(FrameObject)
+			
+		end
 		
 		-- Reposition 
 		if self:GetParent() ~= "UIParent" then -- Position relatively to its parent and the given settings to have it align automatically
@@ -195,6 +217,7 @@ ItemUseButton.GetFlashing = GetFlashing
 ItemUseButton.SetFlashing = SetFlashing
 ItemUseButton.GetBorder = GetBorder
 ItemUseButton.SetBorder = SetBorder
+ItemUseButton.ToggleFlashing = ToggleFlashing
 ItemUseButton.Render = Render
 
 -- Make class available in the addon namespace
