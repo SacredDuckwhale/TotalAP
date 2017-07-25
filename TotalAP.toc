@@ -53,6 +53,7 @@ Core\Init.lua
 Core\Utils\Colours.lua
 Core\Utils\Format.lua
 Core\Utils\FQCN.lua
+Core\Utils\Masque.lua
 #Core\Utils\ItemLink.lua
 Core\Utils\TableFunctions.lua
 

@@ -36,6 +36,7 @@ TotalAP = T -- Make modules available globally (for keybinds etc.)
 local TotalAP = TotalAP -- ... but use local copy to avoid lookups in global environment
 local L = T.L -- Localization table
 T.Addon = Addon -- to allow access to settings
+T.Masque = Masque -- to allow buttons to register and update themselves more easily
 
 -- Shorthands: Those don't do anything except save me work :P
 local aUI = C_ArtifactUI -- also avoids global lookups as a side effect
@@ -88,32 +89,6 @@ local function FlashActionButton(button, showGlowEffect, showAnts)
 		end
 	end
 end	
-
--- Registers button with Masque
-local function MasqueRegister(button, subGroup) 
-
-		 if Masque then
-		 
-			 local group = Masque:Group(L["TotalAP - Artifact Power Tracker"], subGroup); 
-			 group:AddButton(button);
-			 TotalAP.Debug(format("Added button %s to Masque group %s.", button:GetName(), subGroup));
-			 
-		 end
-end
-
--- Updates the style (by re-skinning) if using Masque, and keep button proportions so that it remains square
-local function MasqueUpdate(button, subGroup)
-
-	-- Keep button size proportional (looks weird if it isn't square, after all)
-	local w, h = button:GetWidth(), button:GetHeight();
-	if w > h then button:SetWidth(h) else button:SetHeight(w); end;
-
-	 if Masque then
-		 local group = Masque:Group(L["TotalAP - Artifact Power Tracker"], subGroup);
-		 group:ReSkin();
-		 TotalAP.Debug(format("Updated Masque skin for group: %s", subGroup));
-	end
-end
 
 -- TODO: Helper function
 local function GetSpecDisplayOrder()
@@ -271,7 +246,7 @@ local function UpdateSpecIcons()
 			
 			TotalAPSpecIconButtons[i]:SetSize(settings.specIcons.size, settings.specIcons.size);
 			-- Well, I guess they need to be reskinned = updated if Masque is used
-		   MasqueUpdate(TotalAPSpecIconButtons[i], "specIcons");
+		   TotalAP.Utils.MasqueUpdate(TotalAPSpecIconButtons[i], "legacySpecIcons");
 		   
 			
 				if numTraitsAvailable > 0 and settings.specIcons.showGlowEffect and (v["artifactTier"] > 1 or v["numTraitsPurchased"] < maxArtifactTraits) then -- Text and glow effect are independent of each other; combining them bugs out one or the other (apparently :P)
@@ -677,7 +652,7 @@ local function UpdateActionButton()
 		
 		TotalAP.Debug(format("Changed item bound to action button to: %s = % s", itemName, TotalAP.inventoryCache.displayItem.link))
 		
-		MasqueUpdate(TotalAPButton, "itemUseButton");
+		TotalAP.Utils.MasqueUpdate(TotalAPButton, "legacyItemUseButton");
 		
 		
 	
@@ -1079,7 +1054,7 @@ local function CreateSpecIcons()
 		
 		TotalAPSpecIconButtons[i]:SetSize(settings.specIcons.size, settings.specIcons.size); -- Set initial size here to make sure the glow effects will be applied correctly. TODO: For now it doesn't matter since the size never changes, but the option would prompt an update if specIcons.size was changed later on
 		
-		MasqueRegister(TotalAPSpecIconButtons[i], "specIcons"); -- Register with Masque AFTER the initial setup, or it won't update without calling MasqueUpdate => looks odd
+		TotalAP.Utils.MasqueRegister(TotalAPSpecIconButtons[i], "legacySpecIcons"); -- Register with Masque AFTER the initial setup, or it won't update without calling MasqueUpdate => looks odd
 	end
 end
 
@@ -1277,7 +1252,7 @@ local function CreateActionButton()
 		--TotalAPButtonFontString:SetTextColor(0x00/255,0xCC/255,0x80/255,1) -- TODO. via settings
 		
 		-- Register action button with Masque to allow it being skinned
-		MasqueRegister(TotalAPButton, "itemUseButton");
+		TotalAP.Utils.MasqueRegister(TotalAPButton, "legacyItemUseButton");
 	end	
 end
 
