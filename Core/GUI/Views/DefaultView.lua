@@ -420,7 +420,6 @@ local function CreateNew(self)
 	do -- ActionButtonTextContainer
 	
 		-- Layout and visuals
-		ActionButtonTextContainer:SetRelativePosition(0, - hSpace)
 		ActionButtonTextContainer:SetAnchorPoint("TOPLEFT")
 		ActionButtonTextContainer:SetTargetAnchorPoint("BOTTOMLEFT")
 		ActionButtonTextContainer:SetTextAlignment("center")
@@ -548,10 +547,26 @@ local function CreateNew(self)
 	do -- SpecIconsText
 	
 		-- Layout and visuals
-		SpecIcon1TextContainer:SetRelativePosition(vSpace, 0)
+		SpecIcon1TextContainer:SetRelativePosition(vSpace, -(SpecIcon1Frame:GetHeight() - SpecIcon1Text:GetHeight()) / 2)
 		SpecIcon1TextContainer:SetAnchorPoint("TOPLEFT")
 		SpecIcon1TextContainer:SetTargetAnchorPoint("TOPRIGHT")
-	
+		SpecIcon1TextContainer:SetVerticalAlignment("center")
+		
+		SpecIcon2TextContainer:SetRelativePosition(vSpace, -(SpecIcon2Frame:GetHeight() - SpecIcon2Text:GetHeight()) / 2)
+		SpecIcon2TextContainer:SetAnchorPoint("TOPLEFT")
+		SpecIcon2TextContainer:SetTargetAnchorPoint("TOPRIGHT")
+		SpecIcon2TextContainer:SetVerticalAlignment("center")
+		
+		SpecIcon3TextContainer:SetRelativePosition(vSpace, -(SpecIcon3Frame:GetHeight() - SpecIcon3Text:GetHeight()) / 2)
+		SpecIcon3TextContainer:SetAnchorPoint("TOPLEFT")
+		SpecIcon3TextContainer:SetTargetAnchorPoint("TOPRIGHT")
+		SpecIcon3TextContainer:SetVerticalAlignment("center")
+		
+		SpecIcon4TextContainer:SetRelativePosition(vSpace, -(SpecIcon4Frame:GetHeight() - SpecIcon4Text:GetHeight()) / 2)
+		SpecIcon4TextContainer:SetAnchorPoint("TOPLEFT")
+		SpecIcon4TextContainer:SetTargetAnchorPoint("TOPRIGHT")
+		SpecIcon4TextContainer:SetVerticalAlignment("center")
+		
 	end
 	
 	

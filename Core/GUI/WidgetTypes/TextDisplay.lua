@@ -29,6 +29,7 @@ local defaultValues = {
 
 	text = "<ERROR>",
 	textAlignment = "left",
+	verticalAlignment = "bottom",
 	template = "GameFontNormal",
 
 }
@@ -92,6 +93,24 @@ local function SetTextAlignment(self, textAlignment)
 
 end
 
+--- Retrieves the current text alignment (HTML style)
+-- @self A reference to the caller
+-- @return The text alignment that the text will have after rendering
+local function GetVerticalAlignment(self)
+
+	return self.verticalAlignment or defaultValues.verticalAlignment
+
+end
+
+--- Sets the text that will be displayed upon next rendering the contained FrameObject
+-- @self A reference to the caller
+-- @param text The text that is to be displayed
+local function SetVerticalAlignment(self, textAlignment)
+
+	self.verticalAlignment = textAlignment or self.verticalAlignment
+
+end
+
 
 --- Applies all the contained information to the underlying FrameObject to display them ingame
 -- @param self Reference to the caller
@@ -114,27 +133,35 @@ local function Render(self)
 		FrameObject:ClearAllPoints()
 		
 		local posX, posY = unpack(self:GetRelativePosition())
+		local xOffset, yOffset = 0, 0
 		local alignment = self:GetTextAlignment()
+		local verticalAlignment = self:GetVerticalAlignment()
 		
 		if alignment == "center" then -- position to the center of the parentFrame
-		
-			FrameObject:SetPoint(self:GetAnchorPoint(), self:GetParent(), self:GetTargetAnchorPoint(), posX + (FrameObject:GetParent():GetWidth() - FrameObject:GetWidth()) / 2, posY)
+			
+			xOffset = (FrameObject:GetParent():GetWidth() - FrameObject:GetWidth()) / 2
 			
 		elseif alignment == "right" then -- position to the right of the parentFrame
 		
-			FrameObject:SetPoint(self:GetAnchorPoint(), self:GetParent(), self:GetTargetAnchorPoint(), posX + (FrameObject:GetParent():GetWidth() - FrameObject:GetWidth()) , posY)
+			xOffset = (FrameObject:GetParent():GetWidth() - FrameObject:GetWidth())
 			
-		else -- position to the left of the parentFrame
+		end
 		
-			FrameObject:SetPoint(self:GetAnchorPoint(), self:GetParent(), self:GetTargetAnchorPoint(), posX, posY)
+		if verticalAlignment == "center" then -- position to the center of the parentFrame
+		
+			yOffset = (FrameObject:GetParent():GetHeight() - FrameObject:GetHeight()) / 2
+			
+		elseif verticalAlignment == "top" then -- position to the top of the parentFrame
+		
+			yOffset = (FrameObject:GetParent():GetHeight() - FrameObject:GetHeight())
 			
 		end
 	
-	
+		FrameObject:SetPoint(self:GetAnchorPoint(), self:GetParent(), self:GetTargetAnchorPoint(), posX + xOffset, posY + yOffset)
+		
 		
 		-- Recreate if text or template changed (TODO)
-		
-		
+	
 	end
 	
 		-- Toggle visibility
@@ -196,6 +223,8 @@ TextDisplay.GetText = GetText
 TextDisplay.SetText = SetText
 TextDisplay.GetTextAlignment = GetTextAlignment
 TextDisplay.SetTextAlignment = SetTextAlignment
+TextDisplay.GetVerticalAlignment = GetVerticalAlignment
+TextDisplay.SetVerticalAlignment = SetVerticalAlignment
 TextDisplay.Render = Render
 
 -- Make class available in the addon namespace
