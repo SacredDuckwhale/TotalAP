@@ -257,6 +257,13 @@ local function CreateNew(self)
 				
 			end
 			
+			-- Resize and reposition
+			local w, h = ActionButton:GetWidth(), ActionButton:GetHeight()
+			if w > h then ActionButton:SetWidth(h) else ActionButton:SetHeight(w) end -- Keep aspect ratio square (1:1)
+			
+			local dx, dy = (ActionButtonFrame:GetWidth() - ActionButton:GetWidth()) / 2, (ActionButtonFrame:GetHeight() - ActionButton:GetHeight()) / 2 -- deltas to reposition button in the centre of the surrounding ActionButtonFrame
+			ActionButtonContainer:SetRelativePosition(max(0, dx), - dy)
+
 		end
 		
 		-- Script handlers
