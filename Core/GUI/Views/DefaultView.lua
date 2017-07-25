@@ -426,6 +426,9 @@ local function CreateNew(self)
 		ActionButtonTextContainer:SetTextAlignment("center")
 		ActionButtonTextContainer.Update = function(self) -- TODO: More options to change the displayed text format - planned once advanced config is implemented via AceConfig
 		
+			local offset = max(hSpace, (maxButtonSize - ActionButton:GetHeight()) / 2 - hSpace) -- Keep at least hSpace pixels between the two elements
+			ActionButtonTextContainer:SetRelativePosition(0, - hSpace + offset)
+		
 			local text = ""
 			
 			if settings.actionButton.showText and not TotalAP.inventoryCache.foundTome and TotalAP.inventoryCache.numItems > 0 then -- Display current item's AP value as text (if enabled)
@@ -461,6 +464,14 @@ local function CreateNew(self)
 			self:SetText(text)
 			
 		end
+		
+		-- Script handlers
+		ActionButton:HookScript("OnDragStop", function(self) -- Required to reposition the button text while the button is being dragged
+		
+			ActionButtonTextContainer:Update()
+			ActionButtonTextContainer:Render()
+		
+		end)
 		
 	end
 	
