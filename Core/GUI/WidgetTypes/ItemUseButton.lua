@@ -27,7 +27,9 @@ local ItemUseButton = {}
 --- Default values that are applied to newly created frames automatically
 local defaultValues = {
 
-
+	icon = "",
+	isFlashing = false,
+	borderTexture = "",
 
 }
 
