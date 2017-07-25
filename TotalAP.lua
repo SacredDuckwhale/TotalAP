@@ -115,79 +115,6 @@ local function MasqueUpdate(button, subGroup)
 	end
 end
 
-
--- TODO: Desc and bugfix for unavailable artifacts (red font -> scan tooltip?)
-local function UpdateArtifactProgressCache()
-
-	local characterName = UnitName("player");
-	local realm = GetRealmName();
-	local key = format("%s - %s", characterName, realm);
-	
-	-- Create new entry for characters that weren't cached before
-	if cache[key] == nil then
-		cache[key] =  {};
-	end
-	
-local numSpecs = GetNumSpecializations();
-
-	for i = 1, numSpecs do
-
-		if not HasCorrectSpecArtifactEquipped() then -- also covers non-artifact weapons
-			TotalAP.Debug("Attempted to cache artifact data, but the equipped weapon isn't the spec's artifact weapon");
-			
-		elseif i == GetSpecialization() then -- Only update cache for the current spec
-				-- TODO: On login, this will be cached but not displays (since both is part of this function -> remove caching and call it before updating displays. That's better style, anyway)
-				
-			 -- Update cached values for the formerly active specs (which are now inactive); TODO: Scan all artifacts in real time instead? Can be done via socketing functions and data from DB\Artifacts after checking if they are available
-			 artifactProgressCache[i] = {
-				["thisLevelUnspentAP"] =  select(5, aUI.GetEquippedArtifactInfo()) or 0, 
-				["numTraitsPurchased"] = select(6, aUI.GetEquippedArtifactInfo()) or 0, -- 0 -> artifact UI not loaded yet? TODO (first login = lua error, but couldn't reproduce)
-				["artifactTier"] = select(13, aUI.GetEquippedArtifactInfo()) or 2, --  Assume 2 (for 7.2) as a default until it is cached next, if it hasn't been cached before, as most people are going to have the empowered traits unlocked ASAP
-				["isIgnored"] = (TotalArtifactPowerCache[key] and TotalArtifactPowerCache[key][i] and TotalArtifactPowerCache[key][i]["isIgnored"] or false), -- All specs are enabled by default (until they're disabled manually)
-			};
-			
-			TotalAP.Debug(format("Updated artifactProgressCache for spec %d: %s traits purchased - %s unspent AP already applied - artifact tier = %d", i, artifactProgressCache[i]["numTraitsPurchased"], artifactProgressCache[i]["thisLevelUnspentAP"], artifactProgressCache[i]["artifactTier"]));
-
-				-- Update the character's AP cache (to make sure the displayed info is no longer outdated... if it was loaded from savedVars earlier)
-			--	specCache = artifactProgressCache;
-				cache[key][i] = artifactProgressCache[i];
-				TotalAP.Debug(format("Updated cached spec %d for character: %s - %s", i, characterName, realm));
-				TotalArtifactPowerCache = cache;
-
-		else -- For inactive specs, check if cached data exists (might be outdated, but it's better than nothing... right?)
-			
-			if cache[key][i] ~= nil then -- TODO: {} != nil => will break if edited manually (important later for the reset/clear cache option)
-		
-			-- TODO: Ugly 7.2 temporary fix for offspec artifacts that have been cached in 7.1.5 (=without artifactTier being saved)
-				if cache[key][i]["artifactTier"] == nil or cache[key][i]["artifactTier"] == 0 then
-					cache[key][i]["artifactTier"] = 2; -- TODO: Assuming tier 2 in 7.2 since that is what most active people will realistically have after the <1h opening quest chain - only matters if caching isn't updated. Will be updated ASAP and should be (and stay) correct afterwards
-					TotalAP.Debug("Overrode artifactTier with 2 as it wasn't saved yet for the cached spec. This is a temporary 7.2 fix :(")
-				end
-				
-				artifactProgressCache[i] = cache[key][i];
-				TotalAP.Debug(format("Cached data exists from a previous session: spec = %i - traits = %i - AP = %d, tier = %i", i, cache[key][i]["numTraitsPurchased"], cache[key][i]["thisLevelUnspentAP"], cache[key][i]["artifactTier"]));
-			else  -- Initialise empty cache (for specs that have never been used) -> Necessary to allow them to be ignored/unignored without breaking everything
-					TotalAP.Debug(format("No cached data exists for spec %d!", i));
-		--		cache[key][i] = {}; -- TODO: This is pretty useless, except that it indicates which specs have been recognized but not yet scanned? - ACTUALLY it 
-				
-			
-			
-			
-				-- cache[key][i] = {
-					-- ["thisLevelUnspentAP"] =  0, -- TODO: Maybe use 100 (default AP) if artifact has been unlocked? Shouldn't really matter, though 
-					-- ["numTraitsPurchased"] = 1, -- Rank 0 would break the API functions
-					-- ["artifactTier"] = 1, --  Assume 1, because it hasn't been equipped and it won't change anything
-					-- ["isIgnored"] = false, -- All specs are enabled by default (until they're disabled manually)
-				-- } -- TODO: InitialiseCache(specNo) function
-
-			end
-		
-	end
-   end
-   
-end
-
-
 -- TODO: Helper function
 local function GetSpecDisplayOrder()
 
@@ -855,7 +782,7 @@ local function UpdateEverything()
 	end
 	
 	-- Proceed as usual
-		UpdateArtifactProgressCache();
+		--UpdateArtifactProgressCache();
 	
 		UpdateAnchorFrame();
 		UpdateActionButton();
@@ -1491,8 +1418,11 @@ function Addon:OnInitialize() -- Called on ADDON_LOADED
 	
 	-- Initialise settings (saved variables), handled via AceDB
 	TotalAP.Settings.Initialise()
-	settings = TotalAP.Settings.GetReference()
-	LoadSettings();  -- from saved vars
+	settings = TotalAP.Settings.GetReference() -- TODO: Is this necessary?
+	
+	-- Initialise caches
+	TotalAP.Cache.Initialise()
+	cache = TotalAP.Cache.GetReference() -- TOOD: Remove after migration is complete
 	
 	-- Make sure at least one View is usable (TODO: Pointless for now; Always prepares the DefaultView, as others aren't implemented yet)
 	TotalAP.Controllers.InitialiseGUI()
@@ -1502,10 +1432,7 @@ function Addon:OnInitialize() -- Called on ADDON_LOADED
 	
 	-- TODO: via AceGUI?
 	-- TODO: Allow custom views to be loaded instead of (or in addition to) the default one, and toggling of views, respectively
-	-- TotalAP.GUI.CreateView("DefaultView") -- Create view/layout that will later be rendered (shown) and updated
-	-- TotalAP.GUI.SetActiveView("DefaultView") -- Enable default view (TODO: Obsolete? Should be done by default)
-	--TotalAP.Controllers.ShowGUI() -- Display whichever view is currently active (TODO: Views aren't fully implemented yet :| -- This is always the default view, for now)
-	
+
 	-- Register slash commands
 	self:RegisterChatCommand(TotalAP.Controllers.GetSlashCommand(), TotalAP.Controllers.SlashCommandHandler)
 	self:RegisterChatCommand(TotalAP.Controllers.GetSlashCommandAlias(), TotalAP.Controllers.SlashCommandHandler_UsedAlias) -- alias is /ap instead of /totalap - with the latter providing a fallback mechanism in case some other addon chose to use /ap as well or for lazy people (like me)
