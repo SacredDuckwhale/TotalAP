@@ -35,6 +35,60 @@ local defaultValues = {
 -- ItemUseButton inherits from DisplayFrame
 setmetatable(ItemUseButton, TotalAP.GUI.DisplayFrame) 
 
+--- Retrieves the currently used icon texture
+-- @param self Reference to the caller
+-- @return Icon texture path (relative path in the WOW client)
+local function GetIcon(self)
+	
+	return self.icon or defaultValues.icon
+	
+end
+
+--- Sets the icon texture that will be applied upon rendering the contained FrameObject
+-- @param self Reference to the caller
+-- @param icon Icon texture path (relative path in the WOW client)
+local function SetIcon(self, icon)
+
+	self.icon = icon or self.icon
+
+end
+
+--- Returns whether or not the contained FrameObject is set to be flashing
+-- @param self Reference to the caller
+-- @returns True if the FrameObject is set to be flashing; false otherwise
+local function GetFlashing(self)
+
+	return self.isFlashing or defaultValues.isFlashing
+
+end
+
+--- Toggles the glow effect (flash) that will be applied upon rendering the contained FrameObject
+-- @param self Reference to the caller
+-- @param flashingStatus Whether or not the Frame should be flashed
+local function SetFlashing(self, flashingStatus)
+
+	self.isFlashing = flashingStatus or self.isFlashing
+
+end
+
+--- Retrieves the currently used border texture
+-- @param self Reference to the caller
+-- @return Border texture path (relative path in the WOW client)
+local function GetBorder(self)
+
+	return self.borderTexture or defaultValues.borderTexture
+
+end
+
+--- Sets the border texture that will be applied upon rendering the contained FrameObject
+-- @param self Reference to the caller
+-- @param borderTexture Border texture path (relative path in the WOW client)
+local function SetBorder(self, borderTexture)
+
+	self.borderTexture = borderTexture or self.borderTexture
+
+end
+
 --- Applies all the contained information to the underlying FrameObject to display them ingame
 -- @param self Reference to the caller
 local function Render(self)
@@ -129,6 +183,12 @@ end
 
 -- Public methods (interface table -> accessible by the View and GUI Controller)
 ItemUseButton.CreateNew = CreateNew
+ItemUseButton.GetIcon = GetIcon
+ItemUseButton.SetIcon = SetIcon
+ItemUseButton.GetFlashing = GetFlashing
+ItemUseButton.SetFlashing = SetFlashing
+ItemUseButton.GetBorder = GetBorder
+ItemUseButton.SetBorder = SetBorder
 ItemUseButton.Render = Render
 
 -- Make class available in the addon namespace
