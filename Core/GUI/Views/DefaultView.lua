@@ -75,7 +75,7 @@ local function CreateNew(self)
 		-- Layout and visuals
 		AnchorFrame:SetFrameStrata("BACKGROUND")
 		AnchorFrameContainer:SetBackdropColour("#D0D0D0")
-		AnchorFrameContainer:SetBackdropAlpha(0.5)
+		AnchorFrameContainer:SetBackdropAlpha(0)
 		AnchorFrame:SetSize(maxButtonSize + hSpace + barWidth + hSpace + specIconSize + 2 * specIconBorderWidth + hSpace + specIconTextWidth, barHeight + vSpace + maxButtonSize + vSpace + sliderHeight) -- TODO: Update dynamically (script handlers?) to account for variable number of specs
 		
 		-- Player interaction
@@ -88,8 +88,8 @@ local function CreateNew(self)
 			
 			if self:IsMovable() and IsAltKeyDown() then -- Move display
 				self:StartMoving()
-				AnchorFrameContainer:SetBackdropColour("#D0D0D0")
-				AnchorFrameContainer:SetBackdropAlpha(1)
+
+				AnchorFrameContainer:SetBackdropAlpha(0.5) -- TODO: Make transparent while moving, invisible afterwards (so users can see the edges)
 				AnchorFrameContainer:Render()
 				
 			end
@@ -103,8 +103,7 @@ local function CreateNew(self)
 			self:StopMovingOrSizing()
 			self.isMoving = false
 			
-			AnchorFrameContainer:SetBackdropColour("#D0D0D0")
-			AnchorFrameContainer:SetBackdropAlpha(0.5)
+			AnchorFrameContainer:SetBackdropAlpha(0)
 			AnchorFrameContainer:Render()
 			
 		end)
@@ -178,6 +177,7 @@ local function CreateNew(self)
 	
 		-- Layout and visuals
 		ActionButtonFrameContainer:SetBackdropColour("#123456")
+		ActionButtonFrameContainer:SetBackdropAlpha(0)
 		ActionButtonFrameContainer:SetRelativePosition(0, - ( barHeight + barInset + hSpace ))
 		
 		ActionButtonFrame:SetSize(maxButtonSize, maxButtonSize)
