@@ -267,6 +267,78 @@ local function CreateNew(self)
 		end
 		
 		-- Script handlers
+		ActionButton:SetScript("OnEnter", function(self)  -- (to show the tooltip on mouseover)
+		
+			if TotalAP.inventoryCache.displayItem.ID then -- An item is assigned to the button and can be displayed in the tooltip
+			
+				GameTooltip:SetOwner(ActionButton, "ANCHOR_RIGHT");
+				GameTooltip:SetHyperlink(TotalAP.inventoryCache.displayItem.link)
+				
+			end
+			
+		end)
+		
+		ActionButton:SetScript("OnLeave", function(self)  -- (to hide the tooltip afterwards)
+		
+			GameTooltip:Hide()
+			
+		end)
+			
+		ActionButton:SetScript("OnHide", function(self) -- (to clear the set item when hiding the button)
+			
+			self:SetAttribute("type", nil)
+			self:SetAttribute("item", nil)
+			
+		end)
+	
+		ActionButton:SetScript("OnDragStart", function(self) -- (to allow dragging the button, and also to resize it)
+		
+			if self:IsMovable() and IsAltKeyDown() then -- Alt -> Move display
+			
+				AnchorFrame.isMoving = true
+				AnchorFrame:StartMoving() 
+		
+			elseif self:IsResizable() and IsShiftKeyDown() then -- Shift -> Resize button
+			
+				self:StartSizing()
+				
+				-- Show background frame (max size) while dragging
+				ActionButtonFrameContainer:SetBackdropAlpha(0.5)
+				ActionButtonFrameContainer:Render()
+				
+			end
+				
+			self.isMoving = true
+	
+		end)
+		
+		ActionButton:SetScript("OnUpdate", function(self) -- (to update the button skin and proportions while being resized)
+			
+			if self.isMoving then -- Update graphics to make sure the border/glow effect etc. is re-applied correctly (especially when resizing)
+				
+		
+				ActionButtonContainer:Update()
+				ActionButtonContainer:Render()
+				
+			end
+		end)
+		
+		ActionButton:SetScript("OnDragStop", function(self) -- (to update the button skin and stop it from being moved after dragging has ended)
+
+			self:StopMovingOrSizing()
+			AnchorFrame:StopMovingOrSizing()
+			AnchorFrame.isMoving = false
+			self.isMoving = false
+			
+			-- Hide background frame once more
+			ActionButtonFrameContainer:SetBackdropAlpha(0)
+			ActionButtonFrameContainer:Render()
+			
+			ActionButtonContainer:Update()
+			ActionButtonContainer:Render()
+				
+		end)
+
 		
 	end
 	
