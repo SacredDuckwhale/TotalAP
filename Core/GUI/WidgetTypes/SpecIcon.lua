@@ -69,8 +69,10 @@ end
 -- @param flashingStatus Whether or not the Frame should be flashed
 local function SetFlashing(self, flashingStatus)
 
-	self.isFlashing = flashingStatus or self.isFlashing
-
+	if flashingStatus ~= nil then
+		self.isFlashing = flashingStatus
+	end
+	
 end
 
 --- Retrieves the currently used border texture
