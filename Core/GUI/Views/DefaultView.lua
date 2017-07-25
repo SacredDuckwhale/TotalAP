@@ -40,14 +40,12 @@ local function CreateNew(self)
 	-- TODO: Get those from the settings, so that they can be changed in the options GUI (under tab: Views -> DefaultView, along with enabling/disabling/repositioning individual display components)
 	-- Stuff that needs to be moved to AceConfig settings
 	
-	local settings = TotalAP.Settings.GetReference()
-	
 	local hSpace, vSpace = 2, 5 -- space between display elements
 	
 	local barWidth, barHeight, barInset = 100, 18, 1
 	
-	local maxButtonSize = 60 -- TODO: smaller than 60 looks odd, 80 before? should be 4x size of the bars at most, and 1x at the least to cover all specs
-	local buttonSize = 40 -- TODO: Layout Cache or via settings?
+	local minButtonSize, maxButtonSize = 20, 60 -- TODO: smaller than 60 looks odd, 80 before? should be 4x size of the bars at most, and 1x at the least to cover all specs
+	local defaultButtonSize = 40 -- TODO: Layout Cache or via settings?
 	
 	local buttonTextTemplate = "GameFontNormal"
 	
@@ -189,8 +187,10 @@ local function CreateNew(self)
 	do -- ActionButton
 		
 		-- Layout and visuals
-		ActionButtonContainer:SetRelativePosition(max(0, (maxButtonSize - ActionButton:GetWidth()) / 2) , - ( maxButtonSize - ActionButton:GetHeight()) / 2)
-	
+		ActionButton:SetSize(defaultButtonSize, defaultButtonSize)
+		ActionButton:SetMinResize(minButtonSize, minButtonSize) -- Let's not go there and make it TINY, shall we?
+		ActionButton:SetMaxResize(maxButtonSize, maxButtonSize) -- ... but no one likes a stretched, giant button either)
+		
 		-- Player interaction
 		ActionButtonContainer.Update = function(self)
 		
