@@ -129,6 +129,7 @@ local function Render(self)
 		-- Set border
 
 		-- Masque update (if required)
+		TotalAP.Utils.MasqueUpdate(FrameObject, "ItemUseButton")
 		
 		-- Apply or remove glow effect (TODO: Can this be moved to DisplayFrame?)
 		if self:GetFlashing() then 
@@ -204,6 +205,9 @@ local function CreateNew(self, name, parent)
 		
 	self.numInstances =  self:GetNumInstances() + 1 -- As this new frame is added to the pool, future frames should not use its number to avoid potential name clashes (even though there is no guarantee this ID is actually used, wasting some makes little difference)
 
+	-- Register button with Masque
+	TotalAP.Utils.MasqueRegister(ItemUseButtonObject.FrameObject, "ItemUseButton")
+	
 	return ItemUseButtonObject
 	
 end
