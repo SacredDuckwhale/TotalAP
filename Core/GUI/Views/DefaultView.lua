@@ -200,7 +200,7 @@ local function CreateNew(self)
 			local hideButton = false
 			
 			-- Hide when:
-			hideButton = hideButton
+			hideButton = (hideButton
 			or not settings.actionButton.enabled -- Button is disabled via settings
 			or not (TotalAP.inventoryCache.numItems > 0)  -- No AP items (or Research Tomes) in inventory
 			or not TotalAP.inventoryCache.displayItem.ID -- No item set to button (usually happens on load only)
@@ -208,7 +208,7 @@ local function CreateNew(self)
 			or (TotalAP.artifactCache[fqcn][spec] and TotalAP.artifactCache[fqcn][spec]["artifactTier"] == "1" and TotalAP.artifactCache[fqcn][spec]["numTraitsPurchased"] == 54) -- Artifact weapon is maxed (54 traits and tier 1)
 			or not TotalAP.ArtifactInterface.HasCorrectSpecArtifactEquipped() -- Current weapon is not the correct artifact, which means AP can't be used anyway
 			-- TODO: Underlight Angler -> Show when fish is in inventory
-			and not TotalAP.inventoryCache.foundTome -- BUT: Don't hide if Research Tome exists, regardless of the other conditions being met 
+			) and not TotalAP.inventoryCache.foundTome -- BUT: Don't hide if Research Tome exists, regardless of the other conditions being met 
 			
 			self:SetEnabled(not hideButton)
 			if hideButton then return end -- Update is finished, as ActionButton won't be shown
@@ -217,11 +217,11 @@ local function CreateNew(self)
 			local flashButton = false
 			
 			-- Flash when:
-			flashButton = flashButton
+			flashButton = (flashButton
 			or TotalAP.ArtifactInterface.GetNumAvailableTraits() > 0	-- Current spec has at least one available trait
 			or (TotalAP.inventoryCache.foundTome and TotalAP.DB.IsResearchTome(TotalAP.inventoryCache.displayItem.ID))  -- Current item is Research Tome that can be used (level 110, not maxed AK depending on item (TODO)?)
-			and settings.actionButton.showGlowEffect -- BUT: Only flash if glow effect is enabled for the action button
-		
+			) and settings.actionButton.showGlowEffect -- BUT: Only flash if glow effect is enabled for the action button
+
 			-- Set current item to button
 			ActionButton.icon:SetTexture(TotalAP.inventoryCache.displayItem.texture)
 			local itemName = GetItemInfo(TotalAP.inventoryCache.displayItem.link) or ""
