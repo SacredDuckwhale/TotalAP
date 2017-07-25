@@ -231,7 +231,8 @@ local function CreateNew(self)
 			-- Set current item to button
 			ActionButton.icon:SetTexture(TotalAP.inventoryCache.displayItem.texture)
 			local itemName = GetItemInfo(TotalAP.inventoryCache.displayItem.link) or ""
-			if itemName == "" then -- Item is cached and can be used (this can fail upon logging in, in which case the item must be set with the next update instead)
+			if itemName ~= "" then -- Item is cached and can be used (this can fail upon logging in, in which case the item must be set with the next update instead)
+			
 				ActionButton:SetAttribute("type", "item")
 				ActionButton:SetAttribute("item", itemName)
 			end
