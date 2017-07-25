@@ -237,6 +237,9 @@ local function Render(self)
 		
 	end
 	
+	-- Toggle visibility
+	FrameObject:SetShown(isEnabled)
+
 end
 
 
