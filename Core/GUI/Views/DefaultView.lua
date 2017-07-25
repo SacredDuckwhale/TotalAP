@@ -81,7 +81,24 @@ local function CreateNew(self)
 		AnchorFrame:EnableMouse(true)
 		AnchorFrame:RegisterForDrag("LeftButton")
 		
-		-- Script handlers
+		AnchorFrameContainer.Update = function(self)
+		
+			hideFrame = false
+			-- Hide when:
+			hideFrame = (hideFrame
+			or UnitLevel("player") < 98 -- Player is too low level for Legion content (Artifact Quest)
+			or not settings.enabled -- Display as a whole is being manually hidden (regardless of individual component's visibility)
+			or settings.hideInCombat and TotalAP.EventHandlers.states.isPlayerEngagedInCombat -- Player is engaged in combat
+			or TotalAP.EventHandlers.states.isPlayerUsingVehicle -- Player is using a vehicle
+			or TotalAP.EventHandlers.states.isPetBattleInProgress -- Player is participating in a pet battle
+			or hasPlayerLostControl -- Player is using a Flight Master or stuck in film sequences, animations etc. 
+			)
+			
+			self:SetEnabled(not hideFrame)
+			
+			if hideFrame then return end
+		
+		end
 		
 		-- Script handlers	
 		AnchorFrame:SetScript("OnMouseDown", function(self) -- Show background if user pressed drag modifier to indicate the display can be dragged
