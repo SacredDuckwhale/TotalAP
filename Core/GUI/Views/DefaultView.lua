@@ -192,6 +192,12 @@ local function CreateNew(self)
 		ActionButton:SetMaxResize(maxButtonSize, maxButtonSize) -- ... but no one likes a stretched, giant button either)
 		
 		-- Player interaction
+		ActionButton:EnableMouse(true) -- for resizing and dragging the display
+		ActionButton:SetMovable(true) -- for dragging the AnchorFrame
+		ActionButton:SetResizable(true)
+		ActionButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+		ActionButton:RegisterForDrag("LeftButton") -- left button = resize or reposition
+		
 		ActionButtonContainer.Update = function(self)
 		
 			local spec = GetSpecialization()
