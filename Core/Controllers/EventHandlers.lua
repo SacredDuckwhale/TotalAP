@@ -215,7 +215,8 @@ local function UpdateGUI()
 	} 
 	
 	-- Force update, using the most recent available information to render the GUI
-	TotalAP.Controllers.UpdateGUI()
+	TotalAP.Controllers.UpdateGUI() -- TODO: Remove after migration is complete
+	TotalAP.Controllers.RenderGUI()
 	
 end
 
