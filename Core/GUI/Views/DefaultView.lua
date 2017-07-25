@@ -40,6 +40,8 @@ local function CreateNew(self)
 	-- TODO: Get those from the settings, so that they can be changed in the options GUI (under tab: Views -> DefaultView, along with enabling/disabling/repositioning individual display components)
 	-- Stuff that needs to be moved to AceConfig settings
 	
+	local settings = TotalAP.Settings.GetReference()
+	
 	local hSpace, vSpace = 2, 5 -- space between display elements
 	
 	local barWidth, barHeight, barInset = 100, 18, 1
@@ -192,28 +194,64 @@ local function CreateNew(self)
 		-- Player interaction
 		ActionButtonContainer.Update = function(self)
 		
+			local spec = GetSpecialization()
+			local fqcn = TotalAP.Utils.GetFQCN() -- TODO: DRY -> use higher scope?
+		
 			local hideButton = false
 			
 			-- Hide when:
-			---- Button is disabled via settings
-			---- No AP in inventory
-			---- Current spec is being ignored - TODO: Instead of hiding, give visual indicator? (greyed out icon or sth.)
-			---- Artifact weapon is maxed (54 traits and tier 1)
-			-- don't hide if Research Tome exists, regardless of the other conditions being met 
+			hideButton = hideButton
+			or not settings.actionButton.enabled -- Button is disabled via settings
+			or not (TotalAP.inventoryCache.numItems > 0)  -- No AP items (or Research Tomes) in inventory
+			or not TotalAP.inventoryCache.displayItem.ID -- No item set to button (usually happens on load only)
+			or (TotalAP.artifactCache[fqcn][spec] and TotalAP.artifactCache[fqcn][spec]["isIgnored"]) -- Current spec is being ignored
+			or (TotalAP.artifactCache[fqcn][spec] and TotalAP.artifactCache[fqcn][spec]["artifactTier"] == "1" and TotalAP.artifactCache[fqcn][spec]["numTraitsPurchased"] == 54) -- Artifact weapon is maxed (54 traits and tier 1)
+			or not TotalAP.ArtifactInterface.HasCorrectSpecArtifactEquipped() -- Current weapon is not the correct artifact, which means AP can't be used anyway
+			-- TODO: Underlight Angler -> Show when fish is in inventory
+			and not TotalAP.inventoryCache.foundTome -- BUT: Don't hide if Research Tome exists, regardless of the other conditions being met 
 			
-			-- if not TotalAP.inventoryCache.foundTome and artifactProgressCache[spec] ~= nil and artifactProgressCache[spec]["isIgnored"] then
-		-- TotalAP.Debug("Hiding action button because the current spec is set to being ignored")
-		-- TotalAPButton:Hide();
-		-- return
-	-- end
-			
+			self:SetEnabled(not hideButton)
+			if hideButton then return end -- Update is finished, as ActionButton won't be shown
+	
 			
 			local flashButton = false
 			
 			-- Flash when:
-			---- Current spec has at least one available trait
-			---- Current item is Research Tome that can be used (level 110, not maxed AK depending on item (TODO)?)
+			flashButton = flashButton
+			or TotalAP.ArtifactInterface.GetNumAvailableTraits() > 0	-- Current spec has at least one available trait
+			or (TotalAP.inventoryCache.foundTome and TotalAP.DB.IsResearchTome(TotalAP.inventoryCache.displayItem.ID))  -- Current item is Research Tome that can be used (level 110, not maxed AK depending on item (TODO)?)
+			and settings.actionButton.showGlowEffect -- BUT: Only flash if glow effect is enabled for the action button
 		
+			-- Set current item to button
+			ActionButton.icon:SetTexture(TotalAP.inventoryCache.displayItem.texture)
+			local itemName = GetItemInfo(TotalAP.inventoryCache.displayItem.link) or ""
+			if itemName == "" then -- Item is cached and can be used (this can fail upon logging in, in which case the item must be set with the next update instead)
+				ActionButton:SetAttribute("type", "item")
+				ActionButton:SetAttribute("item", itemName)
+			end
+			
+			-- Transfer cooldown animation to the button (would otherwise remain static when items are used, which feels artificial)
+			local start, duration, enabled = GetItemCooldown(TotalAP.inventoryCache.displayItem.ID)
+			if duration > 0 then -- Has visible cooldown that should be displayed on the button (mirroring the item itself if observed in the player's inventory)
+					ActionButton.cooldown:SetCooldown(start, duration)
+			end
+			
+			-- Display tooltip when mouse hovers over the action button
+			if ActionButton:IsMouseOver() then 
+				GameTooltip:SetHyperlink(TotalAP.inventoryCache.displayItem.link)
+			end
+			
+			
+			-- Masque Update (TODO)
+		
+			if not InCombatLockdown() then -- Flash action button (TODO: Un-taint this if necessary after GUI rework by copying the code)
+				
+				-- TODO: Check for persisting taint issues
+				if flashButton then ActionButton_ShowOverlayGlow(ActionButton)
+				else ActionButton_HideOverlayGlow(ActionButton) end
+				
+			end
+			
 		end
 		
 		-- Script handlers
