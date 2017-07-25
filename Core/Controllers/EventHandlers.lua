@@ -35,7 +35,7 @@ local function ScanInventory(scanBank)
 	local foundTome = false -- For BoA tomes -> The display must display them before any AP tokens if any were found 
 	
 	 -- Temporary values that will be overwritten with the next item
-	local bagID, maxBagID, tempItemLink, tempItemID, tempItemTexture
+	local bagID, maxBagID, tempItemLink, tempItemID
 	local isTome, isToken = false, false -- Refers to current item
 	
 	-- To be saved in the Inventory cache
