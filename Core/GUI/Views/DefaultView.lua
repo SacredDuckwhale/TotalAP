@@ -40,7 +40,7 @@ local function CreateNew(self)
 	-- TODO: Get those from the settings, so that they can be changed in the options GUI (under tab: Views -> DefaultView, along with enabling/disabling/repositioning individual display components)
 	-- Stuff that needs to be moved to AceConfig settings
 	
-	local hSpace, vSpace = 2, 5 -- space between display elements
+	local hSpace, vSpace = 3, 5 -- space between display elements
 	
 	local barWidth, barHeight, barInset = 100, 18, 1
 	
