@@ -380,7 +380,7 @@ ProgressBar.SetAlpha = SetAlpha
 ProgressBar.GetColour = GetColour
 ProgressBar.SetColour = SetColour
 ProgressBar.IsBarEnabled = IsBarEnabled
-ProgressBar.EnableBar = GetEnabled
+ProgressBar.EnableBar = EnableBar
 ProgressBar.DisableBar = DisableBar
 ProgressBar.Render = Render
 
