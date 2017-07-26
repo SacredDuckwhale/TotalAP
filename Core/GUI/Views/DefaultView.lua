@@ -717,10 +717,11 @@ local function CreateNew(self)
 
 			local spec = tonumber(self:GetName():match(".*(%d)"))
 			
-			if self.isMoving then -- Stop moving, but ignore this click
-				self.isMoving = false
-				AnchorFrame:StopMovingOrSizing()
+			if AnchorFrame.isMoving then -- Stop moving, but ignore this click
+			
+				AnchorFrame_OnDragStop(self)
 				return -- Don't activate spec while moving is enabled (technically, the AnchorFrame is being moved, so the specIcon should not be clicked)
+				
 			end
 			
 			-- Change spec as per the player's selection (if it isn't active already)
@@ -728,8 +729,10 @@ local function CreateNew(self)
 			
 				-- Dismount if not flying (wouldn't want to kill the player, now would we?) / SHOULD also cancel shapeshifts of any kind, at least out of combat -- TODO: Setting to allow forced dismount even if flying/Test with chakras and other "weird" shapeshifts
 				if (IsMounted() or GetShapeshiftForm() > 0) and not (IsFlying() or InCombatLockdown() or UnitAffectingCombat("player")) then
+				
 					Dismount()
 					CancelShapeshiftForm() -- TODO: Protected -> may cause issues if called in combat? (Not sure if InCombatLockdown is enough to detect this reliably)
+					
 				end
 				
 				SetSpecialization(spec)
@@ -868,26 +871,21 @@ local function CreateNew(self)
 	
 	local ProgressBarsFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_ProgressBarsFrame", "_DefaultView_AnchorFrame")
 	local ProgressBarsFrame = ProgressBarsFrameContainer:GetFrameObject()
-	 
 	do -- ProgressBarsFrame
 	 
 		-- Layout and visuals
 		ProgressBarsFrameContainer:SetBackdropFile("Interface\\GLUES\\COMMON\\Glue-Tooltip-Background.blp") -- semi-transparent
 		ProgressBarsFrameContainer:SetBackdropColour("#000000")
-		-- ProgressBarsFrameContainer:SetRelativePosition(maxButtonSize + vSpace, - ( barHeight + barInset + hSpace))
-		-- ProgressBarsFrame:SetSize(barWidth + 2 * barInset, 4 * (barHeight + hSpace))
-		
+
+		-- Player interaction		
 		ProgressBarsFrameContainer.Update = function(self)
 		
-			
 			self:SetRelativePosition(maxButtonSize + vSpace, - ( barHeight + barInset + hSpace)) -- TODO: Alignment
-			
 			self:GetFrameObject():SetSize(barWidth + 2 * barInset, (GetNumSpecializations() - TotalAP.Cache.GetNumIgnoredSpecs()) * (2 * barInset + barHeight + hSpace))
-			
 		
 		end
 		
-		-- TODO: Set size during Update to remove unnecessary background if specs are ignored - only relevant if the BG is visible, I guess?
+		-- Script handlers
 		
 	 end
 	
@@ -903,11 +901,7 @@ local function CreateNew(self)
 	do -- ProgressBars
 	
 		-- Layout and visuals
-		-- ProgressBar1Container:SetRelativePosition(barInset, - barInset - 0 * (barHeight + hSpace))
-		-- ProgressBar2Container:SetRelativePosition(barInset, - barInset - 1 * (barHeight + hSpace))
-		-- ProgressBar3Container:SetRelativePosition(barInset, - barInset - 2 * (barHeight + hSpace))
-		-- ProgressBar4Container:SetRelativePosition(barInset, - barInset - 3 * (barHeight + hSpace))
-		
+
 		-- Player interaction
 		ProgressBar1Container:SetAssignedSpec(1)
 		ProgressBar2Container:SetAssignedSpec(2)
