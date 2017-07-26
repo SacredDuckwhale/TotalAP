@@ -730,6 +730,46 @@ local function CreateNew(self)
 		SpecIcon4TextContainer:SetTargetAnchorPoint("TOPRIGHT")
 		SpecIcon4TextContainer:SetVerticalAlignment("center")
 		
+		-- Player interaction
+		SpecIcon1TextContainer:SetAssignedSpec(1)
+		SpecIcon2TextContainer:SetAssignedSpec(2)
+		SpecIcon3TextContainer:SetAssignedSpec(3)
+		SpecIcon4TextContainer:SetAssignedSpec(4)
+		
+		local SpecIconTextUpdateFunction = function(self)
+		
+			local cache = TotalAP.artifactCache[fqcn][self:GetAssignedSpec()]
+			if not cache then return end
+			
+			local text = ""
+			
+			local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(cache["numTraitsPurchased"],  cache["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), cache["artifactTier"])
+			local nextLevelRequiredAP = C_ArtifactUI.GetCostForPointAtRank(cache["numTraitsPurchased"], cache["artifactTier"]); 
+			local percentageOfCurrentLevelUp = (cache["thisLevelUnspentAP"]  + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0)) / nextLevelRequiredAP*100;
+			
+			if numTraitsAvailable > 0  then -- Set text to display number of available traits
+			
+				text = format("x%d", numTraitsAvailable)
+				
+			else -- Display percentage instead
+			
+				text = format("%d%%", percentageOfCurrentLevelUp)
+				
+			end
+			
+			if not (cache["numTraitsPurchased"] < 54 or cache["artifactTier"] > 1) then -- Artifact is maxed
+				text = "---" -- TODO: MAX? Empty? Anything else?
+			end
+			
+			self:SetText(text)
+		
+		end
+		
+		SpecIcon1TextContainer.Update = SpecIconTextUpdateFunction
+		SpecIcon2TextContainer.Update = SpecIconTextUpdateFunction
+		SpecIcon3TextContainer.Update = SpecIconTextUpdateFunction
+		SpecIcon4TextContainer.Update = SpecIconTextUpdateFunction
+		
 	end
 	
 	
