@@ -640,8 +640,22 @@ local function CreateNew(self)
 			local assignedSpec = self:GetAssignedSpec()
 			local displaySpec = GetDisplayOrderForSpec(assignedSpec)
 			
+			local combinedBarsHeight = (GetNumSpecializations() - TotalAP.Cache.GetNumIgnoredSpecs()) * (2 * barInset + barHeight + hSpace) -- TODO: DRY
+		
+			-- Align spec icons bars (sadly, this has to be done individually :()
+			local delta
+			if settings.infoFrame.alignment == "bottom" then -- Move to bottom border (above non-existing AK slider)
+				delta = AnchorFrame:GetHeight() - (barHeight + 2 * barInset + hSpace) - combinedBarsHeight
+			elseif settings.infoFrame.alignment == "center" then -- Move to center
+				delta = (AnchorFrame:GetHeight() - (barHeight + 2 * barInset + hSpace) - combinedBarsHeight) / 2
+			else -- Leave aligned at the top (below non-existent ULA bar)
+				delta = 0
+			end
+			
+		--	self:SetRelativePosition(maxButtonSize + vSpace, - ( barHeight + 2 * barInset + hSpace) - delta)
+
 			local offsetY = (assignedSpec - displaySpec) * (hSpace + specIconSize + 2 * specIconBorderWidth)
-			self:SetRelativePosition(maxButtonSize + vSpace + barWidth + vSpace, - ( barHeight + barInset + hSpace + (assignedSpec - 1) * (specIconSize + 2 * specIconBorderWidth + hSpace)) + offsetY)
+			self:SetRelativePosition(maxButtonSize + vSpace + barWidth + vSpace, - ( barHeight + barInset + hSpace + (assignedSpec - 1) * (specIconSize + 2 * specIconBorderWidth + hSpace)) + offsetY - delta)
 			
 		end
 		
@@ -879,8 +893,20 @@ local function CreateNew(self)
 		-- Player interaction		
 		ProgressBarsFrameContainer.Update = function(self)
 		
-			self:SetRelativePosition(maxButtonSize + vSpace, - ( barHeight + barInset + hSpace)) -- TODO: Alignment
-			self:GetFrameObject():SetSize(barWidth + 2 * barInset, (GetNumSpecializations() - TotalAP.Cache.GetNumIgnoredSpecs()) * (2 * barInset + barHeight + hSpace))
+			local combinedBarsHeight = (GetNumSpecializations() - TotalAP.Cache.GetNumIgnoredSpecs()) * (2 * barInset + barHeight + hSpace)
+		
+			-- Align progress bars (via their surrounding frame)
+			local delta
+			if settings.infoFrame.alignment == "bottom" then -- Move to bottom border (above non-existing AK slider)
+				delta = AnchorFrame:GetHeight() - (barHeight + 2 * barInset + hSpace) - combinedBarsHeight
+			elseif settings.infoFrame.alignment == "center" then -- Move to center
+				delta = (AnchorFrame:GetHeight() - (barHeight + 2 * barInset + hSpace) - combinedBarsHeight) / 2
+			else -- Leave aligned at the top (below non-existent ULA bar)
+				delta = 0
+			end
+			
+			self:SetRelativePosition(maxButtonSize + vSpace, - ( barHeight + 2 * barInset + hSpace) - delta)
+			self:GetFrameObject():SetSize(barWidth + 2 * barInset, combinedBarsHeight)
 		
 		end
 		
