@@ -287,6 +287,7 @@ local function CreateNew(self)
 			
 				ActionButton:SetAttribute("type", "item")
 				ActionButton:SetAttribute("item", itemName)
+				
 			end
 			
 			-- Transfer cooldown animation to the button (would otherwise remain static when items are used, which feels artificial)
@@ -300,18 +301,10 @@ local function CreateNew(self)
 				GameTooltip:SetHyperlink(TotalAP.inventoryCache.displayItem.link)
 			end
 			
-			
-			-- Masque Update (TODO)
-		
+
 			if not InCombatLockdown() then -- Flash action button (TODO: Un-taint this if necessary after GUI rework by copying the code)
 				
 				-- TODO: Check for persisting taint issues
-			
-				if flashButton and not self.isMoving then -- Re-flash to show glow effect properly if button's size changed (and it isn't currently being resized) -- TODO: Maybe this should be done while rendering instead
-					
-					self:ToggleFlashing()
-					
-				end
 				
 				self:SetFlashing(flashButton)
 				
@@ -401,7 +394,6 @@ local function CreateNew(self)
 			
 			if self.isMoving then -- Update graphics to make sure the border/glow effect etc. is re-applied correctly (especially when resizing)
 				
-		
 				ActionButtonContainer:Update()
 				ActionButtonContainer:Render()
 				
