@@ -296,6 +296,24 @@ local function Render(self)
 		InBankBar:SetSize(self:GetWidth("InBankBar"), self:GetHeight("InBankBar"))
 		MiniBar:SetSize(self:GetWidth("MiniBar"), self:GetHeight("MiniBar"))
 		
+		-- Hide bars if they are disabled
+		if not self:IsBarEnabled("UnspentBar") then
+				UnspentBar.texture:SetVertexColor(0, 0, 0, 0)
+		end
+		
+		if not self:IsBarEnabled("InBagsBar") then
+				InBagsBar.texture:SetVertexColor(0, 0, 0, 0)
+		end
+		
+		if not self:IsBarEnabled("InBankBar") then
+				InBankBar.texture:SetVertexColor(0, 0, 0, 0)
+		end
+		
+		if not self:IsBarEnabled("MiniBar") then
+				MiniBar.texture:SetVertexColor(0, 0, 0, 0)
+		end
+		
+		
 		
 	end
 	
