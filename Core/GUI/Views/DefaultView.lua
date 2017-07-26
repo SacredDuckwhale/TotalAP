@@ -254,8 +254,22 @@ local function CreateNew(self)
 		-- Layout and visuals
 		PlayerControlStateIconContainer:SetRelativePosition(3 * (stateIconWidth + stateIconSpacer), 0)
 		PlayerControlStateIconContainer:SetBackdropColour("#F69282")
+		PlayerControlStateIconContainer:SetBackdropAlpha(0)	
+		PlayerControlStateIconContainer:SetEnabled(false) -- Don't show this by default
 		
 		PlayerControlStateIcon:SetSize(stateIconWidth, stateIconHeight)
+		PlayerControlStateIcon.texture = PlayerControlStateIcon:CreateTexture()
+		PlayerControlStateIcon.texture:SetTexture([[Interface\Minimap\Tracking\FlightMaster]]) 
+		PlayerControlStateIcon.texture:SetAllPoints(PlayerControlStateIcon)
+		PlayerControlStateIcon.texture:SetTexCoord(0, 1, 0, 1)
+		
+		-- Player interaction
+		PlayerControlStateIconContainer.Update = function(self)
+		
+			-- Indicate combat is currently in progress
+			self:SetEnabled(TotalAP.eventStates.hasPlayerLostControl)
+		
+		end
 	
 	end
 	
