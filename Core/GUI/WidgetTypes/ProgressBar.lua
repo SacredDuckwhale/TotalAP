@@ -52,7 +52,7 @@ local defaultValues = {
 		enabled = true,
 		width = 0,
 		alpha = 1,
-		colour = "#325FFA",
+		colour = "#325F96",
 	
 	},
 	
