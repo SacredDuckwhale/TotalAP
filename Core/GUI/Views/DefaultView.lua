@@ -575,6 +575,37 @@ local function CreateNew(self)
 		SpecIcon3Container:SetAssignedSpec(3)
 		SpecIcon4Container:SetAssignedSpec(4)
 		
+		local SpecIconUpdateFunction = function(self)
+		
+			local cache = TotalAP.artifactCache[fqcn][self:GetAssignedSpec()]
+			if not cache then return end
+			
+			local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(cache["numTraitsPurchased"],  cache["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), cache["artifactTier"])
+			
+			local flashButton = false
+			-- Flash when:
+			flashButton = (flashButton
+			or numTraitsAvailable > 0 -- New traits are available
+			) and settings.specIcons.showGlowEffect -- BUT: Only flash if glow effect is enabled
+			and (cache["artifactTier"] > 1 or cache["numTraitsPurchased"] < maxArtifactTraits) -- AND only if the artifact is not maxed yet
+		
+			if not InCombatLockdown() then -- Flash spec icon button (TODO: Un-taint this if necessary after GUI rework by copying the code)
+			
+				-- TODO: Check for persisting taint issues
+				self:SetFlashing(flashButton)
+				
+			end
+			
+			-- Set textures (only needs to be done once, as specs are generally static)
+			self:GetFrameObject().icon:SetTexture(select(4, GetSpecializationInfo(self:GetAssignedSpec())))
+			
+		end
+		
+		SpecIcon1Container.Update = SpecIconUpdateFunction
+		SpecIcon2Container.Update = SpecIconUpdateFunction
+		SpecIcon3Container.Update = SpecIconUpdateFunction
+		SpecIcon4Container.Update = SpecIconUpdateFunction
+		
 		-- Script handlers
 		
 	end
