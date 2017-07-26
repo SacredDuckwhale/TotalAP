@@ -607,6 +607,95 @@ local function CreateNew(self)
 		SpecIcon4Container.Update = SpecIconUpdateFunction
 		
 		-- Script handlers
+		-- TODO: Button script handlers in separate file to clean up  this mess and start refactoring it
+		local SpecIconOnClickFunction = function(self, button) -- When clicked, change spec accordingly to the button's icon
+
+			local spec = tonumber(self:GetName():match(".*(%d)"))
+			
+			if self.isMoving then -- Stop moving, but ignore this click
+				self.isMoving = false
+				AnchorFrame:StopMovingOrSizing()
+				return -- Don't activate spec while moving is enabled (technically, the AnchorFrame is being moved, so the specIcon should not be clicked)
+			end
+			
+			-- Change spec as per the player's selection (if it isn't active already)
+			if GetSpecialization() ~= spec then
+			
+				-- Dismount if not flying (wouldn't want to kill the player, now would we?) / SHOULD also cancel shapeshifts of any kind, at least out of combat -- TODO: Setting to allow forced dismount even if flying/Test with chakras and other "weird" shapeshifts
+				if (IsMounted() or GetShapeshiftForm() > 0) and not (IsFlying() or InCombatLockdown() or UnitAffectingCombat("player")) then
+					Dismount()
+					CancelShapeshiftForm() -- TODO: Protected -> may cause issues if called in combat? (Not sure if InCombatLockdown is enough to detect this reliably)
+				end
+				
+				SetSpecialization(spec)
+				
+			end
+		
+		end
+		
+		local SpecIconOnMouseDownFunction = function(self, button) 
+
+			if IsAltKeyDown() then -- ALT-left-clicking toggles dragging of the entire display
+			
+				self.isMoving = true
+				AnchorFrame:StartMoving() 
+				
+			end
+			
+			return -- don't activate specs or ignore them
+
+		end
+	
+		local SpecIconOnMouseUpFunction = function(self, button)
+			
+			local spec = tonumber(self:GetName():match(".*(%d)"))
+			
+			 if button ~= "RightButton"  then return end
+
+			 -- Add spec to ignored specs (actually, it is flagged as "ignored" for the current character only)
+			 if TotalAP.Cache.IsSpecIgnored(fqcn, spec) then  -- Spec is already being ignored
+				TotalAP.Debug("Attempting to ignore spec, but spec " .. spec .. " is already ignored for character " .. fqcn)
+				return
+			 end
+			 
+			 TotalAP.ChatMsg(format(TotalAP.L["Ignoring spec %d (%s) for character %s"], spec, select(2, GetSpecializationInfo(spec)), fqcn))
+			 TotalAP.Cache.IgnoreSpec(fqcn, spec)
+			 
+			 -- Show one-time warning if necessary
+			if not TotalAP.specIgnoredWarningGiven then
+				TotalAP.ChatMsg(format(TotalAP.L["Type %s to reset all currently ignored specs for this character"], "/" .. TotalAP.Controllers.GetSlashCommandAlias() .. " unignore"))
+				TotalAP.specIgnoredWarningGiven = true
+			end
+			
+			-- Hide spec icon for the now.ignored spec
+			TotalAP.Controllers.RenderGUI()
+			 
+		end
+ 
+		SpecIcon1:SetScript("OnClick", SpecIconOnClickFunction)
+		SpecIcon2:SetScript("OnClick", SpecIconOnClickFunction)
+		SpecIcon3:SetScript("OnClick", SpecIconOnClickFunction)
+		SpecIcon4:SetScript("OnClick", SpecIconOnClickFunction)
+		
+		SpecIcon1:SetScript("OnMouseDown", SpecIconOnMouseDownFunction)
+		SpecIcon2:SetScript("OnMouseDown", SpecIconOnMouseDownFunction)
+		SpecIcon3:SetScript("OnMouseDown", SpecIconOnMouseDownFunction)
+		SpecIcon4:SetScript("OnMouseDown", SpecIconOnMouseDownFunction)
+
+		SpecIcon1:SetScript("OnMouseUp", SpecIconOnMouseUpFunction)
+		SpecIcon2:SetScript("OnMouseUp", SpecIconOnMouseUpFunction)
+		SpecIcon3:SetScript("OnMouseUp", SpecIconOnMouseUpFunction)
+		SpecIcon4:SetScript("OnMouseUp", SpecIconOnMouseUpFunction)
+		
+		SpecIcon1:SetScript("OnEnter", TotalAP.GUI.Tooltips.ShowSpecIconTooltip)
+		SpecIcon2:SetScript("OnEnter", TotalAP.GUI.Tooltips.ShowSpecIconTooltip)
+		SpecIcon3:SetScript("OnEnter", TotalAP.GUI.Tooltips.ShowSpecIconTooltip)
+		SpecIcon4:SetScript("OnEnter", TotalAP.GUI.Tooltips.ShowSpecIconTooltip)
+		
+		SpecIcon1:SetScript("OnLeave", TotalAP.GUI.Tooltips.HideSpecIconTooltip)
+		SpecIcon2:SetScript("OnLeave", TotalAP.GUI.Tooltips.HideSpecIconTooltip)
+		SpecIcon3:SetScript("OnLeave", TotalAP.GUI.Tooltips.HideSpecIconTooltip)
+		SpecIcon4:SetScript("OnLeave", TotalAP.GUI.Tooltips.HideSpecIconTooltip)
 		
 	end
 	
