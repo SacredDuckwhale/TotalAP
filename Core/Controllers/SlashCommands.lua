@@ -377,6 +377,10 @@ local function SlashCommandHandler(input, usedAlias)
 		
 			local slashHandlerFunction = slashHandlers[command]
 			slashHandlerFunction() -- Parameter is nil -> There's no need to submit the DB for test commands, really
+						
+			-- Always update displays to make sure any changes will be displayed immediately (if possible/not locked) -< TODO. DRY
+			TotalAP.Controllers.RenderGUI() 
+			
 			return
 		
 		elseif command == validCommand then -- Execute individual handler function for this slash command
@@ -387,7 +391,7 @@ local function SlashCommandHandler(input, usedAlias)
 			slashHandlerFunction(settings)
 			
 			-- Always update displays to make sure any changes will be displayed immediately (if possible/not locked)
-			TotalAP.Controllers.UpdateGUI()
+			TotalAP.Controllers.RenderGUI() 
 			
 			return
 	
