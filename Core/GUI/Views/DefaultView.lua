@@ -156,6 +156,21 @@ local function CreateNew(self)
 		
 		CombatStateIcon:SetSize(stateIconWidth, stateIconHeight)
 		
+		-- Player interaction
+		CombatStateIconContainer.Update = function(self)
+		
+			if TotalAP.eventStates.isPlayerEngagedInCombat then -- Indicate combat is currently in progress
+				
+				self:SetBackdropAlpha(1)
+			
+			else
+			
+				self:SetBackdropAlpha(0.25)
+			
+			end
+		
+		end
+		
 	end
 	
 	local PetBattleStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_PetBattleStateIcon", "_DefaultView_AnchorFrame")
