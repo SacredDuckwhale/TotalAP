@@ -27,7 +27,7 @@ if not TotalAP then return end
 
 -- State indicators (to detect transitions)
 local eventStates = {}
-local isBankOpen, isPlayerUsingVehicle, isPlayerEngagedInCombat, isPetBattleInProgress, hasPlayerLostControl
+local isBankOpen, isPlayerUsingVehicle, isPlayerEngagedInCombat, isPetBattleInProgress, hasPlayerLostControl = false, false, false, false, false
 
 --- Scans the contents of either the player's inventory, or their bank
 -- @param[opt] scanBank Whether or not the bank should be scanned instead of the player's inventory (defaults to false)
