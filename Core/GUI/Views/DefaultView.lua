@@ -542,6 +542,13 @@ local function CreateNew(self)
 			self:SetEnabled(not hideFrame)
 			if hideFrame then return end
 			
+			-- Reposition if any specs have been ignored to make sure there are no odd-looking gaps in the display
+			local assignedSpec = self:GetAssignedSpec()
+			local displaySpec = GetDisplayOrderForSpec(assignedSpec)
+			
+			local offsetY = (assignedSpec - displaySpec) * (hSpace + specIconSize + 2 * specIconBorderWidth)
+			self:SetRelativePosition(maxButtonSize + vSpace + barWidth + vSpace, - ( barHeight + barInset + hSpace + (assignedSpec - 1) * (specIconSize + 2 * specIconBorderWidth + hSpace)) + offsetY)
+			
 		end
 		
 		SpecIcon1FrameContainer.Update = UpdateFunction
