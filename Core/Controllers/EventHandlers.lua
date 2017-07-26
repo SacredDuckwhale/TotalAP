@@ -26,6 +26,7 @@ if not TotalAP then return end
 
 
 -- State indicators (to detect transitions)
+local eventStates = {}
 local isBankOpen, isPlayerUsingVehicle, isPlayerEngagedInCombat, isPetBattleInProgress, hasPlayerLostControl
 
 --- Scans the contents of either the player's inventory, or their bank
@@ -206,13 +207,11 @@ end
 local function UpdateGUI()
 
 	-- Update event states so that the GUI controller can hide/show frames accordingly
-	TotalAP.EventHandlers.states = {
-		isBankOpen = isBankOpen,
-		isPlayerUsingVehicle = isPlayerUsingVehicle,
-		isPlayerEngagedInCombat = isPlayerEngagedInCombat,
-		isPetBattleInProgress = isPetBattleInProgress,
-		hasPlayerLostControl = hasPlayerLostControl,
-	} 
+	eventStates.isBankOpen = isBankOpen
+	eventStates.isPlayerUsingVehicle = isPlayerUsingVehicle
+	eventStates.isPlayerEngagedInCombat = isPlayerEngagedInCombat
+	eventStates.isPetBattleInProgress = isPetBattleInProgress
+	eventStates.hasPlayerLostControl = hasPlayerLostControl
 	
 	-- Force update, using the most recent available information to render the GUI
 	TotalAP.Controllers.UpdateGUI() -- TODO: Remove after migration is complete
@@ -435,6 +434,8 @@ end
 -- Make functions available in the addon namespace
 TotalAP.EventHandlers.UnregisterAllEvents = UnregisterAllEvents
 TotalAP.EventHandlers.RegisterAllEvents = RegisterAllEvents
+
+TotalAP.eventStates = eventStates
 
 
 return TotalAP.EventHandlers
