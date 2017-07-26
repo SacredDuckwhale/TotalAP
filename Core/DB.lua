@@ -69,11 +69,6 @@ local function GetArtifactItemID(classID, specID)
 	
 end	
 
--- TODO: Not really needed right now?
-local function IsArtifactWeapon(itemID)
-
-end
-
 -- Artifact items (tokens) DB // TODO: Actually, itemEffectsDB would be a more fitting name... but it serves as DB for the items themselves
 
 --- Returns a reference to the item effects DB (spell effects). For internal use only
