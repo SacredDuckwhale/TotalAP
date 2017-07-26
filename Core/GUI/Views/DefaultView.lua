@@ -809,7 +809,98 @@ local function CreateNew(self)
 		ProgressBar2Container:SetAssignedSpec(2)
 		ProgressBar3Container:SetAssignedSpec(3)
 		ProgressBar4Container:SetAssignedSpec(4)
+		
+		local ProgressBarUpdateFunction = function(self)
+		
+			local hideFrame = false
+			-- Hide when:
+			hideFrame = (hideFrame
+			or self:GetAssignedSpec() > GetNumSpecializations() -- Class doesn't have as many specs
+			or TotalAP.Cache.IsSpecIgnored(fqcn, self:GetAssignedSpec()) -- Spec is being ignored
+			or not settings.infoFrame.enabled -- Bars are diabled via settings (TODO: infoFrame no longer exists -> rename settings?)
+			)
+			
+			self:SetEnabled(not hideFrame)
+			if hideFrame then return end
+			
+			-- Set progress bar widths according to the cached artifact data
+			local cache = TotalAP.artifactCache[fqcn][self:GetAssignedSpec()]
+			local percentageUnspentAP = min(100, math.floor(cache["thisLevelUnspentAP"] / C_ArtifactUI.GetCostForPointAtRank(cache["numTraitsPurchased"], cache["artifactTier"]) * 100)) 	-- Cap values at 100 (width) to prevent the bar from overflowing and glitching out
+			local percentageInBagsAP = min(math.floor(TotalAP.inventoryCache.inBagsAP/ C_ArtifactUI.GetCostForPointAtRank(cache["numTraitsPurchased"], cache["artifactTier"]) * 100), 100 - percentageUnspentAP)
+			local percentageInBankAP = min(math.floor(TotalAP.bankCache.inBankAP/ C_ArtifactUI.GetCostForPointAtRank(cache["numTraitsPurchased"], cache["artifactTier"]) * 100), 100 - percentageUnspentAP - percentageInBagsAP)
+			local maxAttainableRank =  cache["numTraitsPurchased"] + TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(cache["numTraitsPurchased"],  cache["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0),  cache["artifactTier"]) 
+			local progressPercent = TotalAP.ArtifactInterface.GetProgressTowardsNextRank(cache["numTraitsPurchased"] , cache["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), cache["artifactTier"])
+			
+			self:SetWidth(percentageUnspentAP, "UnspentBar")
+			self:SetWidth(percentageInBagsAP, "InBagsBar")
+			self:SetWidth(percentageInBankAP, "InBankBar")
+			self:SetWidth(progressPercent, "MiniBar")
+			
+			-- Toggle visibility for individual progress bars
+			if percentageUnspentAP > 0 then -- Display UnspentBar
+				
+				self:EnableBar("UnspentBar")
+			
+			else
+				
+				self:DisableBar("UnspentBar")
+			
+			end
+			
+			if maxAttainableRank > cache["numTraitsPurchased"] and progressPercent > 0 and settings.infoFrame.showMiniBar and (cache["artifactTier"] > 1 or maxAttainableRank < maxArtifactTraits) then -- Display MiniBar
 
+				self:EnableBar("MiniBar")
+			
+			else
+				
+				self:DisableBar("MiniBar")
+			
+			end
+			
+			if percentageInBagsAP > 0 then -- Display inBagsBar
+			
+				self:EnableBar("InBagsBar")
+			
+			else
+				
+				self:DisableBar("InBagsBar")
+				
+			end
+			
+			if percentageInBankAP > 0 and settings.scanBank then -- Display inBankBar
+			
+				self:EnableBar("InBankBar")
+			
+			else
+				
+				self:DisableBar("InBankBar")
+				
+			end
+			
+			-- If the artifact is maxed, display "white" bar and hide the others to indicate this fact
+			if cache["artifactTier"] == 1 and cache["numTraitsPurchased"] >= 54 then -- Overwrite bars
+			
+				self:SetWidth(100, "UnspentBar")
+				self:EnableBar("UnspentBar")
+				self:DisableBar("InBagsBar")
+				self:DisableBar("InBankBar")
+				
+			end
+			
+			-- Reposition if any specs have been ignored to make sure there are no odd-looking gaps in the display
+			local assignedSpec = self:GetAssignedSpec()
+			local displaySpec = GetDisplayOrderForSpec(assignedSpec)
+			
+			local offsetY = (assignedSpec - displaySpec) * (hSpace + barHeight + 2 * barInset)
+			self:SetRelativePosition(barInset, - barInset - (assignedSpec - 1) * (barHeight + 2 * barInset + hSpace) + offsetY)
+		
+		end
+		
+		ProgressBar1Container.Update = ProgressBarUpdateFunction
+		ProgressBar2Container.Update = ProgressBarUpdateFunction
+		ProgressBar3Container.Update = ProgressBarUpdateFunction
+		ProgressBar4Container.Update = ProgressBarUpdateFunction
+		
 	end
 	
 	ViewObject.elementsList = { 	-- This is the actual view, which consists of individual DisplayFrame objects and their properties
