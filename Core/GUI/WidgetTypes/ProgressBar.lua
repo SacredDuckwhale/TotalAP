@@ -340,13 +340,18 @@ local function CreateNew(self, name, parent)
 	ProgressBarObject:SetName(name)
 	ProgressBarObject:SetParent(parent)
 	ProgressBarObject.FrameObject = CreateFrame("Frame", name, _G[parent] or UIParent) 
-	ProgressBarObject.FrameObject:SetFrameStrata("BACKGROUND") 
+	ProgressBarObject.FrameObject:SetFrameStrata("LOW") 
 	
 	-- Create frames for the contained bars
 	ProgressBarObject.UnspentBar = CreateFrame("Frame", name .. "UnspentBar", ProgressBarObject.FrameObject) 
 	ProgressBarObject.InBagsBar = CreateFrame("Frame", name .. "InBagsBar", ProgressBarObject.FrameObject) 
 	ProgressBarObject.InBankBar = CreateFrame("Frame", name .. "InBankBar", ProgressBarObject.FrameObject) 
 	ProgressBarObject.MiniBar = CreateFrame("Frame", name .. "MiniBar", ProgressBarObject.FrameObject) 
+	
+	ProgressBarObject.UnspentBar:SetFrameStrata("LOW") 
+	ProgressBarObject.InBagsBar:SetFrameStrata("LOW") 
+	ProgressBarObject.InBankBar:SetFrameStrata("LOW") 
+	ProgressBarObject.MiniBar:SetFrameStrata("MEDIUM") 
 	
 	-- Create empty texture objects
 	ProgressBarObject.FrameObject.texture = ProgressBarObject.FrameObject:CreateTexture()
