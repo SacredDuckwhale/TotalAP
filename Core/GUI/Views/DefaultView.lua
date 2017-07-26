@@ -504,10 +504,7 @@ local function CreateNew(self)
 		SpecIcon2FrameContainer:SetBackdropColour("#654321")
 		SpecIcon3FrameContainer:SetBackdropColour("#654321")
 		SpecIcon4FrameContainer:SetBackdropColour("#654321")
-		SpecIcon1FrameContainer:SetRelativePosition(maxButtonSize + vSpace + barWidth + vSpace, - ( barHeight + barInset + hSpace + 0 * (specIconSize + specIconBorderWidth + hSpace)))
-		SpecIcon2FrameContainer:SetRelativePosition(maxButtonSize + vSpace + barWidth + vSpace, - ( barHeight + barInset + hSpace + 1 * (specIconSize + specIconBorderWidth + hSpace)))
-		SpecIcon3FrameContainer:SetRelativePosition(maxButtonSize + vSpace + barWidth + vSpace, - ( barHeight + barInset + hSpace + 2 * (specIconSize + specIconBorderWidth + hSpace)))
-		SpecIcon4FrameContainer:SetRelativePosition(maxButtonSize + vSpace + barWidth + vSpace, - ( barHeight + barInset + hSpace + 3 * (specIconSize + specIconBorderWidth + hSpace)))
+
 		SpecIcon1Frame:SetSize(specIconSize + 2 * specIconBorderWidth, specIconSize + 2 * specIconBorderWidth)
 		SpecIcon2Frame:SetSize(specIconSize + 2 * specIconBorderWidth, specIconSize + 2 * specIconBorderWidth)
 		SpecIcon3Frame:SetSize(specIconSize + 2 * specIconBorderWidth, specIconSize + 2 * specIconBorderWidth)
@@ -573,11 +570,12 @@ local function CreateNew(self)
 		SpecIcon2Container:SetRelativePosition(specIconBorderWidth, -specIconBorderWidth)
 		SpecIcon3Container:SetRelativePosition(specIconBorderWidth, -specIconBorderWidth)
 		SpecIcon4Container:SetRelativePosition(specIconBorderWidth, -specIconBorderWidth)
+		
 		SpecIcon1:SetSize(specIconSize, specIconSize)
 		SpecIcon2:SetSize(specIconSize, specIconSize)
 		SpecIcon3:SetSize(specIconSize, specIconSize)
 		SpecIcon4:SetSize(specIconSize, specIconSize)
-		
+
 		-- Player interaction
 		SpecIcon1Container:SetAssignedSpec(1)
 		SpecIcon2Container:SetAssignedSpec(2)
