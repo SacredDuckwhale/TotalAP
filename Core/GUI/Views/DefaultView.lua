@@ -63,6 +63,7 @@ local function CreateNew(self)
 	
 	-- Locals that are required to update individual view elements
 	local settings = TotalAP.Settings.GetReference()
+	local fqcn = TotalAP.Utils.GetFQCN()
 	
 	
 	-- Anchor frame: Parent of all displays and buttons (used to toggle the entire addon, as well as move its displays)
@@ -253,8 +254,7 @@ local function CreateNew(self)
 		ActionButtonContainer.Update = function(self)
 		
 			local spec = GetSpecialization()
-			local fqcn = TotalAP.Utils.GetFQCN() -- TODO: DRY -> use higher scope?
-		
+
 			local hideButton = false
 			
 			-- Hide when:
