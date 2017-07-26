@@ -27,6 +27,42 @@ if not TotalAP then return end
 
 local DefaultView = {}
 
+
+--- Returns the rearranged order of specs for display in an ordered View
+local function GetSpecDisplayOrder()
+
+	local displayOrder = { 1, 2, 3, 4 } -- default order, used if no specs are being ignored
+	local order = 1 -- 0 is used to indicate ignored displays
+	
+	local fqcn = TotalAP.Utils.GetFQCN()
+	local cache = TotalAP.artifactCache[fqcn]
+	
+	for i = 1, GetNumSpecializations() do 
+	
+		if cache[i] ~= nil and cache[i]["isIgnored"] then -- ignored spec -> order is 0 (hidden)
+			displayOrder[i] = 0
+		else -- proceed with the order as if there were no hidden displays
+			displayOrder[i] = order
+			order = order + 1
+		end
+	
+	end
+
+	return displayOrder
+	
+end
+
+-- Returns the rearranged order of a given spec for display in an ordered View
+-- @param spec The spec number (1-4)
+-- @returns The order in which it should be displayed (0-4; 0 meaning "ignored" = don't display)
+local function GetDisplayOrderForSpec(spec)
+
+	local displayOrder = GetSpecDisplayOrder()
+	return displayOrder[spec] or 0
+
+end
+
+
 --- Creates a new ViewObject
 -- @param self Reference to the caller
 -- @return A representation of the View (ViewObject)
