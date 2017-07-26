@@ -107,6 +107,36 @@ local function CreateNew(self)
 	-- Anchor frame: Parent of all displays and buttons (used to toggle the entire addon, as well as move its displays)
 	local AnchorFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_AnchorFrame")
 	local AnchorFrame = AnchorFrameContainer:GetFrameObject()
+	
+	-- Shared script handler functions
+	-- TODO: Proper handler functions. Could also toggle AP level as separate text on the progress bars
+	-- TODO: Move this elsewhere
+	local AnchorFrame_OnDragStart = function (self) -- Dragging moves the entire display (ALT + Click)
+		
+		if AnchorFrame:IsMovable() and IsAltKeyDown() then -- Move display
+		
+			AnchorFrame:StartMoving()
+
+			AnchorFrameContainer:SetBackdropAlpha(0.5)
+			AnchorFrameContainer:Render()
+			
+		end
+		
+		AnchorFrame.isMoving = true
+
+	end
+
+	-- TODO: Move elsewhere
+	local AnchorFrame_OnDragStop = function (self) -- Stopping to drag leaves the display at its new location
+		
+		AnchorFrame:StopMovingOrSizing()
+		AnchorFrame.isMoving = false
+		
+		AnchorFrameContainer:SetBackdropAlpha(0)
+		AnchorFrameContainer:Render()
+		
+	end
+	
 	do -- AnchorFrame
 	
 		-- Layout and visuals
@@ -163,37 +193,6 @@ local function CreateNew(self)
 		AnchorFrame:SetScript("OnDragStop", AnchorFrame_OnDragStop)
 		
 	end
-	
-	
-		-- Shared script handler functions
-		-- TODO: Proper handler functions. Could also toggle AP level as separate text on the progress bars
-	-- TODO: Move this elsewhere
-	local AnchorFrame_OnDragStart = function (self) -- Dragging moves the entire display (ALT + Click)
-		
-		if AnchorFrame:IsMovable() and IsAltKeyDown() then -- Move display
-		
-			AnchorFrame:StartMoving()
-
-			AnchorFrameContainer:SetBackdropAlpha(0.5)
-			AnchorFrameContainer:Render()
-			
-		end
-		
-		AnchorFrame.isMoving = true
-
-	end
-
-	-- TODO: Move elsewhere
-	local AnchorFrame_OnDragStop = function (self) -- Stopping to drag leaves the display at its new location
-		
-		AnchorFrame:StopMovingOrSizing()
-		AnchorFrame.isMoving = false
-		
-		AnchorFrameContainer:SetBackdropAlpha(0)
-		AnchorFrameContainer:Render()
-		
-	end
-	
 	
 	-- Event state icons: Indicate state of events that affect the ability to use AP items (TODO: Settings to show/hide and style these)
 	local CombatStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_CombatStateIcon", "_DefaultView_AnchorFrame")
