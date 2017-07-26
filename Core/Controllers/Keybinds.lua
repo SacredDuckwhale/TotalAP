@@ -116,8 +116,8 @@ local function KeybindHandler(action, isUserInput)
 		
 	
 	-- Always update displays to make sure any changes will be displayed immediately (if possible/not locked)
-	TotalAP.Controllers.UpdateGUI()
-
+	TotalAP.Controllers.RenderGUI() 
+	
 end
 
 

@@ -141,7 +141,7 @@ local function GetNumAvailableTraits()
 	
 	if not aUI or not HasArtifactEquipped() then
 		TotalAP.Debug("ArtifactInterface -> Attempted to calculate number of available traits, but the artifact UI was not available (No/wrong artifact weapon?)")
-		return
+		return 0
 	end
 	
 	local settings = TotalAP.Settings.GetReference()
@@ -192,6 +192,28 @@ local function GetArtifactProgressPercent()
 	
 end
 
+--- Returns whether or not the player is currently wearing their spec's artifact weapon
+-- @return True if the equipped weapon is the right artifact; false otherwise
+local function HasCorrectSpecArtifactEquipped()
+	
+	local _, _, classID = UnitClass("player"); -- 1 to 12
+	local specID = GetSpecialization(); -- 1 to 4
+
+	-- Check all artifacts for this spec
+	TotalAP.Debug(format("Checking artifacts for class %d, spec %d", classID, specID));
+	
+	local itemID = TotalAP.DB.GetArtifactItemID(classID, specID)
+
+	if not IsEquippedItem(itemID) then
+		TotalAP.Debug(format("Expected to find artifact weapon %s, but it isn't equipped", GetItemInfo(itemID) or "<none>"));
+		return false 
+	end
+	
+	-- All checks passed -> Looks like the equipped weapon is in fact (one of) the class' artifact weapon 
+	return true;
+	
+end
+
 
 -- Public methods
 T.ArtifactInterface.GetNumAvailableResearchNotes = GetNumAvailableResearchNotes
@@ -203,6 +225,7 @@ T.ArtifactInterface.GetNumRanksPurchasableWithAP = GetNumRanksPurchasableWithAP
 T.ArtifactInterface.GetProgressTowardsNextRank = GetProgressTowardsNextRank
 T.ArtifactInterface.GetNumAvailableTraits = GetNumAvailableTraits
 T.ArtifactInterface.GetArtifactProgressPercent = GetArtifactProgressPercent
+T.ArtifactInterface.HasCorrectSpecArtifactEquipped = HasCorrectSpecArtifactEquipped
 
 -- Keep this private, since it isn't used anywhere else
 -- T.ArtifactInterface.GetResearchNotesShipmentInfo = GetResearchNotesShipmentInfo

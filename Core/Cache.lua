@@ -22,9 +22,12 @@
 
 
 local addonName, TotalAP = ...
-
 if not TotalAP then return end
 
+
+-- Localized globals
+local _G = _G
+local cacheVarName = "TotalArtifactPowerCache"
 
 --- Returns the base structure for an "empty" cache entry.
 -- It contains values for a spec that hasn't been scanned yet, where all values are nil except "isIgnored" (which is FALSE)
@@ -48,7 +51,7 @@ end
 -- @return A reference to the cache database table itself
 local function GetReference() -- TODO: AceDB can handle this
 
-	return TotalArtifactPowerCache
+	return _G[cacheVarName]
 	
 end
 
@@ -165,14 +168,14 @@ local function GetValue(fqcn, specID, key)
 	
 	if not (cache and cache[fqcn] and cache[fqcn][specID]) then -- Cache entry doesn't exist
 	
-		TotalAP.Debug("Attempted to update cache entry for fqcn = " .. fqcn .. " and spec = " .. specID .. ", but it didn't exist")
+		TotalAP.Debug("Attempted to retrieve cache entry for fqcn = " .. fqcn .. " and spec = " .. specID .. ", but it didn't exist")
 		return
 		
 	end
 	
 	local entry = GetEntry(fqcn, specID)
 	
-	if not (entry ~= nil and key and entry[key]) then -- Key is invalid or entry doesn't exist
+	if not (entry and key and entry[key] ~= nil) then -- Key is invalid or entry doesn't exist
 	
 		TotalAP.Debug("Attempted to retrieve cache entry for key = " .. key .. ", but key is invalid or entry doesn't exist")
 		return
@@ -183,12 +186,39 @@ local function GetValue(fqcn, specID, key)
 
 end
 
+--- Sets the cached value of the respective character and spec for a given key
+-- @param fqcn Fully-qualified character name, to be used as the primary key
+-- @param specID Specialization ID, to be used as the secondary key
+-- @param key The key used to look up values inside of the cache entry
 local function SetValue(fqcn, specID, key, value)
+	
+	if not (fqcn and specID) then -- Parameters given were invalid
+	
+		TotalAP.Debug("Attempted to set Cache entry, but either fqcn or specID given were invalid")
+		return
+	
+	end
 
-end
-
-local function IgnoreSpec(fqcn, spec)
-
+	local cache = GetReference()
+	
+	if not (cache and cache[fqcn] and cache[fqcn][specID]) then -- Cache entry doesn't exist
+	
+		TotalAP.Debug("Attempted to set cache entry for fqcn = " .. fqcn .. " and spec = " .. specID .. ", but it didn't exist")
+		return
+		
+	end
+	
+	local entry = GetEntry(fqcn, specID)
+	
+	if not (entry and key and entry[key] ~= nil	) then -- Key is invalid or entry doesn't exist
+	
+		TotalAP.Debug("Attempted to set cache entry for key = " .. key .. ", but key is invalid or entry doesn't exist")
+		return
+		
+	end
+	
+	entry[key] = value
+	
 end
 
 --- Returns the amount of banked AP that was saved between sessions
@@ -212,7 +242,7 @@ local function GetBankCache(fqcn)
 	
 end
 
---- Update the bankCache from saved variables if one has been stored in a previous session
+--- Update the saved variables from bankCache for the current session. Should only be called after said cache was updated to prevent overwriting the saved cache with an empty one
 -- @param[opt] fqcn The fully-qualified character name (defaults to currently logged in character if omitted)
 local function UpdateBankCache(fqcn)
 
@@ -233,8 +263,39 @@ local function UpdateBankCache(fqcn)
 
 end
 
---- Returns the number of ignored specs for a given character (defaults to currently used character if none is given)
--- @param[opt] fqcn Fully qualified character name, to be used as the primary key
+
+--- Update the saved variables from artifactCache for the current session. Should only be called after said cache was updated to prevent overwriting the saved cache with an empty one
+-- @param[opt] fqcn The fully-qualified character name (defaults to currently logged in character if omitted)
+-- @param[opt] specNo The spec number that is to be updated (defaults to current spec if omitted)
+local function UpdateArtifactCache(fqcn, specNo)
+
+	local cache = GetReference()
+
+	if not fqcn then -- Use logged in character name/realm
+	
+		fqcn = TotalAP.Utils.GetFQCN()
+		
+	end
+	
+	if not specNo then -- Use current spec
+		specNo = GetSpecialization()
+	end
+
+	if not (cache and cache[fqcn] and TotalAP.artifactCache and TotalAP.artifactCache[fqcn] and TotalAP.artifactCache[fqcn][specNo]) then -- Abort, abort!
+
+		TotalAP.Debug("Failed to update artifactCache for key = " .. tostring(fqcn) .. ", specNo = " .. tostring(specNo))
+		return
+		
+	end
+	
+	if not cache[fqcn][specNo] then cache[fqcn][specNo] = {} end -- in case no entry exists for this spec (as they can't be initialised before spec info is loaded)
+	cache[fqcn][specNo] = TotalAP.artifactCache[fqcn][specNo] -- Only update the requested spec and leave the others intact
+
+end
+
+
+--- Returns the number of ignored specs for a given character
+-- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if none is given)
 -- @return Number of ignored specs; 0 if none are cached
 local function GetNumIgnoredSpecs(fqcn)
 	
@@ -263,34 +324,108 @@ local function GetNumIgnoredSpecs(fqcn)
 	
 end
 
---- Removes all specs from the ignored specs list for a given character (defaults to currently used character if none is given)
--- @param[opt] fqcn  Fully-qualified character name that will have their specs "IsIgnored" setting reset
--- TODO: This doesn't belong here
+--- Returns whether or not a spec is being ignored for a given character
+-- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if none is given)
+-- @param[opt] specNo Spec number (defaults to current spec if omitted)
+-- @return Whether or not the spec is set to being ignored
+local function IsSpecIgnored(fqcn, specNo)
+
+	fqcn = fqcn or TotalAP.Utils.GetFQCN() 
+	specNo = specNo or GetSpecialization()
+	
+	return GetValue(fqcn, specNo, "isIgnored")
+	
+end
+
+--- Returns whether or not the currently active spec is being ignored for the logged-in character
+-- @return Whether or not the current spec is set to being ignored
+local function IsCurrentSpecIgnored()
+
+	return IsSpecIgnored(nil, GetSpecialization())
+
+end
+
+--- Ignores a spec for the given character
+-- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if none is given)
+-- @param[opt] specNo Spec number (defaults to current spec if omitted)
+local function IgnoreSpec(fqcn, specNo)
+
+	fqcn = fqcn or TotalAP.Utils.GetFQCN() 
+	specNo = specNo or GetSpecialization()
+	
+	SetValue(fqcn, specNo, "isIgnored", true)
+
+end
+
+--- Unignores a spec for the given character
+-- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if none is given)
+-- @param[opt] specNo Spec number (defaults to current spec if omitted)
+local function UnignoreSpec(fqcn, specNo)
+
+	fqcn = fqcn or TotalAP.Utils.GetFQCN() 
+	specNo = specNo or GetSpecialization()
+	
+	SetValue(fqcn, specNo, "isIgnored", false)
+
+end
+
+--- Removes all specs from the ignored specs list for a given character
+-- @param[opt] fqcn Fully-qualified character name (defaults to currently used character if none is given)
 local function UnignoreAllSpecs(fqcn)
 	
-	if not TotalArtifactPowerCache then return end -- Skip unignore if cache isn't initialised or this is called before the addon loads
-	
-	-- TODO: DRY
-	local characterName, realm
-	
-	if fqcn then 
-		characterName, realm = fqcn:match("(%.+)%s-%s(%.)+")
-	end
-	
-	if not characterName or not realm then -- Use currently active character
-		
-		characterName = UnitName("player")
-		realm = GetRealmName()
-		
-	end
-		 
-	local key = format("%s - %s", characterName, realm)	 
+	fqcn = fqcn or TotalAP.Utils.GetFQCN() 
 	
 	for i = 1, GetNumSpecializations() do -- Remove spec from "ignore list" (more precisely, remove "marked as ignored" flag for all cached specs of the active character)
 	
-		if TotalArtifactPowerCache[key] and TotalArtifactPowerCache[key][i] then TotalArtifactPowerCache[key][i]["isIgnored"] = false end
+		SetValue(fqcn, i, "isIgnored", false)
 	
 	end
+	
+end
+
+
+-- Initialises the addon's cache and fills it with data stored in the saved variables (run at startup)
+local function Initialise()
+
+	local fqcn = TotalAP.Utils.GetFQCN()
+	local cache = GetReference()
+
+	-- Restore banked AP from saved vars if possible
+	local bankCache = TotalAP.Cache.GetBankCache(fqcn)
+	if bankCache then -- bankCache was saved on a previous session and can be restored
+	
+		TotalAP.bankCache = bankCache
+		
+	end
+	
+	-- Initialise caches
+	local fqcn = TotalAP.Utils.GetFQCN()
+	TotalAP.artifactCache[fqcn] = {}
+	
+	if not cache then -- Saved vars cache doesn't exist -> rebuild it
+		_G[cacheVarName] = {}
+		_G[cacheVarName][fqcn] = {}
+
+		return -- No data exists for this character -> Abort (and keep dummy entry created above in local cache, to be saved on the next update)
+
+	else -- cache exists, but may not contain the required entries
+	
+		if not cache[fqcn] then -- Entry for this char doesn't exist -> create it
+			_G[cacheVarName][fqcn] = {}
+
+		end
+	
+	end
+	
+		-- Read existing entries from saved vars and overwrite the dummy entries for those (but leave them for those that have no data)
+	for spec, entry in ipairs(cache[fqcn]) do -- At least some data exists -> merge saved data into local cache
+	
+		-- TODO: Validation and stuff... maybe
+		TotalAP.artifactCache[fqcn][spec] = entry
+
+	end
+	
+	-- End result: Local artifactCache is up-to-date, and savedVars are initialised (will be updated via UpdateArtifactCache method)
 	
 end
 
@@ -300,10 +435,17 @@ TotalAP.Cache.NewEntry = NewEntry
 TotalAP.Cache.GetEntry = GetEntry
 TotalAP.Cache.UpdateEntry = UpdateEntry
 TotalAP.Cache.GetValue = GetValue
+TotalAP.Cache.SetValue = SetValue
 TotalAP.Cache.GetBankCache = GetBankCache
 TotalAP.Cache.UpdateBankCache = UpdateBankCache
 TotalAP.Cache.GetNumIgnoredSpecs = GetNumIgnoredSpecs
 TotalAP.Cache.UnignoreAllSpecs = UnignoreAllSpecs
+TotalAP.Cache.IsSpecIgnored = IsSpecIgnored
+TotalAP.Cache.IsCurrentSpecIgnored = IsCurrentSpecIgnored
+TotalAP.Cache.IgnoreSpec = IgnoreSpec
+TotalAP.Cache.UnignoreSpec = UnignoreSpec
+TotalAP.Cache.UpdateArtifactCache = UpdateArtifactCache
+TotalAP.Cache.Initialise = Initialise
 
 -- Keep these private
 -- TotalAP.Cache.GetReference = GetReference

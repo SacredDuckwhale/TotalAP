@@ -17,68 +17,16 @@
 -- @module Controllers
 
 --- GUI.lua.
--- Controls the displays and manages its individual parts according to the user's settings
+-- Controls the displays and manages player interaction with its individual parts
 -- @section GUI
 
 
 local addonName, TotalAP = ...
-
 if not TotalAP then return end
 
-local function HideGUI()
+local activeView, usableViews
 
-end
-
-local function ShowGUI()
-
-	-- TODO: Migration from TotalAP.lua (main) to this controller
-
-end
-
-
-local function HideConfigGUI()
-
-end
-
-local function ShowConfigGUI()
-
-end
-
--- Show/Hide the AceConfig GUI window (but not the displays used by the addon)
-local function ToggleConfigGUI()
-
-end
-
--- Show/Hide the GUI (all displays EXCEPT the config GUI)
-local function ToggleGUI()
-
-	TotalAPAnchorFrame:SetShown(not TotalAPAnchorFrame:IsShown())
-	
-end
-
-local function UpdateConfigGUI()
-
-end
-
-
-
--- Updates the GUI (by refreshing / re-rendering the active view)
-local function UpdateGUI()
-
-	-- Outdated view concept (TODO: Remove once views are working properly with the new one)
-	-- if not TotalAP.GUI.GetActiveView() then -- No view exists -> GUI likely not initialised yet
-	
-		-- TotalAP.Debug("Skipping GUI Update: No view exists (GUI not initialised yet?)")
-		-- return false
-		
-	-- end
-	
-	-- Update all existing views (TODO: only the active one?)
-	
-	
-	
-end
-
+--- Align progress bars and spec icons in relation to the AnchorFrame (DefaultView only) - temporary crutch that will be removed later
 -- TODO: Set this via ConfigUI instead (also, Views need differentiation in its handling)
 local function AlignGUI(alignment)
 
@@ -90,7 +38,6 @@ local function AlignGUI(alignment)
 	if alignment == v then -- Update SavedVars and align UI as requested
 				settings["infoFrame"]["alignment"] = v
 				settings["specIcons"]["alignment"] = v
-				TotalAP.Controllers.UpdateGUI() -- TODO: Unnecessary?
 				return true
 		end
 		
@@ -102,16 +49,114 @@ local function AlignGUI(alignment)
 
 end
 
--- Make functions available in the addon namespace
-TotalAP.Controllers.ShowGUI = ShowGUI
-TotalAP.Controllers.HideGUI = HideGUI
-TotalAP.Controllers.ToggleGUI = ToggleGUI
-TotalAP.Controllers.UpdateGUI = UpdateGUI
-TotalAP.Controllers.ShowConfigGUI = ShowConfigGUI
-TotalAP.Controllers.HideConfigGUI = HideConfigGUI
-TotalAP.Controllers.ToggleConfigGUI = ToggleConfigGUI
-TotalAP.Controllers.UpdateConfigGUI = UpdateConfigGUI
+--- Create all required frames for a given view. This does NOT render (show) them, but they will be stored in the respective ViewObject and can be used at will afterwards
+-- @param[opt] name The name of the view template that should be used; "DefaultView" if none was given
+local function CreateView(name)
+
+	if not name then
+		name = "DefaultView"
+		TotalAP.Debug("Attempted to create view with an invalid name; using " .. name .. " instead")
+	end
+
+	-- Instantiate view object and store it in list of created (available) views
+	local View = TotalAP.GUI[name]
+	local ViewObject = View:CreateNew()
+	
+	usableViews[name] = ViewObject
+	
+end
+
+--- Retrieves the name of the currently active view
+-- @return The name of the currently active view; nil if none was set (this should not happen under normal circumstances)
+local function GetActiveView()
+
+	return activeView
+
+end
+
+--- Sets the currently active view
+-- @param name The name of a view
+local function SetActiveView(name)
+
+	-- TODO: If view doesn't exist, Debug message
+	if not name then
+		name = "DefaultView"
+		TotalAP.Debug("Attempted to set view with an invalid name; using " .. name .. " instead")
+	end
+
+	-- Set view to active
+	activeView = name
+	if not activeView then
+		TotalAP.Debug("Attempted to set view as activeView: " .. tostring(name) .. " -> invalid view or view is not usable yet")
+	end
+	
+	-- TODO. Custom view (save elements in SV instead of name?)
+	
+end
+
+--- Prepares the internal structures to allow Views to be rendered and updated
+local function InitialiseGUI()
+	
+	usableViews = {}
+	
+	-- Create views (will be rendered later, but if the Frames aren't created earlier they won't be saved in the client's LayoutCache) - TODO: Forfeit relying on the Layout Cache in favour of manual positioning to avoid accidental resets?
+	CreateView("DefaultView")
+	
+	-- Use default view (TODO: Use view that was selected and saved via "activeView" setting)
+	SetActiveView("DefaultView")
+	
+end
+
+--- Updates the displays of currently active View using all available information that the addon has gathered
+local function RenderGUI()
+
+	if ( TotalAP.Cache.GetNumIgnoredSpecs() == GetNumSpecializations() ) and not TotalAP.specIgnoredWarningGiven and GetNumSpecializations() > 0 then -- Print warning and instructions on how to reset ignored specs... just in case -- TODO: use verbose setting for optional warnings/notices like this?
+	
+		TotalAP.ChatMsg(format(TotalAP.L["All specs are set to being ignored for this character. Type %s to reset them if this is unintended."], "/" .. TotalAP.Controllers.GetSlashCommandAlias() .. " unignore"))
+		TotalAP.specIgnoredWarningGiven = true -- TODO: Lame, but whatever
+	
+	end
+
+	local ActiveViewObject = usableViews[activeView]
+	
+	if not ActiveViewObject then -- No views, no party...
+		TotalAP.Debug("Failed to render GUI -> No usable Views have been created")
+		return
+	end
+
+	ActiveViewObject:Render()
+	
+end
+
+--- Returns the number of Views that have been initialised and are available (i.e., can be activated and rendered)
+-- @return The number of usable views if any were created; zero otherwise
+local function GetNumUsableViews()
+
+	local numUsableViews = 0
+	
+	for k, v in pairs(usableViews) do -- Count views
+		numUsableViews = numUsableViews + 1
+	end
+	
+	return numUsableViews
+
+end
+
+--- Returns all Views that have been initialised and are available (i.e., can be activated and rendered)
+-- @return A reference to the usableViews table
+local function GetUsableViews()
+	return usableViews
+end
+
+
 TotalAP.Controllers.AlignGUI = AlignGUI
+TotalAP.Controllers.CreateView = CreateView
+TotalAP.Controllers.GetActiveView  = GetActiveView
+TotalAP.Controllers.SetActiveView  = SetActiveView
+TotalAP.Controllers.InitialiseGUI  = InitialiseGUI
+TotalAP.Controllers.RenderGUI  = RenderGUI
+TotalAP.Controllers.GetNumUsableViews  = GetNumUsableViews
+TotalAP.Controllers.GetUsableViews  = GetUsableViews
 
 
 return TotalAP.Controllers
