@@ -163,7 +163,10 @@ local function Render(self)
 		-- Recreate if text or template changed (TODO)
 	
 	end
-	
+
+	-- Don't show or hide frames in combat, as actions can potentially be blocked due to taint at this point
+	if InCombatLockdown() then return end
+		
 		-- Toggle visibility
 	FrameObject:SetShown(isEnabled)
 
