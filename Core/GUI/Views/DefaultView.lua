@@ -517,6 +517,36 @@ local function CreateNew(self)
 		SpecIcon3FrameContainer:SetAssignedSpec(3)
 		SpecIcon4FrameContainer:SetAssignedSpec(4)
 		
+		local UpdateFunction = function(self)
+			
+			if self:GetAssignedSpec() == GetSpecialization() then -- Indicate active spec via background colour
+			
+				self:SetBackdropColour("#FF8000")
+			
+			else -- Show normal background (TODO: Hide)
+			
+				self:SetBackdropColour("#000000")
+			
+			end
+			
+			local hideFrame = false
+			
+			-- Hide when:
+			hideFrame = (hideFrame
+			or TotalAP.Cache.IsSpecIgnored(nil, self:GetAssignedSpec()) -- Assigned spec is being ignored
+			or GetNumSpecializations() < self:GetAssignedSpec() -- Class doesn't have as many specs
+			)
+			
+			self:SetEnabled(not hideFrame)
+			if hideFrame then return end
+			
+		end
+		
+		SpecIcon1FrameContainer.Update = UpdateFunction
+		SpecIcon2FrameContainer.Update = UpdateFunction
+		SpecIcon3FrameContainer.Update = UpdateFunction
+		SpecIcon4FrameContainer.Update = UpdateFunction
+		
 	end
 	
 	local SpecIcon1Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon1", "_DefaultView_SpecIcon1Container")
