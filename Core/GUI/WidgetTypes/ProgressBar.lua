@@ -300,11 +300,17 @@ local function Render(self)
 		-- Reposition 
 		FrameObject:ClearAllPoints()
 		UnspentBar:ClearAllPoints()
+		InBagsBar:ClearAllPoints()
+		InBagsBar:ClearAllPoints()
+		MiniBar:ClearAllPoints()
 		
 		local posX, posY = unpack(self:GetRelativePosition())
 		FrameObject:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", posX, posY)
-		UnspentBar:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT") -- TODO: Insets?
-		
+		UnspentBar:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", posX, posY) 
+		InBagsBar:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", posX, posY) 
+		InBankBar:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", posX, posY) 
+		MiniBar:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", posX, posY - self:GetHeight() - self:GetHeight("MiniBar") + 1)
+
 		-- Resize
 		FrameObject:SetSize(self:GetWidth(), self:GetHeight())
 		UnspentBar:SetSize(self:GetWidth("UnspentBar"), self:GetHeight("UnspentBar"))
