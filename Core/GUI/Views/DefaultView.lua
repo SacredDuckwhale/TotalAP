@@ -230,8 +230,22 @@ local function CreateNew(self)
 		-- Layout and visuals
 		PetBattleStateIconContainer:SetRelativePosition(stateIconWidth + stateIconSpacer, 0)
 		PetBattleStateIconContainer:SetBackdropColour("#F05238")
+		PetBattleStateIconContainer:SetBackdropAlpha(0)
+		PetBattleStateIconContainer:SetEnabled(false) -- Don't show this by default
 		
 		PetBattleStateIcon:SetSize(stateIconWidth, stateIconHeight)
+		PetBattleStateIcon.texture = PetBattleStateIcon:CreateTexture()
+		PetBattleStateIcon.texture:SetTexture([[Interface\ICONS\Tracking_WildPet]]) -- TODO: Settings for this? -- [[Interface\ICONS\INV_Pet_BattlePetTraining]] [[Interface\Cursor\UnableWildPet]] [[Interface\Vehicles\UI-VEHICLES-RAID-ICON] [[Interface\Icons\Ability_CheapShot]]] Ability_Rogue_KidneyShot  [[Interface\Minimap\Tracking\FlightMaster]]
+		PetBattleStateIcon.texture:SetAllPoints(PetBattleStateIcon)
+		PetBattleStateIcon.texture:SetTexCoord(0, 1, 0, 1)
+		
+		-- Player interaction
+		PetBattleStateIconContainer.Update = function(self)
+		
+			-- Indicate combat is currently in progress
+			self:SetEnabled(TotalAP.eventStates.isPetBattleInProgress)
+		
+		end
 		
 	end
 	
