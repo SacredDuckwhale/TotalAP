@@ -91,7 +91,9 @@ local function CreateNew(self)
 	
 	local specIconTextTemplate = "GameFontNormal"
 	
-	local stateIconWidth, stateIconHeight = (maxButtonSize - 3 * vSpace) / 4, barHeight + barInset
+	local stateIconSpacer = 2
+	local stateIconWidth = (maxButtonSize - 3 * stateIconSpacer) / 4
+	local stateIconHeight = stateIconWidth
 	
 	local sliderHeight = 20
 		
@@ -215,7 +217,7 @@ local function CreateNew(self)
 	do -- PetBattleStateIcon
 		
 		-- Layout and visuals
-		PetBattleStateIconContainer:SetRelativePosition(stateIconWidth + vSpace, 0)
+		PetBattleStateIconContainer:SetRelativePosition(stateIconWidth + stateIconSpacer, 0)
 		PetBattleStateIconContainer:SetBackdropColour("#F05238")
 		
 		PetBattleStateIcon:SetSize(stateIconWidth, stateIconHeight)
@@ -227,7 +229,7 @@ local function CreateNew(self)
 	do -- VehicleStateIcon
 		
 		-- Layout and visuals
-		VehicleStateIconContainer:SetRelativePosition(2 * (stateIconWidth + vSpace), 0)
+		VehicleStateIconContainer:SetRelativePosition(2 * (stateIconWidth + stateIconSpacer), 0)
 		VehicleStateIconContainer:SetBackdropColour("#F3725D")
 		
 		VehicleStateIcon:SetSize(stateIconWidth, stateIconHeight)
@@ -239,7 +241,7 @@ local function CreateNew(self)
 	do -- PlayerControlStateIcon
 	
 		-- Layout and visuals
-		PlayerControlStateIconContainer:SetRelativePosition(3 * (stateIconWidth + vSpace), 0)
+		PlayerControlStateIconContainer:SetRelativePosition(3 * (stateIconWidth + stateIconSpacer), 0)
 		PlayerControlStateIconContainer:SetBackdropColour("#F69282")
 		
 		PlayerControlStateIcon:SetSize(stateIconWidth, stateIconHeight)
