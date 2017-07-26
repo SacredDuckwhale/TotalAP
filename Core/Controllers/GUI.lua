@@ -168,7 +168,7 @@ local function RenderGUI()
 	local ActiveViewObject = usableViews[activeView]
 	
 	if not ActiveViewObject then -- No views, no party...
-		TotalAP.ChatMsg("Failed to render GUI -> No usable Views have been created")
+		TotalAP.Debug("Failed to render GUI -> No usable Views have been created")
 		return
 	end
 
