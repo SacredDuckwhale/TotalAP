@@ -422,6 +422,12 @@ local function CreateNew(self)
 			AnchorFrameContainer:SetBackdropAlpha(0)
 			AnchorFrameContainer:Render()
 			
+			if ActionButtonContainer:GetFlashing() then -- Re-flash to show glow effect properly if button's size changed (and it isn't currently being resized) -- TODO: Maybe this should be done while rendering instead
+					
+				ActionButtonContainer:ToggleFlashing()
+					
+			end
+			
 			ActionButtonContainer:Update()
 			ActionButtonContainer:Render()
 				
