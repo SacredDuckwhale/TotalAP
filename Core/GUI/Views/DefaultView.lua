@@ -220,6 +220,13 @@ local function CreateNew(self)
 		
 		UnderlightAnglerFrame:SetSize(barWidth, barHeight)
 		
+		UnderlightAnglerFrameContainer.Update = function(self)
+		
+			-- Disable unless the ULA artifact is equipped
+			self:SetEnabled(false) -- TODO: No ULA support just yet :) But... soon (TM)
+		
+		end
+		
 	end
 	
 	local ActionButtonFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_ActionButtonFrameContainer", "_DefaultView_AnchorFrame")
