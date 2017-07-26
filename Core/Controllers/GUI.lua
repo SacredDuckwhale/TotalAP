@@ -26,60 +26,7 @@ if not TotalAP then return end
 
 local activeView, usableViews
 
-local function HideGUI()
-
-end
-
-local function ShowGUI()
-
-	-- TODO: Migration from TotalAP.lua (main) to this controller
-
-end
-
-
-local function HideConfigGUI()
-
-end
-
-local function ShowConfigGUI()
-
-end
-
--- Show/Hide the AceConfig GUI window (but not the displays used by the addon)
-local function ToggleConfigGUI()
-
-end
-
--- Show/Hide the GUI (all displays EXCEPT the config GUI)
-local function ToggleGUI()
-
-	TotalAPAnchorFrame:SetShown(not TotalAPAnchorFrame:IsShown())
-	
-end
-
-local function UpdateConfigGUI()
-
-end
-
-
-
--- Updates the GUI (by refreshing / re-rendering the active view)
-local function UpdateGUI()
-
-	-- Outdated view concept (TODO: Remove once views are working properly with the new one)
-	-- if not TotalAP.GUI.GetActiveView() then -- No view exists -> GUI likely not initialised yet
-	
-		-- TotalAP.Debug("Skipping GUI Update: No view exists (GUI not initialised yet?)")
-		-- return false
-		
-	-- end
-	
-	-- Update all existing views (TODO: only the active one?)
-	
-	
-	
-end
-
+--- Align progress bars and spec icons in relation to the AnchorFrame (DefaultView only) - temporary crutch that will be removed later
 -- TODO: Set this via ConfigUI instead (also, Views need differentiation in its handling)
 local function AlignGUI(alignment)
 
@@ -102,7 +49,6 @@ local function AlignGUI(alignment)
 	return false
 
 end
-
 
 --- Create all required frames for a given view. This does NOT render (show) them, but they will be stored in the respective ViewObject and can be used at will afterwards
 -- @param[opt] name The name of the view template that should be used; "DefaultView" if none was given
@@ -204,17 +150,7 @@ local function GetUsableViews()
 end
 
 
--- Make functions available in the addon namespace
-TotalAP.Controllers.ShowGUI = ShowGUI
-TotalAP.Controllers.HideGUI = HideGUI
-TotalAP.Controllers.ToggleGUI = ToggleGUI
-TotalAP.Controllers.UpdateGUI = UpdateGUI
-TotalAP.Controllers.ShowConfigGUI = ShowConfigGUI
-TotalAP.Controllers.HideConfigGUI = HideConfigGUI
-TotalAP.Controllers.ToggleConfigGUI = ToggleConfigGUI
-TotalAP.Controllers.UpdateConfigGUI = UpdateConfigGUI
 TotalAP.Controllers.AlignGUI = AlignGUI
-
 TotalAP.Controllers.CreateView = CreateView
 TotalAP.Controllers.GetActiveView  = GetActiveView
 TotalAP.Controllers.SetActiveView  = SetActiveView
@@ -222,5 +158,6 @@ TotalAP.Controllers.InitialiseGUI  = InitialiseGUI
 TotalAP.Controllers.RenderGUI  = RenderGUI
 TotalAP.Controllers.GetNumUsableViews  = GetNumUsableViews
 TotalAP.Controllers.GetUsableViews  = GetUsableViews
+
 
 return TotalAP.Controllers
