@@ -242,8 +242,22 @@ local function CreateNew(self)
 		-- Layout and visuals
 		VehicleStateIconContainer:SetRelativePosition(2 * (stateIconWidth + stateIconSpacer), 0)
 		VehicleStateIconContainer:SetBackdropColour("#F3725D")
+		VehicleStateIconContainer:SetBackdropAlpha(0)
+		VehicleStateIconContainer:SetEnabled(false) -- Don't show this by default
 		
 		VehicleStateIcon:SetSize(stateIconWidth, stateIconHeight)
+		VehicleStateIcon.texture = VehicleStateIcon:CreateTexture()
+		VehicleStateIcon.texture:SetTexture([[Interface\Vehicles\UI-VEHICLES-RAID-ICON]]) -- TODO: Settings for this? --  [[Interface\Icons\Ability_CheapShot]]] Ability_Rogue_KidneyShot  [[Interface\Minimap\Tracking\FlightMaster]]
+		VehicleStateIcon.texture:SetAllPoints(VehicleStateIcon)
+		VehicleStateIcon.texture:SetTexCoord(0, 1, 0, 1)
+		
+		-- Player interaction
+		VehicleStateIconContainer.Update = function(self)
+		
+			-- Indicate combat is currently in progress
+			self:SetEnabled(TotalAP.eventStates.isPlayerUsingVehicle)
+		
+		end
 		
 	end
 	
