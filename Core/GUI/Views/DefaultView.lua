@@ -158,31 +158,42 @@ local function CreateNew(self)
 		
 		end)
 		
-		AnchorFrame:SetScript("OnDragStart", function(self) -- Dragging moves the entire display (ALT + Click)
-			
-			if self:IsMovable() and IsAltKeyDown() then -- Move display
-				self:StartMoving()
-
-				AnchorFrameContainer:SetBackdropAlpha(0.5) -- TODO: Make transparent while moving, invisible afterwards (so users can see the edges)
-				AnchorFrameContainer:Render()
-				
-			end
-			
-			self.isMoving = true
+		AnchorFrame:SetScript("OnDragStart", AnchorFrame_OnDragStart)
 		
-		end)
-		
-		AnchorFrame:SetScript("OnDragStop", function(self) -- Stopping to drag leaves the display at its new location
-			
-			self:StopMovingOrSizing()
-			self.isMoving = false
-			
-			AnchorFrameContainer:SetBackdropAlpha(0)
-			AnchorFrameContainer:Render()
-			
 		end)
 		
 	end
+	
+	
+		-- Shared script handler functions
+		-- TODO: Proper handler functions. Could also toggle AP level as separate text on the progress bars
+	-- TODO: Move this elsewhere
+	local AnchorFrame_OnDragStart = function (self) -- Dragging moves the entire display (ALT + Click)
+		
+		if AnchorFrame:IsMovable() and IsAltKeyDown() then -- Move display
+		
+			AnchorFrame:StartMoving()
+
+			AnchorFrameContainer:SetBackdropAlpha(0.5)
+			AnchorFrameContainer:Render()
+			
+		end
+		
+		AnchorFrame.isMoving = true
+
+	end
+
+	-- TODO: Move elsewhere
+	local AnchorFrame_OnDragStop = function (self) -- Stopping to drag leaves the display at its new location
+		
+		AnchorFrame:StopMovingOrSizing()
+		AnchorFrame.isMoving = false
+		
+		AnchorFrameContainer:SetBackdropAlpha(0)
+		AnchorFrameContainer:Render()
+		
+	end
+	
 	
 	-- Event state icons: Indicate state of events that affect the ability to use AP items (TODO: Settings to show/hide and style these)
 	local CombatStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_CombatStateIcon", "_DefaultView_AnchorFrame")
@@ -684,25 +695,12 @@ local function CreateNew(self)
 			end
 		
 		end
-		
-		local SpecIconOnMouseDownFunction = function(self, button) 
-
-			if IsAltKeyDown() then -- ALT-left-clicking toggles dragging of the entire display
-			
-				self.isMoving = true
-				AnchorFrame:StartMoving() 
-				
-			end
-			
-			return -- don't activate specs or ignore them
-
-		end
 	
 		local SpecIconOnMouseUpFunction = function(self, button)
 			
 			local spec = tonumber(self:GetName():match(".*(%d)"))
 			
-			 if button ~= "RightButton"  then return end
+			 if button ~= "RightButton" then return end
 
 			 -- Add spec to ignored specs (actually, it is flagged as "ignored" for the current character only)
 			 if TotalAP.Cache.IsSpecIgnored(fqcn, spec) then  -- Spec is already being ignored
@@ -728,11 +726,6 @@ local function CreateNew(self)
 		SpecIcon2:SetScript("OnClick", SpecIconOnClickFunction)
 		SpecIcon3:SetScript("OnClick", SpecIconOnClickFunction)
 		SpecIcon4:SetScript("OnClick", SpecIconOnClickFunction)
-		
-		SpecIcon1:SetScript("OnMouseDown", SpecIconOnMouseDownFunction)
-		SpecIcon2:SetScript("OnMouseDown", SpecIconOnMouseDownFunction)
-		SpecIcon3:SetScript("OnMouseDown", SpecIconOnMouseDownFunction)
-		SpecIcon4:SetScript("OnMouseDown", SpecIconOnMouseDownFunction)
 
 		SpecIcon1:SetScript("OnMouseUp", SpecIconOnMouseUpFunction)
 		SpecIcon2:SetScript("OnMouseUp", SpecIconOnMouseUpFunction)
@@ -749,6 +742,12 @@ local function CreateNew(self)
 		SpecIcon3:SetScript("OnLeave", TotalAP.GUI.Tooltips.HideSpecIconTooltip)
 		SpecIcon4:SetScript("OnLeave", TotalAP.GUI.Tooltips.HideSpecIconTooltip)
 		
+		SpecIcon1:SetScript("OnMouseDown", AnchorFrame_OnDragStart)
+		SpecIcon2:SetScript("OnMouseDown", AnchorFrame_OnDragStart)
+		SpecIcon3:SetScript("OnMouseDown", AnchorFrame_OnDragStart)
+		SpecIcon4:SetScript("OnMouseDown", AnchorFrame_OnDragStart)
+		-- OnDragStop is handled by the spec icon's OnClick function
+
 	end
 	
 	local SpecIcon1TextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_SpecIcon1Text", "_DefaultView_SpecIcon1Container", specIconTextTemplate)
@@ -963,6 +962,16 @@ local function CreateNew(self)
 		ProgressBar2Container.Update = ProgressBarUpdateFunction
 		ProgressBar3Container.Update = ProgressBarUpdateFunction
 		ProgressBar4Container.Update = ProgressBarUpdateFunction
+		
+		
+		ProgressBar1:SetScript("OnMouseDown", AnchorFrame_OnDragStart)
+		ProgressBar1:SetScript("OnMouseUp", AnchorFrame_OnDragStop)
+		ProgressBar2:SetScript("OnMouseDown", AnchorFrame_OnDragStart)
+		ProgressBar2:SetScript("OnMouseUp", AnchorFrame_OnDragStop)
+		ProgressBar3:SetScript("OnMouseDown", AnchorFrame_OnDragStart)
+		ProgressBar3:SetScript("OnMouseUp", AnchorFrame_OnDragStop)			
+		ProgressBar4:SetScript("OnMouseDown", AnchorFrame_OnDragStart)
+		ProgressBar4:SetScript("OnMouseUp", AnchorFrame_OnDragStop)
 		
 	end
 	
