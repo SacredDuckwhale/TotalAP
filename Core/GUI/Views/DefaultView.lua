@@ -475,6 +475,8 @@ local function CreateNew(self)
 			
 			self:SetText(text)
 			
+			self:SetEnabled(ActionButtonContainer:GetEnabled())
+			
 		end
 		
 		-- Script handlers
