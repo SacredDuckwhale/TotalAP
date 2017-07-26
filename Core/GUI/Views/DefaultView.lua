@@ -201,7 +201,7 @@ local function CreateNew(self)
 	do -- CombatStateIcon
 		
 		-- Layout and visuals
-		CombatStateIconContainer:SetRelativePosition(0, 0)
+		CombatStateIconContainer:SetRelativePosition(0, - stateIconHeight / 2)
 		CombatStateIconContainer:SetBackdropColour("#EC3413")
 		CombatStateIconContainer:SetBackdropAlpha(0)
 		CombatStateIconContainer:SetEnabled(false) -- Don't show this by default
@@ -228,7 +228,7 @@ local function CreateNew(self)
 	do -- PetBattleStateIcon
 		
 		-- Layout and visuals
-		PetBattleStateIconContainer:SetRelativePosition(stateIconWidth + stateIconSpacer, 0)
+		PetBattleStateIconContainer:SetRelativePosition(stateIconWidth + stateIconSpacer, - stateIconHeight / 2)
 		PetBattleStateIconContainer:SetBackdropColour("#F05238")
 		PetBattleStateIconContainer:SetBackdropAlpha(0)
 		PetBattleStateIconContainer:SetEnabled(false) -- Don't show this by default
@@ -254,7 +254,7 @@ local function CreateNew(self)
 	do -- VehicleStateIcon
 		
 		-- Layout and visuals
-		VehicleStateIconContainer:SetRelativePosition(2 * (stateIconWidth + stateIconSpacer), 0)
+		VehicleStateIconContainer:SetRelativePosition(2 * (stateIconWidth + stateIconSpacer), - stateIconHeight / 2)
 		VehicleStateIconContainer:SetBackdropColour("#F3725D")
 		VehicleStateIconContainer:SetBackdropAlpha(0)
 		VehicleStateIconContainer:SetEnabled(false) -- Don't show this by default
@@ -280,7 +280,7 @@ local function CreateNew(self)
 	do -- PlayerControlStateIcon
 	
 		-- Layout and visuals
-		PlayerControlStateIconContainer:SetRelativePosition(3 * (stateIconWidth + stateIconSpacer), 0)
+		PlayerControlStateIconContainer:SetRelativePosition(3 * (stateIconWidth + stateIconSpacer), - stateIconHeight / 2)
 		PlayerControlStateIconContainer:SetBackdropColour("#F69282")
 		PlayerControlStateIconContainer:SetBackdropAlpha(0)	
 		PlayerControlStateIconContainer:SetEnabled(false) -- Don't show this by default
