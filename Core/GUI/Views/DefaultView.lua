@@ -160,7 +160,7 @@ local function CreateNew(self)
 		
 		AnchorFrame:SetScript("OnDragStart", AnchorFrame_OnDragStart)
 		
-		end)
+		AnchorFrame:SetScript("OnDragStop", AnchorFrame_OnDragStop)
 		
 	end
 	
