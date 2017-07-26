@@ -165,6 +165,13 @@ end
 --- Updates the displays of currently active View using all available information that the addon has gathered
 local function RenderGUI()
 
+	if ( TotalAP.Cache.GetNumIgnoredSpecs() == GetNumSpecializations() ) and not TotalAP.specIgnoredWarningGiven and GetNumSpecializations() > 0 then -- Print warning and instructions on how to reset ignored specs... just in case -- TODO: use verbose setting for optional warnings/notices like this?
+	
+		TotalAP.ChatMsg(format(TotalAP.L["All specs are set to being ignored for this character. Type %s to reset them if this is unintended."], "/" .. TotalAP.Controllers.GetSlashCommandAlias() .. " unignore"))
+		TotalAP.specIgnoredWarningGiven = true -- TODO: Lame, but whatever
+	
+	end
+
 	local ActiveViewObject = usableViews[activeView]
 	
 	if not ActiveViewObject then -- No views, no party...
