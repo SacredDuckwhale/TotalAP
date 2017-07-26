@@ -38,7 +38,6 @@ local function AlignGUI(alignment)
 	if alignment == v then -- Update SavedVars and align UI as requested
 				settings["infoFrame"]["alignment"] = v
 				settings["specIcons"]["alignment"] = v
-				TotalAP.Controllers.UpdateGUI() -- TODO: Unnecessary?
 				return true
 		end
 		

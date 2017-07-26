@@ -214,7 +214,6 @@ local function UpdateGUI()
 	eventStates.hasPlayerLostControl = hasPlayerLostControl
 	
 	-- Force update, using the most recent available information to render the GUI
-	TotalAP.Controllers.UpdateGUI() -- TODO: Remove after migration is complete
 	TotalAP.Controllers.RenderGUI()
 	
 end
