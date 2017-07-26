@@ -781,9 +781,22 @@ local function CreateNew(self)
 	do -- ProgressBarsFrame
 	 
 		-- Layout and visuals
+		ProgressBarsFrameContainer:SetBackdropFile("Interface\\GLUES\\COMMON\\Glue-Tooltip-Background.blp") -- semi-transparent
 		ProgressBarsFrameContainer:SetBackdropColour("#000000")
-		ProgressBarsFrameContainer:SetRelativePosition(maxButtonSize + vSpace, - ( barHeight + barInset + hSpace))
-		ProgressBarsFrame:SetSize(barWidth, 4 * (barHeight + hSpace))
+		-- ProgressBarsFrameContainer:SetRelativePosition(maxButtonSize + vSpace, - ( barHeight + barInset + hSpace))
+		-- ProgressBarsFrame:SetSize(barWidth + 2 * barInset, 4 * (barHeight + hSpace))
+		
+		ProgressBarsFrameContainer.Update = function(self)
+		
+			
+			self:SetRelativePosition(maxButtonSize + vSpace, - ( barHeight + barInset + hSpace)) -- TODO: Alignment
+			
+			self:GetFrameObject():SetSize(barWidth + 2 * barInset, (GetNumSpecializations() - TotalAP.Cache.GetNumIgnoredSpecs()) * (2 * barInset + barHeight + hSpace))
+			
+		
+		end
+		
+		-- TODO: Set size during Update to remove unnecessary background if specs are ignored - only relevant if the BG is visible, I guess?
 		
 	 end
 	
@@ -799,10 +812,10 @@ local function CreateNew(self)
 	do -- ProgressBars
 	
 		-- Layout and visuals
-		ProgressBar1Container:SetRelativePosition(barInset, - barInset - 0 * (barHeight + hSpace))
-		ProgressBar2Container:SetRelativePosition(barInset, - barInset - 1 * (barHeight + hSpace))
-		ProgressBar3Container:SetRelativePosition(barInset, - barInset - 2 * (barHeight + hSpace))
-		ProgressBar4Container:SetRelativePosition(barInset, - barInset - 3 * (barHeight + hSpace))
+		-- ProgressBar1Container:SetRelativePosition(barInset, - barInset - 0 * (barHeight + hSpace))
+		-- ProgressBar2Container:SetRelativePosition(barInset, - barInset - 1 * (barHeight + hSpace))
+		-- ProgressBar3Container:SetRelativePosition(barInset, - barInset - 2 * (barHeight + hSpace))
+		-- ProgressBar4Container:SetRelativePosition(barInset, - barInset - 3 * (barHeight + hSpace))
 		
 		-- Player interaction
 		ProgressBar1Container:SetAssignedSpec(1)
