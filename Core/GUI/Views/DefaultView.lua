@@ -192,21 +192,21 @@ local function CreateNew(self)
 		-- Layout and visuals
 		CombatStateIconContainer:SetRelativePosition(0, 0)
 		CombatStateIconContainer:SetBackdropColour("#EC3413")
+		CombatStateIconContainer:SetBackdropAlpha(0)
+		CombatStateIconContainer:SetEnabled(false) -- Don't show this by default
 		
 		CombatStateIcon:SetSize(stateIconWidth, stateIconHeight)
+		CombatStateIcon.texture = CombatStateIcon:CreateTexture()
+		CombatStateIcon.texture:SetTexture([[Interface\CharacterFrame\UI-StateIcon]]) -- TODO: Settings for this?
+		CombatStateIcon.texture:SetAllPoints(CombatStateIcon)
+		CombatStateIcon.texture:SetTexCoord(0.57, 0.90, 0.08, 0.41)
+		
 		
 		-- Player interaction
 		CombatStateIconContainer.Update = function(self)
 		
-			if TotalAP.eventStates.isPlayerEngagedInCombat then -- Indicate combat is currently in progress
-				
-				self:SetBackdropAlpha(1)
-			
-			else
-			
-				self:SetBackdropAlpha(0.25)
-			
-			end
+			-- Indicate combat is currently in progress
+			self:SetEnabled(TotalAP.eventStates.isPlayerEngagedInCombat)
 		
 		end
 		
