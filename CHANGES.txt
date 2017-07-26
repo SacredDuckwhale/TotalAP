@@ -1,6 +1,13 @@
 ------------------------------------------------------------------------
-## TotalAP v1.4.1 - Recent changes (3 releases)
+## TotalAP v1.5.0 - Recent changes (3 releases)
 ------------------------------------------------------------------------
+
+r25:
+	
+	Reworked the display (GUI) to allow further customization (in future updates). This might temporarily cause some minor problems, but should ultimately fix the long-standing taint issues manifesting in seemingly random Lua errors during combat
+	Added state indicators (icons) for events that would render the action button unusable or the display to be hidden, such as engaging in combat, pet battles, vehicular combat, or utilizing a Flight Master's services
+	The former /ap combat slash command is now /ap autohide and toggles the automatic hiding of the displays during all relevant events (mentioned above) instead of only detecting combat. More fine-grained settings for this are coming soon (TM)
+	
 
 r24:
 	
@@ -22,13 +29,3 @@ r23:
 	Fixed an issue where glow effects for the specIcons would not be applied correctly for tier 1 artifacts when too many traits were available
 	
 
-r22:
-	Added option to toggle between using the international and localised number formats for each locale (experimental). It is accessible via slash command: /ap numberformat
-	
-	Updated detection for maxed artifact weapons (was disabled after tier 2 became available, but now applies to only tier 1 artifacts). They now show as "maxed" once again
-	
-	Fixed an issue that could cause high numbers of artifact power (> 2.14b) to break the addon's output under certain circumstances
-	Fixed a bug that would cause tier 1 artifacts (those that haven't yet been upgraded via the Dalaran Council's quest chain) to display inaccurate values beyond the final, 54th trait
-	Fixed a graphics glitch that caused the buttonText to collide with the bar display when using locales with a larger-than-normal default font size (koKR, zhCN, zhTW mainly) - this workaround is not ideal, and somewhat experimental
-	
-	
