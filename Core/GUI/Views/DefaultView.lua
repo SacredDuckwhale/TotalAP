@@ -963,6 +963,15 @@ local function CreateNew(self)
 		ProgressBar3Container.Update = ProgressBarUpdateFunction
 		ProgressBar4Container.Update = ProgressBarUpdateFunction
 		
+		-- Script handlers
+		ProgressBar1:SetScript("OnEnter", TotalAP.GUI.Tooltips.ShowArtifactKnowledgeTooltip)
+		ProgressBar1:SetScript("OnLeave", TotalAP.GUI.Tooltips.HideArtifactKnowledgeTooltip)
+		ProgressBar2:SetScript("OnEnter", TotalAP.GUI.Tooltips.ShowArtifactKnowledgeTooltip)
+		ProgressBar2:SetScript("OnLeave", TotalAP.GUI.Tooltips.HideArtifactKnowledgeTooltip)
+		ProgressBar3:SetScript("OnEnter", TotalAP.GUI.Tooltips.ShowArtifactKnowledgeTooltip)
+		ProgressBar3:SetScript("OnLeave", TotalAP.GUI.Tooltips.HideArtifactKnowledgeTooltip)
+		ProgressBar4:SetScript("OnEnter", TotalAP.GUI.Tooltips.ShowArtifactKnowledgeTooltip)
+		ProgressBar4:SetScript("OnLeave", TotalAP.GUI.Tooltips.HideArtifactKnowledgeTooltip)
 		
 		ProgressBar1:SetScript("OnMouseDown", AnchorFrame_OnDragStart)
 		ProgressBar1:SetScript("OnMouseUp", AnchorFrame_OnDragStop)
