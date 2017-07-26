@@ -122,7 +122,7 @@ local function CreateNew(self)
 		
 		AnchorFrameContainer.Update = function(self)
 		
-			hideFrame = false
+			local hideFrame = false
 			-- Hide when:
 			hideFrame = (hideFrame
 			or UnitLevel("player") < 98 -- Player is too low level for Legion content (Artifact Quest)
