@@ -27,7 +27,7 @@ local TextDisplay = {}
 --- Default values that are applied to newly created frames automatically
 local defaultValues = {
 
-	text = "<ERROR>",
+	text = "",
 	textAlignment = "left",
 	verticalAlignment = "bottom",
 	template = "GameFontNormal",
