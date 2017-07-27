@@ -695,6 +695,9 @@ local function CreateNew(self)
 		
 		local SpecIconUpdateFunction = function(self)
 		
+			-- Set textures (TODO: only needs to be done once, as specs are generally static)
+			self:GetFrameObject().icon:SetTexture(select(4, GetSpecializationInfo(self:GetAssignedSpec())))
+		
 			local cache = TotalAP.Cache.IsSpecCached(fqcn, self:GetAssignedSpec()) and TotalAP.artifactCache[fqcn][self:GetAssignedSpec()]
 			if not cache then return end
 			
@@ -713,9 +716,6 @@ local function CreateNew(self)
 				self:SetFlashing(flashButton)
 				
 			end
-			
-			-- Set textures (only needs to be done once, as specs are generally static)
-			self:GetFrameObject().icon:SetTexture(select(4, GetSpecializationInfo(self:GetAssignedSpec())))
 			
 		end
 		
