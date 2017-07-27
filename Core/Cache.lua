@@ -429,6 +429,37 @@ local function Initialise()
 	
 end
 
+--- Returns whether or not the cache entry for a given character and spec is invalid, i.e. can't be used
+-- @param[opt] fqcn
+-- @param[opt spec
+-- @returns Whether the cache entry is empty/invalid]
+local function IsSpecCached(fqcn, spec)
+
+	local cache = GetReference()
+	local fqcn = (fqcn and type(fqcn) == "string") and fqcn or TotalAP.Utils.GetFQCN() -- TODO: validators for fqcn, spec no. etc that can be reused?
+	local spec = (spec and type(spec) == "number" and spec > 0 and spec <= 4) and spec or GetSpecialization()
+	
+	local isInvalid = true
+	
+	isInvalid = isInvalid and
+	-- TODO: Turn this into an actual validation routine (build array similar to aceDB validation )
+	(not cache -- Cache isn't even initialised
+	or not cache[fqcn] -- Cache has no entry for this character
+	or not cache[fqcn][spec] -- Cache has no entry for this character's spec
+	or not cache[fqcn][spec]["artifactTier"] -- artifact tier wasn't cached for this spec
+	or not type(cache[fqcn][spec]["artifactTier"]) == "number" -- artifact tier is invalid for this spec
+	or not (cache[fqcn][spec]["isIgnored"] ~= nil) -- no information about whether or not the spec is being ignored
+	or not type(cache[fqcn][spec]["isIgnored"]) == "boolean"
+	or not cache[fqcn][spec]["numTraitsPurchased"]
+	or not type(cache[fqcn][spec]["numTraitsPurchased"]) == "number"
+	or not cache[fqcn][spec]["thisLevelUnspentAP"]
+	or not type(cache[fqcn][spec]["thisLevelUnspentAP"]) == "number"
+	)
+	
+	TotalAP.ChatMsg("IsSpecCached(" .. tostring(fqcn) .. ", " .. tostring(spec) .. ") -> " .. tostring(not isInvalid))
+	return not isInvalid
+	
+end
 
 -- Public methods
 TotalAP.Cache.NewEntry = NewEntry
@@ -446,6 +477,7 @@ TotalAP.Cache.IgnoreSpec = IgnoreSpec
 TotalAP.Cache.UnignoreSpec = UnignoreSpec
 TotalAP.Cache.UpdateArtifactCache = UpdateArtifactCache
 TotalAP.Cache.Initialise = Initialise
+TotalAP.Cache.IsSpecCached = IsSpecCached
 
 -- Keep these private
 -- TotalAP.Cache.GetReference = GetReference

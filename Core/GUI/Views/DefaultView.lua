@@ -695,7 +695,7 @@ local function CreateNew(self)
 		
 		local SpecIconUpdateFunction = function(self)
 		
-			local cache = TotalAP.artifactCache[fqcn][self:GetAssignedSpec()]
+			local cache = TotalAP.Cache.IsSpecCached(fqcn, self:GetAssignedSpec()) and TotalAP.artifactCache[fqcn][self:GetAssignedSpec()]
 			if not cache then return end
 			
 			local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(cache["numTraitsPurchased"],  cache["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), cache["artifactTier"])
@@ -847,7 +847,7 @@ local function CreateNew(self)
 		
 		local SpecIconTextUpdateFunction = function(self)
 		
-			local cache = TotalAP.artifactCache[fqcn][self:GetAssignedSpec()]
+			local cache = TotalAP.Cache.IsSpecCached(fqcn, self:GetAssignedSpec()) and TotalAP.artifactCache[fqcn][self:GetAssignedSpec()]
 			if not cache then return end
 			
 			local text = ""
@@ -947,7 +947,9 @@ local function CreateNew(self)
 			if hideFrame then return end
 			
 			-- Set progress bar widths according to the cached artifact data
-			local cache = TotalAP.artifactCache[fqcn][self:GetAssignedSpec()]
+			local cache = TotalAP.Cache.IsSpecCached(fqcn, self:GetAssignedSpec()) and TotalAP.artifactCache[fqcn][self:GetAssignedSpec()]
+			if not cache then return end
+			
 			local percentageUnspentAP = min(100, math.floor(cache["thisLevelUnspentAP"] / C_ArtifactUI.GetCostForPointAtRank(cache["numTraitsPurchased"], cache["artifactTier"]) * 100)) 	-- Cap values at 100 (width) to prevent the bar from overflowing and glitching out
 			local percentageInBagsAP = min(math.floor(TotalAP.inventoryCache.inBagsAP/ C_ArtifactUI.GetCostForPointAtRank(cache["numTraitsPurchased"], cache["artifactTier"]) * 100), 100 - percentageUnspentAP)
 			local percentageInBankAP = min(math.floor(TotalAP.bankCache.inBankAP/ C_ArtifactUI.GetCostForPointAtRank(cache["numTraitsPurchased"], cache["artifactTier"]) * 100), 100 - percentageUnspentAP - percentageInBagsAP)
