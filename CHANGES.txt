@@ -3,6 +3,7 @@
 ------------------------------------------------------------------------
 
 r25:
+	All displays will now be hidden (...or not, depending on the settings) when players lose control of their character, such as while using taxi services (Flight Masters etc.)
 	
 	Reworked the display (GUI) to allow further customization (in future updates). This might temporarily cause some minor problems, but should ultimately fix the long-standing taint issues manifesting in seemingly random Lua errors during combat
 	Added state indicators (icons) for events that would render the action button unusable or the display to be hidden, such as engaging in combat, pet battles, vehicular combat, or utilizing a Flight Master's services
