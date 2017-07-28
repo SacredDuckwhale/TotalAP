@@ -333,7 +333,8 @@ local function IsSpecIgnored(fqcn, specNo)
 	fqcn = fqcn or TotalAP.Utils.GetFQCN() 
 	specNo = specNo or GetSpecialization()
 	
-	return GetValue(fqcn, specNo, "isIgnored")
+	local defaults = GetDefaults()
+	return GetValue(fqcn, specNo, "isIgnored") or defaults["isIgnored"]
 	
 end
 
