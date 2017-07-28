@@ -218,6 +218,16 @@ local function UpdateGUI()
 	
 end
 
+--- Rescan artifact for the current spec
+local function OnSpecChanged()
+
+	TotalAP.Debug("OnSpecChanged triggered")
+
+	ScanArtifact()
+	UpdateGUI()
+	
+end
+
 --- Scan the currently equipped artifact and update the addon's artifactCache accordingly
 local function OnArtifactUpdate()
 	
@@ -245,6 +255,9 @@ local function OnInventoryUpdate()
 	if isBankOpen then -- Update bankCache also (in case items were moved between inventory and bank)
 		ScanBank()
 	end
+	
+	-- Scan equipped artifact (TODO: Kind of doesn't belong here, but is necessary to initially cache a spec that hasn't been used before?)
+	--ScanArtifact()
 	
 	-- Update GUI to display the most current information
 	UpdateGUI()
@@ -387,6 +400,7 @@ local eventList = {
 	["ARTIFACT_XP"] = OnArtifactUpdate,
 	["ARTIFACT_UPDATE"] = OnArtifactUpdate,
 	["BAG_UPDATE_DELAYED"] = OnInventoryUpdate,
+	["TALENT_GROUP_CHANGED"] = OnSpecChanged,
 	
 	-- Scan bank contents
 	["BANKFRAME_OPENED"] = OnBankOpened,
