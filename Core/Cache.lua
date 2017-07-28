@@ -418,8 +418,8 @@ local function Initialise()
 	end
 	
 		-- Read existing entries from saved vars and overwrite the dummy entries for those (but leave them for those that have no data)
-	for spec, entry in ipairs(cache[fqcn]) do -- At least some data exists -> merge saved data into local cache
-	
+	for spec, entry in pairs(cache[fqcn]) do -- At least some data exists -> merge saved data into local cache
+
 		-- TODO: Validation and stuff... maybe
 		TotalAP.artifactCache[fqcn][spec] = entry
 
