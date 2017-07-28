@@ -435,7 +435,7 @@ end
 -- @returns Whether the cache entry is empty/invalid]
 local function IsSpecCached(fqcn, spec)
 
-	local cache = GetReference()
+	local cache = TotalAP.artifactCache
 	local fqcn = (fqcn and type(fqcn) == "string") and fqcn or TotalAP.Utils.GetFQCN() -- TODO: validators for fqcn, spec no. etc that can be reused?
 	local spec = (spec and type(spec) == "number" and spec > 0 and spec <= 4) and spec or GetSpecialization()
 	
