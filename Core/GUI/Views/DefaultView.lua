@@ -939,6 +939,7 @@ local function CreateNew(self)
 			-- Hide when:
 			hideFrame = (hideFrame
 			or self:GetAssignedSpec() > GetNumSpecializations() -- Class doesn't have as many specs
+			or not TotalAP.Cache.IsSpecCached(fqcn, self:GetAssignedSpec()) -- Spec is not cached
 			or TotalAP.Cache.IsSpecIgnored(fqcn, self:GetAssignedSpec()) -- Spec is being ignored
 			or not settings.infoFrame.enabled -- Bars are diabled via settings (TODO: infoFrame no longer exists -> rename settings?)
 			)
