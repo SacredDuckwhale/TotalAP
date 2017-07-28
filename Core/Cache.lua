@@ -456,7 +456,6 @@ local function IsSpecCached(fqcn, spec)
 	or not type(cache[fqcn][spec]["thisLevelUnspentAP"]) == "number"
 	)
 	
-	TotalAP.ChatMsg("IsSpecCached(" .. tostring(fqcn) .. ", " .. tostring(spec) .. ") -> " .. tostring(not isInvalid))
 	return not isInvalid
 	
 end
