@@ -76,15 +76,17 @@ function readTOC(filePath) -- TODO: Split this up into TOC Parser and Lua Loader
 	file:close()
 
 	 -- Load addon files in order (simulating the client's behaviour)
-	G.addonName = {}
+	G[addonName] = {}
 
-	 for index, fileName in ipairs(addonFiles) do -- Attempt to load file 
+	print("\nAddon files:")
+	for index, fileName in ipairs(addonFiles) do -- Attempt to load file 
 		
-		print(index, #G.addonName, fileName)
-		G.addonName[#G.addonName+1] = loadfile(root .. fileName)(addonName, T)
+		print(index, #G[addonName], fileName)
+		G[addonName][#G[addonName]+1] = loadfile(root .. fileName)(addonName, T)
 		
 	end
-	print("\nSummary: Added " .. #G.addonName .. " files to the (simulated) global environment")
+	--dump(G[addonName])
+	print("\nSummary: Added " .. #G[addonName] .. " addon files to the (simulated) global environment\n")
 
 end
 
