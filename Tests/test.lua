@@ -6,6 +6,15 @@
 -- Required Lua modules
 luaunit = require("luaunit") -- stored in global so that testing suites can access it directly
 
+
+-- TODO: Move elsewhere?
+local inspect = require('inspect')
+function dump(value)
+
+	print(inspect(value))
+
+end
+
 -- Mock environment
 require("mock_wowapi")
 require("mock_libs")
