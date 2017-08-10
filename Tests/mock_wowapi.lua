@@ -19,6 +19,13 @@ GetRealmName = function()
 
 end
 
+GetCurrentRegion = function()
+
+	local regions = { US = 1, KR = 2, EU = 3, TW = 4, CN = 5 } -- Reverse LUT
+	return regions[region or "EU"]
+	
+end
+
 UnitName = function(unit)
 
 	if unit == "player" then
