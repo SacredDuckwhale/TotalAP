@@ -17,7 +17,6 @@ end
 
 -- Mock environment
 require("mock_wowapi")
-require("mock_libs")
 require("mock_luaenv")
 
 -- Testing suites
@@ -41,6 +40,7 @@ function readTOC(filePath) -- TODO: Split this up into TOC Parser and Lua Loader
 
 	-- Establish load order and assemble list of all addon files (by reading the TOC file)
 	local addonFiles = {}
+	local libraries = {}
 
 	-- Read TOC file
 	print("Opening file: " .. toc .. "\n")
@@ -48,36 +48,67 @@ function readTOC(filePath) -- TODO: Split this up into TOC Parser and Lua Loader
 		
 	-- Add files to loading queue
 	for line in file:lines() do -- Read line to find .lua files that are to be loaded
-		if line ~= "" and not line:match("#") and not line:match("Libs\\" )then -- is a valid file (no comment or empty line) -> Add file to loader
+		if line ~= "" and not line:match("#") then -- is a valid file (no comment or empty line) -> Add file to loader
 			
-			if not line:match("%.xml") then -- .lua file -> add directly
+			if line:match("Libs\\" ) and not line:match("%.xml") then -- is a valid file, but not part of the addon -> Add to libraries (loaded separately, although it doesn't really make a difference)
+			
+				libraries[#libraries+1] = line
+				print("Adding library: " .. line .. " (position: " .. #libraries .. ")")
+			
+			elseif not line:match("%.xml") then -- .lua file -> add directly
+			
 				addonFiles[#addonFiles+1] = line
 				print("Adding file: " .. line .. " (position: " .. #addonFiles .. ")")
 				
 			else -- .xml file -> parse and add files that are included instead
-				print("Detected XML file: " .. line)
-				
+
 				local xmlFile = assert(io.open(root .. line, "r") or io.open(line), "Could not open " .. line)
 				local text = xmlFile:read("*all")
 				xmlFile:close()
 				
 				local pattern = "<Script%sfile=\"(.-)\"/>"
 				local folder = line:match("(.+)\\.-%.xml") .. "\\"
-				print(folder)
+				
+				print("Changed directory: " .. folder)
+				print("Detected XML file: " .. line)
+				
 				for embeddedFile in string.gmatch(text, pattern) do
-					addonFiles[#addonFiles+1] = folder .. embeddedFile
-					print("Adding embedded file: " .. folder .. embeddedFile .. " (position: " .. #addonFiles .. ")")
+				
+					if line:match("Libs\\") then -- embedded library -> add to Libs
+					
+						libraries[#libraries+1] = folder .. embeddedFile
+						print("Adding embedded file: " .. folder .. embeddedFile .. " (position: " .. #libraries .. ")")
+					
+					else -- embedded addon file (localization etc) -> add to addonFiles
+					
+						addonFiles[#addonFiles+1] = folder .. embeddedFile
+						print("Adding embedded file: " .. folder .. embeddedFile .. " (position: " .. #addonFiles .. ")")
+						
+					end
+					
 				end
 			end
 			
 		end
 	end	
-	print("\nA total of " .. #addonFiles .. " files were added to the loader after parsing " .. toc .. ".\n\nBreakdown:")
+	print("\nA total of " .. #libraries .. " library and " .. #addonFiles .. " addon files were added to the loader after parsing " .. toc)
 	file:close()
 
 	 -- Load addon files in order (simulating the client's behaviour)
+	G.Libs = {}
 	G[addonName] = {}
+	
+	print("\nLibs:")
+	for index, fileName in ipairs(libraries) do -- Attempt to load file 
+		
+		print(index, #G.Libs, fileName)
+		local R = loadfile(root .. fileName)(addonName, T)
+		G.Libs[#G.Libs+1] = R or {} -- Apparently, most Libs don't adhere to the best practice of returning themselves (as a package)
 
+	end
+	--dump(G.Libs)
+	print("\nSummary: Added " .. #G.Libs .. " library files to the (simulated) global environment\n")
+	
 	print("\nAddon files:")
 	for index, fileName in ipairs(addonFiles) do -- Attempt to load file 
 		
