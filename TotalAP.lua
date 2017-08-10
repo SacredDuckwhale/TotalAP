@@ -62,9 +62,7 @@ function Addon:OnInitialize() -- Called on ADDON_LOADED
 	TotalAP.Settings.Initialise()
 	settings = TotalAP.Settings.GetReference() -- TODO: Is this necessary?
 	
-	-- Initialise caches
-	TotalAP.Cache.Initialise()
-	
+
 	-- Make sure at least one View is usable (TODO: Pointless for now; Always prepares the DefaultView, as others aren't implemented yet)
 	TotalAP.Controllers.InitialiseGUI()
 	
@@ -87,7 +85,10 @@ end
 function Addon:OnEnable()
 
 	local clientVersion, clientBuild = GetBuildInfo()
-
+	
+	-- Initialise caches -> Specs should be available here
+	TotalAP.Cache.Initialise()
+	
 	TotalAP.Controllers.RenderGUI()
 	
 	if settings.showLoginMessage then TotalAP.ChatMsg(format(L["%s %s for WOW %s loaded!"], addonName, TotalAP.versionString, clientVersion)); end
