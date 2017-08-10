@@ -29,6 +29,7 @@ require("Core\\Utils\\test_fqcn")
 -- Settings
 addonName = "TotalAP"
 locale = "enUS"
+region = "EU"
 realm = "Outland"
 
 local root = "..\\"  -- path from tests subfolder to addon root dir
