@@ -1,3 +1,28 @@
+-- WOW UI functions
+CreateFrame = function(frameType, frameName, parentFrameReference, inheritsFrame, id)
+
+	local Frame = { -- TODO: Would prefer to use actual UI code, but can't find it? :| Libs should work regardless... but still
+		frameType = frameType,
+		frameName = frameName,
+		parentFrame = parentFrameReference,
+		inheritsFrame = inheritsFrame,
+		id = id
+	}
+	
+	function Frame:RegisterEvent(eventName)
+	
+	end
+	
+	function Frame:SetScript(event)
+
+	end
+
+	return Frame
+
+end
+
+
+
 -- WOW API functions
 GetAddOnMetadata = function(addon, value)
 	
