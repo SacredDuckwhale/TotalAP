@@ -547,7 +547,8 @@ local function Initialise()
 
 	local fqcn = TotalAP.Utils.GetFQCN()
 	local cache = GetReference()
-
+	local defaults = GetDefaults()
+	
 	-- Restore banked AP from saved vars if possible
 	local bankCache = TotalAP.Cache.GetBankCache(fqcn)
 	if bankCache then -- bankCache was saved on a previous session and can be restored
@@ -562,20 +563,105 @@ local function Initialise()
 	
 	if not cache then -- Saved vars cache doesn't exist -> rebuild it
 		_G[cacheVarName] = {}
-		_G[cacheVarName][fqcn] = {}
+--		_G[cacheVarName][fqcn] = {}
+		cache = _G[cacheVarName]
+--		return -- No data exists for this character -> Abort (and keep dummy entry created above in local cache, to be saved on the next update)
 
-		return -- No data exists for this character -> Abort (and keep dummy entry created above in local cache, to be saved on the next update)
-
-	else -- cache exists, but may not contain the required entries
+	end -- cache exists, but may not contain the required entries
 	
-		if not cache[fqcn] then -- Entry for this char doesn't exist -> create it
-			_G[cacheVarName][fqcn] = {}
-
+	if not cache[fqcn] then -- Entry for this char doesn't exist -> create it
+			
+		cache[fqcn] = {}
+		
+		for spec=1, GetNumSpecializations() do -- create empty table for this spec and add default values
+			cache[fqcn][spec] = {}
+			for key, value in pairs(defaults) do -- add default value so that the newly created cache entry is valid
+				cache[fqcn][spec][key] = value
+			end
+			
 		end
+		
+	else -- Cache exists for this character -> Check if entries are valid // TODO. Validate existing entries
 	
 	end
 	
-		-- Read existing entries from saved vars and overwrite the dummy entries for those (but leave them for those that have no data)
+	-- Validate cache
+	local isCacheValid = Validate()
+	if not isCacheValid then -- something isn't right and needs to be fixed
+	
+		TotalAP.Debug("Validaton of cache failed on Initialise() -> checking entries to find which parts are causing issues")
+		for fqcn, charEntry in pairs(cache) do -- Validate entries and drop invalid ones in the process
+
+			local isEntryValid = ValidateChar(charEntry)
+			if not isEntryValid then -- Something in this entry isn't right -> fix it or drop the invalid entries
+			
+				if isEntryValid ~= nil then -- Entry is valid, but something inside it isn't -> continue to find out where the issue is
+			
+					TotalAP.Debug("Validation of cached char entry failed for fqcn = " .. fqcn .. " -> attempting to fix it")
+					for spec, specEntry in pairs(charEntry) do -- Validate entries and drop invalid ones
+					
+						local isSpecEntryValid = ValidateSpec(specEntry)
+						if not isSpecEntryValid then -- Something isn't right -> fix or drop it
+							
+							if isSpecEntryValid ~= nil then -- Spec entry is valid, but some entries aren't -> validate its entries
+							
+								TotalAP.Debug("Validation of cached spec data failed for spec = " .. spec .. " -> attempting to fix it")
+								for key, value in pairs(specEntry) do -- Validate keys and drop invalid ones
+								
+									local isKeyValid = ValidateEntry(key, value)
+									if not isKeyValid then -- Something isn't right -> drop key entirely or replace with default value
+									
+										TotalAP.Debug("Validation of cached entry failed for key = " .. tostring(key) .. ", value = " .. tostring(value))
+										if not defaults[key] then -- Key isn't required and can safely be dropped
+											
+											TotalAP.Debug("No default value exists for this key -> Dropping it")
+											specEntry[key] = nil -- "unset"
+											
+										else -- Key is necessary for proper functioning -> replace it with default value
+										
+											TotalAP.Debug("Loading default value to replace the invalid data")
+											specEntry[key] = defaults[key]
+										
+										end
+									
+									end
+								
+								end
+								
+							else -- Spec entry itself is messed up and should be reset to the default values (= an empty, but valid entry for this spec)
+							
+								TotalAP.Debug("Validation of cached spec data failed for spec = " .. spec .. " -> rebuilding it from scratch")
+								charEntry[spec] = {} -- "reset"
+								for k, v in pairs(defaults) do -- Add default value to rebuilt spec entry
+								
+									charEntry[spec][k] = v
+								
+								end
+								
+							end
+							
+						end
+					
+					end
+				
+				else -- The entire entry is invalid and should be dropped
+				
+					TotalAP.Debug("Validation of cached char entry failed for fqcn = " .. fqcn .. " -> dropping it")
+					cache[fqcn] = nil
+				
+				end
+			
+			end
+			
+		end
+	
+	else
+	
+		TotalAP.Debug("Validation of cache was successful without manually fixing invalid entries")
+	
+	end	
+			
+	-- Read existing entries from saved vars and overwrite the dummy entries for those (but leave them for those that have no data)
 	for spec, entry in pairs(cache[fqcn]) do -- At least some data exists -> merge saved data into local cache
 
 		-- TODO: Validation and stuff... maybe
