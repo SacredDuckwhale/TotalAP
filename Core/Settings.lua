@@ -112,6 +112,7 @@ local defaultSettings =	{
 	
 
 -- Validator functions
+-- TODO: Move to global scope and re-use (DRY) in Cache module
 local function IsBoolean(value)
 	return type(value) == "boolean"
 end	
