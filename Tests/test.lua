@@ -124,5 +124,9 @@ end
 -- Read TOC
 readTOC(root .. toc)
 
+function TotalAP.Debug(msg)
+	print("DEBUG: " .. msg)
+end
+
 -- Run all tests that have been queued
 os.exit( luaunit.LuaUnit.run() )
