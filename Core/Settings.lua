@@ -247,21 +247,21 @@ local function ValidateTable(t, relPath, v)
 
 	if not relPath then -- Use root as path if none was given
 	
-		TotalAP.Debug("ValidateTable -> Using root as relative path because none was given")
+--		TotalAP.Debug("ValidateTable -> Using root as relative path because none was given")
 		relPath = ""
 	
 	end
 	
 	if not v then -- Use local validators table (TODO)
 	
-		TotalAP.Debug("ValidateTable -> Using default validator functions because none were supplied")
+--		TotalAP.Debug("ValidateTable -> Using default validator functions because none were supplied")
 		v = validators
 	
 	end
 	
 	if t == nil or not type(t) == "table" then -- Skip validation for invalid table parameter
 	
-		TotalAP.Debug("ValidateTable -> Skipped validation because an invalid table parameter was supplied (with relPath = " .. relPath .. ")")
+--		TotalAP.Debug("ValidateTable -> Skipped validation because an invalid table parameter was supplied (with relPath = " .. relPath .. ")")
 		return
 	
 	end
