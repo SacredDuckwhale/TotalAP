@@ -20,6 +20,7 @@ require("mock_wowapi")
 require("mock_luaenv")
 
 -- Testing suites
+require("Core\\test_cache")
 require("Core\\Utils\\test_colours")
 require("Core\\Utils\\test_format")
 require("Core\\Utils\\test_fqcn")
