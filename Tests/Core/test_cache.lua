@@ -463,3 +463,15 @@ do
 	
 end
 
+Test_Cache_IsCurrentSpecIgnored = {}
+do
+	-- This pretty much just returns whatever IsSpecIgnored(GetSpecialization()) does at all times (it's kind of pointless to test this unless the functionality changes significantly)
+	function Test_Cache_IsCurrentSpecIgnored:Test_Alias()
+		
+		TotalArtifactPowerCache = { [TotalAP.Utils.GetFQCN()] = { [GetSpecialization()] = { isIgnored = true} } }
+		luaunit.assertEquals(TotalAP.Cache.IsSpecIgnored(GetSpecialization()), TotalAP.Cache.IsCurrentSpecIgnored())
+		
+	end
+	
+end
+
