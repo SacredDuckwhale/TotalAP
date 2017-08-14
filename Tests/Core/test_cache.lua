@@ -1,5 +1,33 @@
 -- Tests for Core\Cache.lua
 
+-- Tests that are actually implemented
+Test_Cache_Validate = {}
+do
+	-- Invalid caches should always return false as long as they're not filled with bogus data (in which case it can also be nil depending on how the individual entries validate)
+	function Test_Cache_Validate:Test_Invalid()
+	
+		TotalArtifactPowerCache = {}
+		luaunit.assertEquals(TotalAP.Cache.Validate(), false)
+	
+		TotalArtifactPowerCache = { "Random data", 42, {} }
+		luaunit.assertEquals(TotalAP.Cache.Validate(), false)
+	
+		TotalArtifactPowerCache = { {}, {}, {} }
+		luaunit.assertEquals(TotalAP.Cache.Validate(), false)
+	
+	end
+	
+	-- Valid caches should always return true upon validation
+	function Test_Cache_Validate:Test_Valid()
+	
+		TotalArtifactPowerCache = {}
+		TotalArtifactPowerCache["Duckwhale - Outland"] = { { isIgnored = true }, { isIgnored = false}, { numTraitsPurchased = 42, isIgnored = false, artifactTier = 2, thisLevelUnspentAP = 100000} }
+		luaunit.assertEquals(TotalAP.Cache.Validate(), true)
+	
+	end
+	
+	
+end
 
 Test_Cache_ValidateChar = {}
 do
