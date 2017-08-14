@@ -353,3 +353,35 @@ do
 	end
 	
 end
+
+
+Test_Cache_IsSpecCached = {}
+do
+
+	local fqcn, spec
+	function Test_Cache_IsSpecCached:Setup()
+		fqcn = TotalAP.Utils.GetFQCN()
+		spec = GetSpecialization()
+	end
+	
+	-- If the cache wasn't initialised yet, it should always return false (as the spec is not cached either, obviously)
+	function Test_Cache_IsSpecCached:Test_EmptyCache()
+		
+		TotalArtifactPowerCache = nil
+		luaunit.assertEquals(TotalAP.Cache.IsSpecCached(spec), false)
+	
+	end
+	
+	-- If the cache exists, it should always return the IsIgnored value for the given spec
+	function Test_Cache_IsSpecCached:Test_ValidCache()
+	
+		-- Add some arbitrary but valid data
+		TotalArtifactPowerCache = { [fqcn] = { { isIgnored = false }, { isIgnored = true }, { isIgnored = false, numTraitsPurchased = 10, thisLevelUnspentAP = 1000, artifactTier = 2 } } }
+		luaunit.assertEquals(TotalAP.Cache.IsSpecCached(1), false)
+		luaunit.assertEquals(TotalAP.Cache.IsSpecCached(2), false)
+		luaunit.assertEquals(TotalAP.Cache.IsSpecCached(3), true)
+	
+	end
+	
+end
+
