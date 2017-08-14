@@ -385,3 +385,30 @@ do
 	
 end
 
+Test_Cache_IsCurrentSpecCached = {}
+do
+
+	-- Since this is just an alias, it should always return the same as the more generic IsSpecCached(<current spec no>)
+	function Test_Cache_IsCurrentSpecCached:Test_Alias()
+
+		-- Create empty cache
+		TotalAP.Cache.Initialise()
+		
+		-- Add some arbitrary but valid data
+		local entries =  { { isIgnored = false, numTraitsPurchased = 10, thisLevelUnspentAP = 100, artifactTier = 2}, {}, { isIgnored = true}, "hi", 42,  function() end } -- some random entries: two are valid, one is cached and valid
+		
+		local fqcn = TotalAP.Utils.GetFQCN()
+		local spec = GetSpecialization()
+		for k, v in pairs(entries) do -- fill spec entry with data and test if it is cached/valid
+		
+			TotalArtifactPowerCache[fqcn][spec] = v
+			luaunit.assertEquals(TotalAP.Cache.IsSpecCached(spec), TotalAP.Cache.IsCurrentSpecCached())
+
+		end
+		
+		-- This is just an alias of IsSpecCached(GetSpecialization()) and should return the same as IsSpecCached()
+			luaunit.assertEquals(TotalAP.Cache.IsSpecCached(GetSpecialization()), TotalAP.Cache.IsCurrentSpecCached())
+		
+	end
+	
+end
