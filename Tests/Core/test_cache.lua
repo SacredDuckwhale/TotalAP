@@ -412,3 +412,54 @@ do
 	end
 	
 end
+
+
+Test_Cache_IsSpecIgnored = {}
+do
+	
+	local fqcn, spec
+	function Test_Cache_IsSpecIgnored:Setup()
+		
+		TotalArtifactPowerCache = nil -- Reset cache
+		TotalAP.Cache.Initialise() -- Create empty but valid cache
+		fqcn = TotalAP.Utils.GetFQCN()
+		spec = GetSpecialization()
+		
+	end
+
+	-- If the cache entry is invalid, return nil
+	function Test_Cache_IsSpecIgnored:Test_InvalidEntry()
+	
+		TotalArtifactPowerCache = nil
+		-- Cache is not even initialised here
+		luaunit.assertEquals(TotalAP.Cache.IsSpecIgnored(spec), nil)
+		
+	end
+	
+	-- If no parameters are given, use current spec
+	function Test_Cache_IsSpecIgnored:Test_NoParameters()
+		
+		luaunit.assertEquals(TotalAP.Cache.IsSpecIgnored(), false) -- default value is always false, and the cache has been initialised with it
+		
+	end
+	
+	-- If invalid parameters are given, return default value (= false)
+	function Test_Cache_IsSpecIgnored:Test_InvalidParameters()
+	
+		luaunit.assertEquals(TotalAP.Cache.IsSpecIgnored( {} ), nil) -- While this value is not saved/cached, it would be the initial value for any new entry
+	
+	end
+	
+	-- If the entry is valid and a valid integer parameter is given, return whether or not the spec is being ignored
+	function Test_Cache_IsSpecIgnored:Test_ValidParameters()
+	
+		luaunit.assertEquals(TotalAP.Cache.IsSpecIgnored(spec), false)
+		TotalArtifactPowerCache[fqcn][spec]["isIgnored"] = true
+		luaunit.assertEquals(TotalAP.Cache.IsSpecIgnored(spec), true)
+		luaunit.assertEquals(TotalAP.Cache.IsSpecIgnored(2), false)
+		luaunit.assertEquals(TotalAP.Cache.IsSpecIgnored(3), false)
+	
+	end
+	
+end
+
