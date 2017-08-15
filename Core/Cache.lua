@@ -138,7 +138,7 @@ local function UpdateEntry(fqcn, specID, updateValues)
 	
 	if not (cache and cache[fqcn] and cache[fqcn][specID]) then -- Cache entry doesn't exist
 	
-		TotalAP.Debug("Attempted to update cache entry for fqcn = " .. fqcn .. " and spec = " .. specID .. ", but it didn't exist (or the cache isn't initialised yet)")
+		TotalAP.Debug("Attempted to update cache entry for fqcn = " .. tostring(fqcn) .. " and spec = " .. tostring(specID) .. ", but it didn't exist (or the cache isn't initialised yet)")
 		return
 		
 	end
@@ -168,7 +168,7 @@ local function GetValue(fqcn, specID, key)
 	
 	if not (cache and cache[fqcn] and cache[fqcn][specID]) then -- Cache entry doesn't exist
 	
-		TotalAP.Debug("Attempted to retrieve cache entry for fqcn = " .. fqcn .. " and spec = " .. specID .. ", but it didn't exist")
+		TotalAP.Debug("Attempted to retrieve cache entry for fqcn = " .. tostring(fqcn) .. " and spec = " .. tostring(specID) .. ", but it didn't exist")
 		return
 		
 	end
@@ -177,7 +177,7 @@ local function GetValue(fqcn, specID, key)
 	
 	if not (entry and key and entry[key] ~= nil) then -- Key is invalid or entry doesn't exist
 	
-		TotalAP.Debug("Attempted to retrieve cache entry for key = " .. key .. ", but key is invalid or entry doesn't exist")
+		TotalAP.Debug("Attempted to retrieve cache entry for key = " .. tostring(key) .. ", but key is invalid or entry doesn't exist")
 		return
 		
 	end
@@ -203,7 +203,7 @@ local function SetValue(fqcn, specID, key, value)
 	
 	if not (cache and cache[fqcn] and cache[fqcn][specID]) then -- Cache entry doesn't exist
 	
-		TotalAP.Debug("Attempted to set cache entry for fqcn = " .. fqcn .. " and spec = " .. specID .. ", but it didn't exist")
+ 		TotalAP.Debug("Attempted to set cache entry for fqcn = " .. tostring(fqcn) .. " and spec = " .. tostring(specID) .. ", but it didn't exist")
 		return
 		
 	end
@@ -212,7 +212,7 @@ local function SetValue(fqcn, specID, key, value)
 	
 	if not (entry and key and entry[key] ~= nil	) then -- Key is invalid or entry doesn't exist
 	
-		TotalAP.Debug("Attempted to set cache entry for key = " .. key .. ", but key is invalid or entry doesn't exist")
+		TotalAP.Debug("Attempted to set cache entry for key = " .. tostring(key) .. ", but key is invalid or entry doesn't exist")
 		return
 		
 	end
