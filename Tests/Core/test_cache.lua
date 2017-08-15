@@ -546,3 +546,79 @@ do
 	
 end
 
+Test_Cache_UnignoreSpec = {}
+do
+
+	function Test_Cache_UnignoreSpec:Setup()
+	
+		TotalArtifactPowerCache = nil
+		TotalAP.Cache.Initialise() -- all specs are now NOT ignored
+	
+	end
+
+	-- If no parameters were given, the cache should not be altered in any way
+	function Test_Cache_UnignoreSpec:Test_NoParameters()
+		
+		local function TestUnchanged(cache)
+			
+			TotalArtifactPowerCache = cache -- save to compare states (below)
+			for i=1, GetNumSpecializations() do
+				TotalAP.Cache.IgnoreSpec(i)
+			end
+			
+			-- Cache still should be the same (that is, unchanged)
+			luaunit.assertEquals(TotalArtifactPowerCache, cache)
+		
+		end
+		
+		-- Cache is nil
+		TestUnchanged()
+		
+		-- Cache is <empty table>
+		TestUnchanged( {} )
+		
+		-- Cache is <some valid cache>
+		local fqcn = TotalAP.Utils.GetFQCN()
+		local C = {}
+		C[fqcn] = { { isIgnored = true }, { isIgnored = false}, { numTraitsPurchased = 42, isIgnored = false, artifactTier = 2, thisLevelUnspentAP = 100000} }
+	
+		TestUnchanged( C )
+		
+	end
+	
+	-- Invalid parameters should behave similar to no parameters -> don't alter cache
+	function Test_Cache_UnignoreSpec:Test_InvalidParameter()
+		
+		local params = { {}, "Hey", 42, "",  function() end, true, false }
+		
+		local C
+		for key, param in pairs(params) do -- Test parameter -> Since all are invalid, the cache should not be changed
+		
+			C = TotalArtifactPowerCache
+			luaunit.assertEquals(TotalAP.Cache.IgnoreSpec(param))
+			luaunit.assertEquals(TotalArtifactPowerCache, C) -- should be unchanged still
+		
+		end
+		
+	end
+
+		-- Valid parameters should set the spec to nit ignored but not affect anything else
+	function Test_Cache_UnignoreSpec:Test_ValidParameter()
+		
+		for spec=1, GetNumSpecializations() do -- Test parameter -> Since all are valid, the cache should reflect the changes
+		
+			-- Set them to ignored beforehand
+			TotalAP.Cache.UnignoreSpec(spec)
+			luaunit.assertEquals(TotalAP.Cache.IsSpecIgnored(spec), false) -- kind of redundant as this was tested before
+			
+			-- And now set it to "not ignored"
+			C = TotalArtifactPowerCache
+			luaunit.assertEquals(TotalAP.Cache.UnignoreSpec(spec))
+			luaunit.assertEquals(TotalAP.Cache.IsSpecIgnored(spec), false) -- should always be correct as the test ran prior to this
+		
+		end
+		
+	end
+	
+end
+
