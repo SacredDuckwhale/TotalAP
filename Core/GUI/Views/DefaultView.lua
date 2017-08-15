@@ -861,7 +861,7 @@ local function CreateNew(self)
 			
 			local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(numTraitsPurchased,  unspentAP + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), artifactTier)
 			local nextLevelRequiredAP = C_ArtifactUI.GetCostForPointAtRank(numTraitsPurchased, artifactTier)
-			local percentageOfCurrentLevelUp = (thisLevelUnspentAP  + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0)) / nextLevelRequiredAP*100;
+			local percentageOfCurrentLevelUp = (unspentAP  + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0)) / nextLevelRequiredAP*100;
 			
 			if numTraitsAvailable > 0  then -- Set text to display number of available traits
 			
