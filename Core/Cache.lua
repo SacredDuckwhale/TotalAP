@@ -154,6 +154,7 @@ end
 -- @param fqcn Fully-qualified character name, to be used as the primary key
 -- @param specID Specialization ID, to be used as the secondary key
 -- @param key The key used to look up values inside of the cache entry
+-- @return The requested value if it exists; nil otherwise
 -- @usage GetValue("Duckwhale - Outland", 3, "numTraitsPurchased") -> 15
 local function GetValue(fqcn, specID, key)
 
@@ -223,6 +224,7 @@ end
 
 --- Returns the amount of banked AP that was saved between sessions
 -- @param[opt] fqcn The fully-qualified character name (defaults to currently logged in character if omitted)
+-- @return A reference to the bank cache if it exists; nil otherwise
 local function GetBankCache(fqcn)
 
 	local cache = GetReference()
@@ -619,7 +621,7 @@ end
 --- Returns whether or not the cache entry for a given spec is cached (valid and not empty)
 -- @param[opt] spec The spec number (defaults to current spec if omitted)
 -- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if omitted)
--- @returns Whether the cache entry is valid and not empty (excluding default values, which are always present)
+-- @return Whether the cache entry is valid and not empty (excluding default values, which are always present)
 local function IsSpecCached(spec, fqcn)
 
 	local cache = GetReference()
