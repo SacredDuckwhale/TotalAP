@@ -629,7 +629,7 @@ local function CreateNew(self)
 			
 			-- Hide when:
 			hideFrame = (hideFrame
-			or TotalAP.Cache.IsSpecIgnored(nil, self:GetAssignedSpec()) -- Assigned spec is being ignored
+			or TotalAP.Cache.IsSpecIgnored(self:GetAssignedSpec()) -- Assigned spec is being ignored
 			or GetNumSpecializations() < self:GetAssignedSpec() -- Class doesn't have as many specs
 			)
 			
@@ -761,7 +761,7 @@ local function CreateNew(self)
 			 if button ~= "RightButton" then return end
 
 			 -- Add spec to ignored specs (actually, it is flagged as "ignored" for the current character only)
-			 if TotalAP.Cache.IsSpecIgnored(fqcn, spec) then  -- Spec is already being ignored
+			 if TotalAP.Cache.IsSpecIgnored(spec) then  -- Spec is already being ignored
 				TotalAP.Debug("Attempting to ignore spec, but spec " .. spec .. " is already ignored for character " .. fqcn)
 				return
 			 end
@@ -940,7 +940,7 @@ local function CreateNew(self)
 			hideFrame = (hideFrame
 			or self:GetAssignedSpec() > GetNumSpecializations() -- Class doesn't have as many specs
 			or not TotalAP.Cache.IsSpecCached(fqcn, self:GetAssignedSpec()) -- Spec is not cached
-			or TotalAP.Cache.IsSpecIgnored(fqcn, self:GetAssignedSpec()) -- Spec is being ignored
+			or TotalAP.Cache.IsSpecIgnored(self:GetAssignedSpec()) -- Spec is being ignored
 			or not settings.infoFrame.enabled -- Bars are diabled via settings (TODO: infoFrame no longer exists -> rename settings?)
 			)
 			

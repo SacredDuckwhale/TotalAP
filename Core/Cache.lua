@@ -324,17 +324,18 @@ local function GetNumIgnoredSpecs(fqcn)
 	
 end
 
---- Returns whether or not a spec is being ignored for a given character
--- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if none is given)
+--- Returns whether or not a spec is being ignored for the current character
 -- @param[opt] specNo Spec number (defaults to current spec if omitted)
+-- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if omitted)
 -- @return Whether or not the spec is set to being ignored
-local function IsSpecIgnored(fqcn, specNo)
+local function IsSpecIgnored(specNo, fqcn)
 
 	fqcn = fqcn or TotalAP.Utils.GetFQCN() 
 	specNo = specNo or GetSpecialization()
 	
-	local defaults = GetDefaults()
-	return GetValue(fqcn, specNo, "isIgnored") or defaults["isIgnored"]
+	local isValidSpec = (type(specNo) == "number" and 0 < specNo and specNo <= GetNumSpecializations())
+	if not isValidSpec then return end
+	
 	
 end
 
@@ -342,7 +343,7 @@ end
 -- @return Whether or not the current spec is set to being ignored
 local function IsCurrentSpecIgnored()
 
-	return IsSpecIgnored(nil, GetSpecialization())
+	return IsSpecIgnored(GetSpecialization())
 
 end
 
