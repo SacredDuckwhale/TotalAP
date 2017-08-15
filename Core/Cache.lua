@@ -233,6 +233,7 @@ local function GetBankCache(fqcn)
 	
 	if not (cache and cache[fqcn] and cache[fqcn]["bankCache"]) then -- Entry does not exist -> Abort
 		
+		TotalAP.Debug("Attempted to retrieve bankCache for cache entry with key = " .. tostring(fqcn) .. ", but it didn't exist")
 		return
 		
 	end
