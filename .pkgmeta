@@ -26,6 +26,9 @@ externals:
     Libs/CallbackHandler-1.0 :
         url: https://repos.wowace.com/wow/callbackhandler/trunk
         tag: latest
+    Libs/LibButtonGlow-1.0 :
+        url: https://repos.wowace.com/wow/libbuttonglow-1-0
+        tag: latest
 
 ignore:
  - Docs/
