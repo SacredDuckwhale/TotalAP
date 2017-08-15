@@ -679,28 +679,32 @@ end
 -- @returns Whether the cache entry is valid and not empty (excluding default values, which are always present)
 local function IsSpecCached(spec, fqcn)
 
-	local cache = TotalAP.artifactCache
+	local cache = GetReference()
 	local fqcn = (fqcn and type(fqcn) == "string") and fqcn or TotalAP.Utils.GetFQCN() -- TODO: validators for fqcn, spec no. etc that can be reused?
 	local spec = (spec and type(spec) == "number" and spec > 0 and spec <= 4) and spec or GetSpecialization()
-	
-	local isInvalid = true
-	
-	isInvalid = isInvalid and
-	-- TODO: Turn this into an actual validation routine (build array similar to aceDB validation )
-	(not cache -- Cache isn't even initialised
-	or not cache[fqcn] -- Cache has no entry for this character
-	or not cache[fqcn][spec] -- Cache has no entry for this character's spec
-	or not cache[fqcn][spec]["artifactTier"] -- artifact tier wasn't cached for this spec
-	or not type(cache[fqcn][spec]["artifactTier"]) == "number" -- artifact tier is invalid for this spec
-	or not (cache[fqcn][spec]["isIgnored"] ~= nil) -- no information about whether or not the spec is being ignored
-	or not type(cache[fqcn][spec]["isIgnored"]) == "boolean"
-	or not cache[fqcn][spec]["numTraitsPurchased"]
-	or not type(cache[fqcn][spec]["numTraitsPurchased"]) == "number"
-	or not cache[fqcn][spec]["thisLevelUnspentAP"]
-	or not type(cache[fqcn][spec]["thisLevelUnspentAP"]) == "number"
+
+	local isCached = false
+	isCached = isCached or
+	(	
+		(cache ~= nil and type(cache) == "table") -- Cache is initialised
+		and
+		( -- But is it filled with proper data? Let's see...
+			 cache[fqcn] ~= nil and type(cache[fqcn]) == "table" -- Cache has entry for this character
+			and cache[fqcn][spec] ~= nil and type(cache[fqcn][spec]) == "table" -- Cache has entry for this spec
+			and cache[fqcn][spec]["artifactTier"] ~= nil-- artifact tier was cached for this spec
+			and type(cache[fqcn][spec]["artifactTier"]) == "number" -- artifact tier is valid for this spec
+			and cache[fqcn][spec]["isIgnored"] ~= nil -- Information about whether or not the spec is being ignored
+			and type(cache[fqcn][spec]["isIgnored"]) == "boolean"
+			and cache[fqcn][spec]["numTraitsPurchased"] ~= nil
+			and type(cache[fqcn][spec]["numTraitsPurchased"]) == "number"
+			and cache[fqcn][spec]["thisLevelUnspentAP"] ~= nil
+			and type(cache[fqcn][spec]["thisLevelUnspentAP"]) == "number"
+		)
 	)
 	
-	return not isInvalid
+	local isValid = cache and cache[fqcn] and ValidateSpec(cache[fqcn][spec])
+
+	return (isCached and isValid)
 	
 end
 
