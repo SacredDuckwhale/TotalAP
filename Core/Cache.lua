@@ -704,6 +704,14 @@ local function IsSpecCached(spec, fqcn)
 	
 end
 
+--- Alias for IsSpecCached, using the currently active spec
+-- @return Whether or not the current spec is cached (valid and not empty)
+local function IsCurrentSpecCached()
+
+	return IsSpecCached(GetSpecialization())
+
+end
+
 -- Public methods
 TotalAP.Cache.NewEntry = NewEntry
 TotalAP.Cache.GetEntry = GetEntry
@@ -721,6 +729,8 @@ TotalAP.Cache.UnignoreSpec = UnignoreSpec
 TotalAP.Cache.UpdateArtifactCache = UpdateArtifactCache
 TotalAP.Cache.Initialise = Initialise
 TotalAP.Cache.IsSpecCached = IsSpecCached
+TotalAP.Cache.IsCurrentSpecCached = IsCurrentSpecCached
+
 TotalAP.Cache.Validate = Validate
 TotalAP.Cache.ValidateChar = ValidateChar
 TotalAP.Cache.ValidateSpec = ValidateSpec
