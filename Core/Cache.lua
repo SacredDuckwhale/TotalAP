@@ -701,20 +701,24 @@ local function IsCurrentSpecCached()
 end
 
 -- Public methods
-TotalAP.Cache.NewEntry = NewEntry
-TotalAP.Cache.GetEntry = GetEntry
-TotalAP.Cache.UpdateEntry = UpdateEntry
-TotalAP.Cache.GetValue = GetValue
-TotalAP.Cache.SetValue = SetValue
+
+TotalAP.Cache.UpdateArtifactCache = UpdateArtifactCache
+
 TotalAP.Cache.GetBankCache = GetBankCache
 TotalAP.Cache.UpdateBankCache = UpdateBankCache
-TotalAP.Cache.GetNumIgnoredSpecs = GetNumIgnoredSpecs
-TotalAP.Cache.UnignoreAllSpecs = UnignoreAllSpecs
+
+TotalAP.Cache.NewEntry = NewEntry
+TotalAP.Cache.GetEntry = GetEntry
+TotalAP.Cache.UpdateEntry = UpdateEntry -- TODO: y u no SetEntry?
+TotalAP.Cache.GetValue = GetValue
+TotalAP.Cache.SetValue = SetValue
+
 TotalAP.Cache.IsSpecIgnored = IsSpecIgnored
 TotalAP.Cache.IsCurrentSpecIgnored = IsCurrentSpecIgnored
 TotalAP.Cache.IgnoreSpec = IgnoreSpec
 TotalAP.Cache.UnignoreSpec = UnignoreSpec
-TotalAP.Cache.UpdateArtifactCache = UpdateArtifactCache
+TotalAP.Cache.UnignoreAllSpecs = UnignoreAllSpecs
+TotalAP.Cache.GetNumIgnoredSpecs = GetNumIgnoredSpecs
 
 TotalAP.Cache.IsSpecCached = IsSpecCached
 TotalAP.Cache.IsCurrentSpecCached = IsCurrentSpecCached
@@ -723,6 +727,7 @@ TotalAP.Cache.Validate = Validate
 TotalAP.Cache.ValidateChar = ValidateChar
 TotalAP.Cache.ValidateSpec = ValidateSpec
 TotalAP.Cache.ValidateEntry = ValidateEntry
+
 TotalAP.Cache.Initialise = Initialise
 
 return TotalAP.Cache
