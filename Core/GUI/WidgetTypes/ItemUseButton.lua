@@ -16,6 +16,7 @@
 local addonName, TotalAP = ...
 if not TotalAP then return end
 
+local LBG = LibStub("LibButtonGlow-1.0")
 
 -- Localized globals
 local _G = _G -- Required to get parent frame references from their names
@@ -84,8 +85,8 @@ local function ToggleFlashing(self)
 
 	if self:GetFlashing() then -- Turn off glow effect prior to re-enabling it
 	
-		ActionButton_HideOverlayGlow(FrameObject)
-		ActionButton_ShowOverlayGlow(FrameObject)
+		LBG.HideOverlayGlow(FrameObject)
+		LBG.ShowOverlayGlow(FrameObject)
 		
 	end
 	
@@ -134,11 +135,11 @@ local function Render(self)
 		-- Apply or remove glow effect (TODO: Can this be moved to DisplayFrame?)
 		if self:GetFlashing() then 
 
-			ActionButton_ShowOverlayGlow(FrameObject)
+			LBG.ShowOverlayGlow(FrameObject)
 			
 		else
 
-			ActionButton_HideOverlayGlow(FrameObject)
+			LBG.HideOverlayGlow(FrameObject)
 			
 		end
 		
