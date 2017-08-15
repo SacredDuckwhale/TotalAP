@@ -622,3 +622,51 @@ do
 	
 end
 
+Test_Cache_UnignoreAllSpecs = {}
+do
+	
+	-- The cache should not be altered, but all specs should be reset to not being ignored (the default value)
+	function Test_Cache_UnignoreAllSpecs:Test_NoParameters()
+	
+		-- The manual way: Ignore all specs, then unignore them, and make sure it worked properly
+
+		TotalAP.Cache.Initialise() -- All specs are now NOT ignored
+		local C -- used for the more elegant test (below)
+	
+		for spec=1, GetNumSpecializations() do -- Test all specs individually
+	
+			TotalAP.Cache.IgnoreSpec(spec)
+			luaunit.assertEquals(TotalAP.Cache.IsSpecIgnored(spec), true)
+			
+			-- All specs are now being ignored
+			
+			TotalAP.Cache.UnignoreSpec(spec)
+			luaunit.assertEquals(TotalAP.Cache.IsSpecIgnored(spec), false)
+			C = TotalArtifactPowerCache -- storing the state of the cache after manually unignoring all specs (for comparison, below)
+			
+			-- All specs are now reset
+			
+			TotalAP.Cache.IgnoreSpec(spec)
+			luaunit.assertEquals(TotalAP.Cache.IsSpecIgnored(spec), true) -- redundant, I guess
+			
+		end
+		
+		-- Use the second method to see if the results are identical to the first (stored in the temporary Cache, C)
+		TotalAP.Cache.UnignoreAllSpecs()
+		
+		-- All specs should now be unignored
+		for spec=1, GetNumSpecializations() do -- Test all specs individually
+	
+			luaunit.assertEquals(TotalAP.Cache.IsSpecIgnored(spec), false) -- redundant, I guess
+	
+		end
+	
+		-- More elegant: Make sure this function behaves exactly the same as running IgnoreSpec on all specs by comparing the results
+		
+		-- Easily proven by comparing the state of the cache after each operation
+		luaunit.assertEquals(TotalArtifactPowerCache, C)
+		
+	end
+	
+end
+
