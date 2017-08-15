@@ -512,7 +512,7 @@ local function GetNumEntries()
 	local cache = GetReference()
 	for k, v in pairs(cache) do -- count entries
 	
-		if ValidateChar(k) then numEntries = numEntries + 1 end
+		if ValidateChar(v) then numEntries = numEntries + 1 end
 		
 	end
 
