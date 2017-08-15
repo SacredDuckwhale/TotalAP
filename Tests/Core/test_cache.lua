@@ -475,3 +475,74 @@ do
 	
 end
 
+Test_Cache_IgnoreSpec = {}
+do
+
+	function Test_Cache_IgnoreSpec:Setup()
+	
+		TotalArtifactPowerCache = nil
+		TotalAP.Cache.Initialise() -- all specs are now NOT ignored
+	
+	end
+		
+	-- If no parameters were given, the cache should not be altered in any way
+	function Test_Cache_IgnoreSpec:Test_NoParameters()
+		
+		local function TestUnchanged(cache)
+			
+			TotalArtifactPowerCache = cache -- save to compare states (below)
+			for i=1, GetNumSpecializations() do
+				TotalAP.Cache.IgnoreSpec(i)
+			end
+			
+			-- Cache still should be the same (that is, unchanged)
+			luaunit.assertEquals(TotalArtifactPowerCache, cache)
+		
+		end
+		
+		-- Cache is nil
+		TestUnchanged()
+		
+		-- Cache is <empty table>
+		TestUnchanged( {} )
+		
+		-- Cache is <some valid cache>
+		local fqcn = TotalAP.Utils.GetFQCN()
+		local C = {}
+		C[fqcn] = { { isIgnored = true }, { isIgnored = false}, { numTraitsPurchased = 42, isIgnored = false, artifactTier = 2, thisLevelUnspentAP = 100000} }
+	
+		TestUnchanged( C )
+		
+	end
+	
+	-- Invalid parameters should behave similar to no parameters -> don't alter cache
+	function Test_Cache_IgnoreSpec:Test_InvalidParameter()
+		
+		local params = { {}, "Hey", 42, "",  function() end, true, false }
+		
+		local C
+		for key, param in pairs(params) do -- Test parameter -> Since all are invalid, the cache should not be changed
+		
+			C = TotalArtifactPowerCache
+			luaunit.assertEquals(TotalAP.Cache.IgnoreSpec(param))
+			luaunit.assertEquals(TotalArtifactPowerCache, C) -- should be unchanged still
+		
+		end
+		
+	end
+	
+	-- Valid parameters should set the spec to ignored but not affect anything else
+	function Test_Cache_IgnoreSpec:Test_ValidParameter()
+		
+		for spec=1, GetNumSpecializations() do -- Test parameter -> Since all are valid, the cache should reflect the changes
+		
+			C = TotalArtifactPowerCache
+			luaunit.assertEquals(TotalAP.Cache.IgnoreSpec(spec))
+			luaunit.assertEquals(TotalAP.Cache.IsSpecIgnored(spec), true) -- should always be correct as the test ran prior to this
+		
+		end
+		
+	end
+	
+end
+
