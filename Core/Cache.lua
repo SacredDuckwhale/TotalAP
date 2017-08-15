@@ -347,9 +347,9 @@ local function IsCurrentSpecIgnored()
 end
 
 --- Ignores a spec for the given character
--- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if none is given)
 -- @param[opt] specNo Spec number (defaults to current spec if omitted)
-local function IgnoreSpec(fqcn, specNo)
+-- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if omitted)
+local function IgnoreSpec(specNo, fqcn)
 
 	fqcn = fqcn or TotalAP.Utils.GetFQCN() 
 	specNo = specNo or GetSpecialization()
@@ -359,9 +359,9 @@ local function IgnoreSpec(fqcn, specNo)
 end
 
 --- Unignores a spec for the given character
--- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if none is given)
 -- @param[opt] specNo Spec number (defaults to current spec if omitted)
-local function UnignoreSpec(fqcn, specNo)
+-- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if omitted)
+local function UnignoreSpec(specNo, fqcn)
 
 	fqcn = fqcn or TotalAP.Utils.GetFQCN() 
 	specNo = specNo or GetSpecialization()
