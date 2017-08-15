@@ -47,9 +47,9 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 	--Note: This is NOT the individual weapon's name if it consists of mainhand / offhand, but the "general item"'s name that they turn into when not equipped (e.g., "Warswords of the Valarjar")
 	
 	-- Load cached values
-	local numTraitsPurchased = TotalAP.Cache.GetValue(fqcn, specID, "numTraitsPurchased")
-	local maxAvailableAP = TotalAP.Cache.GetValue(fqcn, specID, "thisLevelUnspentAP") + TotalAP.inventoryCache.inBagsAP
-	local tier = TotalAP.Cache.GetValue(fqcn, specID, "artifactTier")
+	local numTraitsPurchased = TotalAP.Cache.GetNumTraits()
+	local maxAvailableAP = TotalAP.Cache.GetUnspentAP() + TotalAP.inventoryCache.inBagsAP
+	local tier = TotalAP.Cache.GetArtifactTier()
 	local maxKnowledgeLevel = C_ArtifactUI.GetMaxArtifactKnowledgeLevel()
 	
 	-- Calculate progress from cached values
@@ -71,7 +71,7 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 	
      if progressPercent > 0 and maxAttainableRank > numTraitsPurchased  then 
 		
-		if tier > 1 or maxAttainableRank < 54 then  -- TODO: Hardcoded limit for tier 1 artifacts isn't ideal
+		if not TotalAP.ArtifactInterface.IsArtifactMaxed(maxAttainableRank, tier) then  -- Artifact can still be leveled up further -> Display progress
 			GameTooltip:AddLine(format(L["%.2f%% towards Rank %d"],  progressPercent, maxAttainableRank + 1))
 		else
 			GameTooltip:AddLine(format(L["Maximum number of traits unlocked"]), 0/255, 255/255, 0/255)

@@ -45,8 +45,7 @@ TotalAP.Utils = {}
 -- Localization table
 TotalAP.L = LibStub("AceLocale-3.0"):GetLocale("TotalAP", false)
 
--- Volatile data storage (caches)
-TotalAP.artifactCache = {} -- formerly "ArtifactProgressCache" -> Will be used to update saved variables cache when the session ends
+-- Volatile data storage (caches) -- TODO: Deprecated, store directly in SavedVars
 TotalAP.bankCache = {
 
 	inBankAP = 0,

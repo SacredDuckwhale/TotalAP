@@ -24,7 +24,7 @@
 
 -- Libraries
 local Addon = LibStub("AceAddon-3.0"):NewAddon("TotalAP", "AceConsole-3.0", "AceEvent-3.0"); -- AceAddon object -> local because it's not really needed elsewhere
-local SharedMedia = LibStub("LibSharedMedia-3.0");  -- TODO: Not implemented yet... But "soon" (TM) -> allow styling of bars and font strings (I'm really just waiting until the config/options are done properly for this -> AceConfig)
+--local SharedMedia = LibStub("LibSharedMedia-3.0");  -- TODO: Not implemented yet... But "soon" (TM) -> allow styling of bars and font strings (I'm really just waiting until the config/options are done properly for this -> AceConfig)
 local Masque = LibStub("Masque", true); -- optional (will use default client style if not found)
 
 
@@ -62,9 +62,7 @@ function Addon:OnInitialize() -- Called on ADDON_LOADED
 	TotalAP.Settings.Initialise()
 	settings = TotalAP.Settings.GetReference() -- TODO: Is this necessary?
 	
-	-- Initialise caches
-	TotalAP.Cache.Initialise()
-	
+
 	-- Make sure at least one View is usable (TODO: Pointless for now; Always prepares the DefaultView, as others aren't implemented yet)
 	TotalAP.Controllers.InitialiseGUI()
 	
@@ -87,7 +85,10 @@ end
 function Addon:OnEnable()
 
 	local clientVersion, clientBuild = GetBuildInfo()
-
+	
+	-- Initialise caches -> Specs should be available here
+	TotalAP.Cache.Initialise()
+	
 	TotalAP.Controllers.RenderGUI()
 	
 	if settings.showLoginMessage then TotalAP.ChatMsg(format(L["%s %s for WOW %s loaded!"], addonName, TotalAP.versionString, clientVersion)); end

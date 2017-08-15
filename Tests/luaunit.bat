@@ -1,2 +1,2 @@
-lua test.lua
+lua test.lua --output TAP
 pause
