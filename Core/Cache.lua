@@ -674,11 +674,11 @@ local function Initialise()
 	
 end
 
---- Returns whether or not the cache entry for a given character and spec is invalid, i.e. can't be used
--- @param[opt] fqcn
--- @param[opt spec
--- @returns Whether the cache entry is empty/invalid]
-local function IsSpecCached(fqcn, spec)
+--- Returns whether or not the cache entry for a given spec is cached (valid and not empty)
+-- @param[opt] spec The spec number (defaults to current spec if omitted)
+-- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if omitted)
+-- @returns Whether the cache entry is valid and not empty (excluding default values, which are always present)
+local function IsSpecCached(spec, fqcn)
 
 	local cache = TotalAP.artifactCache
 	local fqcn = (fqcn and type(fqcn) == "string") and fqcn or TotalAP.Utils.GetFQCN() -- TODO: validators for fqcn, spec no. etc that can be reused?
