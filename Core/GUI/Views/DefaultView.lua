@@ -34,12 +34,9 @@ local function GetSpecDisplayOrder()
 	local displayOrder = { 1, 2, 3, 4 } -- default order, used if no specs are being ignored
 	local order = 1 -- 0 is used to indicate ignored displays
 	
-	local fqcn = TotalAP.Utils.GetFQCN()
-	local cache = TotalAP.artifactCache[fqcn]
-	
 	for i = 1, GetNumSpecializations() do 
 	
-		if cache[i] ~= nil and cache[i]["isIgnored"] then -- ignored spec -> order is 0 (hidden)
+		if TotalAP.Cache.IsSpecIgnored(i) then -- ignored spec -> order is 0 (hidden)
 			displayOrder[i] = 0
 		else -- proceed with the order as if there were no hidden displays
 			displayOrder[i] = order
@@ -359,8 +356,8 @@ local function CreateNew(self)
 			or not settings.actionButton.enabled -- Button is disabled via settings
 			or not (TotalAP.inventoryCache.numItems > 0)  -- No AP items (or Research Tomes) in inventory
 			or not TotalAP.inventoryCache.displayItem.ID -- No item set to button (usually happens on load only)
-			or (TotalAP.artifactCache[fqcn][spec] and TotalAP.artifactCache[fqcn][spec]["isIgnored"]) -- Current spec is being ignored
-			or (TotalAP.artifactCache[fqcn][spec] and TotalAP.artifactCache[fqcn][spec]["artifactTier"] == "1" and TotalAP.artifactCache[fqcn][spec]["numTraitsPurchased"] == 54) -- Artifact weapon is maxed (54 traits and tier 1)
+			or TotalAP.Cache.IsCurrentSpecIgnored() -- Current spec is being ignored
+			or (TotalAP.Cache.IsCurrentSpecCached() and TotalAP.Cache.GetArtifactTier() == "1" and TotalAP.Cache.GetNumTraits() == 54) -- Artifact weapon is maxed (54 traits and tier 1)
 			or not TotalAP.ArtifactInterface.HasCorrectSpecArtifactEquipped() -- Current weapon is not the correct artifact, which means AP can't be used anyway
 			-- TODO: Underlight Angler -> Show when fish is in inventory
 			) and not TotalAP.inventoryCache.foundTome -- BUT: Don't hide if Research Tome exists, regardless of the other conditions being met 
@@ -697,18 +694,23 @@ local function CreateNew(self)
 		
 			-- Set textures (TODO: only needs to be done once, as specs are generally static)
 			self:GetFrameObject().icon:SetTexture(select(4, GetSpecializationInfo(self:GetAssignedSpec())))
-		
-			local cache = TotalAP.Cache.IsSpecCached(self:GetAssignedSpec()) and TotalAP.artifactCache[fqcn][self:GetAssignedSpec()]
-			if not cache then return end
 			
-			local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(cache["numTraitsPurchased"],  cache["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), cache["artifactTier"])
+			local spec = self:GetAssignedSpec()
+			
+			if not TotalAP.Cache.IsSpecCached(spec) then return end
+			
+			local numTraitsPurchased = TotalAP.Cache.GetNumTraits(spec)
+			local unspentAP = TotalAP.Cache.GetUnspentAP(spec)
+			local artifactTier = TotalAP.Cache.GetArtifactTier(spec)
+			
+			local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(numTraitsPurchased,  unspentAP + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), artifactTier)
 			
 			local flashButton = false
 			-- Flash when:
 			flashButton = (flashButton
 			or numTraitsAvailable > 0 -- New traits are available
 			) and settings.specIcons.showGlowEffect -- BUT: Only flash if glow effect is enabled
-			and (cache["artifactTier"] > 1 or cache["numTraitsPurchased"] < maxArtifactTraits) -- AND only if the artifact is not maxed yet
+			and (artifactTier > 1 or numTraitsPurchased < maxArtifactTraits) -- AND only if the artifact is not maxed yet
 		
 			if not InCombatLockdown() then -- Flash spec icon button (TODO: Un-taint this if necessary after GUI rework by copying the code)
 			
@@ -847,14 +849,19 @@ local function CreateNew(self)
 		
 		local SpecIconTextUpdateFunction = function(self)
 		
-			local cache = TotalAP.Cache.IsSpecCached(self:GetAssignedSpec()) and TotalAP.artifactCache[fqcn][self:GetAssignedSpec()]
-			if not cache then return end
+			local spec = self:GetAssignedSpec()
+			
+			if not TotalAP.Cache.IsSpecCached(spec) then return end
 			
 			local text = ""
 			
-			local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(cache["numTraitsPurchased"],  cache["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), cache["artifactTier"])
-			local nextLevelRequiredAP = C_ArtifactUI.GetCostForPointAtRank(cache["numTraitsPurchased"], cache["artifactTier"]); 
-			local percentageOfCurrentLevelUp = (cache["thisLevelUnspentAP"]  + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0)) / nextLevelRequiredAP*100;
+			local numTraitsPurchased = TotalAP.Cache.GetNumTraits(spec)
+			local unspentAP = TotalAP.Cache.GetUnspentAP(spec)
+			local artifactTier = TotalAP.Cache.GetArtifactTier(spec)
+			
+			local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(numTraitsPurchased,  unspentAP + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), artifactTier)
+			local nextLevelRequiredAP = C_ArtifactUI.GetCostForPointAtRank(numTraitsPurchased, artifactTier)
+			local percentageOfCurrentLevelUp = (thisLevelUnspentAP  + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0)) / nextLevelRequiredAP*100;
 			
 			if numTraitsAvailable > 0  then -- Set text to display number of available traits
 			
@@ -866,7 +873,7 @@ local function CreateNew(self)
 				
 			end
 			
-			if not (cache["numTraitsPurchased"] < 54 or cache["artifactTier"] > 1) then -- Artifact is maxed
+			if not (numTraitsPurchased < 54 or artifactTier > 1) then -- Artifact is maxed
 				text = "---" -- TODO: MAX? Empty? Anything else?
 			end
 			
@@ -935,12 +942,14 @@ local function CreateNew(self)
 		
 		local ProgressBarUpdateFunction = function(self)
 		
+			local spec = self:GetAssignedSpec()
+		
 			local hideFrame = false
 			-- Hide when:
 			hideFrame = (hideFrame
-			or self:GetAssignedSpec() > GetNumSpecializations() -- Class doesn't have as many specs
-			or not TotalAP.Cache.IsSpecCached(self:GetAssignedSpec()) -- Spec is not cached
-			or TotalAP.Cache.IsSpecIgnored(self:GetAssignedSpec()) -- Spec is being ignored
+			or spec > GetNumSpecializations() -- Class doesn't have as many specs
+			or not TotalAP.Cache.IsSpecCached(spec) -- Spec is not cached
+			or TotalAP.Cache.IsSpecIgnored(spec)) -- Spec is being ignored
 			or not settings.infoFrame.enabled -- Bars are diabled via settings (TODO: infoFrame no longer exists -> rename settings?)
 			)
 			
@@ -948,14 +957,17 @@ local function CreateNew(self)
 			if hideFrame then return end
 			
 			-- Set progress bar widths according to the cached artifact data
-			local cache = TotalAP.Cache.IsSpecCached(self:GetAssignedSpec()) and TotalAP.artifactCache[fqcn][self:GetAssignedSpec()]
-			if not cache then return end
+			if not TotalAP.Cache.IsSpecCached(spec) then return end
 			
-			local percentageUnspentAP = min(100, math.floor(cache["thisLevelUnspentAP"] / C_ArtifactUI.GetCostForPointAtRank(cache["numTraitsPurchased"], cache["artifactTier"]) * 100)) 	-- Cap values at 100 (width) to prevent the bar from overflowing and glitching out
-			local percentageInBagsAP = min(math.floor(TotalAP.inventoryCache.inBagsAP/ C_ArtifactUI.GetCostForPointAtRank(cache["numTraitsPurchased"], cache["artifactTier"]) * 100), 100 - percentageUnspentAP)
-			local percentageInBankAP = min(math.floor(TotalAP.bankCache.inBankAP/ C_ArtifactUI.GetCostForPointAtRank(cache["numTraitsPurchased"], cache["artifactTier"]) * 100), 100 - percentageUnspentAP - percentageInBagsAP)
-			local maxAttainableRank =  cache["numTraitsPurchased"] + TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(cache["numTraitsPurchased"],  cache["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0),  cache["artifactTier"]) 
-			local progressPercent = TotalAP.ArtifactInterface.GetProgressTowardsNextRank(cache["numTraitsPurchased"] , cache["thisLevelUnspentAP"] + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), cache["artifactTier"])
+			local unspentAP = TotalAP.Cache.GetUnspentAP(spec)
+			local numTraitsPurchased = TotalAP.Cache.GetNumTraits(spec)
+			local artifactTier = TotalAP.Cache.GetArtifactTier(spec)
+			
+			local percentageUnspentAP = min(100, math.floor(unspentAP / C_ArtifactUI.GetCostForPointAtRank(numTraitsPurchased, artifactTier) * 100)) 	-- Cap values at 100 (width) to prevent the bar from overflowing and glitching out
+			local percentageInBagsAP = min(math.floor(TotalAP.inventoryCache.inBagsAP/ C_ArtifactUI.GetCostForPointAtRank(numTraitsPurchased, artifactTier) * 100), 100 - percentageUnspentAP)
+			local percentageInBankAP = min(math.floor(TotalAP.bankCache.inBankAP/ C_ArtifactUI.GetCostForPointAtRank(numTraitsPurchased, artifactTier) * 100), 100 - percentageUnspentAP - percentageInBagsAP)
+			local maxAttainableRank =  numTraitsPurchased + TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(numTraitsPurchased, unspentAP + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0),  artifactTier) 
+			local progressPercent = TotalAP.ArtifactInterface.GetProgressTowardsNextRank(numTraitsPurchased , unspentAP + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), artifactTier)
 			
 			self:SetWidth(percentageUnspentAP, "UnspentBar")
 			self:SetWidth(percentageInBagsAP, "InBagsBar")
@@ -973,7 +985,7 @@ local function CreateNew(self)
 			
 			end
 			
-			if maxAttainableRank > cache["numTraitsPurchased"] and progressPercent > 0 and settings.infoFrame.showMiniBar and (cache["artifactTier"] > 1 or maxAttainableRank < maxArtifactTraits) then -- Display MiniBar
+			if maxAttainableRank > numTraitsPurchased and progressPercent > 0 and settings.infoFrame.showMiniBar and (artifactTier > 1 or maxAttainableRank < maxArtifactTraits) then -- Display MiniBar
 
 				self:EnableBar("MiniBar")
 			
@@ -1004,7 +1016,7 @@ local function CreateNew(self)
 			end
 			
 			-- If the artifact is maxed, display "white" bar and hide the others to indicate this fact
-			if cache["artifactTier"] == 1 and cache["numTraitsPurchased"] >= 54 then -- Overwrite bars
+			if artifactTier == 1 and numTraitsPurchased >= 54 then -- Overwrite bars
 			
 				self:SetWidth(100, "UnspentBar")
 				self:EnableBar("UnspentBar")
@@ -1014,11 +1026,9 @@ local function CreateNew(self)
 			end
 			
 			-- Reposition if any specs have been ignored to make sure there are no odd-looking gaps in the display
-			local assignedSpec = self:GetAssignedSpec()
-			local displaySpec = GetDisplayOrderForSpec(assignedSpec)
-			
-			local offsetY = (assignedSpec - displaySpec) * (hSpace + barHeight + 2 * barInset)
-			self:SetRelativePosition(barInset, - barInset - (assignedSpec - 1) * (barHeight + 2 * barInset + hSpace) + offsetY)
+			local displaySpec = GetDisplayOrderForSpec(spec)
+			local offsetY = (spec - displaySpec) * (hSpace + barHeight + 2 * barInset)
+			self:SetRelativePosition(barInset, - barInset - (spec - 1) * (barHeight + 2 * barInset + hSpace) + offsetY)
 		
 		end
 		

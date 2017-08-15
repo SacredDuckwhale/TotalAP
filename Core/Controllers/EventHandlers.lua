@@ -178,29 +178,15 @@ local function ScanArtifact()
 	end
 	
 	local aUI = C_ArtifactUI
-	
-	local specNo = GetSpecialization()
-	local key = TotalAP.Utils.GetFQCN()
-	
 	local unspentAP = select(5, aUI.GetEquippedArtifactInfo())
 	local numTraitsPurchased = select(6, aUI.GetEquippedArtifactInfo())
 	local artifactTier = select(13, aUI.GetEquippedArtifactInfo())
-	-- Only change artifact data and leave isIgnored as it is
-	local isIgnored = TotalAP.Cache.IsCurrentSpecIgnored()
-	
-	-- Assemble cache entry that is to replace the existing values
-	local entry = TotalAP.Cache.GetEntry(fqcn, specNo) or {}
-	entry.thisLevelUnspentAP = unspentAP
-	entry.numTraitsPurchased = numTraitsPurchased
-	entry.artifactTier = artifactTier
-	entry.isIgnored = isIgnored
 
-	-- Update local cache first]
-	TotalAP.artifactCache[key][specNo] = entry
-	
-	-- Update saved variables with local cache entry for this spec to make sure it persists throughout session
-	TotalAP.Cache.UpdateArtifactCache(key, specNo)
-	
+	-- Update the Cache (stored in SavedVars)
+	TotalAP.Cache.SetUnspentAP(unspentAP)
+	TotalAP.Cache.SetNumTraits(numTraitsPurchased)
+	TotalAP.Cache.SetArtifactTier(artifactTier)
+
 end
 
 --- Toggle a GUI Update (which is handled by the GUI controller and not the Event controller itself)

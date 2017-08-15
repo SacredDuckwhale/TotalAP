@@ -264,36 +264,6 @@ local function UpdateBankCache(fqcn)
 end
 
 
---- Update the saved variables from artifactCache for the current session. Should only be called after said cache was updated to prevent overwriting the saved cache with an empty one
--- @param[opt] fqcn The fully-qualified character name (defaults to currently logged in character if omitted)
--- @param[opt] specNo The spec number that is to be updated (defaults to current spec if omitted)
-local function UpdateArtifactCache(fqcn, specNo)
-
-	local cache = GetReference()
-
-	if not fqcn then -- Use logged in character name/realm
-	
-		fqcn = TotalAP.Utils.GetFQCN()
-		
-	end
-	
-	if not specNo then -- Use current spec
-		specNo = GetSpecialization()
-	end
-
-	if not (cache and cache[fqcn] and TotalAP.artifactCache and TotalAP.artifactCache[fqcn] and TotalAP.artifactCache[fqcn][specNo]) then -- Abort, abort!
-
-		TotalAP.Debug("Failed to update artifactCache for key = " .. tostring(fqcn) .. ", specNo = " .. tostring(specNo))
-		return
-		
-	end
-	
-	if not cache[fqcn][specNo] then cache[fqcn][specNo] = {} end -- in case no entry exists for this spec (as they can't be initialised before spec info is loaded)
-	cache[fqcn][specNo] = TotalAP.artifactCache[fqcn][specNo] -- Only update the requested spec and leave the others intact
-
-end
-
-
 --- Returns the number of ignored specs for a given character
 -- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if omitted)
 -- @return Number of ignored specs; Doesn't count invalid specs and will return 0 if none are cached
@@ -547,9 +517,8 @@ local function Initialise()
 		
 	end
 	
-	-- Initialise caches
+	-- Initialise cache
 	local fqcn = TotalAP.Utils.GetFQCN()
-	TotalAP.artifactCache[fqcn] = {}
 	
 	if not cache then -- Saved vars cache doesn't exist -> rebuild it
 		_G[cacheVarName] = {}
@@ -644,17 +613,7 @@ local function Initialise()
 		TotalAP.Debug("Validation of cache was successful without manually fixing invalid entries")
 	
 	end	
-			
-	-- Read existing entries from saved vars and overwrite the dummy entries for those (but leave them for those that have no data)
-	for spec, entry in pairs(cache[fqcn]) do -- At least some data exists -> merge saved data into local cache
 
-		-- TODO: Validation and stuff... maybe
-		TotalAP.artifactCache[fqcn][spec] = entry
-
-	end
-	
-	-- End result: Local artifactCache is up-to-date, and savedVars are initialised (will be updated via UpdateArtifactCache method)
-	
 end
 
 --- Returns whether or not the cache entry for a given spec is cached (valid and not empty)
@@ -700,18 +659,91 @@ local function IsCurrentSpecCached()
 
 end
 
+--- Returns the cached artifact tier for a given spec and character
+-- @param[opt] spec The spec number (defaults to current spec if omitted)
+-- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if omitted)
+-- @return The artifact tier of the given character and spec if it is cached; nil otherwise
+local function GetArtifactTier(spec, fqcn)
+
+	local fqcn = fqcn or TotalAP.Utils.GetFQCN()
+	local spec = spec or GetSpecialization()
+
+	return GetValue(fqcn, spec, "artifactTier")
+
+end
+
+--- Set the cached artifact tier for a given spec and character
+-- @param tier The artifact tier of the spec's artifact weapon
+-- @param[opt] spec The spec number (defaults to current spec if omitted)
+-- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if omitted)
+-- @return The artifact tier of the given character and spec if it is cached; nil otherwise
+local function SetArtifactTier(tier, spec, fqcn)
+
+	local fqcn = fqcn or TotalAP.Utils.GetFQCN()
+	local spec = spec or GetSpecialization()
+
+	return SetValue(fqcn, spec, "artifactTier", tier)
+
+end
+
+--- Returns the cached AP value for a given spec and character
+-- @param[opt] spec The spec number (defaults to current spec if omitted)
+-- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if omitted)
+-- @return The AP value of the given character and spec if it is cached; nil otherwise
+local function GetUnspentAP(spec, fqcn)
+
+	local fqcn = fqcn or TotalAP.Utils.GetFQCN()
+	local spec = spec or GetSpecialization()
+
+	return GetValue(fqcn, spec, "thisLevelUnspentAP")
+
+end
+
+--- Set the cached AP value for a given spec and character
+-- @param tier The amount of AP that was applied to the spec's artifact weapon
+-- @param[opt] spec The spec number (defaults to current spec if omitted)
+-- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if omitted)
+-- @return The AP value of the given character and spec if it is cached; nil otherwise
+local function SetUnspentAP(value, spec, fqcn)
+
+	local fqcn = fqcn or TotalAP.Utils.GetFQCN()
+	local spec = spec or GetSpecialization()
+
+	return SetValue(fqcn, spec, "thisLevelUnspentAP", value)
+
+end
+
+--- Returns the number of traits for a given spec and character
+-- @param[opt] spec The spec number (defaults to current spec if omitted)
+-- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if omitted)
+-- @return The number of traits for the given character and spec if it is cached; nil otherwise
+local function GetNumTraits(spec, fqcn)
+
+	local fqcn = fqcn or TotalAP.Utils.GetFQCN()
+	local spec = spec or GetSpecialization()
+
+	return GetValue(fqcn, spec, "numTraitsPurchased")
+
+end
+
+--- Set the cached number of traits for a given spec and character
+-- @param numTraits The number of traits of the spec's artifact weapon
+-- @param[opt] spec The spec number (defaults to current spec if omitted)
+-- @param[opt] fqcn Fully qualified character name, to be used as the primary key (defaults to currently used character if omitted)
+-- @return The number of traits for the given character and spec if it is cached; nil otherwise
+local function SetNumTraits(numTraits, spec, fqcn)
+
+	local fqcn = fqcn or TotalAP.Utils.GetFQCN()
+	local spec = spec or GetSpecialization()
+
+	return SetValue(fqcn, spec, "numTraitsPurchased", numTraits)
+
+end
+
+
 -- Public methods
-
-TotalAP.Cache.UpdateArtifactCache = UpdateArtifactCache
-
 TotalAP.Cache.GetBankCache = GetBankCache
 TotalAP.Cache.UpdateBankCache = UpdateBankCache
-
-TotalAP.Cache.NewEntry = NewEntry
-TotalAP.Cache.GetEntry = GetEntry
-TotalAP.Cache.UpdateEntry = UpdateEntry -- TODO: y u no SetEntry?
-TotalAP.Cache.GetValue = GetValue
-TotalAP.Cache.SetValue = SetValue
 
 TotalAP.Cache.IsSpecIgnored = IsSpecIgnored
 TotalAP.Cache.IsCurrentSpecIgnored = IsCurrentSpecIgnored
@@ -720,6 +752,15 @@ TotalAP.Cache.UnignoreSpec = UnignoreSpec
 TotalAP.Cache.UnignoreAllSpecs = UnignoreAllSpecs
 TotalAP.Cache.GetNumIgnoredSpecs = GetNumIgnoredSpecs
 
+TotalAP.Cache.GetArtifactTier = GetArtifactTier
+TotalAP.Cache.SetArtifactTier = SetArtifactTier
+TotalAP.Cache.GetNumTraits = GetNumTraits
+TotalAP.Cache.SetNumTraits = SetNumTraits
+TotalAP.Cache.GetUnspentAP = GetUnspentAP
+TotalAP.Cache.SetUnspentAP = SetUnspentAP
+
+-- TotalAP.Cache.IsCharacterCached = TODO
+-- TotalAP.Cache.IsCurrentCharacterCached = TODO
 TotalAP.Cache.IsSpecCached = IsSpecCached
 TotalAP.Cache.IsCurrentSpecCached = IsCurrentSpecCached
 
@@ -729,5 +770,12 @@ TotalAP.Cache.ValidateSpec = ValidateSpec
 TotalAP.Cache.ValidateEntry = ValidateEntry
 
 TotalAP.Cache.Initialise = Initialise
+
+-- These are just made public for LDoc, really (not used by any other module) - TODO: Isn't LDoc supposed to scan locals as well?
+TotalAP.Cache.NewEntry = NewEntry
+TotalAP.Cache.GetEntry = GetEntry
+TotalAP.Cache.UpdateEntry = UpdateEntry -- TODO: y u no SetEntry?
+TotalAP.Cache.GetValue = GetValue
+TotalAP.Cache.SetValue = SetValue
 
 return TotalAP.Cache
