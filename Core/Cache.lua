@@ -335,6 +335,7 @@ local function IsSpecIgnored(specNo, fqcn)
 	local isValidSpec = (type(specNo) == "number" and 0 < specNo and specNo <= GetNumSpecializations())
 	if not isValidSpec then return end
 	
+	return GetValue(fqcn, specNo, "isIgnored") 
 	
 end
 
