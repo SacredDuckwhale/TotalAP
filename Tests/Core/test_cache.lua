@@ -1,8 +1,63 @@
--- Tests for Core\Cache.lua
+-- Tests that are not yet implemented
+
+--[[ Tests for Core\Cache.lua
+
+Test_Cache_IsCharacterCached = {}
+Test_Cache_IsCurrentCharacterCached = {}
+
+Test_Cache_GetArtifactTier = {}
+Test_Cache_SetArtifactTier = {}
+
+Test_Cache_GetUnspentAP = {}
+Test_Cache_SetUnspentAP = {}
+
+Test_Cache_GetNumTraitsPurchased = {}
+Test_Cache_SetNumTraitsPurchased = {}
+
+--]]
+
+--[[ Missing tests - These are not that important, because they are trivial or not used anywhere
+	
+	Core\Cache.lua:
+	
+	fqcn parameter (optional) for IgnoreSpec, UnignoreSpec, IsSpecIgnored, IsSpecCached
+		Literally just defaults to using TotalAP.Utils.GetFQCN() if it is omitted (=nil), although it could change to use a proper validation in the future)
+	
+	
+	Core\BankCache.lua:
+	
+	
+	
+	
+	Core\InventoryCache.lua;
+	
+	
+	
+	 
+--]]
+
+--[[ Tests for Core\BankCache.lua
+
+Test_BankCache_GetBankCache = {}
+Test_BankCache_GetNumItems = {}
+Test_BankCache_GetInBankAP = {}
+
+Test_BankCache_Validate = {}
+Test_BankCache_ValidateKey = {}
+
+--]]
+
+--[[ Tests for Core\InventoryCache.lua
+
+Test_InventoryCache_GetInventoryCache = {}
+Test_InventoryCache = {} -- TODO
+
+--]]
 
 -- Tests that are actually implemented
 Test_Cache_Validate = {}
 do
+
 	-- Invalid caches should always return false as long as they're not filled with bogus data (in which case it can also be nil depending on how the individual entries validate)
 	function Test_Cache_Validate:Test_Invalid()
 	
@@ -356,6 +411,7 @@ do
 end
 
 
+
 Test_Cache_IsSpecCached = {}
 do
 
@@ -700,3 +756,6 @@ do
 	end
 	
 end
+
+
+
