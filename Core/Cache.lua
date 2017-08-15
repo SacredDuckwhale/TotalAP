@@ -553,11 +553,8 @@ local function Initialise()
 	
 	if not cache then -- Saved vars cache doesn't exist -> rebuild it
 		_G[cacheVarName] = {}
---		_G[cacheVarName][fqcn] = {}
 		cache = _G[cacheVarName]
---		return -- No data exists for this character -> Abort (and keep dummy entry created above in local cache, to be saved on the next update)
-
-	end -- cache exists, but may not contain the required entries
+	end
 	
 	if not cache[fqcn] then -- Entry for this char doesn't exist -> create it
 			
