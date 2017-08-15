@@ -29,12 +29,12 @@ if not TotalAP then return end
 local _G = _G
 local cacheVarName = "TotalArtifactPowerCache"
 
---- Returns the base structure for an "empty" cache entry.
--- It contains values for a spec that hasn't been scanned yet, where all values are nil except "isIgnored" (which is FALSE)
+--- Returns the base structure for an "empty" but valid cache entry.
+-- It contains values for a spec that hasn't been scanned yet, where only default values are set
 -- This is so that specs that haven't been cached yet can be detected, but won't cause errors when their cache entries are being accessed
 -- @return A newly-created table with predefined keys and the setting for "ignore spec" disabled
--- @usage GetDefaults() -> { ["numTraitsPurchased"] = nil, ["thisLevelUnspentAP"] = nil, ["artifactTier"] = nil, ["isIgnored"] = false }
-local function GetDefaults() -- TODO Is this even necessary? Surely the ignore methods could check for nil instead
+-- @usage GetDefaults() -> { ["isIgnored"] = false }
+local function GetDefaults()
 
 	local defaultValues = {
 			["numTraitsPurchased"] = nil,
@@ -233,7 +233,6 @@ local function GetBankCache(fqcn)
 	
 	if not (cache and cache[fqcn] and cache[fqcn]["bankCache"]) then -- Entry does not exist -> Abort
 		
-		TotalAP.Debug("Attempted to retrieve bankCache for cache entry with key = " .. tostring(fqcn))
 		return
 		
 	end
