@@ -49,7 +49,7 @@ end
 
 --- Returns a reference to the underlying SavedVars (cache) object
 -- @return A reference to the cache database table itself
-local function GetReference() -- TODO: AceDB can handle this
+local function GetReference()
 
 	return _G[cacheVarName]
 	
@@ -311,10 +311,8 @@ local function GetNumIgnoredSpecs(fqcn)
 		local isSpecIgnored = GetValue(fqcn, i, "isIgnored")
 		
 		if isSpecIgnored then
-			
 			TotalAP.Debug("Spec " .. i .. " was found to be ignored")
 			numIgnoredSpecs = numIgnoredSpecs + 1
-			
 		end
 		
 	end
@@ -469,12 +467,7 @@ local function ValidateSpec(t)
 	
 		return true -- No errors were found
 
-	else -- Table is empty -> return nil
-		
-	--	TotalAP.Debug("ValidateSpec -> Validation failed because parameter was empty table")
-		return -- TODO: Obsolete to write this out here?
-		
-	end
+	end -- implied: else return end => Table is empty -> return nil
 
 end
 
@@ -581,9 +574,6 @@ local function Initialise()
 			end
 			
 		end
-		
-	else -- Cache exists for this character -> Check if entries are valid // TODO. Validate existing entries
-	
 	end
 	
 	-- Validate cache
@@ -732,7 +722,7 @@ TotalAP.Cache.IsCurrentSpecIgnored = IsCurrentSpecIgnored
 TotalAP.Cache.IgnoreSpec = IgnoreSpec
 TotalAP.Cache.UnignoreSpec = UnignoreSpec
 TotalAP.Cache.UpdateArtifactCache = UpdateArtifactCache
-TotalAP.Cache.Initialise = Initialise
+
 TotalAP.Cache.IsSpecCached = IsSpecCached
 TotalAP.Cache.IsCurrentSpecCached = IsCurrentSpecCached
 
@@ -740,12 +730,6 @@ TotalAP.Cache.Validate = Validate
 TotalAP.Cache.ValidateChar = ValidateChar
 TotalAP.Cache.ValidateSpec = ValidateSpec
 TotalAP.Cache.ValidateEntry = ValidateEntry
-
-
--- Keep these private
--- TotalAP.Cache.GetReference = GetReference
--- TotalAP.Cache.GetDefaults = GetDefaults
--- TotalAP.Cache.GetEntry = GetEntry
-
+TotalAP.Cache.Initialise = Initialise
 
 return TotalAP.Cache
