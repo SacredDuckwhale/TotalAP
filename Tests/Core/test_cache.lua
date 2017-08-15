@@ -20,8 +20,9 @@ do
 	-- Valid caches should always return true upon validation
 	function Test_Cache_Validate:Test_Valid()
 	
+		local fqcn = TotalAP.Utils.GetFQCN()
 		TotalArtifactPowerCache = {}
-		TotalArtifactPowerCache["Duckwhale - Outland"] = { { isIgnored = true }, { isIgnored = false}, { numTraitsPurchased = 42, isIgnored = false, artifactTier = 2, thisLevelUnspentAP = 100000} }
+		TotalArtifactPowerCache[fqcn] = { { isIgnored = true }, { isIgnored = false}, { numTraitsPurchased = 42, isIgnored = false, artifactTier = 2, thisLevelUnspentAP = 100000} }
 		luaunit.assertEquals(TotalAP.Cache.Validate(), true)
 	
 	end
