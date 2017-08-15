@@ -670,3 +670,32 @@ do
 	
 end
 
+Test_Cache_GetNumIgnoredSpecs = {}
+do
+
+	-- While the API currently supports using the FQCN parameter, it's not really used anywhere
+	function Test_Cache_GetNumIgnoredSpecs:Test_NoParameters()
+		
+		-- Cache hasn't been initialised -> 0 specs are ignored
+		luaunit.assertEquals(TotalAP.Cache.GetNumIgnoredSpecs(), 0)	
+		
+		-- Initialise empty cache (no specs are ignored)
+		TotalAP.Cache.Initialise()
+		luaunit.assertEquals(TotalAP.Cache.GetNumIgnoredSpecs(), 0)
+		
+		-- Set some random specs to ignored
+		TotalAP.Cache.IgnoreSpec(1)
+		luaunit.assertEquals(TotalAP.Cache.GetNumIgnoredSpecs(), 1)
+		
+		TotalAP.Cache.IgnoreSpec(2)
+		luaunit.assertEquals(TotalAP.Cache.GetNumIgnoredSpecs(), 2)
+		
+		TotalAP.Cache.IgnoreSpec(3)
+		luaunit.assertEquals(TotalAP.Cache.GetNumIgnoredSpecs(), 3)
+		
+		TotalAP.Cache.UnignoreAllSpecs()
+		luaunit.assertEquals(TotalAP.Cache.GetNumIgnoredSpecs(), 0)
+		
+	end
+	
+end
