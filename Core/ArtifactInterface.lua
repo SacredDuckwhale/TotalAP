@@ -214,6 +214,20 @@ local function HasCorrectSpecArtifactEquipped()
 	
 end
 
+--- Returns whether or not an artifact is already maxed
+-- @param numTraits The number of traits for the given artifact
+-- @param tier The artifact tier of the given artifact
+-- @returns True if the artifact is already maxed; nil otherwise (also in the case of invalid parameters)
+local function IsArtifactMaxed(numTraits, tier)
+
+	if numTraits and type(numTraits) == "number" and numTraits == 54 and tier == 1 then -- Artifact is maxed tier 1 artifact (before finishing the empowerment quest)
+		return true
+	end
+	
+	-- Everything else is just a giant ball of nope
+
+end
+
 
 -- Public methods
 T.ArtifactInterface.GetNumAvailableResearchNotes = GetNumAvailableResearchNotes
@@ -226,6 +240,7 @@ T.ArtifactInterface.GetProgressTowardsNextRank = GetProgressTowardsNextRank
 T.ArtifactInterface.GetNumAvailableTraits = GetNumAvailableTraits
 T.ArtifactInterface.GetArtifactProgressPercent = GetArtifactProgressPercent
 T.ArtifactInterface.HasCorrectSpecArtifactEquipped = HasCorrectSpecArtifactEquipped
+T.ArtifactInterface.IsArtifactMaxed = IsArtifactMaxed
 
 -- Keep this private, since it isn't used anywhere else
 -- T.ArtifactInterface.GetResearchNotesShipmentInfo = GetResearchNotesShipmentInfo

@@ -357,7 +357,7 @@ local function CreateNew(self)
 			or not (TotalAP.inventoryCache.numItems > 0)  -- No AP items (or Research Tomes) in inventory
 			or not TotalAP.inventoryCache.displayItem.ID -- No item set to button (usually happens on load only)
 			or TotalAP.Cache.IsCurrentSpecIgnored() -- Current spec is being ignored
-			or (TotalAP.Cache.IsCurrentSpecCached() and TotalAP.Cache.GetArtifactTier() == "1" and TotalAP.Cache.GetNumTraits() == 54) -- Artifact weapon is maxed (54 traits and tier 1)
+			or (TotalAP.Cache.IsCurrentSpecCached() and TotalAP.ArtifactInterface.IsArtifactMaxed(TotalAP.Cache.GetNumTraits(), TotalAP.Cache.GetArtifactTier())) -- Artifact weapon is maxed (54 traits and tier 1)
 			or not TotalAP.ArtifactInterface.HasCorrectSpecArtifactEquipped() -- Current weapon is not the correct artifact, which means AP can't be used anyway
 			-- TODO: Underlight Angler -> Show when fish is in inventory
 			) and not TotalAP.inventoryCache.foundTome -- BUT: Don't hide if Research Tome exists, regardless of the other conditions being met 
@@ -710,7 +710,7 @@ local function CreateNew(self)
 			flashButton = (flashButton
 			or numTraitsAvailable > 0 -- New traits are available
 			) and settings.specIcons.showGlowEffect -- BUT: Only flash if glow effect is enabled
-			and (artifactTier > 1 or numTraitsPurchased < maxArtifactTraits) -- AND only if the artifact is not maxed yet
+			and not TotalAP.ArtifactInterface.IsArtifactMaxed(numTraitsPurchased, artifactTier) -- AND only if the artifact is not maxed yet
 		
 			if not InCombatLockdown() then -- Flash spec icon button (TODO: Un-taint this if necessary after GUI rework by copying the code)
 			
@@ -949,7 +949,7 @@ local function CreateNew(self)
 			hideFrame = (hideFrame
 			or spec > GetNumSpecializations() -- Class doesn't have as many specs
 			or not TotalAP.Cache.IsSpecCached(spec) -- Spec is not cached
-			or TotalAP.Cache.IsSpecIgnored(spec)) -- Spec is being ignored
+			or TotalAP.Cache.IsSpecIgnored(spec) -- Spec is being ignored
 			or not settings.infoFrame.enabled -- Bars are diabled via settings (TODO: infoFrame no longer exists -> rename settings?)
 			)
 			
@@ -985,7 +985,7 @@ local function CreateNew(self)
 			
 			end
 			
-			if maxAttainableRank > numTraitsPurchased and progressPercent > 0 and settings.infoFrame.showMiniBar and (artifactTier > 1 or maxAttainableRank < maxArtifactTraits) then -- Display MiniBar
+			if maxAttainableRank > numTraitsPurchased and progressPercent > 0 and settings.infoFrame.showMiniBar and not TotalAP.ArtifactInterface.IsArtifactMaxed(maxAttainableRank, artifactTier) then -- Display MiniBar
 
 				self:EnableBar("MiniBar")
 			
@@ -1016,7 +1016,7 @@ local function CreateNew(self)
 			end
 			
 			-- If the artifact is maxed, display "white" bar and hide the others to indicate this fact
-			if artifactTier == 1 and numTraitsPurchased >= 54 then -- Overwrite bars
+			if TotalAP.ArtifactInterface.IsArtifactMaxed(numTraitsPurchased, artifactTier) then -- Overwrite bars
 			
 				self:SetWidth(100, "UnspentBar")
 				self:EnableBar("UnspentBar")
