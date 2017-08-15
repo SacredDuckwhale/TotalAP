@@ -299,12 +299,8 @@ end
 -- @return Number of ignored specs; Doesn't count invalid specs and will return 0 if none are cached
 local function GetNumIgnoredSpecs(fqcn)
 	
-	if not fqcn then -- Use currently logged in character
-		fqcn = TotalAP.Utils.GetFQCN() 
-	end
-	
-	TotalAP.Debug("Counting ignored specs for character " .. fqcn)
-	
+	fqcn = fqcn or TotalAP.Utils.GetFQCN() -- Use currently logged in character (TODO: Validate via Utils.IsFQCN)
+		
 	local numIgnoredSpecs = 0
 	
 	for i = 1, GetNumSpecializations() do -- Test if this spec is currently set to being ignored
@@ -312,7 +308,6 @@ local function GetNumIgnoredSpecs(fqcn)
 		local isSpecIgnored = GetValue(fqcn, i, "isIgnored")
 		
 		if isSpecIgnored then
-			TotalAP.Debug("Spec " .. i .. " was found to be ignored")
 			numIgnoredSpecs = numIgnoredSpecs + 1
 		end
 		
