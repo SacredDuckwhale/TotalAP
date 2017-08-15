@@ -66,10 +66,8 @@ globals = {
 	"TotalAPKnowledgeSliderLow",
 	"TotalAPKnowledgeSliderThumb",
 	
-	-- FrameXML (actually used -> added manually)
+	-- FrameXML (actually used -> added manually) TODO: Don't use them unless absolutely necessary, which hopefully avoids further taint issues?
 	"MainMenuBar_GetNumArtifactTraitsPurchasableFromXP",
-	"ActionButton_ShowOverlayGlow",
-	"ActionButton_HideOverlayGlow",
 	
 	-- enums and constants (actually used -> added manually)
 
