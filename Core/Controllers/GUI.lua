@@ -81,7 +81,7 @@ local function SetActiveView(name)
 	-- TODO: If view doesn't exist, Debug message
 	if not name then
 		name = "DefaultView"
-		TotalAP.Debug("Attempted to set view with an invalid name; using " .. name .. " instead")
+		TotalAP.Debug("Attempted to set view with an invalid name; using " .. tostring(name) .. " instead")
 	end
 
 	-- Set view to active

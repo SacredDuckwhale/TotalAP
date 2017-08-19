@@ -262,7 +262,7 @@ local function ValidateTable(t, relPath, v)
 	
 	if t == nil or not type(t) == "table" then -- Skip validation for invalid table parameter
 	
---		TotalAP.Debug("ValidateTable -> Skipped validation because an invalid table parameter was supplied (with relPath = " .. relPath .. ")")
+--		TotalAP.Debug("ValidateTable -> Skipped validation because an invalid table parameter was supplied (with relPath = " .. tostring(relPath) .. ")")
 		return
 	
 	end
@@ -278,21 +278,21 @@ local function ValidateTable(t, relPath, v)
 
 		if IsValid == nil then -- No validation routine existed -> Value is likely deprecated and no longer required
 		
-			TotalAP.Debug("ValidateTable -> Found deprecated value for key = " .. key .. " (lookup = " .. absPath .. ")")
+			TotalAP.Debug("ValidateTable -> Found deprecated value for key = " .. tostring(key) .. " (lookup = " .. tostring(absPath) .. ")")
 			
 			-- Remove obsolete value
 			t[key] = nil
-			TotalAP.Debug("ValidateTable -> Dropped obsolete value for key = " .. key)
+			TotalAP.Debug("ValidateTable -> Dropped obsolete value for key = " .. tostring(key))
 		
 		else
 			
 			if not (type(IsValid) == "function" and IsValid(value)) then -- Validation failed -> Reset to default
 		
-				TotalAP.Debug("ValidateTable -> Validation failed for key: " .. key .. " (lookup = " .. absPath .. ")")
+				TotalAP.Debug("ValidateTable -> Validation failed for key: " .. tostring(key) .. " (lookup = " .. tostring(absPath) .. ")")
 				
 				-- Load default value
 				t[key] = TotalAP.Utils.FieldLookup(absPath, defaultSettings) -- VERY slow, but it shouldn't really happen all that often that a saved variable gets corrupted or otherwise messed up
-				TotalAP.Debug("ValidateTable -> Restored default value for key = " .. key)
+				TotalAP.Debug("ValidateTable -> Restored default value for key = " .. tostring(key))
 				
 			else -- Validation was successful -> Everything is in order
 		
@@ -356,14 +356,14 @@ local function MigrateToAceDB(savedVars)
 			
 			for key, value in pairs(savedVars) do -- Check if this setting is still required (not all are, as some might be outdated -> Those will be dropped by the validation routine once they are in the AceDB profiles table)
 			
-				TotalAP.Debug("MigrateToAceDB -> Checking key = " .. key .. " with value = " .. tostring(value))
+				TotalAP.Debug("MigrateToAceDB -> Checking key = " .. tostring(key) .. " with value = " .. tostring(value))
 			
 				if not (key == "profiles" or key == "profileKeys") and value ~= nil then -- It's not a key that was set by AceDB -> Migrate it
 				
 					TotalAP.Debug("Current value in AceDB: " .. tostring(settings[key]))
 					settings[key] = value -- Migrate to AceDB profile
 					savedVars[key] = nil -- Drop obsolete entry
-					TotalAP.Debug("MigrateToAceDB -> Dropped obsolete entry for key = " .. key .. " after copying it to AceDB profile")
+					TotalAP.Debug("MigrateToAceDB -> Dropped obsolete entry for key = " .. tostring(key) .. " after copying it to AceDB profile")
 				
 				end
 			

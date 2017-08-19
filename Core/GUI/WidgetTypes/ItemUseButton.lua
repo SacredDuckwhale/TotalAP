@@ -188,7 +188,7 @@ local function CreateNew(self, name, parent)
 			
 		else -- Key will have to be looked up in the WOW Frame object
 		
-			TotalAP.Debug("Key " .. key .. " not found in ItemUseButton or DisplayFrame, checking for FrameObject now")
+			TotalAP.Debug("Key " .. tostring(key) .. " not found in ItemUseButton or DisplayFrame, checking for FrameObject now")
 			
 			if table.FrameObject and table.FrameObject[key] then -- This ItemUseButton has a valid FrameObject being stored -> Use it
 			
