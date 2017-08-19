@@ -365,13 +365,21 @@ local function SetValue(fqcn, specID, key, value)
 	end
 	
 
-	if key ~= nil and type(key) == "string" and ValidateEntry(key, value) then --Can set cache entry to new value
-		cache[fqcn][specID][key] = value
+	if key ~= nil and type(key) == "string" then -- Key is valid
+	
+		if and ValidateEntry(key, value) then -- Value is valid, too -> Can set cache entry to new value
+		
+			cache[fqcn][specID][key] = value
+		
+		else -- Don't set the new value
+			
+			TotalAP.Debug("Attempted to set cache entry for key = " .. tostring(key) .. " to value = " .. tostring(value) .. ", but value is invalid")
+						
+		end
+		
 	else -- Key is invalid -> setting it would be pointless, as the next initialisation routine will remove it anyway
 		TotalAP.Debug("Attempted to set cache entry for key = " .. tostring(key) .. ", but key is invalid")
 	end
-	
-
 	
 end
 
