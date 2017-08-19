@@ -95,7 +95,11 @@ local function GetValue(self, key, bar)
 	if bar then -- Return width for this bar
 		
 		if self[bar] then
-			value= self[bar][key] or defaultValues[bar][key]
+			if self[bar][key] ~= nil then
+				value= self[bar][key]
+			else
+				 value = defaultValues[bar][key]
+			end
 		else
 			value = defaultValues[bar][key]
 		end
