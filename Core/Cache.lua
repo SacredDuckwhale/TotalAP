@@ -209,16 +209,14 @@ local function SetValue(fqcn, specID, key, value)
 		
 	end
 	
-	local entry = GetEntry(fqcn, specID)
-	
-	if not (entry and key and entry[key] ~= nil	) then -- Key is invalid or entry doesn't exist
-	
-		TotalAP.Debug("Attempted to set cache entry for key = " .. tostring(key) .. ", but key is invalid or entry doesn't exist")
-		return
-		
+
+	if key ~= nil and type(key) == "string" and ValidateEntry(key, value) then --Can set cache entry to new value
+		cache[fqcn][specID][key] = value
+	else -- Key is invalid -> setting it would be pointless, as the next initialisation routine will remove it anyway
+		TotalAP.Debug("Attempted to set cache entry for key = " .. tostring(key) .. ", but key is invalid")
 	end
 	
-	entry[key] = value
+
 	
 end
 
@@ -692,7 +690,7 @@ local function SetArtifactTier(tier, spec, fqcn)
 	local fqcn = fqcn or TotalAP.Utils.GetFQCN()
 	local spec = spec or GetSpecialization()
 
-	return SetValue(fqcn, spec, "artifactTier", tier)
+	SetValue(fqcn, spec, "artifactTier", tier)
 
 end
 
@@ -719,7 +717,7 @@ local function SetUnspentAP(value, spec, fqcn)
 	local fqcn = fqcn or TotalAP.Utils.GetFQCN()
 	local spec = spec or GetSpecialization()
 
-	return SetValue(fqcn, spec, "thisLevelUnspentAP", value)
+	SetValue(fqcn, spec, "thisLevelUnspentAP", value)
 
 end
 
@@ -746,7 +744,7 @@ local function SetNumTraits(numTraits, spec, fqcn)
 	local fqcn = fqcn or TotalAP.Utils.GetFQCN()
 	local spec = spec or GetSpecialization()
 
-	return SetValue(fqcn, spec, "numTraitsPurchased", numTraits)
+	SetValue(fqcn, spec, "numTraitsPurchased", numTraits)
 
 end
 
