@@ -530,15 +530,23 @@ local function Initialise()
 	if not cache[fqcn] then -- Entry for this char doesn't exist -> create it
 			
 		cache[fqcn] = {}
+	
+	end
+	
+	for spec=1, GetNumSpecializations() do -- create empty table for this spec and add default values where necessary
+	
+		if not cache[fqcn][spec] then -- Spec has no entry yet -> Load with defaults
 		
-		for spec=1, GetNumSpecializations() do -- create empty table for this spec and add default values
 			cache[fqcn][spec] = {}
+			
 			for key, value in pairs(defaults) do -- add default value so that the newly created cache entry is valid
 				cache[fqcn][spec][key] = value
 			end
-			
+		
 		end
+		
 	end
+
 	
 	-- Validate cache
 	local isCacheValid = Validate()

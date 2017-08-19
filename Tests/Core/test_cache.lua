@@ -296,10 +296,22 @@ do
 			["artifactTier"] = nil,
 			["isIgnored"] = false
 		}
+		TotalArtifactPowerCache = nil -- unset
 		R[fqcn] = { Entry, Entry, Entry}
 		
 		RunTest()
 		-- Cache should be empty, but valid at this point (only consisting of default values for all specs)
+		
+		-- If for some reason the cache was only partially initialised, it should still result in the same table
+		TotalArtifactPowerCache = {}
+		RunTest()
+		
+		TotalArtifactPowerCache = { [fqcn] = {} }
+		RunTest()
+		
+		TotalArtifactPowerCache = {}
+		RunTest()
+		
 		
 	end
 
