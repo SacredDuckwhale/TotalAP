@@ -200,7 +200,7 @@ local function HasCorrectSpecArtifactEquipped()
 	local specID = GetSpecialization(); -- 1 to 4
 
 	-- Check all artifacts for this spec
---	TotalAP.Debug(format("Checking artifacts for class %d, spec %d", classID, specID));
+	TotalAP.Debug(format("Checking artifacts for class %d, spec %d", classID, specID));
 	
 	local itemID = TotalAP.DB.GetArtifactItemID(classID, specID)
 
