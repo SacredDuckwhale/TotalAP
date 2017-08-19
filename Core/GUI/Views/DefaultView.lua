@@ -774,7 +774,7 @@ local function CreateNew(self)
 			 end
 			 
 			 TotalAP.ChatMsg(format(TotalAP.L["Ignoring spec %d (%s) for character %s"], spec, select(2, GetSpecializationInfo(spec)), fqcn))
-			 TotalAP.Cache.IgnoreSpec(fqcn, spec)
+			 TotalAP.Cache.IgnoreSpec(spec)
 			 
 			 -- Show one-time warning if necessary
 			if not TotalAP.specIgnoredWarningGiven then
