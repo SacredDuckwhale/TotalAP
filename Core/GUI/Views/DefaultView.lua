@@ -612,7 +612,9 @@ local function CreateNew(self)
 		
 		local UpdateFunction = function(self)
 			
-			if self:GetAssignedSpec() == GetSpecialization() then -- Indicate active spec via background colour
+			local spec = self:GetAssignedSpec()
+			
+			if spec == GetSpecialization() then -- Indicate active spec via background colour
 			
 				self:SetBackdropColour("#FF8000")
 			
@@ -626,7 +628,7 @@ local function CreateNew(self)
 			
 			-- Hide when:
 			hideFrame = (hideFrame
-			or TotalAP.Cache.IsSpecIgnored(self:GetAssignedSpec()) -- Assigned spec is being ignored
+			or TotalAP.Cache.IsSpecIgnored(spec) -- Assigned spec is being ignored
 			or GetNumSpecializations() < self:GetAssignedSpec() -- Class doesn't have as many specs
 			)
 			
@@ -634,8 +636,7 @@ local function CreateNew(self)
 			if hideFrame then return end
 			
 			-- Reposition if any specs have been ignored to make sure there are no odd-looking gaps in the display
-			local assignedSpec = self:GetAssignedSpec()
-			local displaySpec = GetDisplayOrderForSpec(assignedSpec)
+			local displaySpec = GetDisplayOrderForSpec(spec)
 			
 			local combinedBarsHeight = (GetNumSpecializations() - TotalAP.Cache.GetNumIgnoredSpecs()) * (2 * barInset + barHeight + hSpace) -- TODO: DRY
 		
@@ -651,8 +652,8 @@ local function CreateNew(self)
 			
 		--	self:SetRelativePosition(maxButtonSize + vSpace, - ( barHeight + 2 * barInset + hSpace) - delta)
 
-			local offsetY = (assignedSpec - displaySpec) * (hSpace + specIconSize + 2 * specIconBorderWidth)
-			self:SetRelativePosition(maxButtonSize + vSpace + barWidth + vSpace, - ( barHeight + barInset + hSpace + (assignedSpec - 1) * (specIconSize + 2 * specIconBorderWidth + hSpace)) + offsetY - delta)
+			local offsetY = (spec - displaySpec) * (hSpace + specIconSize + 2 * specIconBorderWidth)
+			self:SetRelativePosition(maxButtonSize + vSpace + barWidth + vSpace, - ( barHeight + barInset + hSpace + (spec - 1) * (specIconSize + 2 * specIconBorderWidth + hSpace)) + offsetY - delta)
 			
 		end
 		
