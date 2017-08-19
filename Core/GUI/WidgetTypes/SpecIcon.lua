@@ -186,18 +186,18 @@ local function CreateNew(self, name, parent)
 	setmetatable(SpecIconObject, self)  -- Set newly created object to inherit from SpecIcon (template, as defined here)
 	self.__index = function(table, key) 
 
-		TotalAP.Debug("CreateNew -> Meta lookup of key: " .. key .. " in SpecIcon")
-		if self[key] then -- Key exists in SpecIcon class (or DisplayFrame) -> Use it (no need to look anything up, really)
+--		TotalAP.Debug("CreateNew -> Meta lookup of key: " .. key .. " in SpecIcon")
+		if self[key] ~= nil then -- Key exists in SpecIcon class (or DisplayFrame) -> Use it (no need to look anything up, really)
 		
 			return self[key]  -- DisplayFrame is the actual superclass, but the Frame API calls should be used on a FrameObject instead
 			
 		else -- Key will have to be looked up in the WOW Frame object
 		
-			TotalAP.Debug("Key " .. key .. " not found in SpecIcon or DisplayFrame, checking for FrameObject now")
+--			TotalAP.Debug("Key " .. key .. " not found in SpecIcon or DisplayFrame, checking for FrameObject now")
 			
 			if table.FrameObject and table.FrameObject[key] then -- This SpecIcon has a valid FrameObject being stored -> Use it
 			
-				TotalAP.Debug("CreateNew -> " .. key .. " will be looked up in FrameObject")
+--				TotalAP.Debug("CreateNew -> " .. key .. " will be looked up in FrameObject")
 				return table.FrameObject[key]
 				
 			end

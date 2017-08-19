@@ -181,8 +181,8 @@ local function CreateNew(self, name, parent)
 	setmetatable(ItemUseButtonObject, self)  -- Set newly created object to inherit from ItemUseButton (template, as defined here)
 	self.__index = function(table, key) 
 
-		TotalAP.Debug("CreateNew -> Meta lookup of key: " .. key .. " in ItemUseButton")
-		if self[key] then -- Key exists in ItemUseButton class (or DisplayFrame) -> Use it (no need to look anything up, really)
+--		TotalAP.Debug("CreateNew -> Meta lookup of key: " .. key .. " in ItemUseButton")
+		if self[key] ~= nil then -- Key exists in ItemUseButton class (or DisplayFrame) -> Use it (no need to look anything up, really)
 		
 			return self[key]  -- DisplayFrame is the actual superclass, but the Frame API calls should be used on a FrameObject instead
 			
@@ -192,7 +192,7 @@ local function CreateNew(self, name, parent)
 			
 			if table.FrameObject and table.FrameObject[key] then -- This ItemUseButton has a valid FrameObject being stored -> Use it
 			
-				TotalAP.Debug("CreateNew -> " .. key .. " will be looked up in FrameObject")
+--				TotalAP.Debug("CreateNew -> " .. key .. " will be looked up in FrameObject")
 				return table.FrameObject[key]
 				
 			end
@@ -204,7 +204,7 @@ local function CreateNew(self, name, parent)
 	-- Create actual WOW Frame (will be invisible, as backdrop etc. will only be applied when rendering, which happens later)
 	name = addonName .. (name or (self:GetName() or "ItemUseButton" .. self:GetNumInstances()))  -- e.g., "TotalAPItemUseButton1" if no other name was provided
 	parent = (parent and (addonName .. parent)) or parent or "UIParent"
-	TotalAP.Debug("CreateNew -> Creating frame with name = " .. name .. ", parent = " .. parent) 
+--	TotalAP.Debug("CreateNew -> Creating frame with name = " .. name .. ", parent = " .. parent) 
 	
 	ItemUseButtonObject:SetName(name)
 	ItemUseButtonObject:SetParent(parent)

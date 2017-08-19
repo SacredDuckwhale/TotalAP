@@ -40,7 +40,7 @@ local mt = {}
 setmetatable(DisplayFrame, mt)
 mt.__index = function(table, key)
 	
-	TotalAP.Debug("-- DisplayFrame -> Meta lookup for key = " .. key .. " in defaultValues")
+--	TotalAP.Debug("-- DisplayFrame -> Meta lookup for key = " .. key .. " in defaultValues")
 	return defaultValues[key]
 	
 end
@@ -51,7 +51,7 @@ DisplayFrame.__index = function(table, key)
 	-- Don't look up FrameObjects, as they're unique to each instance and can't be shared
 	if key == "FrameObject" then return end
 	
-	TotalAP.Debug("Meta lookup of key " .. key .. " in DisplayFrame")
+--	TotalAP.Debug("Meta lookup of key " .. key .. " in DisplayFrame")
 	
 	if TotalAP.GUI.DisplayFrame[key] ~= nil then
 	--	TotalAP.Debug("Key " .. key .. " was found in DisplayFrame, using it")

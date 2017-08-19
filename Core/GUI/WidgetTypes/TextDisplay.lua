@@ -187,8 +187,8 @@ local function CreateNew(self, name, parent, template)
 	setmetatable(TextDisplayObject, self)  -- Set newly created object to inherit from TextDisplay (template, as defined here)
 	self.__index = function(table, key) 
 
-		TotalAP.Debug("CreateNew -> Meta lookup of key: " .. key .. " in TextDisplay")
-		if self[key] then -- Key exists in TextDisplay class (or DisplayFrame) -> Use it (no need to look anything up, really)
+--		TotalAP.Debug("CreateNew -> Meta lookup of key: " .. key .. " in TextDisplay")
+		if self[key] ~= nil then -- Key exists in TextDisplay class (or DisplayFrame) -> Use it (no need to look anything up, really)
 		
 			return self[key]  -- DisplayFrame is the actual superclass, but the Frame API calls should be used on a FrameObject instead
 			
