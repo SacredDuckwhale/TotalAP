@@ -327,6 +327,10 @@ local function CreateNew(self)
 		
 		ActionButtonFrame:SetSize(maxButtonSize, maxButtonSize)
 		
+		ActionButtonFrameContainer.Update = function()
+		
+		end
+		
 	end
 	
 	local ActionButtonContainer = TotalAP.GUI.ItemUseButton:CreateNew("_DefaultView_ActionButton", "_DefaultView_ActionButtonFrameContainer")
