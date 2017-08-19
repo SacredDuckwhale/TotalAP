@@ -243,7 +243,7 @@ local function OnInventoryUpdate()
 	end
 	
 	-- Scan equipped artifact (TODO: Kind of doesn't belong here, but is necessary to initially cache a spec that hasn't been used before?)
-	--ScanArtifact()
+	ScanArtifact()
 	
 	-- Update GUI to display the most current information
 	UpdateGUI()
