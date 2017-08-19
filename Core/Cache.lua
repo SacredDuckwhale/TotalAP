@@ -367,7 +367,7 @@ local function SetValue(fqcn, specID, key, value)
 
 	if key ~= nil and type(key) == "string" then -- Key is valid
 	
-		if and ValidateEntry(key, value) then -- Value is valid, too -> Can set cache entry to new value
+		if ValidateEntry(key, value) then -- Value is valid, too -> Can set cache entry to new value
 		
 			cache[fqcn][specID][key] = value
 		
