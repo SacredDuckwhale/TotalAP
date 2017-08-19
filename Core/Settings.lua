@@ -38,7 +38,7 @@ local defaultSettings =	{
 		verbose = true,
 		showLoginMessage = true,
 		enabled = true,		-- This controls the entire display, but NOT the individual parts (which will be hidden, but their settings won't be overridden)
-		hideInCombat = true,
+		autoHide = true,
 		numberFormat = GetLocale(),
 		scanBank = true,
 		
@@ -177,7 +177,7 @@ local validators = {
 	
 	["debugMode"] = IsBoolean,
 	["enabled"] = IsBoolean,
-	["hideInCombat"] = IsBoolean,
+	["autoHide"] = IsBoolean,
 	["numberFormat"] = IsNumberFormat,
 	["showLoginMessage"] = IsBoolean,
 	["verbose"] = IsBoolean,

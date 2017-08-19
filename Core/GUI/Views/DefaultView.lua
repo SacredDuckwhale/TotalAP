@@ -154,10 +154,10 @@ local function CreateNew(self)
 			hideFrame = (hideFrame
 			or UnitLevel("player") < 98 -- Player is too low level for Legion content (Artifact Quest)
 			or not settings.enabled -- Display as a whole is being manually hidden (regardless of individual component's visibility)
-			or settings.hideInCombat and TotalAP.eventStates.isPlayerEngagedInCombat -- Player is engaged in combat
-			or TotalAP.eventStates.isPlayerUsingVehicle -- Player is using a vehicle
-			or TotalAP.eventStates.isPetBattleInProgress -- Player is participating in a pet battle
-			or TotalAP.eventStates.hasPlayerLostControl -- Player is using a Flight Master or stuck in film sequences, animations etc. 
+			or settings.autoHide and TotalAP.eventStates.isPlayerEngagedInCombat -- Player is engaged in combat
+			or settings.autoHide and TotalAP.eventStates.isPlayerUsingVehicle -- Player is using a vehicle
+			or settings.autoHide and TotalAP.eventStates.isPetBattleInProgress -- Player is participating in a pet battle
+			or settings.autoHide and TotalAP.eventStates.hasPlayerLostControl -- Player is using a Flight Master or stuck in film sequences, animations etc. 
 			or TotalAP.Cache.GetNumIgnoredSpecs() == GetNumSpecializations()) -- All specs are being ignored
 			
 			self:SetEnabled(not hideFrame)

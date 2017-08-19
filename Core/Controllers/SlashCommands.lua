@@ -59,7 +59,7 @@ local slashCommands = {
 	["unignore"] = L["Resets ignored specs for the currently active character"],
 	
 	["loginmsg"] = L["Toggle login message on load"],
-	["combat"] = L["Toggle visibility in combat"],
+	["autohide"] = L["Toggle visibility while items are unable to be used"],
 	["reset"] =  L["Load default settings (will overwrite any changes made)"],
 	["debug"] = L["Toggle debug mode (not particularly useful as long as everything is working as expected)"],
 	
@@ -224,14 +224,15 @@ local slashHandlers = {
 	
 	end,
 	
-	["combat"] =  function(settings) -- Toggle automatic hiding of the display while player is in combat (also: vehicle/pet battle but those can't be turned off here)
-		if settings.hideInCombat then
-			TotalAP.ChatMsg(L["Display will now remain visible in combat."]);
+	["autohide"] =  function(settings) -- Toggle automatic hiding of the display while player is unable to use AP items
+	
+		if settings.autoHide then
+			TotalAP.ChatMsg(L["Display will now remain visible at all times."])
 		else
-			TotalAP.ChatMsg(L["Display will now be hidden in combat."]);
+			TotalAP.ChatMsg(L["Display will now be hidden while items can't be used."])
 		end
 		
-	settings.hideInCombat = not settings.hideInCombat;
+	settings.autoHide = not settings.autoHide
 
 	end,
 	
