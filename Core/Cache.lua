@@ -55,6 +55,161 @@ local function GetReference()
 	
 end
 
+
+-- Validator functions (TODO: Duplicate code/DRY)
+local function IsBoolean(value)
+	return type(value) == "boolean"
+end	
+
+local function IsNumber(value)
+	return type(value) == "number"
+end	
+
+-- LUT for validator functions
+local validators = {
+	
+	["isIgnored"] = IsBoolean,
+	["artifactTier"] = IsNumber,
+	["thisLevelUnspentAP"] = IsNumber,
+	["numTraitsPurchased"] = IsNumber,
+
+}
+
+--- Validate a particular cache entry's data (by key)
+-- @param key The key to validate
+-- @param value The value to check
+-- @return Whether or not the given value is a valid entry for the given key; nil if either parameter is omitted or invalid
+local function ValidateEntry(key, value)
+	
+	if key ~= nil and value ~= nil then -- Both parameters were given -> validation can be run
+		local v = validators[key]
+		
+		if v ~= nil then -- key is valid at least -> check if value is valid also
+--			TotalAP.Debug("ValidateEntry -> Validation ran for key = " .. tostring(key) .. " and returned v = " .. tostring(v(value)))
+			return v(value)
+		end
+		
+--		TotalAP.Debug("ValidateEntry -> Validation failed for key = " .. tostring(key) .. " because the key is invalid")
+
+	else -- At least one parameter was missing/invalid -> return false if key was valid, and nil otherwise
+		
+		if key ~= nil and validators[key] then -- Key is valid, but value isn't -> return false instead of the usual nil
+--			TotalAP.Debug("ValidateEntry -> Validation failed for key = " .. tostring(key) .. " because the assigned value is invalid")
+			return false
+		end
+		
+	end
+	
+end
+
+--- Validate a particular spec entry's data (table contents)
+-- @param t The table containing the spec's cache entry (TODO: The spec number)
+-- @return Whether or not the given table (TODO: spec)  represents a valid entry; nil if it is omitted or an invalid type/empty table
+local function ValidateSpec(t)
+
+	-- Invalid parameter -> returns nil
+	if not (t and type(t) == "table") then
+		--TotalAP.Debug("ValidateSpec -> Validation failed because parameter was not a table")
+		return
+	end
+
+	local numKeys, isValidKey = 0
+	-- Check table contents
+	for key, value in pairs(t) do -- Validate the keys
+	
+		numKeys = numKeys + 1
+		isValidKey = ValidateEntry(key, value)
+		if not isValidKey then -- At least one key is invalid
+--			TotalAP.Debug("ValidateSpec -> Failed to validate entry for key: " .. key)
+			return false
+		end
+	
+	end
+
+	if numKeys and numKeys > 0 then -- Table is valid and contained no invalid keys -> return true, but only if all required keys exist (default values)
+	
+		local defaults = GetDefaults()
+		for key, value in pairs(defaults) do -- Check if all default values exist and are valid
+		
+			if t[key] == nil then -- Default value is missing -> This won't fly, as they are required to guarantee functionality
+--				TotalAP.Debug("ValidateSpec -> Missing required key that has a default value: " .. key)
+				return false
+			end
+		
+		end
+	
+		return true -- No errors were found
+
+	end -- implied: else return end => Table is empty -> return nil
+
+end
+
+--- Validates all specs for a given character
+-- @param t The table representing the cache entry for a character
+-- @return Whether or not the entry is a valid character entry; nil if it doesn't exist or the given parameter isn't a valid entry
+local function ValidateChar(t)
+
+	-- Invalid parameter -> returns nil
+	if not (t and type(t) == "table") then
+		--TotalAP.Debug("ValidateChar -> Validation failed because parameter was not a table")
+		return
+	end
+	
+		local numKeys, isValidSpecEntry = 0
+	-- Check table contents
+	for spec, entry in pairs(t) do -- Validate the keys
+	
+		numKeys = numKeys + 1
+		isValidSpecEntry = ValidateSpec(entry)
+		if not isValidSpecEntry then
+			--TotalAP.Debug("ValidateChar -> Failed to validate spec: " .. spec)
+			return false
+		end -- At least one spec entry is invalid
+	
+	end
+	
+	if numKeys and numKeys > 0 then -- Table is valid (not empty) and contained no invalid entries -> return true
+	
+		return true -- No errors were found
+		
+	end
+
+end
+
+--- Returns the number of valid spec entries currently saved in the cache (helper function)
+-- @return Number of specs that are cached and validated successfully
+local function GetNumEntries()
+
+	local numEntries = 0
+	local cache = GetReference()
+	for k, v in pairs(cache) do -- count entries
+	
+		if ValidateChar(v) then numEntries = numEntries + 1 end
+		
+	end
+
+	return numEntries
+	
+end
+
+--- Validate all entries in the saved cache
+-- @return Whether or not the cache is valid
+local function Validate()
+	
+	local cache = GetReference()
+	if not cache or not (GetNumEntries() > 0) then -- Cache doesn't exist at all -> needs to be initialised with default values
+		return false
+	end
+	
+	for key, entry in pairs(cache) do -- Validate entry for this character
+		ValidateChar(key) -- will return on failure
+	end
+	
+	return true -- only occurs on successful validation
+	
+end
+
+
 --- Returns the entire cache entry for a given character and spec
 -- @param fqcn Fully-qualified character name, to be used as the key
 -- @param specID Specialization ID, to be used as the secondary key
@@ -346,159 +501,6 @@ local function UnignoreAllSpecs(fqcn)
 		SetValue(fqcn, i, "isIgnored", false)
 	
 	end
-	
-end
-
--- Validator functions (TODO: Duplicate code/DRY)
-local function IsBoolean(value)
-	return type(value) == "boolean"
-end	
-
-local function IsNumber(value)
-	return type(value) == "number"
-end	
-
--- LUT for validator functions
-local validators = {
-	
-	["isIgnored"] = IsBoolean,
-	["artifactTier"] = IsNumber,
-	["thisLevelUnspentAP"] = IsNumber,
-	["numTraitsPurchased"] = IsNumber,
-
-}
-
---- Validate a particular cache entry's data (by key)
--- @param key The key to validate
--- @param value The value to check
--- @return Whether or not the given value is a valid entry for the given key; nil if either parameter is omitted or invalid
-local function ValidateEntry(key, value)
-	
-	if key ~= nil and value ~= nil then -- Both parameters were given -> validation can be run
-		local v = validators[key]
-		
-		if v ~= nil then -- key is valid at least -> check if value is valid also
---			TotalAP.Debug("ValidateEntry -> Validation ran for key = " .. tostring(key) .. " and returned v = " .. tostring(v(value)))
-			return v(value)
-		end
-		
---		TotalAP.Debug("ValidateEntry -> Validation failed for key = " .. tostring(key) .. " because the key is invalid")
-
-	else -- At least one parameter was missing/invalid -> return false if key was valid, and nil otherwise
-		
-		if key ~= nil and validators[key] then -- Key is valid, but value isn't -> return false instead of the usual nil
---			TotalAP.Debug("ValidateEntry -> Validation failed for key = " .. tostring(key) .. " because the assigned value is invalid")
-			return false
-		end
-		
-	end
-	
-end
-
---- Validate a particular spec entry's data (table contents)
--- @param t The table containing the spec's cache entry (TODO: The spec number)
--- @return Whether or not the given table (TODO: spec)  represents a valid entry; nil if it is omitted or an invalid type/empty table
-local function ValidateSpec(t)
-
-	-- Invalid parameter -> returns nil
-	if not (t and type(t) == "table") then
-		--TotalAP.Debug("ValidateSpec -> Validation failed because parameter was not a table")
-		return
-	end
-
-	local numKeys, isValidKey = 0
-	-- Check table contents
-	for key, value in pairs(t) do -- Validate the keys
-	
-		numKeys = numKeys + 1
-		isValidKey = ValidateEntry(key, value)
-		if not isValidKey then -- At least one key is invalid
---			TotalAP.Debug("ValidateSpec -> Failed to validate entry for key: " .. key)
-			return false
-		end
-	
-	end
-
-	if numKeys and numKeys > 0 then -- Table is valid and contained no invalid keys -> return true, but only if all required keys exist (default values)
-	
-		local defaults = GetDefaults()
-		for key, value in pairs(defaults) do -- Check if all default values exist and are valid
-		
-			if t[key] == nil then -- Default value is missing -> This won't fly, as they are required to guarantee functionality
---				TotalAP.Debug("ValidateSpec -> Missing required key that has a default value: " .. key)
-				return false
-			end
-		
-		end
-	
-		return true -- No errors were found
-
-	end -- implied: else return end => Table is empty -> return nil
-
-end
-
---- Validates all specs for a given character
--- @param t The table representing the cache entry for a character
--- @return Whether or not the entry is a valid character entry; nil if it doesn't exist or the given parameter isn't a valid entry
-local function ValidateChar(t)
-
-	-- Invalid parameter -> returns nil
-	if not (t and type(t) == "table") then
-		--TotalAP.Debug("ValidateChar -> Validation failed because parameter was not a table")
-		return
-	end
-	
-		local numKeys, isValidSpecEntry = 0
-	-- Check table contents
-	for spec, entry in pairs(t) do -- Validate the keys
-	
-		numKeys = numKeys + 1
-		isValidSpecEntry = ValidateSpec(entry)
-		if not isValidSpecEntry then
-			--TotalAP.Debug("ValidateChar -> Failed to validate spec: " .. spec)
-			return false
-		end -- At least one spec entry is invalid
-	
-	end
-	
-	if numKeys and numKeys > 0 then -- Table is valid (not empty) and contained no invalid entries -> return true
-	
-		return true -- No errors were found
-		
-	end
-
-end
-
---- Returns the number of valid spec entries currently saved in the cache (helper function)
--- @return Number of specs that are cached and validated successfully
-local function GetNumEntries()
-
-	local numEntries = 0
-	local cache = GetReference()
-	for k, v in pairs(cache) do -- count entries
-	
-		if ValidateChar(v) then numEntries = numEntries + 1 end
-		
-	end
-
-	return numEntries
-	
-end
-
---- Validate all entries in the saved cache
--- @return Whether or not the cache is valid
-local function Validate()
-	
-	local cache = GetReference()
-	if not cache or not (GetNumEntries() > 0) then -- Cache doesn't exist at all -> needs to be initialised with default values
-		return false
-	end
-	
-	for key, entry in pairs(cache) do -- Validate entry for this character
-		ValidateChar(key) -- will return on failure
-	end
-	
-	return true -- only occurs on successful validation
 	
 end
 
