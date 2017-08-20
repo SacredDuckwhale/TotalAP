@@ -61,7 +61,7 @@ end
 -- @returns True if the FrameObject is set to be flashing; false otherwise
 local function GetFlashing(self)
 
-	return self.isFlashing or defaultValues.isFlashing
+	return (self.isFlashing ~= nil and self.isFlashing) or defaultValues.isFlashing -- TODO: Needs to be done for all widgets... Refactor first to save work
 
 end
 
