@@ -47,9 +47,9 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 	--Note: This is NOT the individual weapon's name if it consists of mainhand / offhand, but the "general item"'s name that they turn into when not equipped (e.g., "Warswords of the Valarjar")
 	
 	-- Load cached values
-	local numTraitsPurchased = TotalAP.Cache.GetNumTraits()
-	local maxAvailableAP = TotalAP.Cache.GetUnspentAP() + TotalAP.inventoryCache.inBagsAP
-	local tier = TotalAP.Cache.GetArtifactTier()
+	local numTraitsPurchased = TotalAP.Cache.GetNumTraits(specID)
+	local maxAvailableAP = TotalAP.Cache.GetUnspentAP(specID) + TotalAP.inventoryCache.inBagsAP
+	local tier = TotalAP.Cache.GetArtifactTier(specID)
 	local maxKnowledgeLevel = C_ArtifactUI.GetMaxArtifactKnowledgeLevel()
 	
 	-- Calculate progress from cached values
