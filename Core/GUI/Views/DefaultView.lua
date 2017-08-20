@@ -140,14 +140,17 @@ local function CreateNew(self)
 		AnchorFrame:SetFrameStrata("BACKGROUND")
 		AnchorFrameContainer:SetBackdropColour("#D0D0D0")
 		AnchorFrameContainer:SetBackdropAlpha(0)
-		AnchorFrame:SetSize(maxButtonSize + hSpace + barWidth + hSpace + specIconSize + 2 * specIconBorderWidth + hSpace + specIconTextWidth, barHeight + vSpace + maxButtonSize + vSpace + sliderHeight) -- TODO: Update dynamically (script handlers?) to account for variable number of specs
-		
+	
 		-- Player interaction
 		AnchorFrame:SetMovable(true) 
 		AnchorFrame:EnableMouse(true)
 		AnchorFrame:RegisterForDrag("LeftButton")
 		
 		AnchorFrameContainer.Update = function(self)
+		
+			local numSpecs = GetNumSpecializations()
+			local numIgnoredSpecs = TotalAP.Cache.GetNumIgnoredSpecs()
+			local numDisplayedSpecs = numSpecs - numIgnoredSpecs
 		
 			local hideFrame = false
 			-- Hide when:
@@ -158,11 +161,22 @@ local function CreateNew(self)
 			or settings.autoHide and TotalAP.eventStates.isPlayerUsingVehicle -- Player is using a vehicle
 			or settings.autoHide and TotalAP.eventStates.isPetBattleInProgress -- Player is participating in a pet battle
 			or settings.autoHide and TotalAP.eventStates.hasPlayerLostControl -- Player is using a Flight Master or stuck in film sequences, animations etc. 
-			or TotalAP.Cache.GetNumIgnoredSpecs() == GetNumSpecializations()) -- All specs are being ignored
+			or numIgnoredSpecs == numSpecs) -- All specs are being ignored
 			
 			self:SetEnabled(not hideFrame)
 			
 			if hideFrame then return end
+		
+			-- Calculate and update size depending on number of (displayed) specs
+			local width = maxButtonSize + vSpace + barWidth + vSpace + specIconSize + 2 * specIconBorderWidth + vSpace + specIconTextWidth
+			
+			-- TODO: DRY
+			local totalBarHeight = barHeight + 2 * barInset
+			local progressBarHeight = numDisplayedSpecs * (totalBarHeight) + (numDisplayedSpecs - 1) * hSpace
+			local height = totalBarHeight + hSpace + max(maxButtonSize, progressBarHeight) + hSpace + sliderHeight -- ULA Bar + Progress Bars  + Slider (NYI)
+TotalAP.Debug("AnchorFrame dimensions: width = " .. width .. ", height = " .. height .. " -> progressBarHeight = " .. progressBarHeight .. ", maxButtonSize = " .. maxButtonSize)
+			AnchorFrame:SetSize(width, height) -- TODO: Update dynamically (script handlers?) to account for variable number of specs
+		
 		
 		end
 		
