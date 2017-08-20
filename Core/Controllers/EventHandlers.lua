@@ -386,7 +386,8 @@ local eventList = {
 	["ARTIFACT_XP"] = OnArtifactUpdate,
 	["ARTIFACT_UPDATE"] = OnArtifactUpdate,
 	["BAG_UPDATE_DELAYED"] = OnInventoryUpdate,
-	["TALENT_GROUP_CHANGED"] = OnSpecChanged,
+	--["ACTIVE_TALENT_GROUP_CHANGED"] = OnSpecChanged, -- TODO: Not necessary if using
+	["PLAYER_SPECIALIZATION_CHANGED"] = OnSpecChanged,
 	
 	-- Scan bank contents
 	["BANKFRAME_OPENED"] = OnBankOpened,
