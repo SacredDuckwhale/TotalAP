@@ -56,6 +56,7 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 	local maxAttainableRank = numTraitsPurchased + TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(numTraitsPurchased, maxAvailableAP, tier) 
 	local progressPercent = TotalAP.ArtifactInterface.GetProgressTowardsNextRank(numTraitsPurchased, maxAvailableAP, tier)
 	local knowledgeLevel = TotalAP.ArtifactInterface.GetArtifactKnowledgeLevel() 
+	local maxAttainableKnowledgeLevel = knowledgeLevel + TotalAP.inventoryCache.numTomes
 	
 	-- Calculate shipment data (for Artifact Research Notes)
 	local shipmentsReady, shipmentsTotal = TotalAP.ArtifactInterface.GetNumAvailableResearchNotes()
@@ -81,7 +82,7 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
      
 	
 	GameTooltip:AddLine("\n" .. format(L["Artifact Knowledge Level: %d"], knowledgeLevel), 1, 1, 1)
-	if maxKnowledgeLevel > knowledgeLevel and shipmentsReady ~= nil then -- Research isn't maxed yet
+	if maxKnowledgeLevel > knowledgeLevel and shipmentsReady ~= nil and maxKnowledgeLevel > maxAttainableKnowledgeLevel then -- Research isn't maxed yet
 		
 		if shipmentsReady > 0 then -- Shipments are available -> Display current work order progress
 			GameTooltip:AddLine(format(L["Shipments ready for pickup: %d/%d"], shipmentsReady, shipmentsTotal))
