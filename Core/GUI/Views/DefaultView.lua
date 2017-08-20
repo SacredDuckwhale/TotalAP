@@ -1030,7 +1030,13 @@ TotalAP.Debug("spec " .. spec .. ": unspentAP = " .. unspentAP .. ", numTraitsPu
 				self:EnableBar("UnspentBar")
 				self:DisableBar("InBagsBar")
 				self:DisableBar("InBankBar")
-				
+			
+				self:SetColour("UnspentBar", "#EFE5B0") -- Colour bar white-ish
+			
+			else -- Reset unspent bar to its default colour
+			
+				self:SetColour("UnspentBar", "#3296FA")
+			
 			end
 			
 			-- Reposition if any specs have been ignored to make sure there are no odd-looking gaps in the display
