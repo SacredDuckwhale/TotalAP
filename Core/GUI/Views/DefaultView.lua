@@ -29,6 +29,7 @@ local DefaultView = {}
 
 
 --- Returns the rearranged order of specs for display in an ordered View
+-- @return The order that specs will be displayed in after taking into account ignored specs (which won't be counted as they are hidden)
 local function GetSpecDisplayOrder()
 
 	local displayOrder = { 1, 2, 3, 4 } -- default order, used if no specs are being ignored
@@ -51,7 +52,7 @@ end
 
 -- Returns the rearranged order of a given spec for display in an ordered View
 -- @param spec The spec number (1-4)
--- @returns The order in which it should be displayed (0-4; 0 meaning "ignored" = don't display)
+-- @return The order in which it should be displayed (0-4; 0 meaning "ignored" = don't display)
 local function GetDisplayOrderForSpec(spec)
 
 	local displayOrder = GetSpecDisplayOrder()
