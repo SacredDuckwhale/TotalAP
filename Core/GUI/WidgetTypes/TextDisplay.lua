@@ -199,7 +199,7 @@ local function CreateNew(self, name, parent, template)
 	-- Create actual WOW Frame (will be invisible, as backdrop etc. will only be applied when rendering, which happens later)
 	name = addonName .. (name or (self:GetName() or "TextDisplay" .. self:GetNumInstances()))  -- e.g., "TotalAPTextDisplay1" if no other name was provided
 	parent = (parent and (addonName .. parent)) or parent or "UIParent"
-	TotalAP.Debug("CreateNew -> Creating frame with name = " .. name .. ", parent = " .. parent) 
+--	TotalAP.Debug("CreateNew -> Creating frame with name = " .. name .. ", parent = " .. parent) 
 	TextDisplayObject:SetName(name)
 	TextDisplayObject:SetParent(parent)
 	local ParentFrame = _G[parent] or UIParent
