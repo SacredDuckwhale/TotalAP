@@ -20,20 +20,20 @@ if not TotalAP then return end
 
 local researchTomes = {
 
-	139390,  -- Artifact Research Notes (max. AK 25) TODO: obsolete? Seem to be replaced by the AK 50 version entirely
-	146745,  -- Artifact Research Notes (max. AK 50)
-	147860,  -- Empowered Elven Tome (7.2)
-	144433,  -- Artifact Research Compendium: Volume I
-	144434,  -- Artifact Research Compendium: Volumes I & II
-	144431,  -- Artifact Research Compendium: Volumes I-III
-	144395,  -- Artifact Research Synopsis
-	147852,  -- Artifact Research Compendium: Volumes I-V
-	147856,  -- Artifact Research Compendium: Volumes I-IX
-	147855,  -- Artifact Research Compendium: Volumes I-VIII
-	144435,  -- Artifact Research Compendium: Volumes I-IV
-	147853,  -- Artifact Research Compendium: Volumes I-VI
-	147854,  -- Artifact Research Compendium: Volumes I-VII
-	141335,  -- Lost Research Notes (TODO: Is this even ingame? -> Part of the obsolete Mage quest "Hidden History", perhaps?)
+	[139390] = true,  -- Artifact Research Notes (max. AK 25) TODO: obsolete? Seem to be replaced by the AK 50 version entirely
+	[146745] = true,  -- Artifact Research Notes (max. AK 50)
+	[147860] = true,  -- Empowered Elven Tome (7.2)
+	[144433] = true,  -- Artifact Research Compendium: Volume I
+	[144434] = true,  -- Artifact Research Compendium: Volumes I & II
+	[144431] = true,  -- Artifact Research Compendium: Volumes I-III
+	[144395] = true,  -- Artifact Research Synopsis
+	[147852] = true,  -- Artifact Research Compendium: Volumes I-V
+	[147856] = true,  -- Artifact Research Compendium: Volumes I-IX
+	[147855] = true,  -- Artifact Research Compendium: Volumes I-VIII
+	[144435] = true,  -- Artifact Research Compendium: Volumes I-IV
+	[147853] = true,  -- Artifact Research Compendium: Volumes I-VI
+	[147854] = true,  -- Artifact Research Compendium: Volumes I-VII
+	[141335] = true,  -- Lost Research Notes (TODO: Is this even ingame? -> Part of the obsolete Mage quest "Hidden History", perhaps?)
 
 }
 

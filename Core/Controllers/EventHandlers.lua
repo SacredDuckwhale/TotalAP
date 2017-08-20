@@ -82,7 +82,7 @@ local function ScanInventory(scanBank)
 					
 					isTome = TotalAP.DB.IsResearchTome(tempItemID)
 					isToken = TotalAP.DB.IsArtifactPowerToken(tempItemID)
-
+--TotalAP.Debug("Checked item: " .. tempItemLink .. " (" .. tempItemID .. ")-> isTome = " .. tostring(isTome) .. ", isToken = " .. tostring(isToken))
 					-- TODO: Move this to DB\ResearchTomes or something, and access via helper function (similar to artifacts)
 					if isTome then -- AK Tome is available for use -> Display button regardless of current AP tokens
 					
