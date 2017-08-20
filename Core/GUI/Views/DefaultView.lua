@@ -398,11 +398,8 @@ local function CreateNew(self)
 				GameTooltip:SetHyperlink(TotalAP.inventoryCache.displayItem.link)
 			end
 			
-
 			if not InCombatLockdown() then -- Flash action button (TODO: Un-taint this if necessary after GUI rework by copying the code)
-				
-				-- TODO: Check for persisting taint issues
-				
+
 				self:SetFlashing(flashButton)
 				
 			end
@@ -640,7 +637,7 @@ local function CreateNew(self)
 			
 			local combinedBarsHeight = (GetNumSpecializations() - TotalAP.Cache.GetNumIgnoredSpecs()) * (2 * barInset + barHeight + hSpace) -- TODO: DRY
 		
-			-- Align spec icons bars (sadly, this has to be done individually :()
+			-- Align spec icons to bars (sadly, this has to be done individually :()
 			local delta
 			if settings.infoFrame.alignment == "bottom" then -- Move to bottom border (above non-existing AK slider)
 				delta = AnchorFrame:GetHeight() - (barHeight + 2 * barInset + hSpace) - combinedBarsHeight
@@ -778,12 +775,6 @@ local function CreateNew(self)
 				end
 			
 			end
-			
-			
-	
-			---
-	
-			
 			 
 		end
  
@@ -806,6 +797,7 @@ local function CreateNew(self)
 		SpecIcon2:SetScript("OnMouseDown", AnchorFrame_OnDragStart)
 		SpecIcon3:SetScript("OnMouseDown", AnchorFrame_OnDragStart)
 		SpecIcon4:SetScript("OnMouseDown", AnchorFrame_OnDragStart)
+		
 		-- OnDragStop is handled by the spec icon's OnClick function
 
 	end
@@ -984,13 +976,13 @@ local function CreateNew(self)
 				self:DisableBar("UnspentBar")
 			
 			end
-			
-			if maxAttainableRank > numTraitsPurchased and progressPercent > 0 and settings.infoFrame.showMiniBar and not TotalAP.ArtifactInterface.IsArtifactMaxed(maxAttainableRank, artifactTier) then -- Display MiniBar
 
+			if maxAttainableRank > numTraitsPurchased and progressPercent > 0 and settings.infoFrame.showMiniBar and not TotalAP.ArtifactInterface.IsArtifactMaxed(maxAttainableRank, artifactTier) then -- Display MiniBar
+			
 				self:EnableBar("MiniBar")
 			
 			else
-				
+
 				self:DisableBar("MiniBar")
 			
 			end
