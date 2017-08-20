@@ -371,14 +371,14 @@ local function MigrateToAceDB(savedVars)
 		
 		else
 			
-			TotalAP.Debug("MigrateToAceDB -> Failed - No top-level entries exist")
+			TotalAP.Debug("MigrateToAceDB -> Aborted - No top-level entries exist")
 			return false
 		
 		end
 	
 	else
 				
-		TotalAP.Debug("MigrateToAceDB -> Failed - SavedVars are not currently managed by AceDB")
+		TotalAP.Debug("MigrateToAceDB -> Aborted - SavedVars are not currently managed by AceDB")
 		return false
 				
 	end
