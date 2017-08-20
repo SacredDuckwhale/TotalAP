@@ -81,7 +81,7 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 	end
      
 	if maxAttainableKnowledgeLevel > knowledgeLevel then -- Display maximum available AK level (counting usable tomes but not shipments that haven't been picked up -- TODO: Maybe they should be counted, too? But then they can't immediately be used and would have to be picked up first)
-		GameTooltip:AddLine("\n" .. format(L["Artifact Knowledge Level: %d"] .. " (%d)", knowledgeLevel, maxAttainableKnowledgeLevel), 1, 1, 1)
+		GameTooltip:AddLine("\n" .. format(L["Artifact Knowledge Level: %d"] .. " + %d", knowledgeLevel, TotalAP.inventoryCache.numTomes), 1, 1, 1)
 	else -- Display just the current AK level
 		GameTooltip:AddLine("\n" .. format(L["Artifact Knowledge Level: %d"], knowledgeLevel), 1, 1, 1)
 	end
