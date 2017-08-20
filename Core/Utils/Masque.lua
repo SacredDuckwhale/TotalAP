@@ -35,7 +35,7 @@ local function MasqueRegister(button, subGroup)
 	 
 	 local group = TotalAP.Masque:Group(TotalAP.L["TotalAP - Artifact Power Tracker"], subGroup)
 	 group:AddButton(button)
-	 TotalAP.Debug(format("Added button %s to Masque group %s.", button:GetName(), subGroup))
+--	 TotalAP.Debug(format("Added button %s to Masque group %s.", button:GetName(), subGroup))
 		 
 end
 
@@ -56,7 +56,7 @@ local function MasqueUpdate(button, subGroup)
  
 	 local group = TotalAP.Masque:Group(TotalAP.L["TotalAP - Artifact Power Tracker"], subGroup)
 	 group:ReSkin()
-	 TotalAP.Debug(format("Updated Masque skin for group: %s", subGroup))
+--	 TotalAP.Debug(format("Updated Masque skin for group: %s", subGroup))
 	 
 end
 
