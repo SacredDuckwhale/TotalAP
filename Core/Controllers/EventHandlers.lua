@@ -41,7 +41,7 @@ local function ScanInventory(scanBank)
 	
 	-- To be saved in the Inventory cache
 	local displayItem = {} -- The item that is going to be displayed on the actionButton (after the next call to GUI.Update())
-	local numItems, artifactPowerSum = 0, 0 -- These are for the current scan
+	local numItems, numTomes, artifactPowerSum = 0, 0, 0 -- These are for the current scan
 	local spellDescription, spellID, artifactPowerValue = nil, nil, 0  -- These are for the current item
 	
 		-- Queue IDs for all relevant bag that need to be scanned (this is mainly because the generic bank slot counts as a different "bag", but needs to be scanned as well)
@@ -89,11 +89,12 @@ local function ScanInventory(scanBank)
 						foundTome = not (UnitLevel("player") < 110) -- Only display tomes for max level characters (alts can't use them before level 110)
 						
 						if not foundTome then
-							TotalAP.Debug("Found Artifact Research tome -> Ignoring it, as it's unusable by low-level characters")
-						else
-							TotalAP.Debug("Found Artifact Research tome -> Displaying it instead of potential AP items")
+							TotalAP.Debug("Found Artifact Research tome, but the player's level is below 110 -> Tome is unusable by low-level characters and won't be displayed")
 						end
 
+						numTomes = numTomes + 1
+						TotalAP.Debug("Found research tome: " .. tempItemLink .. " -> numTomes = " .. numTomes)	
+						
 					end
 					
 					if isToken then -- Found token -> Use it in calculations
@@ -139,7 +140,8 @@ local function ScanInventory(scanBank)
 	else	-- Calculate AP value for inventory bags and update inventory cache so that other modules can access it)
 
 		local inventoryCache = TotalAP.inventoryCache
-		inventoryCache.foundTome = foundTome
+		inventoryCache.foundTome = foundTome -- TODO: Kind of obsolete now, can just do if numTomes > 0
+		inventoryCache.numTomes = numTomes
 		inventoryCache.displayItem = displayItem
 		inventoryCache.numItems = numItems
 		inventoryCache.inBagsAP = artifactPowerSum
