@@ -313,7 +313,7 @@ local function Render(self)
 		UnspentBar:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", posX, posY) 
 		InBagsBar:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", posX, posY) 
 		InBankBar:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", posX, posY) 
-		MiniBar:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", posX, posY - self:GetHeight() - self:GetHeight("MiniBar") + 1)
+		MiniBar:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", posX, posY - self:GetHeight() - self:GetHeight("MiniBar") + 2)
 
 		-- Resize
 		FrameObject:SetSize(self:GetWidth(), self:GetHeight())
@@ -338,8 +338,6 @@ local function Render(self)
 		if not self:IsBarEnabled("MiniBar") then
 				MiniBar.texture:SetVertexColor(0, 0, 0, 0)
 		end
-		
-		
 		
 	end
 	
