@@ -961,10 +961,11 @@ local function CreateNew(self)
 			local percentageInBankAP = min(math.floor(TotalAP.bankCache.inBankAP/ C_ArtifactUI.GetCostForPointAtRank(numTraitsPurchased, artifactTier) * 100), 100 - percentageUnspentAP - percentageInBagsAP)
 			local maxAttainableRank =  numTraitsPurchased + TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(numTraitsPurchased, unspentAP + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0),  artifactTier) 
 			local progressPercent = TotalAP.ArtifactInterface.GetProgressTowardsNextRank(numTraitsPurchased , unspentAP + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), artifactTier)
-			
+TotalAP.Debug("spec " .. spec .. ": unspentAP = " .. unspentAP .. ", numTraitsPurchased = " .. numTraitsPurchased .. ", artifactTier = " .. artifactTier); TotalAP.Debug("spec " .. spec .. ": percentageUnspentAP = " .. percentageUnspentAP .. ", percentageInBagsAP = " .. percentageInBagsAP .. ", percentageInBankAP = " .. percentageInBankAP .. ", maxAttainableRank = " .. maxAttainableRank .. ", progressPercent = " .. progressPercent)
+					
 			self:SetWidth(percentageUnspentAP, "UnspentBar")
-			self:SetWidth(percentageInBagsAP, "InBagsBar")
-			self:SetWidth(percentageInBankAP, "InBankBar")
+			self:SetWidth(percentageUnspentAP + percentageInBagsAP, "InBagsBar")
+			self:SetWidth(percentageUnspentAP + percentageInBagsAP + percentageInBankAP, "InBankBar")
 			self:SetWidth(progressPercent, "MiniBar")
 			
 			-- Toggle visibility for individual progress bars
