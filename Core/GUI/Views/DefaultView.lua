@@ -27,6 +27,32 @@ if not TotalAP then return end
 
 local DefaultView = {}
 
+	-- TODO: Get those from the settings, so that they can be changed in the options GUI (under tab: Views -> DefaultView, along with enabling/disabling/repositioning individual display components)
+	-- Stuff that needs to be moved to AceConfig settings
+	
+	local hSpace, vSpace = 2, 5 -- space between display elements
+	
+	local barWidth, barHeight, barInset = 100, 16, 2
+	
+	local minButtonSize, maxButtonSize = 20, 60 -- TODO: smaller than 60 looks odd, 80 before? should be 4x size of the bars at most, and 1x at the least to cover all specs
+	local defaultButtonSize = 40 -- TODO: Layout Cache or via settings?
+	
+	local buttonTextTemplate = "GameFontNormal"
+	
+	local specIconSize = 16
+	local specIconBorderWidth = 1
+	local specIconTextWidth = 40
+	
+	local specIconTextTemplate = "GameFontNormal"
+	
+	local stateIconSpacer = 2
+	local stateIconWidth = (maxButtonSize - 3 * stateIconSpacer) / 4
+	local stateIconHeight = stateIconWidth
+	
+	local sliderHeight = 20
+		
+	-- End stuff that needs to be moved to AceConfig settings
+	
 
 --- Returns the rearranged order of specs for display in an ordered View
 -- @return The order that specs will be displayed in after taking into account ignored specs (which won't be counted as they are hidden)
@@ -60,6 +86,29 @@ local function GetDisplayOrderForSpec(spec)
 
 end
 
+--- Returns the offsets for calculating the position of display elements when using alignment options
+-- @param anchorFrameHeight The height of the anchor frame
+-- @return
+-- TODO: Not the best solution...
+local function GetDelta(anchorFrameHeight)
+
+	local settings = TotalAP.Settings.GetReference()
+
+	local combinedBarsHeight = (GetNumSpecializations() - TotalAP.Cache.GetNumIgnoredSpecs()) * (2 * barInset + barHeight + hSpace)
+
+	-- Align progress bars (via their surrounding frame)
+	local delta
+	if settings.infoFrame.alignment == "bottom" then -- Move to bottom border (above non-existing AK slider)
+		delta = anchorFrameHeight - (barHeight + 2 * barInset + hSpace) - combinedBarsHeight
+	elseif settings.infoFrame.alignment == "center" then -- Move to center
+		delta = (anchorFrameHeight - (barHeight + 2 * barInset + hSpace) - combinedBarsHeight) / 2
+	else -- Leave aligned at the top (below non-existent ULA bar)
+		delta = 0
+	end
+	
+	return delta, combinedBarsHeight
+
+end
 
 --- Creates a new ViewObject
 -- @param self Reference to the caller
@@ -70,32 +119,6 @@ local function CreateNew(self)
 
 	setmetatable(ViewObject, self) -- The new object inherits from this class
 	self.__index = TotalAP.GUI.View -- ... and this class inherits from the generic View template
-	
-	-- TODO: Get those from the settings, so that they can be changed in the options GUI (under tab: Views -> DefaultView, along with enabling/disabling/repositioning individual display components)
-	-- Stuff that needs to be moved to AceConfig settings
-	
-	local hSpace, vSpace = 3, 5 -- space between display elements
-	
-	local barWidth, barHeight, barInset = 100, 18, 1
-	
-	local minButtonSize, maxButtonSize = 20, 60 -- TODO: smaller than 60 looks odd, 80 before? should be 4x size of the bars at most, and 1x at the least to cover all specs
-	local defaultButtonSize = 40 -- TODO: Layout Cache or via settings?
-	
-	local buttonTextTemplate = "GameFontNormal"
-	
-	local specIconSize = 18
-	local specIconBorderWidth = 1
-	local specIconTextWidth = 40
-	
-	local specIconTextTemplate = "GameFontNormal"
-	
-	local stateIconSpacer = 2
-	local stateIconWidth = (maxButtonSize - 3 * stateIconSpacer) / 4
-	local stateIconHeight = stateIconWidth
-	
-	local sliderHeight = 20
-		
-	-- End stuff that needs to be moved to AceConfig settings
 	
 	-- Locals that are required to update individual view elements
 	local settings = TotalAP.Settings.GetReference()
@@ -907,18 +930,7 @@ TotalAP.Debug("AnchorFrame dimensions: width = " .. width .. ", height = " .. he
 		-- Player interaction		
 		ProgressBarsFrameContainer.Update = function(self)
 		
-			local combinedBarsHeight = (GetNumSpecializations() - TotalAP.Cache.GetNumIgnoredSpecs()) * (2 * barInset + barHeight + hSpace)
-		
-			-- Align progress bars (via their surrounding frame)
-			local delta
-			if settings.infoFrame.alignment == "bottom" then -- Move to bottom border (above non-existing AK slider)
-				delta = AnchorFrame:GetHeight() - (barHeight + 2 * barInset + hSpace) - combinedBarsHeight
-			elseif settings.infoFrame.alignment == "center" then -- Move to center
-				delta = (AnchorFrame:GetHeight() - (barHeight + 2 * barInset + hSpace) - combinedBarsHeight) / 2
-			else -- Leave aligned at the top (below non-existent ULA bar)
-				delta = 0
-			end
-			
+			local delta, combinedBarsHeight = GetDelta(AnchorFrame:GetHeight())
 			self:SetRelativePosition(maxButtonSize + vSpace, - ( barHeight + 2 * barInset + hSpace) - delta)
 			self:GetFrameObject():SetSize(barWidth + 2 * barInset, combinedBarsHeight)
 		
