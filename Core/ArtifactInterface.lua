@@ -147,7 +147,7 @@ local function GetNumAvailableTraits()
 	local settings = TotalAP.Settings.GetReference()
 	local thisLevelUnspentAP, numTraitsPurchased, _, _, _, _, _, _, tier = select(5, aUI.GetEquippedArtifactInfo())
 	local numTraitsAvailable = GetNumRanksPurchasableWithAP(numTraitsPurchased, thisLevelUnspentAP + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), tier) or 0
-	TotalAP.Debug(format("ArtifactInterface -> %s new traits available from all sources", numTraitsAvailable))
+--	TotalAP.Debug(format("ArtifactInterface -> %s new traits available from all sources", numTraitsAvailable))
 	
 	return numTraitsAvailable
 	
@@ -186,7 +186,7 @@ local function GetArtifactProgressPercent()
 	local settings = TotalAP.Settings.GetReference()
 	local percentageOfCurrentLevelUp = (thisLevelUnspentAP + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0)) / nextLevelRequiredAP * 100
 	
-	TotalAP.Debug(format("ArtifactInterface -> Calculated progress towards next trait to be  %s%% ", percentageOfCurrentLevelUp or 0)) 
+--	TotalAP.Debug(format("ArtifactInterface -> Calculated progress towards next trait to be  %s%% ", percentageOfCurrentLevelUp or 0)) 
 	
 	return min(100, percentageOfCurrentLevelUp or 0)
 	

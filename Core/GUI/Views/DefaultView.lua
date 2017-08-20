@@ -197,7 +197,7 @@ local function CreateNew(self)
 			local totalBarHeight = barHeight + 2 * barInset
 			local progressBarHeight = numDisplayedSpecs * (totalBarHeight) + (numDisplayedSpecs - 1) * hSpace
 			local height = totalBarHeight + hSpace + max(maxButtonSize, progressBarHeight) + hSpace + sliderHeight -- ULA Bar + Progress Bars  + Slider (NYI)
-TotalAP.Debug("AnchorFrame dimensions: width = " .. width .. ", height = " .. height .. " -> progressBarHeight = " .. progressBarHeight .. ", maxButtonSize = " .. maxButtonSize)
+--TotalAP.Debug("AnchorFrame dimensions: width = " .. width .. ", height = " .. height .. " -> progressBarHeight = " .. progressBarHeight .. ", maxButtonSize = " .. maxButtonSize)
 			AnchorFrame:SetSize(width, height) -- TODO: Update dynamically (script handlers?) to account for variable number of specs
 		
 		
