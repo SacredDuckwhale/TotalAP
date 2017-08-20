@@ -113,13 +113,12 @@ local function CreateNew(self)
 		if AnchorFrame:IsMovable() and IsAltKeyDown() then -- Move display
 		
 			AnchorFrame:StartMoving()
-
+			AnchorFrame.isMoving = true
+			
 			AnchorFrameContainer:SetBackdropAlpha(0.5)
 			AnchorFrameContainer:Render()
 			
 		end
-		
-		AnchorFrame.isMoving = true
 
 	end
 
@@ -484,13 +483,11 @@ local function CreateNew(self)
 				
 			end
 				
-			self.isMoving = true
-	
 		end)
 		
 		ActionButton:SetScript("OnUpdate", function(self) -- (to update the button skin and proportions while being resized)
 			
-			if self.isMoving then -- Update graphics to make sure the border/glow effect etc. is re-applied correctly (especially when resizing)
+			if AnchorFrame.isMoving then -- Update graphics to make sure the border/glow effect etc. is re-applied correctly (especially when resizing)
 				
 				ActionButtonContainer:Update()
 				ActionButtonContainer:Render()
@@ -503,7 +500,6 @@ local function CreateNew(self)
 			self:StopMovingOrSizing()
 			AnchorFrame:StopMovingOrSizing()
 			AnchorFrame.isMoving = false
-			self.isMoving = false
 			
 			-- Hide background frame once more
 			ActionButtonFrameContainer:SetBackdropAlpha(0)
@@ -733,65 +729,64 @@ local function CreateNew(self)
 		
 		-- Script handlers
 		-- TODO: Button script handlers in separate file to clean up  this mess and start refactoring it
-		local SpecIconOnClickFunction = function(self, button) -- When clicked, change spec accordingly to the button's icon
-
+		local SpecIconOnMouseUpFunction = function(self, button) -- When clicked, change spec accordingly to the button's icon (click) OR ignore the spec (right-click)
+	
 			local spec = tonumber(self:GetName():match(".*(%d)"))
-			
-			if AnchorFrame.isMoving then -- Stop moving, but ignore this click
-			
-				AnchorFrame_OnDragStop(self)
-				return -- Don't activate spec while moving is enabled (technically, the AnchorFrame is being moved, so the specIcon should not be clicked)
-				
-			end
-			
-			-- Change spec as per the player's selection (if it isn't active already)
-			if GetSpecialization() ~= spec then
-			
-				-- Dismount if not flying (wouldn't want to kill the player, now would we?) / SHOULD also cancel shapeshifts of any kind, at least out of combat -- TODO: Setting to allow forced dismount even if flying/Test with chakras and other "weird" shapeshifts
-				if (IsMounted() or GetShapeshiftForm() > 0) and not (IsFlying() or InCombatLockdown() or UnitAffectingCombat("player")) then
-				
-					Dismount()
-					CancelShapeshiftForm() -- TODO: Protected -> may cause issues if called in combat? (Not sure if InCombatLockdown is enough to detect this reliably)
-					
+		
+			 if button == "RightButton" then -- Ignore spec
+	
+				 -- Add spec to ignored specs (actually, it is flagged as "ignored" for the current character only)
+				 if TotalAP.Cache.IsSpecIgnored(spec) then  -- Spec is already being ignored
+					TotalAP.Debug("Attempting to ignore spec, but spec " .. spec .. " is already ignored for character " .. fqcn)
+					return
+				 end
+				 
+				 TotalAP.ChatMsg(format(TotalAP.L["Ignoring spec %d (%s) for character %s"], spec, select(2, GetSpecializationInfo(spec)), fqcn))
+				 TotalAP.Cache.IgnoreSpec(spec)
+				 
+				 -- Show one-time warning if necessary
+				if not TotalAP.specIgnoredWarningGiven then
+					TotalAP.ChatMsg(format(TotalAP.L["Type %s to reset all currently ignored specs for this character"], "/" .. TotalAP.Controllers.GetSlashCommandAlias() .. " unignore"))
+					TotalAP.specIgnoredWarningGiven = true
 				end
 				
-				SetSpecialization(spec)
+				-- Hide spec icon for the now.ignored spec
+				TotalAP.Controllers.RenderGUI()
+			
+			else -- Activate spec
 				
-			end
-		
-		end
-	
-		local SpecIconOnMouseUpFunction = function(self, button)
-			
-			local spec = tonumber(self:GetName():match(".*(%d)"))
-			
-			 if button ~= "RightButton" then return end
+				if AnchorFrame.isMoving then -- Stop moving, but ignore this click
 
-			 -- Add spec to ignored specs (actually, it is flagged as "ignored" for the current character only)
-			 if TotalAP.Cache.IsSpecIgnored(spec) then  -- Spec is already being ignored
-				TotalAP.Debug("Attempting to ignore spec, but spec " .. spec .. " is already ignored for character " .. fqcn)
-				return
-			 end
-			 
-			 TotalAP.ChatMsg(format(TotalAP.L["Ignoring spec %d (%s) for character %s"], spec, select(2, GetSpecializationInfo(spec)), fqcn))
-			 TotalAP.Cache.IgnoreSpec(spec)
-			 
-			 -- Show one-time warning if necessary
-			if not TotalAP.specIgnoredWarningGiven then
-				TotalAP.ChatMsg(format(TotalAP.L["Type %s to reset all currently ignored specs for this character"], "/" .. TotalAP.Controllers.GetSlashCommandAlias() .. " unignore"))
-				TotalAP.specIgnoredWarningGiven = true
+					AnchorFrame_OnDragStop(self)
+					return -- Don't activate spec while moving is enabled (technically, the AnchorFrame is being moved, so the specIcon should not be clicked)
+					
+				end
+		
+				-- Change spec as per the player's selection (if it isn't active already)
+				if GetSpecialization() ~= spec then
+				
+					-- Dismount if not flying (wouldn't want to kill the player, now would we?) / SHOULD also cancel shapeshifts of any kind, at least out of combat -- TODO: Setting to allow forced dismount even if flying/Test with chakras and other "weird" shapeshifts
+					if (IsMounted() or GetShapeshiftForm() > 0) and not (IsFlying() or InCombatLockdown() or UnitAffectingCombat("player")) then
+					
+						Dismount()
+						CancelShapeshiftForm() -- TODO: Protected -> may cause issues if called in combat? (Not sure if InCombatLockdown is enough to detect this reliably)
+						
+					end
+					
+					SetSpecialization(spec)
+					
+				end
+			
 			end
 			
-			-- Hide spec icon for the now.ignored spec
-			TotalAP.Controllers.RenderGUI()
+			
+	
+			---
+	
+			
 			 
 		end
  
-		SpecIcon1:SetScript("OnClick", SpecIconOnClickFunction)
-		SpecIcon2:SetScript("OnClick", SpecIconOnClickFunction)
-		SpecIcon3:SetScript("OnClick", SpecIconOnClickFunction)
-		SpecIcon4:SetScript("OnClick", SpecIconOnClickFunction)
-
 		SpecIcon1:SetScript("OnMouseUp", SpecIconOnMouseUpFunction)
 		SpecIcon2:SetScript("OnMouseUp", SpecIconOnMouseUpFunction)
 		SpecIcon3:SetScript("OnMouseUp", SpecIconOnMouseUpFunction)
