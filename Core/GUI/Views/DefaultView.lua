@@ -511,7 +511,7 @@ TotalAP.Debug("AnchorFrame dimensions: width = " .. width .. ", height = " .. he
 			elseif self:IsResizable() and IsShiftKeyDown() then -- Shift -> Resize button
 			
 				self:StartSizing()
-				
+				self.isSizing = true
 				-- Show background frame (max size) while dragging
 				ActionButtonFrameContainer:SetBackdropAlpha(0.5)
 				ActionButtonFrameContainer:Render()
@@ -522,7 +522,7 @@ TotalAP.Debug("AnchorFrame dimensions: width = " .. width .. ", height = " .. he
 		
 		ActionButton:SetScript("OnUpdate", function(self) -- (to update the button skin and proportions while being resized)
 			
-			if AnchorFrame.isMoving then -- Update graphics to make sure the border/glow effect etc. is re-applied correctly (especially when resizing)
+			if self.isSizing then -- Update graphics to make sure the border/glow effect etc. is re-applied correctly (especially when resizing)
 				
 				ActionButtonContainer:Update()
 				ActionButtonContainer:Render()
@@ -535,6 +535,7 @@ TotalAP.Debug("AnchorFrame dimensions: width = " .. width .. ", height = " .. he
 			self:StopMovingOrSizing()
 			AnchorFrame:StopMovingOrSizing()
 			AnchorFrame.isMoving = false
+			self.isSizing = false
 			
 			-- Hide background frame once more
 			ActionButtonFrameContainer:SetBackdropAlpha(0)
