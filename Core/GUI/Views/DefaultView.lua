@@ -39,7 +39,7 @@ local DefaultView = {}
 	
 	local buttonTextTemplate = "GameFontNormal"
 	
-	local specIconSize = 16
+	local specIconSize = 18
 	local specIconBorderWidth = 1
 	local specIconTextWidth = 40
 	
