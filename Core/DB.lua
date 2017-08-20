@@ -105,7 +105,7 @@ local function IsArtifactPowerToken(itemID)
 					
 	local spellID = GetItemSpellEffect(itemID)
 	
-	return spellID and type(spellID) == "number"
+	return spellID ~= nil and spellID and type(spellID) == "number"
 	
 end
 
