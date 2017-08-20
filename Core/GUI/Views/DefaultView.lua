@@ -672,23 +672,9 @@ TotalAP.Debug("AnchorFrame dimensions: width = " .. width .. ", height = " .. he
 			
 			-- Reposition if any specs have been ignored to make sure there are no odd-looking gaps in the display
 			local displaySpec = GetDisplayOrderForSpec(spec)
-			
-			local combinedBarsHeight = (GetNumSpecializations() - TotalAP.Cache.GetNumIgnoredSpecs()) * (2 * barInset + barHeight + hSpace) -- TODO: DRY
-		
-			-- Align spec icons to bars (sadly, this has to be done individually :()
-			local delta
-			if settings.infoFrame.alignment == "bottom" then -- Move to bottom border (above non-existing AK slider)
-				delta = AnchorFrame:GetHeight() - (barHeight + 2 * barInset + hSpace) - combinedBarsHeight
-			elseif settings.infoFrame.alignment == "center" then -- Move to center
-				delta = (AnchorFrame:GetHeight() - (barHeight + 2 * barInset + hSpace) - combinedBarsHeight) / 2
-			else -- Leave aligned at the top (below non-existent ULA bar)
-				delta = 0
-			end
-			
-		--	self:SetRelativePosition(maxButtonSize + vSpace, - ( barHeight + 2 * barInset + hSpace) - delta)
-
-			local offsetY = (spec - displaySpec) * (hSpace + specIconSize + 2 * specIconBorderWidth)
-			self:SetRelativePosition(maxButtonSize + vSpace + barWidth + vSpace, - ( barHeight + barInset + hSpace + (spec - 1) * (specIconSize + 2 * specIconBorderWidth + hSpace)) + offsetY - delta)
+			local specOffset = (displaySpec - 1) * (barHeight + 2 * barInset + hSpace)-- This offset is to move each spec into its correct place (from the top)
+			local alignmentOffset = ((barHeight + 2 * barInset) - (specIconSize + 2 * specIconBorderWidth)) / 2 -- This offset makes sure the spec icons are always next to the progress bars
+			self:SetRelativePosition(maxButtonSize + vSpace + barWidth + 2 * barInset + vSpace, - ( barHeight + 2 * barInset + hSpace + specOffset + alignmentOffset)) -- TODO. That one pixel is to make up for the default texture cutting off the bottom / align with the MiniBar- not ideal, but it can be revisited later
 			
 		end
 		
