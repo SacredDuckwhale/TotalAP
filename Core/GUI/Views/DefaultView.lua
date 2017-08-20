@@ -673,8 +673,9 @@ TotalAP.Debug("AnchorFrame dimensions: width = " .. width .. ", height = " .. he
 			-- Reposition if any specs have been ignored to make sure there are no odd-looking gaps in the display
 			local displaySpec = GetDisplayOrderForSpec(spec)
 			local specOffset = (displaySpec - 1) * (barHeight + 2 * barInset + hSpace)-- This offset is to move each spec into its correct place (from the top)
-			local alignmentOffset = ((barHeight + 2 * barInset) - (specIconSize + 2 * specIconBorderWidth)) / 2 -- This offset makes sure the spec icons are always next to the progress bars
-			self:SetRelativePosition(maxButtonSize + vSpace + barWidth + 2 * barInset + vSpace, - ( barHeight + 2 * barInset + hSpace + specOffset + alignmentOffset)) -- TODO. That one pixel is to make up for the default texture cutting off the bottom / align with the MiniBar- not ideal, but it can be revisited later
+			local glueOffset = ((barHeight + 2 * barInset) - (specIconSize + 2 * specIconBorderWidth)) / 2 -- This offset makes sure the spec icons are always next to the progress bars
+			local alignmentOffset = GetDelta(AnchorFrame:GetHeight()) -- This offset is for repositioning them according to the /ap alignment-X setting
+			self:SetRelativePosition(maxButtonSize + vSpace + barWidth + 2 * barInset + vSpace, - ( barHeight + 2 * barInset + hSpace + specOffset + glueOffset + alignmentOffset))
 			
 		end
 		
