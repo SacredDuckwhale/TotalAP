@@ -359,7 +359,7 @@ local function SetValue(fqcn, specID, key, value)
 	
 	if not (cache and cache[fqcn] and cache[fqcn][specID]) then -- Cache entry doesn't exist
 	
- 		TotalAP.Debug("Attempted to set cache entry for fqcn = " .. tostring(fqcn) .. " and spec = " .. tostring(specID) .. ", but it didn't exist")
+		TotalAP.Debug("Attempted to set cache entry for fqcn = " .. tostring(fqcn) .. " and spec = " .. tostring(specID) .. ", but it didn't exist")
 		return
 		
 	end
