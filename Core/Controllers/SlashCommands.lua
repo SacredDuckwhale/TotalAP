@@ -392,7 +392,7 @@ local function SlashCommandHandler(input, usedAlias)
 			slashHandlerFunction(settings)
 			
 			-- Always update displays to make sure any changes will be displayed immediately (if possible/not locked)
-			TotalAP.Controllers.RenderGUI() 
+			if not InCombatLockdown() and not UnitAffectingCombat("player") then TotalAP.Controllers.RenderGUI() end -- Mostly required to avoid taint while toggling /ap autohide while engaged in combat -> normal update afterwards
 			
 			return
 	
