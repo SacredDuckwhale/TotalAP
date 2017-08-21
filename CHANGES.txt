@@ -3,13 +3,15 @@
 ------------------------------------------------------------------------
 
 r25:
-	All displays will now be hidden (...or not, depending on the settings) when players lose control of their character, such as while using taxi services (Flight Masters etc.)
+	Added state indicators (icons) for events that would render the action button unusable or the display to be hidden (depending on the settings), such as engaging in combat, pet battles, vehicular combat, or utilizing a Flight Master's services
 	
-	Reworked the display (GUI) to allow further customization (in future updates). This might temporarily cause some minor problems, but should ultimately fix the long-standing taint issues manifesting in seemingly random Lua errors during combat
-	Added state indicators (icons) for events that would render the action button unusable or the display to be hidden, such as engaging in combat, pet battles, vehicular combat, or utilizing a Flight Master's services
+	Reworked the display (GUI) to allow further customization (in future updates). This might temporarily cause some minor problems and glitches that haven't been found yet :(
 	The former /ap combat slash command is now /ap autohide and toggles the automatic hiding of the displays during all relevant events (mentioned above) instead of only detecting combat. More fine-grained settings for this are coming soon (TM)
 	
-
+	Fixed long-standing taint issues that could manifest in combat and result in seemingly random Lua errors. They were caused by relying on Blizzard's button glow effect functionality, which has been replaced entirely by a third-party library to make sure this won't be a problem in the future
+	Fixed an issue where changing specializations would not re-scan the player's artifact as intended and update the display accordingly
+	
+	
 r24:
 	
 	Artifact Research Notes and similar items (catch-up tomes for alts) will now be ignored for players that haven't reached level 110 yet
