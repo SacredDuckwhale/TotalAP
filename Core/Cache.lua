@@ -526,18 +526,12 @@ local function Initialise()
 	end
 	
 	-- Initialise cache
-	local fqcn = TotalAP.Utils.GetFQCN()
-	
 	if not cache then -- Saved vars cache doesn't exist -> rebuild it
 		_G[cacheVarName] = {}
 		cache = _G[cacheVarName]
 	end
 	
-	if not cache[fqcn] then -- Entry for this char doesn't exist -> create it
-			
-		cache[fqcn] = {}
-	
-	end
+	cache[fqcn] = cache[fqcn] or {}  -- Entry for this char doesn't exist -> create it
 	
 	for spec=1, GetNumSpecializations() do -- create empty table for this spec and add default values where necessary
 	
