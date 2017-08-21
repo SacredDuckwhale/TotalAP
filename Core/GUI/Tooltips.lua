@@ -193,7 +193,7 @@ local function ActionButtonTooltipFunction(self, button, hide)
 	local _, tempItemLink = self:GetItem()
 	if type(tempItemLink) == "string" then -- Is a valid item link -> Check if it's an Artifact Power item
 
-		tooltipItemID = GetItemInfoInstant(tempItemLink);
+		local tooltipItemID = GetItemInfoInstant(tempItemLink);
 		
 		if TotalAP.DB.GetItemSpellEffect(tooltipItemID) then -- Only display tooltip addition for AP tokens
 			
@@ -237,8 +237,8 @@ local function ActionButtonTooltipFunction(self, button, hide)
 				if HasArtifactEquipped() and settings.tooltip.showProgressReport then
 						
 						-- Recalculate progress percentage and number of available traits before actually showing the tooltip
-						numTraitsAvailable = TotalAP.ArtifactInterface.GetNumAvailableTraits()
-						artifactProgressPercent = TotalAP.ArtifactInterface.GetArtifactProgressPercent() -- TODO. Is this necessary to display in tooltips, now that the progress bar tooltip is available?
+						local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumAvailableTraits()
+						local artifactProgressPercent = TotalAP.ArtifactInterface.GetArtifactProgressPercent() -- TODO. Is this necessary to display in tooltips, now that the progress bar tooltip is available?
 							
 						-- Display progress in tooltip
 						if numTraitsAvailable > 1 then -- several new traits are available
