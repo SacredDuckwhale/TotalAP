@@ -9,7 +9,9 @@ max_line_length = false
 -- These files won't be checked
 exclude_files = {
 	"_DEV/",
-	"Libs/"
+	"Libs/",
+	"Tests/",
+	"scrapewhale.lua",
 }
 
 -- Warnings to ignore when checking (list of warnings: http://luacheck.readthedocs.io/en/stable/warnings.html )
