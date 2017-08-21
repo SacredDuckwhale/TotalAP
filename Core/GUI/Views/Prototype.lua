@@ -110,7 +110,6 @@ View.CreateNew = CreateNew
 View.GetName = GetName
 View.SetName = SetName
 View.Render = Render
-View.Update = Update
 View.GetNumElements = GetNumElements
 
 
