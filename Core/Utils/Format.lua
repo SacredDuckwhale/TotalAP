@@ -67,8 +67,7 @@ local addonName, T = ...
 			
 			local formatTable = T.GetLocaleNumberFormat(locale)
 			local unitsShort = formatTable["unitsShort"]
-			smallestUnitSize = unitsShort[#unitsShort]["divisor"]
-			
+
 			for k, v in ipairs(unitsShort) do -- Apply format, starting with largest divisor (billions for English), then continue until no further divisons are possible
 			
 				local divisor, unitString, numDigits = v["divisor"], v["unitString"], v["numDigits"]
