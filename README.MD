@@ -19,7 +19,7 @@
 <li>Button can be skinned using the <a href="https://mods.curse.com/addons/wow/masque">Masque</a> (formerly ButtonFacade) addon library</li>
 <li>Hold ALT-Click while dragging to move the button, or SHIFT-Click while dragging to change its size</li>
 </ul>
-<p>This feature alone takes away a lot of the tedium involved in leveling your artifact weapons. Searching AP items in your bags? That's so 2016.</p>
+<p>This feature alone takes away a lot of the tedium involved in leveling your artifact weapons. Searching for AP items in your bags? That's so 2016.</p>
 <h3>Progress Bars</h3>
 <p>You may be interested in displaying the current progress of any spec's artifact weapon, while considering all AP currently available. Well, look no further!</p>
 <ul>
