@@ -390,9 +390,7 @@ local function GetBankCache(fqcn)
 
 	local cache = GetReference()
 
-	if not fqcn then -- Use logged in character name/realm
-		fqcn = TotalAP.Utils.GetFQCN()
-	end
+	fqcn = fqcn or TotalAP.Utils.GetFQCN() -- Use logged in character name/realm by default
 	
 	if not (cache and cache[fqcn] and cache[fqcn]["bankCache"]) then -- Entry does not exist -> Abort
 		
@@ -641,8 +639,8 @@ end
 local function IsSpecCached(spec, fqcn)
 
 	local cache = GetReference()
-	local fqcn = (fqcn and type(fqcn) == "string") and fqcn or TotalAP.Utils.GetFQCN() -- TODO: validators for fqcn, spec no. etc that can be reused?
-	local spec = (spec and type(spec) == "number" and spec > 0 and spec <= 4) and spec or GetSpecialization()
+	fqcn = (fqcn and type(fqcn) == "string") and fqcn or TotalAP.Utils.GetFQCN() -- TODO: validators for fqcn, spec no. etc that can be reused?
+	spec = (spec and type(spec) == "number" and spec > 0 and spec <= 4) and spec or GetSpecialization()
 
 	local isCached = false
 	isCached = isCached or
@@ -683,8 +681,8 @@ end
 -- @return The artifact tier of the given character and spec if it is cached; nil otherwise
 local function GetArtifactTier(spec, fqcn)
 
-	local fqcn = fqcn or TotalAP.Utils.GetFQCN()
-	local spec = spec or GetSpecialization()
+	fqcn = fqcn or TotalAP.Utils.GetFQCN()
+	spec = spec or GetSpecialization()
 
 	return GetValue(fqcn, spec, "artifactTier")
 
@@ -697,8 +695,8 @@ end
 -- @return The artifact tier of the given character and spec if it is cached; nil otherwise
 local function SetArtifactTier(tier, spec, fqcn)
 
-	local fqcn = fqcn or TotalAP.Utils.GetFQCN()
-	local spec = spec or GetSpecialization()
+	fqcn = fqcn or TotalAP.Utils.GetFQCN()
+	spec = spec or GetSpecialization()
 
 	SetValue(fqcn, spec, "artifactTier", tier)
 
@@ -710,8 +708,8 @@ end
 -- @return The AP value of the given character and spec if it is cached; nil otherwise
 local function GetUnspentAP(spec, fqcn)
 
-	local fqcn = fqcn or TotalAP.Utils.GetFQCN()
-	local spec = spec or GetSpecialization()
+	fqcn = fqcn or TotalAP.Utils.GetFQCN()
+	spec = spec or GetSpecialization()
 
 	return GetValue(fqcn, spec, "thisLevelUnspentAP")
 
@@ -724,8 +722,8 @@ end
 -- @return The AP value of the given character and spec if it is cached; nil otherwise
 local function SetUnspentAP(value, spec, fqcn)
 
-	local fqcn = fqcn or TotalAP.Utils.GetFQCN()
-	local spec = spec or GetSpecialization()
+	fqcn = fqcn or TotalAP.Utils.GetFQCN()
+	spec = spec or GetSpecialization()
 
 	SetValue(fqcn, spec, "thisLevelUnspentAP", value)
 
@@ -737,8 +735,8 @@ end
 -- @return The number of traits for the given character and spec if it is cached; nil otherwise
 local function GetNumTraits(spec, fqcn)
 
-	local fqcn = fqcn or TotalAP.Utils.GetFQCN()
-	local spec = spec or GetSpecialization()
+	fqcn = fqcn or TotalAP.Utils.GetFQCN()
+	spec = spec or GetSpecialization()
 
 	return GetValue(fqcn, spec, "numTraitsPurchased")
 
@@ -751,8 +749,8 @@ end
 -- @return The number of traits for the given character and spec if it is cached; nil otherwise
 local function SetNumTraits(numTraits, spec, fqcn)
 
-	local fqcn = fqcn or TotalAP.Utils.GetFQCN()
-	local spec = spec or GetSpecialization()
+	fqcn = fqcn or TotalAP.Utils.GetFQCN()
+	spec = spec or GetSpecialization()
 
 	SetValue(fqcn, spec, "numTraitsPurchased", numTraits)
 

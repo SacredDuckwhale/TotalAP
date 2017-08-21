@@ -35,8 +35,8 @@ if not TotalAP then return end
 -- @usage GetFQCN(nil, "Outland") -> "Swimmingly - Outland" (if "Swimmingly" is the name of the currently active character, regardless of the realm)
 local function GetFQCN(characterName, realm)
 	
-	local characterName = (type(characterName) == "string" and characterName) or UnitName("player")
-	local realm = (type(realm) == "string" and realm) or GetRealmName()
+	characterName = (type(characterName) == "string" and characterName) or UnitName("player")
+	realm = (type(realm) == "string" and realm) or GetRealmName()
 	local key = format("%s - %s", characterName, realm)	 
 
 	return key

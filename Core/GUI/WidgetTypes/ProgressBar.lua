@@ -283,22 +283,22 @@ local function Render(self)
 		
 		UnspentBar.texture:SetTexture(self:GetTexture())
 		UnspentBar.texture:SetAllPoints(UnspentBar)
-		local r, g, b = TotalAP.Utils.HexToRGB(self:GetColour("UnspentBar"))
+		r, g, b = TotalAP.Utils.HexToRGB(self:GetColour("UnspentBar"))
 		UnspentBar.texture:SetVertexColor(r / 255, g / 255, b / 255, self:GetAlpha("UnspentBar"))
 		
 		InBagsBar.texture:SetTexture(self:GetTexture())
 		InBagsBar.texture:SetAllPoints(InBagsBar)
-		local r, g, b = TotalAP.Utils.HexToRGB(self:GetColour("InBagsBar"))
+		r, g, b = TotalAP.Utils.HexToRGB(self:GetColour("InBagsBar"))
 		InBagsBar.texture:SetVertexColor(r / 255, g / 255, b / 255, self:GetAlpha("InBagsBar"))
 		
 		InBankBar.texture:SetTexture(self:GetTexture())
 		InBankBar.texture:SetAllPoints(InBankBar)
-		local r, g, b = TotalAP.Utils.HexToRGB(self:GetColour("InBankBar"))
+		r, g, b = TotalAP.Utils.HexToRGB(self:GetColour("InBankBar"))
 		InBankBar.texture:SetVertexColor(r / 255, g / 255, b / 255, self:GetAlpha("InBankBar"))
 		
 		MiniBar.texture:SetTexture(self:GetTexture())
 		MiniBar.texture:SetAllPoints(MiniBar)
-		local r, g, b = TotalAP.Utils.HexToRGB(self:GetColour("MiniBar"))
+		r, g, b = TotalAP.Utils.HexToRGB(self:GetColour("MiniBar"))
 		MiniBar.texture:SetVertexColor(r / 255, g / 255, b / 255, self:GetAlpha("MiniBar"))
 		
 		-- Reposition 
