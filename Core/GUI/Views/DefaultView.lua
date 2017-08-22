@@ -949,7 +949,6 @@ local function CreateNew(self)
 	local ProgressBar3 = ProgressBar3Container:GetFrameObject()
 	local ProgressBar4Container = TotalAP.GUI.ProgressBar:CreateNew("_DefaultView_ProgressBar4", "_DefaultView_ProgressBarsFrame")
 	local ProgressBar4 = ProgressBar4Container:GetFrameObject()
-	
 	do -- ProgressBars
 	
 		-- Layout and visuals
