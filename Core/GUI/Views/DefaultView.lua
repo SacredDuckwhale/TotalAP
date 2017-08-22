@@ -918,6 +918,14 @@ local function CreateNew(self)
 		-- Player interaction		
 		ProgressBarsFrameContainer.Update = function(self)
 		
+			local hideFrame = false
+			hideFrame = (hideFrame or
+				not settings.infoFrame.enabled -- Bars are diabled via settings (TODO: infoFrame no longer exists -> rename settings?)
+			)
+			
+			self:SetEnabled(not hideFrame)
+			if hideFrame then return end
+		
 			local delta, combinedBarsHeight = GetDelta(AnchorFrame:GetHeight())
 			self:SetRelativePosition(maxButtonSize + vSpace, - ( barHeight + 2 * barInset + hSpace) - delta)
 			self:GetFrameObject():SetSize(barWidth + 2 * barInset, combinedBarsHeight)
