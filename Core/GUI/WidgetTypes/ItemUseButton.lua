@@ -206,6 +206,9 @@ local function CreateNew(self, name, parent)
 	parent = (parent and (addonName .. parent)) or parent or "UIParent"
 --	TotalAP.Debug("CreateNew -> Creating frame with name = " .. name .. ", parent = " .. parent) 
 	
+	-- TODO: Ugly workaround to not break legacy keybinds (which are assigned to TotalAPButton, which didn't really exist after r25 and the GUI rework - needs a better solution?)
+	name = "TotalAPButton"
+	
 	ItemUseButtonObject:SetName(name)
 	ItemUseButtonObject:SetParent(parent)
 	ItemUseButtonObject.FrameObject = CreateFrame("Button", name, _G[parent] or UIParent, "ActionButtonTemplate, SecureActionButtonTemplate") 

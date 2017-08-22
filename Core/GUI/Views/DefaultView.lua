@@ -667,6 +667,7 @@ local function CreateNew(self)
 			
 			-- Hide when:
 			hideFrame = (hideFrame
+			or not settings.specIcons.enabled -- Spec icons have been disabled
 			or TotalAP.Cache.IsSpecIgnored(spec) -- Assigned spec is being ignored
 			or GetNumSpecializations() < self:GetAssignedSpec() -- Class doesn't have as many specs
 			)
