@@ -75,7 +75,7 @@ local defaultSettings =	{
 			border = 1,
 			inset = 1,
 			showMiniBar = true,
-			alignment = "top", -- TODO: Provide option via GUI (AceConfig)
+			alignment = "center", -- TODO: Provide option via GUI (AceConfig)
 			
 			progressBar = {
 				red = 250,
