@@ -176,8 +176,8 @@ local function ValidateChar(t)
 
 end
 
---- Returns the number of valid spec entries currently saved in the cache (helper function)
--- @return Number of specs that are cached and validated successfully
+--- Returns the number of valid character entries currently saved in the cache (helper function)
+-- @return Number of characters that are cached and validated successfully
 local function GetNumEntries()
 
 	local numEntries = 0
@@ -523,7 +523,9 @@ local function Initialise()
 		TotalAP.bankCache = bankCache
 	else -- bankCache is invalid -> Drop it (from saved variables) -> Will be saved whenever the bank is accessed
 		TotalAP.Debug("Cache.Initialise(): bankCache is invalid -> dropping it")
-		cache[fqcn]["bankCache"] = nil
+		if cache and cache[fqcn] then -- drop invalid bank cache
+			cache[fqcn]["bankCache"] = nil
+		end
 	end
 	
 	-- Initialise cache
