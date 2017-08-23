@@ -58,8 +58,6 @@ local defaultSettings =	{
 			size = 18,
 			border = 1,
 			inset = 1,
-			
-			alignment = "center", -- TODO: Provide option via GUI (AceConfig)
 		},
 		
 		-- Controls what information is displayed in the tooltip
@@ -224,7 +222,6 @@ local validators = {
 	["infoFrame.inBankBar.alpha"] = IsDecimalFraction,
 	
 	["specIcons"] = IsTable,
-	["specIcons.alignment"] = IsAlignmentString,
 	["specIcons.border"] = IsNumber,
 	["specIcons.enabled"] = IsBoolean,
 	["specIcons.inset"] = IsNumber,
