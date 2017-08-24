@@ -522,8 +522,8 @@ local function Initialise()
 	if bankCache and bankCache[numItems] and bankCache[inBankAP] then -- bankCache was saved on a previous session and can be restored (TODO: Check for empty table is an ugly hotfix, to prevent overwriting the default values after the saved vars have been messed up by the bug hotfixed below)
 		TotalAP.bankCache = bankCache
 	else -- bankCache is invalid -> Drop it (from saved variables) -> Will be saved whenever the bank is accessed
-		TotalAP.Debug("Cache.Initialise(): bankCache is invalid -> dropping it")
 		if cache and cache[fqcn] then -- drop invalid bank cache
+			TotalAP.Debug("Cache.Initialise(): bankCache is invalid -> dropping it")
 			cache[fqcn]["bankCache"] = nil
 		end
 	end
