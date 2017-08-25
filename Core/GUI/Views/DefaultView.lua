@@ -722,10 +722,10 @@ local function CreateNew(self)
 		
 		local SpecIconUpdateFunction = function(self)
 		
-			-- Set textures (TODO: only needs to be done once, as specs are generally static)
-			self:GetFrameObject().icon:SetTexture(select(4, GetSpecializationInfo(self:GetAssignedSpec())))
-			
 			local spec = self:GetAssignedSpec()
+			
+			-- Set textures (TODO: only needs to be done once, as specs are generally static)
+			self:GetFrameObject().icon:SetTexture(select(4, GetSpecializationInfo(spec)))
 			
 			if not TotalAP.Cache.IsSpecCached(spec) then return end
 			
