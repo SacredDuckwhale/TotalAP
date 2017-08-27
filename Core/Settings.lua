@@ -278,7 +278,7 @@ local function ValidateTable(t, relPath, v)
 			TotalAP.Debug("ValidateTable -> Found deprecated value for key = " .. tostring(key) .. " (lookup = " .. tostring(absPath) .. ")")
 			
 			-- Remove obsolete value
-			t[key] = nil
+			t[key] = nil -- TODO: THis is not working,because absPath can be representing a nested table entry
 			TotalAP.Debug("ValidateTable -> Dropped obsolete value for key = " .. tostring(key))
 		
 		else
