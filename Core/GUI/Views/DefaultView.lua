@@ -90,7 +90,7 @@ end
 -- @param anchorFrameHeight The height of the anchor frame
 -- @return
 -- TODO: Not the best solution...
-local function GetDelta(anchorFrameHeight)
+local function GetDelta(anchorFrameHeight) -- TODO: Delete
 
 	local settings = TotalAP.Settings.GetReference()
 
@@ -133,6 +133,61 @@ local function CreateNew(self)
 	AnchorFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_AnchorFrame")
 	AnchorFrame = AnchorFrameContainer:GetFrameObject()
 	
+-- TODO: Utility functions (move elsewhere when refactoring)
+	-- GUI calculations -> TODO: Move elsewhere, and generalise to calculate more than just the alignment offsets?
+	-- Return offset for display elements depending on the selected alignment
+	local GetDeltas = function(widgetType)
+
+		-- Calculate position dynamically while considering alignment options, ignored specs, bar settings, and whether or not the ActionButtonText must be accounted for
+		local showText = settings.actionButton.showText
+		local align = settings.infoFrame.alignment -- shorthand
+		local h = 2 * barInset + barHeight + hSpace -- The overall height of a single bar
+		local numDisplayedSpecs = GetNumSpecializations() - TotalAP.Cache.GetNumIgnoredSpecs() -- How many progress bars will be displayed
+		local b = maxButtonSize + hSpace -- + (showText and (ActionButtonText:GetStringHeight() + hSpace) or hSpace) -- Overall height of the button and attached text display -- TODO: FontString doesn't update until after the first render AFTER everything is initialised?
+TotalAP.ChatMsg("maxButtonSize = " .. maxButtonSize .. ", showText = " .. tostring(showText) .. ", GetStringHeight() = " .. ActionButtonText:GetStringHeight() .. ", hSpace = " .. hSpace)
+
+TotalAP.ChatMsg("GetDeltas -> h = " .. h .. ", numDisplayedSpecs = " .. numDisplayedSpecs .. ", b = " .. b)
+		local dy = 0 -- For alignment == top, nothing has to change
+		
+		if widgetType == "button" then -- need to consider the buttonText, too
+		
+			dy = (align == "bottom" or align == "center") and (4 * h - b) or dy -- For alignment == bottom, move it by the maximum size of the AnchorFrame (= 4 progress bars) and make sure the bottom aligns
+			dy = (align == "center") and (dy / 2) or dy -- For alignment == center, move it by half of the empty space
+
+		else -- TODO: other widget types aren't really used right now, so this always means "bars" or "icons"
+
+			dy = (align == "bottom" or align == "center") and ((4 - numDisplayedSpecs) * h) or dy
+			dy = (align == "center") and (dy / 2) or dy
+			
+		end
+		
+TotalAP.ChatMsg("GetDeltas -> align = " .. tostring(align) .. " dx " .. 0 .. " dy " .. dy)
+		return 0, dy -- TODO: dx NYI
+		
+	end
+	
+	-- local GetDeltas = function(overrideAlign)
+		
+		-- local align = overrideAlign or settings.infoFrame.alignment
+		-- local dx, dy = 0, 0
+		
+		-- local n = TotalAP.Cache.GetNumIgnoredSpecs() -- This will be used to calculate the empty space (from specs that are hidden)
+		-- local b = 2 * barInset + barHeight + hSpace -- This is the space one progress bar takes up -> formerly "combinedBarHeight"
+	-- --	local showText = settings.actionButton.showText -- If the text is hidden, alignment for the button has to consider that fact
+		-- -- TODO: buttonTextHeight ? For now, it's not required, but if there are options to change it then it must be evaluated, too
+		
+		-- if align == "center" then  -- Align == "center" ->
+			-- dy = -1 / 2 * n * b
+		-- elseif align == "bottom" then -- Anchor to the bottom and leave some space  (TODO: Might look odd if specs are being ignored?)
+			-- dy = - n * b
+		-- -- implied else align == "top" -> leave dy as 0 Anchor bars, icons, and buttonFrame right below the state icons/ULA bar (NYI)	
+		-- end
+		
+		-- TotalAP.ChatMsg("dx " .. dx .. " dy " .. dy)
+		-- return dx, dy
+		
+	-- end
+		
 	-- Shared script handler functions
 	-- TODO: Proper handler functions. Could also toggle AP level as separate text on the progress bars
 	-- TODO: Move this elsewhere
@@ -364,12 +419,30 @@ local function CreateNew(self)
 		-- Layout and visuals
 		ActionButtonFrameContainer:SetBackdropColour("#123456")
 		ActionButtonFrameContainer:SetBackdropAlpha(0)
-		ActionButtonFrameContainer:SetRelativePosition(0, - ( barHeight + barInset + hSpace ))
-		
 		ActionButtonFrame:SetSize(maxButtonSize, maxButtonSize)
 		
 		ActionButtonFrameContainer.Update = function()
 		
+			-- local dy = 0
+			-- local b = 2 * barInset + barHeight + hSpace -- Bar height (TODO: DRY)
+			-- local t = ActionButtonText:GetHeight()
+		
+			-- if settings.actionButton.showText then -- ActionButtonText needs to be considered as well -> Adjust position slightly to make room for it
+				-- if settings.infoFrame.alignment == "bottom" then
+					-- dy = - (AnchorFrame:GetHeight() ) t + hSpace
+				-- elseif settings.infoFrame.alignment == "center" then
+					-- dy = dy + 1 / 2 * t
+				-- end
+			-- else
+				-- if settings.infoFrame.alignment == "bottom" then
+					-- dy = dy
+				-- elseif settings.infoFrame.alignment == "center" then
+					-- dy = dy + 1 / 2 * b
+				-- end
+			-- end
+			local _, dy = GetDeltas("button")
+			ActionButtonFrameContainer:SetRelativePosition(0, - ( 2 * barInset + barHeight + hSpace) - dy) -- One extra h is to account for the StateIcons (and later ULA bar), which are always anchored at the very top
+				
 		end
 		
 	end
@@ -680,7 +753,7 @@ local function CreateNew(self)
 			local displaySpec = GetDisplayOrderForSpec(spec)
 			local specOffset = (displaySpec - 1) * (barHeight + 2 * barInset + hSpace)-- This offset is to move each spec into its correct place (from the top)
 			local glueOffset = ((barHeight + 2 * barInset) - (specIconSize + 2 * specIconBorderWidth)) / 2 -- This offset makes sure the spec icons are always next to the progress bars
-			local alignmentOffset = GetDelta(AnchorFrame:GetHeight()) -- This offset is for repositioning them according to the /ap alignment-X setting
+			local _, alignmentOffset = GetDeltas() -- This offset is for repositioning them according to the /ap alignment-X setting
 			local hiddenProgressBarsOffset = 0 -- If progress bars are hidden, move spec icons in their place
 			if not ProgressBarsFrame:IsShown() then hiddenProgressBarsOffset = barWidth + 2 * barInset + vSpace end -- TODO: function to calculate GUI element positions (can be unique to each view, allowing customisation for different ones without changing the main view code?) This would remove all the duplicate code and allow settings to change views more easily
 			self:SetRelativePosition(maxButtonSize + vSpace + barWidth + 2 * barInset + vSpace - hiddenProgressBarsOffset, - ( barHeight + 2 * barInset + hSpace + specOffset + glueOffset + alignmentOffset))
@@ -933,8 +1006,9 @@ local function CreateNew(self)
 			self:SetEnabled(not hideFrame)
 			if hideFrame then return end
 		
-			local delta, combinedBarsHeight = GetDelta(AnchorFrame:GetHeight())
-			self:SetRelativePosition(maxButtonSize + vSpace, - ( barHeight + 2 * barInset + hSpace) - delta)
+			local _, dy = GetDeltas()
+			local combinedBarsHeight = (GetNumSpecializations() - TotalAP.Cache.GetNumIgnoredSpecs()) * (2 * barInset + barHeight + hSpace) -- One bar per spec that is not ignored, and the ULA bar (NYI) / StateIcons
+			self:SetRelativePosition(maxButtonSize + vSpace, - ( barHeight + 2 * barInset + hSpace) - dy)
 			self:GetFrameObject():SetSize(barWidth + 2 * barInset, combinedBarsHeight)
 		
 		end
