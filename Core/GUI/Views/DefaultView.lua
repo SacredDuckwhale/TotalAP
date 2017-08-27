@@ -126,11 +126,12 @@ local function CreateNew(self)
 	
 	
 	-- References to view elements (TODO: Add the remaining ones here and remove ugly workaround/hooking to access elements that weren't defined prior to the current element)
-	local ProgressBarsFrame
+	local AnchorFrameContainer, CombatStateIconContainer, PetBattleStateIconContainer, VehicleStateIconContainer, PlayerControlStateIconContainer, UnderlightAnglerFrameContainer, ActionButtonFrameContainer, ActionButtonContainer, ActionButtonTextContainer, SpecIcon1FrameContainer, SpecIcon2FrameContainer, SpecIcon3FrameContainer, SpecIcon4FrameContainer, SpecIcon1Container, SpecIcon2Container, SpecIcon3Container, SpecIcon4Container, SpecIcon1TextContainer, SpecIcon2TextContainer, SpecIcon3TextContainer, SpecIcon4TextContainer, ProgressBarsFrameContainer, ProgressBar1Container, ProgressBar2Container, ProgressBar3Container, ProgressBar4Container -- Widget references
+	local AnchorFrame, CombatStateIcon, PetBattleStateIcon, VehicleStateIcon, PlayerControlStateIcon, UnderlightAnglerFrame, ActionButtonFrame, ActionButton, ActionButtonText, SpecIcon1Frame, SpecIcon2Frame, SpecIcon3Frame, SpecIcon4Frame, SpecIcon1, SpecIcon2, SpecIcon3, SpecIcon4, SpecIcon1Text, SpecIcon2Text, SpecIcon3Text, SpecIcon4Text, ProgressBarsFrame, ProgressBar1, ProgressBar2, ProgressBar3, ProgressBar4 -- Frame references
 	
 	-- Anchor frame: Parent of all displays and buttons (used to toggle the entire addon, as well as move its displays)
-	local AnchorFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_AnchorFrame")
-	local AnchorFrame = AnchorFrameContainer:GetFrameObject()
+	AnchorFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_AnchorFrame")
+	AnchorFrame = AnchorFrameContainer:GetFrameObject()
 	
 	-- Shared script handler functions
 	-- TODO: Proper handler functions. Could also toggle AP level as separate text on the progress bars
@@ -232,8 +233,8 @@ local function CreateNew(self)
 	end
 	
 	-- Event state icons: Indicate state of events that affect the ability to use AP items (TODO: Settings to show/hide and style these)
-	local CombatStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_CombatStateIcon", "_DefaultView_AnchorFrame")
-	local CombatStateIcon = CombatStateIconContainer:GetFrameObject()
+	CombatStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_CombatStateIcon", "_DefaultView_AnchorFrame")
+	CombatStateIcon = CombatStateIconContainer:GetFrameObject()
 	do -- CombatStateIcon
 		
 		-- Layout and visuals
@@ -259,8 +260,8 @@ local function CreateNew(self)
 		
 	end
 	
-	local PetBattleStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_PetBattleStateIcon", "_DefaultView_AnchorFrame")
-	local PetBattleStateIcon = PetBattleStateIconContainer:GetFrameObject()
+	PetBattleStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_PetBattleStateIcon", "_DefaultView_AnchorFrame")
+	PetBattleStateIcon = PetBattleStateIconContainer:GetFrameObject()
 	do -- PetBattleStateIcon
 		
 		-- Layout and visuals
@@ -285,8 +286,8 @@ local function CreateNew(self)
 		
 	end
 	
-	local VehicleStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_VehicleStateIcon", "_DefaultView_AnchorFrame")
-	local VehicleStateIcon = VehicleStateIconContainer:GetFrameObject()
+	VehicleStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_VehicleStateIcon", "_DefaultView_AnchorFrame")
+	VehicleStateIcon = VehicleStateIconContainer:GetFrameObject()
 	do -- VehicleStateIcon
 		
 		-- Layout and visuals
@@ -311,8 +312,8 @@ local function CreateNew(self)
 		
 	end
 	
-	local PlayerControlStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_PlayerControlStateIcon", "_DefaultView_AnchorFrame")
-	local PlayerControlStateIcon = PlayerControlStateIconContainer:GetFrameObject()
+	PlayerControlStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_PlayerControlStateIcon", "_DefaultView_AnchorFrame")
+	PlayerControlStateIcon = PlayerControlStateIconContainer:GetFrameObject()
 	do -- PlayerControlStateIcon
 	
 		-- Layout and visuals
@@ -337,8 +338,8 @@ local function CreateNew(self)
 	
 	end
 	
-	local UnderlightAnglerFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_UnderlightAnglerFrame", "_DefaultView_AnchorFrame")
-	local UnderlightAnglerFrame = UnderlightAnglerFrameContainer:GetFrameObject()
+	UnderlightAnglerFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_UnderlightAnglerFrame", "_DefaultView_AnchorFrame")
+	UnderlightAnglerFrame = UnderlightAnglerFrameContainer:GetFrameObject()
 	do -- UnderlightAnglerFrame
 	
 		-- Layout and visuals
@@ -356,8 +357,8 @@ local function CreateNew(self)
 		
 	end
 	
-	local ActionButtonFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_ActionButtonFrameContainer", "_DefaultView_AnchorFrame")
-	local ActionButtonFrame = ActionButtonFrameContainer:GetFrameObject()
+	ActionButtonFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_ActionButtonFrameContainer", "_DefaultView_AnchorFrame")
+	ActionButtonFrame = ActionButtonFrameContainer:GetFrameObject()
 	do -- ActionButtonFrame
 	
 		-- Layout and visuals
@@ -373,8 +374,8 @@ local function CreateNew(self)
 		
 	end
 	
-	local ActionButtonContainer = TotalAP.GUI.ItemUseButton:CreateNew("_DefaultView_ActionButton", "_DefaultView_ActionButtonFrameContainer")
-	local ActionButton = ActionButtonContainer:GetFrameObject()
+	ActionButtonContainer = TotalAP.GUI.ItemUseButton:CreateNew("_DefaultView_ActionButton", "_DefaultView_ActionButtonFrameContainer")
+	ActionButton = ActionButtonContainer:GetFrameObject()
 	do -- ActionButton
 		
 		-- Layout and visuals
@@ -561,8 +562,8 @@ local function CreateNew(self)
 		
 	end
 	
-	local ActionButtonTextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_ActionButtonText", "_DefaultView_ActionButtonFrameContainer", buttonTextTemplate)
-	local ActionButtonText = ActionButtonTextContainer:GetFrameObject()
+	ActionButtonTextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_ActionButtonText", "_DefaultView_ActionButtonFrameContainer", buttonTextTemplate)
+	ActionButtonText = ActionButtonTextContainer:GetFrameObject()
 	do -- ActionButtonTextContainer
 	
 		-- Layout and visuals
@@ -622,14 +623,14 @@ local function CreateNew(self)
 		
 	end
 	
-	local SpecIcon1FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon1Container", "_DefaultView_AnchorFrame")
-	local SpecIcon1Frame = SpecIcon1FrameContainer:GetFrameObject()
-	local SpecIcon2FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon2Container", "_DefaultView_AnchorFrame")
-	local SpecIcon2Frame = SpecIcon2FrameContainer:GetFrameObject()
-	local SpecIcon3FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon3Container", "_DefaultView_AnchorFrame")
-	local SpecIcon3Frame = SpecIcon3FrameContainer:GetFrameObject()
-	local SpecIcon4FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon4Container", "_DefaultView_AnchorFrame")
-	local SpecIcon4Frame = SpecIcon4FrameContainer:GetFrameObject()
+	SpecIcon1FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon1Container", "_DefaultView_AnchorFrame")
+	SpecIcon1Frame = SpecIcon1FrameContainer:GetFrameObject()
+	SpecIcon2FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon2Container", "_DefaultView_AnchorFrame")
+	SpecIcon2Frame = SpecIcon2FrameContainer:GetFrameObject()
+	SpecIcon3FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon3Container", "_DefaultView_AnchorFrame")
+	SpecIcon3Frame = SpecIcon3FrameContainer:GetFrameObject()
+	SpecIcon4FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon4Container", "_DefaultView_AnchorFrame")
+	SpecIcon4Frame = SpecIcon4FrameContainer:GetFrameObject()
 	do -- SpecIconFrames
 	
 		-- Layout and visuals
@@ -693,14 +694,14 @@ local function CreateNew(self)
 		
 	end
 	
-	local SpecIcon1Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon1", "_DefaultView_SpecIcon1Container")
-	local SpecIcon1 = SpecIcon1Container:GetFrameObject()
-	local SpecIcon2Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon2", "_DefaultView_SpecIcon2Container")
-	local SpecIcon2 = SpecIcon2Container:GetFrameObject()
-	local SpecIcon3Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon3", "_DefaultView_SpecIcon3Container")
-	local SpecIcon3 = SpecIcon3Container:GetFrameObject()
-	local SpecIcon4Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon4", "_DefaultView_SpecIcon4Container")
-	local SpecIcon4 = SpecIcon4Container:GetFrameObject()
+	SpecIcon1Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon1", "_DefaultView_SpecIcon1Container")
+	SpecIcon1 = SpecIcon1Container:GetFrameObject()
+	SpecIcon2Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon2", "_DefaultView_SpecIcon2Container")
+	SpecIcon2 = SpecIcon2Container:GetFrameObject()
+	SpecIcon3Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon3", "_DefaultView_SpecIcon3Container")
+	SpecIcon3 = SpecIcon3Container:GetFrameObject()
+	SpecIcon4Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon4", "_DefaultView_SpecIcon4Container")
+	SpecIcon4 = SpecIcon4Container:GetFrameObject()
 	do -- SpecIcons
 		
 		-- Layout and visuals
@@ -834,14 +835,14 @@ local function CreateNew(self)
 
 	end
 	
-	local SpecIcon1TextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_SpecIcon1Text", "_DefaultView_SpecIcon1Container", specIconTextTemplate)
-	local SpecIcon1Text = SpecIcon1TextContainer:GetFrameObject()
-	local SpecIcon2TextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_SpecIcon2Text", "_DefaultView_SpecIcon2Container", specIconTextTemplate)
-	local SpecIcon2Text = SpecIcon2TextContainer:GetFrameObject()
-	local SpecIcon3TextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_SpecIcon3Text", "_DefaultView_SpecIcon3Container", specIconTextTemplate)
-	local SpecIcon3Text = SpecIcon3TextContainer:GetFrameObject()
-	local SpecIcon4TextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_SpecIcon4Text", "_DefaultView_SpecIcon4Container", specIconTextTemplate)
-	local SpecIcon4Text = SpecIcon4TextContainer:GetFrameObject()
+	SpecIcon1TextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_SpecIcon1Text", "_DefaultView_SpecIcon1Container", specIconTextTemplate)
+	SpecIcon1Text = SpecIcon1TextContainer:GetFrameObject()
+	SpecIcon2TextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_SpecIcon2Text", "_DefaultView_SpecIcon2Container", specIconTextTemplate)
+	SpecIcon2Text = SpecIcon2TextContainer:GetFrameObject()
+	SpecIcon3TextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_SpecIcon3Text", "_DefaultView_SpecIcon3Container", specIconTextTemplate)
+	SpecIcon3Text = SpecIcon3TextContainer:GetFrameObject()
+	SpecIcon4TextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_SpecIcon4Text", "_DefaultView_SpecIcon4Container", specIconTextTemplate)
+	SpecIcon4Text = SpecIcon4TextContainer:GetFrameObject()
 	do -- SpecIconsText
 	
 		-- Layout and visuals
@@ -913,7 +914,7 @@ local function CreateNew(self)
 	end
 	
 	
-	local ProgressBarsFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_ProgressBarsFrame", "_DefaultView_AnchorFrame")
+	ProgressBarsFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_ProgressBarsFrame", "_DefaultView_AnchorFrame")
 	ProgressBarsFrame = ProgressBarsFrameContainer:GetFrameObject()
 	do -- ProgressBarsFrame
 	 
@@ -942,14 +943,14 @@ local function CreateNew(self)
 		
 	 end
 	
-	local ProgressBar1Container = TotalAP.GUI.ProgressBar:CreateNew("_DefaultView_ProgressBar1", "_DefaultView_ProgressBarsFrame")
-	local ProgressBar1 = ProgressBar1Container:GetFrameObject()
-	local ProgressBar2Container = TotalAP.GUI.ProgressBar:CreateNew("_DefaultView_ProgressBar2", "_DefaultView_ProgressBarsFrame")
-	local ProgressBar2 = ProgressBar2Container:GetFrameObject()
-	local ProgressBar3Container = TotalAP.GUI.ProgressBar:CreateNew("_DefaultView_ProgressBar3", "_DefaultView_ProgressBarsFrame")
-	local ProgressBar3 = ProgressBar3Container:GetFrameObject()
-	local ProgressBar4Container = TotalAP.GUI.ProgressBar:CreateNew("_DefaultView_ProgressBar4", "_DefaultView_ProgressBarsFrame")
-	local ProgressBar4 = ProgressBar4Container:GetFrameObject()
+	ProgressBar1Container = TotalAP.GUI.ProgressBar:CreateNew("_DefaultView_ProgressBar1", "_DefaultView_ProgressBarsFrame")
+	ProgressBar1 = ProgressBar1Container:GetFrameObject()
+	ProgressBar2Container = TotalAP.GUI.ProgressBar:CreateNew("_DefaultView_ProgressBar2", "_DefaultView_ProgressBarsFrame")
+	ProgressBar2 = ProgressBar2Container:GetFrameObject()
+	ProgressBar3Container = TotalAP.GUI.ProgressBar:CreateNew("_DefaultView_ProgressBar3", "_DefaultView_ProgressBarsFrame")
+	ProgressBar3 = ProgressBar3Container:GetFrameObject()
+	ProgressBar4Container = TotalAP.GUI.ProgressBar:CreateNew("_DefaultView_ProgressBar4", "_DefaultView_ProgressBarsFrame")
+	ProgressBar4 = ProgressBar4Container:GetFrameObject()
 	do -- ProgressBars
 	
 		-- Layout and visuals
