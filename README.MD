@@ -45,7 +45,8 @@
 <p>A more detailed list will be printed ingame upon using the main command (see screenshots for examples).</p>
 <h2>Issues/Feature Requests</h2>
 <p>While I try to monitor the comments on this page, I don't always get notified of them. Therefore, I kindly ask you to use the <a href="https://wow.curseforge.com/projects/totalap/issues">Issue Tracker</a> on the Project Site when appropriate (You can use the same Curse account you use to comment here for that).</p>
-<p>Before you decide to do that, however, please check if your issue isn't already mentioned on the <a href="https://wow.curseforge.com/projects/totalap/pages/faq">Frequently Asked Questions</a> page.</p>
+<p>Before you decide to do so, however, please check if your issue isn't already mentioned on the <a href="https://wow.curseforge.com/projects/totalap/pages/faq">Frequently Asked Questions</a> page.</p>
+<p>Alternatively, you can follow the addon's development on <a href="https://github.com/SacredDuckwhale/TotalAP">GitHub</a>, where a list of <a href="https://github.com/SacredDuckwhale/TotalAP/issues">Known Issues</a> is available. The <a href="https://github.com/SacredDuckwhale/TotalAP/projects/1">Project Timeline</a> allows you to see what is currently being worked on and when you can expect any given change to be implemented.</p>
 <h2>Localisation</h2>
 <p>A proper localisation system is implemented, but many locales aren't fully translated (yet). If you can help out, it will be appreciated!</p>
 <p>You can check on the current translation progress here: <a href="https://wow.curseforge.com/projects/totalap/localization">Project Site</a></p>
