@@ -105,8 +105,8 @@ local localeNumberFormats = {
 	 
 	-- esES: Spanish (Spain)
 	["esES"] = {	
-		["thousandsSeparator"] = ",",
-		["decimalSeparator"] = ".",
+		["thousandsSeparator"] = ".",
+		["decimalSeparator"] = ",",
 		["leadingSpace"] = " ",
 		["trailingSpace"] = " ",
 		["unitsTable"] = {
