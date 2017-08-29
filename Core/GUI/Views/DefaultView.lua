@@ -143,9 +143,9 @@ local function CreateNew(self)
 		local h = 2 * barInset + barHeight + hSpace -- The overall height of a single bar
 		local numDisplayedSpecs = GetNumSpecializations() - TotalAP.Cache.GetNumIgnoredSpecs() -- How many progress bars will be displayed
 		local b = maxButtonSize + hSpace -- + (showText and (ActionButtonText:GetStringHeight() + hSpace) or hSpace) -- Overall height of the button and attached text display -- TODO: FontString doesn't update until after the first render AFTER everything is initialised?
-TotalAP.ChatMsg("maxButtonSize = " .. maxButtonSize .. ", showText = " .. tostring(showText) .. ", GetStringHeight() = " .. ActionButtonText:GetStringHeight() .. ", hSpace = " .. hSpace)
+--TotalAP.Debug("maxButtonSize = " .. maxButtonSize .. ", showText = " .. tostring(showText) .. ", GetStringHeight() = " .. ActionButtonText:GetStringHeight() .. ", hSpace = " .. hSpace)
 
-TotalAP.ChatMsg("GetDeltas -> h = " .. h .. ", numDisplayedSpecs = " .. numDisplayedSpecs .. ", b = " .. b)
+--TotalAP.Debug("GetDeltas -> h = " .. h .. ", numDisplayedSpecs = " .. numDisplayedSpecs .. ", b = " .. b)
 		local dy = 0 -- For alignment == top, nothing has to change
 		
 		if widgetType == "button" then -- need to consider the buttonText, too
@@ -160,7 +160,7 @@ TotalAP.ChatMsg("GetDeltas -> h = " .. h .. ", numDisplayedSpecs = " .. numDispl
 			
 		end
 		
-TotalAP.ChatMsg("GetDeltas -> align = " .. tostring(align) .. " dx " .. 0 .. " dy " .. dy)
+--TotalAP.Debug("GetDeltas -> align = " .. tostring(align) .. " dx " .. 0 .. " dy " .. dy)
 		return 0, dy -- TODO: dx NYI
 		
 	end
