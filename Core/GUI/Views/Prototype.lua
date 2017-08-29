@@ -75,8 +75,12 @@ local function Render(self)
 		if Element ~= nil then
 		
 			-- Skip frames that can't be shown due to being assigned to actual specs that don't exist for the current character's class - the maximum no. is always created, but not all of them need to be rendered
-			if Element:GetAssignedSpec() > GetNumSpecializations() then -- Disable this icon, as the player's class has fewer specs
-				Element:SetEnabled(false)
+			if GetNumSpecializations() > 0 then -- Spec data is available (it's not during some loading screens...)
+				if Element:GetAssignedSpec() > GetNumSpecializations() then -- Disable this icon, as the player's class has fewer specs
+					Element:SetEnabled(false)
+				else
+					Element:SetEnabled(true)
+				end
 			end
 		
 --			TotalAP.Debug("Rendering View element " .. index .. ": " .. Element:GetName())
