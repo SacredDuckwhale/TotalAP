@@ -53,7 +53,6 @@ local DefaultView = {}
 		
 	-- End stuff that needs to be moved to AceConfig settings
 	
-
 --- Returns the rearranged order of specs for display in an ordered View
 -- @return The order that specs will be displayed in after taking into account ignored specs (which won't be counted as they are hidden)
 local function GetSpecDisplayOrder()
@@ -124,7 +123,6 @@ local function CreateNew(self)
 	local settings = TotalAP.Settings.GetReference()
 	local fqcn = TotalAP.Utils.GetFQCN()
 	
-	
 	-- References to view elements (TODO: Add the remaining ones here and remove ugly workaround/hooking to access elements that weren't defined prior to the current element)
 	local AnchorFrameContainer, CombatStateIconContainer, PetBattleStateIconContainer, VehicleStateIconContainer, PlayerControlStateIconContainer, UnderlightAnglerFrameContainer, ActionButtonFrameContainer, ActionButtonContainer, ActionButtonTextContainer, SpecIcon1FrameContainer, SpecIcon2FrameContainer, SpecIcon3FrameContainer, SpecIcon4FrameContainer, SpecIcon1Container, SpecIcon2Container, SpecIcon3Container, SpecIcon4Container, SpecIcon1TextContainer, SpecIcon2TextContainer, SpecIcon3TextContainer, SpecIcon4TextContainer, ProgressBarsFrameContainer, ProgressBar1Container, ProgressBar2Container, ProgressBar3Container, ProgressBar4Container -- Widget references
 	local AnchorFrame, CombatStateIcon, PetBattleStateIcon, VehicleStateIcon, PlayerControlStateIcon, UnderlightAnglerFrame, ActionButtonFrame, ActionButton, ActionButtonText, SpecIcon1Frame, SpecIcon2Frame, SpecIcon3Frame, SpecIcon4Frame, SpecIcon1, SpecIcon2, SpecIcon3, SpecIcon4, SpecIcon1Text, SpecIcon2Text, SpecIcon3Text, SpecIcon4Text, ProgressBarsFrame, ProgressBar1, ProgressBar2, ProgressBar3, ProgressBar4 -- Frame references
@@ -132,6 +130,7 @@ local function CreateNew(self)
 	-- Anchor frame: Parent of all displays and buttons (used to toggle the entire addon, as well as move its displays)
 	AnchorFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_AnchorFrame")
 	AnchorFrame = AnchorFrameContainer:GetFrameObject()
+
 	
 -- TODO: Utility functions (move elsewhere when refactoring)
 	-- GUI calculations -> TODO: Move elsewhere, and generalise to calculate more than just the alignment offsets?
@@ -631,7 +630,6 @@ TotalAP.ChatMsg("GetDeltas -> align = " .. tostring(align) .. " dx " .. 0 .. " d
 			ActionButtonContainer:Render()
 				
 		end)
-
 		
 	end
 	
@@ -769,7 +767,7 @@ TotalAP.ChatMsg("GetDeltas -> align = " .. tostring(align) .. " dx " .. 0 .. " d
 	
 	SpecIcon1Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon1", "_DefaultView_SpecIcon1Container")
 	SpecIcon1 = SpecIcon1Container:GetFrameObject()
-	SpecIcon2Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon2", "_DefaultView_SpecIcon2Container")
+	SpecIcon2Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon2", "_DefaultView_SpecIcon2Container")	
 	SpecIcon2 = SpecIcon2Container:GetFrameObject()
 	SpecIcon3Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon3", "_DefaultView_SpecIcon3Container")
 	SpecIcon3 = SpecIcon3Container:GetFrameObject()
@@ -985,7 +983,6 @@ TotalAP.ChatMsg("GetDeltas -> align = " .. tostring(align) .. " dx " .. 0 .. " d
 		SpecIcon4TextContainer.Update = SpecIconTextUpdateFunction
 		
 	end
-	
 	
 	ProgressBarsFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_ProgressBarsFrame", "_DefaultView_AnchorFrame")
 	ProgressBarsFrame = ProgressBarsFrameContainer:GetFrameObject()
