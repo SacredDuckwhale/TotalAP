@@ -743,7 +743,7 @@ TotalAP.ChatMsg("GetDeltas -> align = " .. tostring(align) .. " dx " .. 0 .. " d
 			hideFrame = (hideFrame
 			or not settings.specIcons.enabled -- Spec icons have been disabled
 			or TotalAP.Cache.IsSpecIgnored(spec) -- Assigned spec is being ignored
-			or GetNumSpecializations() < self:GetAssignedSpec() -- Class doesn't have as many specs
+			or GetNumSpecializations() < spec -- Class doesn't have as many specs
 			)
 			
 			self:SetEnabled(not hideFrame)
