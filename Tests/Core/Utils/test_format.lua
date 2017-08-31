@@ -150,13 +150,13 @@ function TestFormat:testThreeParameters_esES()
 	luaunit.assertEquals(T.Utils.FormatShort(5.5, true, "esES"), "6")
 	luaunit.assertEquals(T.Utils.FormatShort(55, true, "esES"), "55")
 	luaunit.assertEquals(T.Utils.FormatShort(550, true, "esES"), "550")
-	luaunit.assertEquals(T.Utils.FormatShort(5500, true, "esES"), "5.5K")
+	luaunit.assertEquals(T.Utils.FormatShort(5500, true, "esES"), "5,5K")
 	luaunit.assertEquals(T.Utils.FormatShort(55000, true, "esES"), "55K")
 	luaunit.assertEquals(T.Utils.FormatShort(550000, true, "esES"), "550K")
-	luaunit.assertEquals(T.Utils.FormatShort(5500000, true, "esES"), "5.5 mil.")
+	luaunit.assertEquals(T.Utils.FormatShort(5500000, true, "esES"), "5,5 mil.")
 	luaunit.assertEquals(T.Utils.FormatShort(55000000, true, "esES"), "55 mil.")
 	luaunit.assertEquals(T.Utils.FormatShort(550000000, true, "esES"), "550 mil.")
-	luaunit.assertEquals(T.Utils.FormatShort(5500000000, true, "esES"), "5.5 bil.")
+	luaunit.assertEquals(T.Utils.FormatShort(5500000000, true, "esES"), "5,5 bil.")
 
 end
 
