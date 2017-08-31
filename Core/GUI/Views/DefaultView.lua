@@ -53,7 +53,6 @@ local DefaultView = {}
 		
 	-- End stuff that needs to be moved to AceConfig settings
 	
-
 --- Returns the rearranged order of specs for display in an ordered View
 -- @return The order that specs will be displayed in after taking into account ignored specs (which won't be counted as they are hidden)
 local function GetSpecDisplayOrder()
@@ -90,7 +89,7 @@ end
 -- @param anchorFrameHeight The height of the anchor frame
 -- @return
 -- TODO: Not the best solution...
-local function GetDelta(anchorFrameHeight)
+local function GetDelta(anchorFrameHeight) -- TODO: Delete
 
 	local settings = TotalAP.Settings.GetReference()
 
@@ -124,14 +123,70 @@ local function CreateNew(self)
 	local settings = TotalAP.Settings.GetReference()
 	local fqcn = TotalAP.Utils.GetFQCN()
 	
-	
 	-- References to view elements (TODO: Add the remaining ones here and remove ugly workaround/hooking to access elements that weren't defined prior to the current element)
-	local ProgressBarsFrame
+	local AnchorFrameContainer, CombatStateIconContainer, PetBattleStateIconContainer, VehicleStateIconContainer, PlayerControlStateIconContainer, UnderlightAnglerFrameContainer, ActionButtonFrameContainer, ActionButtonContainer, ActionButtonTextContainer, SpecIcon1FrameContainer, SpecIcon2FrameContainer, SpecIcon3FrameContainer, SpecIcon4FrameContainer, SpecIcon1Container, SpecIcon2Container, SpecIcon3Container, SpecIcon4Container, SpecIcon1TextContainer, SpecIcon2TextContainer, SpecIcon3TextContainer, SpecIcon4TextContainer, ProgressBarsFrameContainer, ProgressBar1Container, ProgressBar2Container, ProgressBar3Container, ProgressBar4Container -- Widget references
+	local AnchorFrame, CombatStateIcon, PetBattleStateIcon, VehicleStateIcon, PlayerControlStateIcon, UnderlightAnglerFrame, ActionButtonFrame, ActionButton, ActionButtonText, SpecIcon1Frame, SpecIcon2Frame, SpecIcon3Frame, SpecIcon4Frame, SpecIcon1, SpecIcon2, SpecIcon3, SpecIcon4, SpecIcon1Text, SpecIcon2Text, SpecIcon3Text, SpecIcon4Text, ProgressBarsFrame, ProgressBar1, ProgressBar2, ProgressBar3, ProgressBar4 -- Frame references
 	
 	-- Anchor frame: Parent of all displays and buttons (used to toggle the entire addon, as well as move its displays)
-	local AnchorFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_AnchorFrame")
-	local AnchorFrame = AnchorFrameContainer:GetFrameObject()
+	AnchorFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_AnchorFrame")
+	AnchorFrame = AnchorFrameContainer:GetFrameObject()
+
 	
+-- TODO: Utility functions (move elsewhere when refactoring)
+	-- GUI calculations -> TODO: Move elsewhere, and generalise to calculate more than just the alignment offsets?
+	-- Return offset for display elements depending on the selected alignment
+	local GetDeltas = function(widgetType)
+
+		-- Calculate position dynamically while considering alignment options, ignored specs, bar settings, and whether or not the ActionButtonText must be accounted for
+		local showText = settings.actionButton.showText
+		local align = settings.infoFrame.alignment -- shorthand
+		local h = 2 * barInset + barHeight + hSpace -- The overall height of a single bar
+		local numDisplayedSpecs = GetNumSpecializations() - TotalAP.Cache.GetNumIgnoredSpecs() -- How many progress bars will be displayed
+		local b = maxButtonSize + hSpace -- + (showText and (ActionButtonText:GetStringHeight() + hSpace) or hSpace) -- Overall height of the button and attached text display -- TODO: FontString doesn't update until after the first render AFTER everything is initialised?
+TotalAP.ChatMsg("maxButtonSize = " .. maxButtonSize .. ", showText = " .. tostring(showText) .. ", GetStringHeight() = " .. ActionButtonText:GetStringHeight() .. ", hSpace = " .. hSpace)
+
+TotalAP.ChatMsg("GetDeltas -> h = " .. h .. ", numDisplayedSpecs = " .. numDisplayedSpecs .. ", b = " .. b)
+		local dy = 0 -- For alignment == top, nothing has to change
+		
+		if widgetType == "button" then -- need to consider the buttonText, too
+		
+			dy = (align == "bottom" or align == "center") and (4 * h - b) or dy -- For alignment == bottom, move it by the maximum size of the AnchorFrame (= 4 progress bars) and make sure the bottom aligns
+			dy = (align == "center") and (dy / 2) or dy -- For alignment == center, move it by half of the empty space
+
+		else -- TODO: other widget types aren't really used right now, so this always means "bars" or "icons"
+
+			dy = (align == "bottom" or align == "center") and ((4 - numDisplayedSpecs) * h) or dy
+			dy = (align == "center") and (dy / 2) or dy
+			
+		end
+		
+TotalAP.ChatMsg("GetDeltas -> align = " .. tostring(align) .. " dx " .. 0 .. " dy " .. dy)
+		return 0, dy -- TODO: dx NYI
+		
+	end
+	
+	-- local GetDeltas = function(overrideAlign)
+		
+		-- local align = overrideAlign or settings.infoFrame.alignment
+		-- local dx, dy = 0, 0
+		
+		-- local n = TotalAP.Cache.GetNumIgnoredSpecs() -- This will be used to calculate the empty space (from specs that are hidden)
+		-- local b = 2 * barInset + barHeight + hSpace -- This is the space one progress bar takes up -> formerly "combinedBarHeight"
+	-- --	local showText = settings.actionButton.showText -- If the text is hidden, alignment for the button has to consider that fact
+		-- -- TODO: buttonTextHeight ? For now, it's not required, but if there are options to change it then it must be evaluated, too
+		
+		-- if align == "center" then  -- Align == "center" ->
+			-- dy = -1 / 2 * n * b
+		-- elseif align == "bottom" then -- Anchor to the bottom and leave some space  (TODO: Might look odd if specs are being ignored?)
+			-- dy = - n * b
+		-- -- implied else align == "top" -> leave dy as 0 Anchor bars, icons, and buttonFrame right below the state icons/ULA bar (NYI)	
+		-- end
+		
+		-- TotalAP.ChatMsg("dx " .. dx .. " dy " .. dy)
+		-- return dx, dy
+		
+	-- end
+		
 	-- Shared script handler functions
 	-- TODO: Proper handler functions. Could also toggle AP level as separate text on the progress bars
 	-- TODO: Move this elsewhere
@@ -232,8 +287,8 @@ local function CreateNew(self)
 	end
 	
 	-- Event state icons: Indicate state of events that affect the ability to use AP items (TODO: Settings to show/hide and style these)
-	local CombatStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_CombatStateIcon", "_DefaultView_AnchorFrame")
-	local CombatStateIcon = CombatStateIconContainer:GetFrameObject()
+	CombatStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_CombatStateIcon", "_DefaultView_AnchorFrame")
+	CombatStateIcon = CombatStateIconContainer:GetFrameObject()
 	do -- CombatStateIcon
 		
 		-- Layout and visuals
@@ -259,8 +314,8 @@ local function CreateNew(self)
 		
 	end
 	
-	local PetBattleStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_PetBattleStateIcon", "_DefaultView_AnchorFrame")
-	local PetBattleStateIcon = PetBattleStateIconContainer:GetFrameObject()
+	PetBattleStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_PetBattleStateIcon", "_DefaultView_AnchorFrame")
+	PetBattleStateIcon = PetBattleStateIconContainer:GetFrameObject()
 	do -- PetBattleStateIcon
 		
 		-- Layout and visuals
@@ -285,8 +340,8 @@ local function CreateNew(self)
 		
 	end
 	
-	local VehicleStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_VehicleStateIcon", "_DefaultView_AnchorFrame")
-	local VehicleStateIcon = VehicleStateIconContainer:GetFrameObject()
+	VehicleStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_VehicleStateIcon", "_DefaultView_AnchorFrame")
+	VehicleStateIcon = VehicleStateIconContainer:GetFrameObject()
 	do -- VehicleStateIcon
 		
 		-- Layout and visuals
@@ -311,8 +366,8 @@ local function CreateNew(self)
 		
 	end
 	
-	local PlayerControlStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_PlayerControlStateIcon", "_DefaultView_AnchorFrame")
-	local PlayerControlStateIcon = PlayerControlStateIconContainer:GetFrameObject()
+	PlayerControlStateIconContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_PlayerControlStateIcon", "_DefaultView_AnchorFrame")
+	PlayerControlStateIcon = PlayerControlStateIconContainer:GetFrameObject()
 	do -- PlayerControlStateIcon
 	
 		-- Layout and visuals
@@ -337,8 +392,8 @@ local function CreateNew(self)
 	
 	end
 	
-	local UnderlightAnglerFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_UnderlightAnglerFrame", "_DefaultView_AnchorFrame")
-	local UnderlightAnglerFrame = UnderlightAnglerFrameContainer:GetFrameObject()
+	UnderlightAnglerFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_UnderlightAnglerFrame", "_DefaultView_AnchorFrame")
+	UnderlightAnglerFrame = UnderlightAnglerFrameContainer:GetFrameObject()
 	do -- UnderlightAnglerFrame
 	
 		-- Layout and visuals
@@ -356,25 +411,43 @@ local function CreateNew(self)
 		
 	end
 	
-	local ActionButtonFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_ActionButtonFrameContainer", "_DefaultView_AnchorFrame")
-	local ActionButtonFrame = ActionButtonFrameContainer:GetFrameObject()
+	ActionButtonFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_ActionButtonFrameContainer", "_DefaultView_AnchorFrame")
+	ActionButtonFrame = ActionButtonFrameContainer:GetFrameObject()
 	do -- ActionButtonFrame
 	
 		-- Layout and visuals
 		ActionButtonFrameContainer:SetBackdropColour("#123456")
 		ActionButtonFrameContainer:SetBackdropAlpha(0)
-		ActionButtonFrameContainer:SetRelativePosition(0, - ( barHeight + barInset + hSpace ))
-		
 		ActionButtonFrame:SetSize(maxButtonSize, maxButtonSize)
 		
 		ActionButtonFrameContainer.Update = function()
 		
+			-- local dy = 0
+			-- local b = 2 * barInset + barHeight + hSpace -- Bar height (TODO: DRY)
+			-- local t = ActionButtonText:GetHeight()
+		
+			-- if settings.actionButton.showText then -- ActionButtonText needs to be considered as well -> Adjust position slightly to make room for it
+				-- if settings.infoFrame.alignment == "bottom" then
+					-- dy = - (AnchorFrame:GetHeight() ) t + hSpace
+				-- elseif settings.infoFrame.alignment == "center" then
+					-- dy = dy + 1 / 2 * t
+				-- end
+			-- else
+				-- if settings.infoFrame.alignment == "bottom" then
+					-- dy = dy
+				-- elseif settings.infoFrame.alignment == "center" then
+					-- dy = dy + 1 / 2 * b
+				-- end
+			-- end
+			local _, dy = GetDeltas("button")
+			ActionButtonFrameContainer:SetRelativePosition(0, - ( 2 * barInset + barHeight + hSpace) - dy) -- One extra h is to account for the StateIcons (and later ULA bar), which are always anchored at the very top
+				
 		end
 		
 	end
 	
-	local ActionButtonContainer = TotalAP.GUI.ItemUseButton:CreateNew("_DefaultView_ActionButton", "_DefaultView_ActionButtonFrameContainer")
-	local ActionButton = ActionButtonContainer:GetFrameObject()
+	ActionButtonContainer = TotalAP.GUI.ItemUseButton:CreateNew("_DefaultView_ActionButton", "_DefaultView_ActionButtonFrameContainer")
+	ActionButton = ActionButtonContainer:GetFrameObject()
 	do -- ActionButton
 		
 		-- Layout and visuals
@@ -557,12 +630,11 @@ local function CreateNew(self)
 			ActionButtonContainer:Render()
 				
 		end)
-
 		
 	end
 	
-	local ActionButtonTextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_ActionButtonText", "_DefaultView_ActionButtonFrameContainer", buttonTextTemplate)
-	local ActionButtonText = ActionButtonTextContainer:GetFrameObject()
+	ActionButtonTextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_ActionButtonText", "_DefaultView_ActionButtonFrameContainer", buttonTextTemplate)
+	ActionButtonText = ActionButtonTextContainer:GetFrameObject()
 	do -- ActionButtonTextContainer
 	
 		-- Layout and visuals
@@ -622,14 +694,14 @@ local function CreateNew(self)
 		
 	end
 	
-	local SpecIcon1FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon1Container", "_DefaultView_AnchorFrame")
-	local SpecIcon1Frame = SpecIcon1FrameContainer:GetFrameObject()
-	local SpecIcon2FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon2Container", "_DefaultView_AnchorFrame")
-	local SpecIcon2Frame = SpecIcon2FrameContainer:GetFrameObject()
-	local SpecIcon3FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon3Container", "_DefaultView_AnchorFrame")
-	local SpecIcon3Frame = SpecIcon3FrameContainer:GetFrameObject()
-	local SpecIcon4FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon4Container", "_DefaultView_AnchorFrame")
-	local SpecIcon4Frame = SpecIcon4FrameContainer:GetFrameObject()
+	SpecIcon1FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon1Container", "_DefaultView_AnchorFrame")
+	SpecIcon1Frame = SpecIcon1FrameContainer:GetFrameObject()
+	SpecIcon2FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon2Container", "_DefaultView_AnchorFrame")
+	SpecIcon2Frame = SpecIcon2FrameContainer:GetFrameObject()
+	SpecIcon3FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon3Container", "_DefaultView_AnchorFrame")
+	SpecIcon3Frame = SpecIcon3FrameContainer:GetFrameObject()
+	SpecIcon4FrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_SpecIcon4Container", "_DefaultView_AnchorFrame")
+	SpecIcon4Frame = SpecIcon4FrameContainer:GetFrameObject()
 	do -- SpecIconFrames
 	
 		-- Layout and visuals
@@ -669,7 +741,7 @@ local function CreateNew(self)
 			hideFrame = (hideFrame
 			or not settings.specIcons.enabled -- Spec icons have been disabled
 			or TotalAP.Cache.IsSpecIgnored(spec) -- Assigned spec is being ignored
-			or GetNumSpecializations() < self:GetAssignedSpec() -- Class doesn't have as many specs
+			or GetNumSpecializations() < spec -- Class doesn't have as many specs
 			)
 			
 			self:SetEnabled(not hideFrame)
@@ -679,7 +751,7 @@ local function CreateNew(self)
 			local displaySpec = GetDisplayOrderForSpec(spec)
 			local specOffset = (displaySpec - 1) * (barHeight + 2 * barInset + hSpace)-- This offset is to move each spec into its correct place (from the top)
 			local glueOffset = ((barHeight + 2 * barInset) - (specIconSize + 2 * specIconBorderWidth)) / 2 -- This offset makes sure the spec icons are always next to the progress bars
-			local alignmentOffset = GetDelta(AnchorFrame:GetHeight()) -- This offset is for repositioning them according to the /ap alignment-X setting
+			local _, alignmentOffset = GetDeltas() -- This offset is for repositioning them according to the /ap alignment-X setting
 			local hiddenProgressBarsOffset = 0 -- If progress bars are hidden, move spec icons in their place
 			if not ProgressBarsFrame:IsShown() then hiddenProgressBarsOffset = barWidth + 2 * barInset + vSpace end -- TODO: function to calculate GUI element positions (can be unique to each view, allowing customisation for different ones without changing the main view code?) This would remove all the duplicate code and allow settings to change views more easily
 			self:SetRelativePosition(maxButtonSize + vSpace + barWidth + 2 * barInset + vSpace - hiddenProgressBarsOffset, - ( barHeight + 2 * barInset + hSpace + specOffset + glueOffset + alignmentOffset))
@@ -693,14 +765,14 @@ local function CreateNew(self)
 		
 	end
 	
-	local SpecIcon1Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon1", "_DefaultView_SpecIcon1Container")
-	local SpecIcon1 = SpecIcon1Container:GetFrameObject()
-	local SpecIcon2Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon2", "_DefaultView_SpecIcon2Container")
-	local SpecIcon2 = SpecIcon2Container:GetFrameObject()
-	local SpecIcon3Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon3", "_DefaultView_SpecIcon3Container")
-	local SpecIcon3 = SpecIcon3Container:GetFrameObject()
-	local SpecIcon4Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon4", "_DefaultView_SpecIcon4Container")
-	local SpecIcon4 = SpecIcon4Container:GetFrameObject()
+	SpecIcon1Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon1", "_DefaultView_SpecIcon1Container")
+	SpecIcon1 = SpecIcon1Container:GetFrameObject()
+	SpecIcon2Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon2", "_DefaultView_SpecIcon2Container")	
+	SpecIcon2 = SpecIcon2Container:GetFrameObject()
+	SpecIcon3Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon3", "_DefaultView_SpecIcon3Container")
+	SpecIcon3 = SpecIcon3Container:GetFrameObject()
+	SpecIcon4Container = TotalAP.GUI.SpecIcon:CreateNew("_DefaultView_SpecIcon4", "_DefaultView_SpecIcon4Container")
+	SpecIcon4 = SpecIcon4Container:GetFrameObject()
 	do -- SpecIcons
 		
 		-- Layout and visuals
@@ -834,14 +906,14 @@ local function CreateNew(self)
 
 	end
 	
-	local SpecIcon1TextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_SpecIcon1Text", "_DefaultView_SpecIcon1Container", specIconTextTemplate)
-	local SpecIcon1Text = SpecIcon1TextContainer:GetFrameObject()
-	local SpecIcon2TextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_SpecIcon2Text", "_DefaultView_SpecIcon2Container", specIconTextTemplate)
-	local SpecIcon2Text = SpecIcon2TextContainer:GetFrameObject()
-	local SpecIcon3TextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_SpecIcon3Text", "_DefaultView_SpecIcon3Container", specIconTextTemplate)
-	local SpecIcon3Text = SpecIcon3TextContainer:GetFrameObject()
-	local SpecIcon4TextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_SpecIcon4Text", "_DefaultView_SpecIcon4Container", specIconTextTemplate)
-	local SpecIcon4Text = SpecIcon4TextContainer:GetFrameObject()
+	SpecIcon1TextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_SpecIcon1Text", "_DefaultView_SpecIcon1Container", specIconTextTemplate)
+	SpecIcon1Text = SpecIcon1TextContainer:GetFrameObject()
+	SpecIcon2TextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_SpecIcon2Text", "_DefaultView_SpecIcon2Container", specIconTextTemplate)
+	SpecIcon2Text = SpecIcon2TextContainer:GetFrameObject()
+	SpecIcon3TextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_SpecIcon3Text", "_DefaultView_SpecIcon3Container", specIconTextTemplate)
+	SpecIcon3Text = SpecIcon3TextContainer:GetFrameObject()
+	SpecIcon4TextContainer = TotalAP.GUI.TextDisplay:CreateNew("_DefaultView_SpecIcon4Text", "_DefaultView_SpecIcon4Container", specIconTextTemplate)
+	SpecIcon4Text = SpecIcon4TextContainer:GetFrameObject()
 	do -- SpecIconsText
 	
 		-- Layout and visuals
@@ -912,8 +984,7 @@ local function CreateNew(self)
 		
 	end
 	
-	
-	local ProgressBarsFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_ProgressBarsFrame", "_DefaultView_AnchorFrame")
+	ProgressBarsFrameContainer = TotalAP.GUI.BackgroundFrame:CreateNew("_DefaultView_ProgressBarsFrame", "_DefaultView_AnchorFrame")
 	ProgressBarsFrame = ProgressBarsFrameContainer:GetFrameObject()
 	do -- ProgressBarsFrame
 	 
@@ -932,8 +1003,9 @@ local function CreateNew(self)
 			self:SetEnabled(not hideFrame)
 			if hideFrame then return end
 		
-			local delta, combinedBarsHeight = GetDelta(AnchorFrame:GetHeight())
-			self:SetRelativePosition(maxButtonSize + vSpace, - ( barHeight + 2 * barInset + hSpace) - delta)
+			local _, dy = GetDeltas()
+			local combinedBarsHeight = (GetNumSpecializations() - TotalAP.Cache.GetNumIgnoredSpecs()) * (2 * barInset + barHeight + hSpace) -- One bar per spec that is not ignored, and the ULA bar (NYI) / StateIcons
+			self:SetRelativePosition(maxButtonSize + vSpace, - ( barHeight + 2 * barInset + hSpace) - dy)
 			self:GetFrameObject():SetSize(barWidth + 2 * barInset, combinedBarsHeight)
 		
 		end
@@ -942,14 +1014,14 @@ local function CreateNew(self)
 		
 	 end
 	
-	local ProgressBar1Container = TotalAP.GUI.ProgressBar:CreateNew("_DefaultView_ProgressBar1", "_DefaultView_ProgressBarsFrame")
-	local ProgressBar1 = ProgressBar1Container:GetFrameObject()
-	local ProgressBar2Container = TotalAP.GUI.ProgressBar:CreateNew("_DefaultView_ProgressBar2", "_DefaultView_ProgressBarsFrame")
-	local ProgressBar2 = ProgressBar2Container:GetFrameObject()
-	local ProgressBar3Container = TotalAP.GUI.ProgressBar:CreateNew("_DefaultView_ProgressBar3", "_DefaultView_ProgressBarsFrame")
-	local ProgressBar3 = ProgressBar3Container:GetFrameObject()
-	local ProgressBar4Container = TotalAP.GUI.ProgressBar:CreateNew("_DefaultView_ProgressBar4", "_DefaultView_ProgressBarsFrame")
-	local ProgressBar4 = ProgressBar4Container:GetFrameObject()
+	ProgressBar1Container = TotalAP.GUI.ProgressBar:CreateNew("_DefaultView_ProgressBar1", "_DefaultView_ProgressBarsFrame")
+	ProgressBar1 = ProgressBar1Container:GetFrameObject()
+	ProgressBar2Container = TotalAP.GUI.ProgressBar:CreateNew("_DefaultView_ProgressBar2", "_DefaultView_ProgressBarsFrame")
+	ProgressBar2 = ProgressBar2Container:GetFrameObject()
+	ProgressBar3Container = TotalAP.GUI.ProgressBar:CreateNew("_DefaultView_ProgressBar3", "_DefaultView_ProgressBarsFrame")
+	ProgressBar3 = ProgressBar3Container:GetFrameObject()
+	ProgressBar4Container = TotalAP.GUI.ProgressBar:CreateNew("_DefaultView_ProgressBar4", "_DefaultView_ProgressBarsFrame")
+	ProgressBar4 = ProgressBar4Container:GetFrameObject()
 	do -- ProgressBars
 	
 		-- Layout and visuals
