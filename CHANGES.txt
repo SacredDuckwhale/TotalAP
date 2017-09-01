@@ -1,6 +1,12 @@
 ------------------------------------------------------------------------
-## TotalAP v1.5.0 - Recent changes (3 releases)
+## TotalAP v1.5.1 - Recent changes (3 releases)
 ------------------------------------------------------------------------
+
+r26:
+	Updated database to include 7.3 AP items
+	
+	Fixed inaccuracies in the scanning of AP values for the Spanish (esES/esMX) locales
+	
 
 r25:
 	Added state indicators (icons) for events that would render the action button unusable or the display to be hidden (depending on the settings), such as engaging in combat, pet battles, vehicular combat, or utilizing a Flight Master's services
@@ -10,7 +16,7 @@ r25:
 	
 	Fixed long-standing taint issues that could manifest in combat and result in seemingly random Lua errors. They were caused by relying on Blizzard's button glow effect functionality, which has been replaced entirely by a third-party library to make sure this won't be a problem in the future
 	Fixed an issue where changing specializations would not re-scan the player's artifact as intended and update the display accordingly
-	
+
 	
 r24:
 	
@@ -20,15 +26,5 @@ r24:
 	Fixed an issue where dropping from an instance group could cause the detection of ignored specs to fail temporarily
 	Fixed a minor graphics glitch pertaining to the buttonText, manifesting only when AP items were stored in the bank
 	Fixed the broken /ap reset slash command (caused by the changes made to saved variables handling in r23)
-	
-
-r23:
-	Added support for artifact power items that are stored in the player's bank (experimental). They will be cached whenever the bank tab is opened, and the respective progress bars/tooltip lines can be disabled with the /ap scanbank command
-	Added quest reward from the "Pillars of Creation" (Tomb of Sargeras) quest line to the addon's database. Somehow this wasn't added with all the other items from 7.2.5
-	
-	Saved variables are now managed differently. They should be migrated to the new format automatically; if something unexpectedly goes wrong, simply resetting them should fix it
-	The progress bar tooltip will now indicate when a tier 1 artifact can be updated to its maximum rank. Additionally, the respective miniBar will no longer be displayed in those cases
-	
-	Fixed an issue where glow effects for the specIcons would not be applied correctly for tier 1 artifacts when too many traits were available
 	
 
