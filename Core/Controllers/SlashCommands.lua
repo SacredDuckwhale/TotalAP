@@ -44,7 +44,7 @@ local slashCommands = {
 	["counter"] = L["Toggle display of the item counter"],
 	["progress"] = L["Toggle display of the progress report"],
 	["glow"] = L["Toggle spell overlay notification (glow effect) when new traits are available"],
-	["buttontext"] = L["Toggle short summary of the tooltip information as an additional display next to the action button"],
+	["buttontext"] = L["Toggle text display next to the action button"],
 	["scanbank"] = L["Include items stored in the bank and show an additional progress bar for them"],
 	
 	["hide"] = L["Toggle all displays (will override the individual display's settings)"],
