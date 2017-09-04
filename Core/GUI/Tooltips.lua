@@ -58,7 +58,7 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 	local knowledgeLevel = TotalAP.ArtifactInterface.GetArtifactKnowledgeLevel() 
 	local maxAttainableKnowledgeLevel = knowledgeLevel + TotalAP.inventoryCache.numTomes
 	
-	-- Calculate shipment data (for Artifact Research Notes)
+	-- Calculate shipment data (for Artifact Research Notes) -> TODO: Removed in 7.3 -> Clean up properly if this really is no longer useful, not even for anything else
 	local shipmentsReady, shipmentsTotal = TotalAP.ArtifactInterface.GetNumAvailableResearchNotes()
 	local timeLeft, timeLeftString = TotalAP.ArtifactInterface.GetTimeUntilNextResearchNoteIsReady()
 
@@ -75,7 +75,7 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 		if not TotalAP.ArtifactInterface.IsArtifactMaxed(maxAttainableRank, tier) then  -- Artifact can still be leveled up further -> Display progress
 			GameTooltip:AddLine(format(L["%.2f%% towards Rank %d"],  progressPercent, maxAttainableRank + 1))
 		else
-			GameTooltip:AddLine(format(L["Maximum number of traits unlocked"]), 0/255, 255/255, 0/255)
+			GameTooltip:AddLine(format(L["Maximum number of traits unlocked"]), 0/255, 255/255, 0/255) -- TODO. This can't really happen anymore; disable the entire maxed artifact code? I doubt they'll go back from the "virtually unlimited" exponential growth-based design
 		end
 		
 	end
@@ -93,7 +93,7 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 		end
 		
 		if (not shipmentsTotal or shipmentsReady == shipmentsTotal) and maxKnowledgeLevel > (knowledgeLevel + shipmentsReady) then -- More work orders could be queued, and available Research Notes aren't enough to reach the maximum level -> Show reminder
-			GameTooltip:AddLine(format(L["Researchers are idle!"]), 255/255, 32/255, 32/255) 
+--			GameTooltip:AddLine(format(L["Researchers are idle!"]), 255/255, 32/255, 32/255) -- TODO: In 7.3, Researchers are researching in secret. Those sneaky buggers! Anyway, no need for this anymore. The fact that this is still here is a testament to my lazyness
 			
 		end
 		
