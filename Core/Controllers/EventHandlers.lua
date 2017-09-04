@@ -183,11 +183,15 @@ local function ScanArtifact()
 	local unspentAP = select(5, aUI.GetEquippedArtifactInfo())
 	local numTraitsPurchased = select(6, aUI.GetEquippedArtifactInfo())
 	local artifactTier = select(13, aUI.GetEquippedArtifactInfo())
-
+	local artifactKnowledge = aUI.GetArtifactKnowledgeLevel()
+	
 	-- Update the Cache (stored in SavedVars)
 	TotalAP.Cache.SetUnspentAP(unspentAP)
 	TotalAP.Cache.SetNumTraits(numTraitsPurchased)
 	TotalAP.Cache.SetArtifactTier(artifactTier)
+	
+	-- This has to be updated once every session, which isn't ideal but it's much easier to do it this way than to guarantee seamless Cache integration
+	TotalAP.artifactCache.artifactKnowledgeLevel = artifactKnowledge or 0
 
 end
 

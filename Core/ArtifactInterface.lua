@@ -98,8 +98,10 @@ end
 -- @return Current Artifact Knowledge Level
 local function GetArtifactKnowledgeLevel()
 
-	local name, amount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = GetCurrencyInfo(1171) -- Hidden currency -> always available (unlike the crappy ArtifactUI :| )
+	--Obsolete since 7.3 <= local name, amount, texturePath, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = GetCurrencyInfo(1171) -- Hidden currency -> always available (unlike the crappy ArtifactUI :| )
 
+	local amount = TotalAP.artifactCache.artifactKnowledgeLevel
+	
 	return amount
 	--return aUI.GetArtifactKnowledgeLevel() -- Only available when ArtifactFrame is shown... -> not ideal, as it would have to be cached
 
