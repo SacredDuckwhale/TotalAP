@@ -3,7 +3,12 @@
 ------------------------------------------------------------------------
 
 r26:
+	Added partial translation for the Korean (koKR) locale - Since this is still incomplete (~58% done), any help is welcome!
+	
 	Updated database to include 7.3 AP items
+	Updated Artifact Knowledge tooltip to account for the global AK progress added in 7.3
+	Removed obsolete Artifact Research status info from progress bar tooltips
+	Removed highlighting of Artifact Research Notes (will no longer be displayed prominently, as they are now unusable/grey vendor trash)
 	
 	Fixed inaccuracies in the scanning of AP values for the Spanish (esES/esMX) locales
 	
