@@ -17,22 +17,22 @@
 local addonName, TotalAP = ...
 if not TotalAP then return end
 
-
+ -- Made obsolete in 7.3 -> Remove once everything has been cleaned up (?) Keeping it for now, as it is possible that there'll be different artifact-related items that are worth tracking
 local researchTomes = {
 
-	[139390] = true,  -- Artifact Research Notes (max. AK 25) TODO: obsolete? Seem to be replaced by the AK 50 version entirely
-	[146745] = true,  -- Artifact Research Notes (max. AK 50)
-	[147860] = true,  -- Empowered Elven Tome (7.2)
-	[144433] = true,  -- Artifact Research Compendium: Volume I
-	[144434] = true,  -- Artifact Research Compendium: Volumes I & II
-	[144431] = true,  -- Artifact Research Compendium: Volumes I-III
-	[144395] = true,  -- Artifact Research Synopsis
-	[147852] = true,  -- Artifact Research Compendium: Volumes I-V
-	[147856] = true,  -- Artifact Research Compendium: Volumes I-IX
-	[147855] = true,  -- Artifact Research Compendium: Volumes I-VIII
-	[144435] = true,  -- Artifact Research Compendium: Volumes I-IV
-	[147853] = true,  -- Artifact Research Compendium: Volumes I-VI
-	[147854] = true,  -- Artifact Research Compendium: Volumes I-VII
+--	[139390] = true,  -- Artifact Research Notes (max. AK 25) TODO: obsolete? Seem to be replaced by the AK 50 version entirely
+--	[146745] = true,  -- Artifact Research Notes (max. AK 50)
+--	[147860] = true,  -- Empowered Elven Tome (7.2)
+--	[144433] = true,  -- Artifact Research Compendium: Volume I
+--	[144434] = true,  -- Artifact Research Compendium: Volumes I & II
+--	[144431] = true,  -- Artifact Research Compendium: Volumes I-III
+--	[144395] = true,  -- Artifact Research Synopsis
+--	[147852] = true,  -- Artifact Research Compendium: Volumes I-V
+--	[147856] = true,  -- Artifact Research Compendium: Volumes I-IX
+--	[147855] = true,  -- Artifact Research Compendium: Volumes I-VIII
+--	[144435] = true,  -- Artifact Research Compendium: Volumes I-IV
+--	[147853] = true,  -- Artifact Research Compendium: Volumes I-VI
+--	[147854] = true,  -- Artifact Research Compendium: Volumes I-VII
 	[141335] = true,  -- Lost Research Notes (TODO: Is this even ingame? -> Part of the obsolete Mage quest "Hidden History", perhaps?)
 
 }
