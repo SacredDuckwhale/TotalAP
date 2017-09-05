@@ -225,31 +225,31 @@ local localeNumberFormats = {
 		["trailingSpace"] = "",
 		["unitsTable"] = {
 			[1] = {
-				["만의"] = 10000,
+				["만"] = 10000,
 			},
 			[2] = {
-				["억의"] = 100000000,
+				["억"] = 100000000,
 			},
 			[3] = {
-				["조의"] = 1000000000000,
+				["조"] = 1000000000000,
 			},
 		},
 		["unitsShort"] = {
 			[1] = {
 				["divisor"] = 1000000000000,
-				["unitString"] = "조의",
+				["unitString"] = "조",
 				["numDigits"] = 2,
 			},
 			
 			[2] = {
 				["divisor"] = 100000000,
-				["unitString"] = "억의",
+				["unitString"] = "억",
 				["numDigits"] = 2,
 			},
 			
 			[3] = {
 				["divisor"] = 10000,
-				["unitString"] = "만의",
+				["unitString"] = "만",
 				["numDigits"] = 2,
 			}
 		}
