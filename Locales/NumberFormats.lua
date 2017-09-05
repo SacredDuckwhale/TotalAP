@@ -141,6 +141,45 @@ local localeNumberFormats = {
 		}
 	},
 
+	-- esES: Spanish (Mexico & Latin America)
+	["esMX"] = {	
+		["thousandsSeparator"] = ",",
+		["decimalSeparator"] = ".",
+		["leadingSpace"] = " ",
+		["trailingSpace"] = " ",
+		["unitsTable"] = {
+				[1] = {
+					["millón"] = 1000000
+				},
+				[2] = {
+					["mil millones"] =  1000000000
+				},
+				[3] = {
+					["millones"] = 1000000
+				},
+		},
+		["unitsShort"] = {
+			[1] = {
+				["divisor"] = 1000000000,
+				["unitString"] = " bil.",
+				["numDigits"] = 1,
+			},
+			
+			[2] = {
+				["divisor"] = 1000000,
+				["unitString"] = " mil.",
+				["numDigits"] = 1,
+			},
+			
+			[3] = {
+				["divisor"] = 1000,
+				["unitString"] = "K",
+				["numDigits"] = 1,
+			}
+		}
+	},
+	
+	
 	-- frFR: French (France)
 	["frFR"] = {	
 		["thousandsSeparator"] = " ",
@@ -408,8 +447,6 @@ local localeNumberFormats = {
 
  -- enGB: English (United Kingdom) - enGB clients return enUS
 localeNumberFormats["enGB"] = localeNumberFormats["enUS"] -- Not sure if necessary, but it's better to be safe than sorry (in case enGB is indexed... which does seems unlikely due to the enGB client returning enUS via GetLocale())
--- enMX: Spanish (Mexico) - should use similar format to Spanish (Spain).... Should.... Ihopethisisntwrong :P
-localeNumberFormats["esMX"] = localeNumberFormats["esES"]
 
 
 -- Returns number format for nonstandard locales (ease of use)
