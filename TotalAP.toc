@@ -1,5 +1,5 @@
 ## Interface: 70300
-## Version: 1.5.0 (@project-version@)
+## Version: 1.5.2 (@project-version@)
 ## Author: Cakechart
 
 ## Title: TotalAP - Artifact Power Tracker
