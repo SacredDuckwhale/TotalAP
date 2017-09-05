@@ -1,5 +1,5 @@
 ------------------------------------------------------------------------
-## TotalAP v1.5.1 - Recent changes (3 releases)
+## TotalAP v1.5.2 - Recent changes (3 releases)
 ------------------------------------------------------------------------
 
 r26:
@@ -9,8 +9,11 @@ r26:
 	Updated Artifact Knowledge tooltip to account for the global AK progress added in 7.3
 	Removed obsolete Artifact Research status info from progress bar tooltips
 	Removed highlighting of Artifact Research Notes (will no longer be displayed prominently, as they are now unusable/grey vendor trash)
+	Removed obscure "artifact power" items from the DB that did nothing but crash the scanning algorithm (Cookie's Old Stew... really, Blizzard!?)
+	Removed obsolete artifact power items from the DB that were removed from the game some time after 7.3 (via hotfix?)
 	
-	Fixed inaccuracies in the scanning of AP values for the Spanish (esES/esMX) locales
+	Fixed number format for the Korean (koKR) locale
+	Fixed number format for the Spanish (esES and esMX) locales
 	
 
 r25:
