@@ -45,6 +45,6 @@ function TotalAP.Debug(msg)
 end
 
 -- Run all tests that have been queued
-local exitCode = luaunit.LuaUnit.run()
+local exitCode = luaunit.LuaUnit.run("--output", "TAP")
 
 return function() return exitCode end
