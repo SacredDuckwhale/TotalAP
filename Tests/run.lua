@@ -15,9 +15,6 @@ function dump(value)
 
 end
 
--- Mock environment
-require("mock_wowapi")
-require("mock_luaenv")
 
 -- Testing suites
 require("Core\\test_cache")
