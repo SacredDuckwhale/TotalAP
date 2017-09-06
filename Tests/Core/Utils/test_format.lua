@@ -202,12 +202,12 @@ function TestFormat:testThreeParameters_koKR()
 	luaunit.assertEquals(T.Utils.FormatShort(55, true, "koKR"), "55")
 	luaunit.assertEquals(T.Utils.FormatShort(550, true, "koKR"), "550")
 	luaunit.assertEquals(T.Utils.FormatShort(5500, true, "koKR"), "5500")
-	luaunit.assertEquals(T.Utils.FormatShort(55000, true, "koKR"), "5.5만의")
-	luaunit.assertEquals(T.Utils.FormatShort(550000, true, "koKR"), "55만의")
-	luaunit.assertEquals(T.Utils.FormatShort(5500000, true, "koKR"), "550만의")
-	luaunit.assertEquals(T.Utils.FormatShort(55000000, true, "koKR"), "5500만의")
-	luaunit.assertEquals(T.Utils.FormatShort(550000000, true, "koKR"), "5.5억의")
-	luaunit.assertEquals(T.Utils.FormatShort(5500000000, true, "koKR"), "55억의")
+	luaunit.assertEquals(T.Utils.FormatShort(55000, true, "koKR"), "5.5만")
+	luaunit.assertEquals(T.Utils.FormatShort(550000, true, "koKR"), "55만")
+	luaunit.assertEquals(T.Utils.FormatShort(5500000, true, "koKR"), "550만")
+	luaunit.assertEquals(T.Utils.FormatShort(55000000, true, "koKR"), "5500만")
+	luaunit.assertEquals(T.Utils.FormatShort(550000000, true, "koKR"), "5.5억")
+	luaunit.assertEquals(T.Utils.FormatShort(5500000000, true, "koKR"), "55억")
 	
 end
 
