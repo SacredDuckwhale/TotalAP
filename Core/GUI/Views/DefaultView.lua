@@ -494,7 +494,7 @@ local function CreateNew(self)
 			-- Set current item to button
 			ActionButton.icon:SetTexture(TotalAP.inventoryCache.displayItem.texture)
 			local itemName = GetItemInfo(TotalAP.inventoryCache.displayItem.link) or ""
-			if itemName ~= "" then -- Item is cached and can be used (this can fail upon logging in, in which case the item must be set with the next update instead)
+			if itemName ~= "" and not InCombatLockdown() and not UnitAffectingCombat("player")then -- Item is cached and can be used (this can fail upon logging in, in which case the item must be set with the next update instead)
 			
 				ActionButton:SetAttribute("type", "item")
 				ActionButton:SetAttribute("item", itemName)
@@ -512,7 +512,7 @@ local function CreateNew(self)
 				GameTooltip:SetHyperlink(TotalAP.inventoryCache.displayItem.link)
 			end
 			
-			if not InCombatLockdown() then -- Flash action button (TODO: Un-taint this if necessary after GUI rework by copying the code)
+			if not InCombatLockdown() and not UnitAffectingCombat("player") then -- Flash action button (TODO: Un-taint this if necessary after GUI rework by copying the code)
 
 				self:SetFlashing(flashButton)
 				
@@ -571,9 +571,11 @@ local function CreateNew(self)
 		end)
 			
 		ActionButton:SetScript("OnHide", function(self) -- (to clear the set item when hiding the button)
-			
-			self:SetAttribute("type", nil)
-			self:SetAttribute("item", nil)
+		
+			if not InCombatLockdown() and not UnitAffectingCombat("player") then
+				self:SetAttribute("type", nil)
+				self:SetAttribute("item", nil)
+			end
 			
 		end)
 	
