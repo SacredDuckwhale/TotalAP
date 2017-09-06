@@ -160,6 +160,23 @@ function TestFormat:testThreeParameters_esES()
 
 end
 
+function TestFormat:testThreeParameters_esMX()
+
+	-- esMX
+	luaunit.assertEquals(T.Utils.FormatShort(0.5, true, "esMX"), "1")
+	luaunit.assertEquals(T.Utils.FormatShort(5.5, true, "esMX"), "6")
+	luaunit.assertEquals(T.Utils.FormatShort(55, true, "esMX"), "55")
+	luaunit.assertEquals(T.Utils.FormatShort(550, true, "esMX"), "550")
+	luaunit.assertEquals(T.Utils.FormatShort(5500, true, "esMX"), "5.5K")
+	luaunit.assertEquals(T.Utils.FormatShort(55000, true, "esMX"), "55K")
+	luaunit.assertEquals(T.Utils.FormatShort(550000, true, "esMX"), "550K")
+	luaunit.assertEquals(T.Utils.FormatShort(5500000, true, "esMX"), "5.5 mil.")
+	luaunit.assertEquals(T.Utils.FormatShort(55000000, true, "esMX"), "55 mil.")
+	luaunit.assertEquals(T.Utils.FormatShort(550000000, true, "esMX"), "550 mil.")
+	luaunit.assertEquals(T.Utils.FormatShort(5500000000, true, "esMX"), "5.5 bil.")
+
+end
+
 function TestFormat:testThreeParameters_itIT()
 
 	-- itIT
