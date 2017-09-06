@@ -62,6 +62,7 @@ TotalAP.inventoryCache = {
 
 	inBagsAP = 0,
 	numItems = 0,
+	numTomes = 0,
 	foundTome = false,
 
 	displayItem = {
