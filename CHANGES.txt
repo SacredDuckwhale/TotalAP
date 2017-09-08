@@ -12,6 +12,7 @@ r26:
 	Removed obscure "artifact power" items from the DB that did nothing but crash the scanning algorithm (Cookie's Old Stew... really, Blizzard!?)
 	Removed obsolete artifact power items from the DB that were removed from the game some time after 7.3 (via hotfix?)
 	
+	Fixed number format for the Russian (ruRU) locale
 	Fixed number format for the Korean (koKR) locale
 	Fixed number format for the Spanish (esES and esMX) locales
 	Added some workarounds that should (hopefully) prevent the remaining taint issues
