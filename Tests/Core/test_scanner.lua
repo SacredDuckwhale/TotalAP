@@ -16,7 +16,7 @@ local locales = { -- Add/remove entry to enable/disable tests for this locale
 
 local descriptions = { -- Taken from wowhead; should be accurate except for the number format (they don't use the same one as the WOW client)
 	["enUS"] = "Use: Grants %s Artifact Power to your currently equipped Artifact.",
-	["ruRU"] = "?????????????: ????????? ????????????? ? ?????? ?????? ????????? %s ??. ???? ?????????.",
+	["ruRU"] = "Использование: Добавляет используемому в данный момент артефакту %s ед. силы артефакта.",
 	["frFR"] = "Utilise: Confère %s point de puissance à l’arme prodigieuse que vous maniez.",
 	["esES"] = "Uso: Otorga %s p. de poder de artefacto al artefacto que lleves equipado.",
 	["esMX"] = "Uso: Otorga %s p. de poder de artefacto al artefacto que lleves equipado.", -- identical to esES
