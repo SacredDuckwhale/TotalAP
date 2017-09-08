@@ -1,5 +1,6 @@
 -- Add test suites to luaunit queue
 require("Core\\test_cache")
+require("Core\\test_scanner")
 require("Core\\Utils\\test_colours")
 require("Core\\Utils\\test_format")
 require("Core\\Utils\\test_fqcn")
