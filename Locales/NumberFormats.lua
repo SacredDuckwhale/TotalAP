@@ -338,7 +338,7 @@ local localeNumberFormats = {
 	-- ruRU: Russian (Russia) 
 	["ruRU"] = {	
 		["thousandsSeparator"] = " ",
-		["decimalSeparator"] = ".",
+		["decimalSeparator"] = ",",
 		["leadingSpace"] = " ",
 		["trailingSpace"] = " ",
 		["unitsTable"] = {

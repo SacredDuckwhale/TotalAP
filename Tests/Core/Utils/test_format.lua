@@ -159,25 +159,25 @@ function TestFormat:testThreeParameters_ruRU()
 	luaunit.assertEquals(T.Utils.FormatShort(5.5, true, "ruRU"), "6")
 	luaunit.assertEquals(T.Utils.FormatShort(55, true, "ruRU"), "55")
 	luaunit.assertEquals(T.Utils.FormatShort(550, true, "ruRU"), "550")
-	luaunit.assertEquals(T.Utils.FormatShort(5500, true, "ruRU"), "5.5к")
+	luaunit.assertEquals(T.Utils.FormatShort(5500, true, "ruRU"), "5,5к")
 	luaunit.assertEquals(T.Utils.FormatShort(55000, true, "ruRU"), "55к")
 	luaunit.assertEquals(T.Utils.FormatShort(550000, true, "ruRU"), "550к")
-	luaunit.assertEquals(T.Utils.FormatShort(5500000, true, "ruRU"), "5.5 млн")
+	luaunit.assertEquals(T.Utils.FormatShort(5500000, true, "ruRU"), "5,5 млн")
 	luaunit.assertEquals(T.Utils.FormatShort(55000000, true, "ruRU"), "55 млн")
 	luaunit.assertEquals(T.Utils.FormatShort(550000000, true, "ruRU"), "550 млн")
-	luaunit.assertEquals(T.Utils.FormatShort(5500000000, true, "ruRU"), "5.5 млрд")
+	luaunit.assertEquals(T.Utils.FormatShort(5500000000, true, "ruRU"), "5,5 млрд")
 	
 	-- Otherworldly Trophy = 75 baseline AP
 	luaunit.assertEquals(T.Utils.FormatShort(3000100, true, "ruRU"), "3 млн")
 	luaunit.assertEquals(T.Utils.FormatShort(12000100, true, "ruRU"), "12 млн")
-	luaunit.assertEquals(T.Utils.FormatShort(15600100, true, "ruRU"), "15.6 млн")
-	luaunit.assertEquals(T.Utils.FormatShort(20280100, true, "ruRU"), "20.3 млн")
+	luaunit.assertEquals(T.Utils.FormatShort(15600100, true, "ruRU"), "15,6 млн")
+	luaunit.assertEquals(T.Utils.FormatShort(20280100, true, "ruRU"), "20,3 млн")
 	
 	-- Valiant's Glory = 20 baseline AP
 	luaunit.assertEquals(T.Utils.FormatShort(800000, true, "ruRU"), "800к")
-	luaunit.assertEquals(T.Utils.FormatShort(3200000, true, "ruRU"), "3.2 млн")
-	luaunit.assertEquals(T.Utils.FormatShort(4160000, true, "ruRU"), "4.2 млн")
-	luaunit.assertEquals(T.Utils.FormatShort(5408000, true, "ruRU"), "5.4 млн")
+	luaunit.assertEquals(T.Utils.FormatShort(3200000, true, "ruRU"), "3,2 млн")
+	luaunit.assertEquals(T.Utils.FormatShort(4160000, true, "ruRU"), "4,2 млн")
+	luaunit.assertEquals(T.Utils.FormatShort(5408000, true, "ruRU"), "5,4 млн")
 	
 end
 
