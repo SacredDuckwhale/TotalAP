@@ -166,7 +166,7 @@ for i, locale in pairs(locales) do -- Queue tests for this locale
 		for expectedValue, testValue in pairs(localisedFormats) do -- Test whether or not the tooltip text using this value can be parsed correctly
 --			print("Testing " .. locale .. " for expectedValue = " .. expectedValue)
 			local spellDesc = string.format(localisedTooltipText, testValue) -- Insert this value into the tooltip text to simulate the actual item's tooltip
-			local scannedValue = TotalAP.Scanner.ParseSpellDesc(spellDesc, locale)
+			local scannedValue = tonumber(TotalAP.Scanner.ParseSpellDesc(spellDesc, locale))
 --			print("scannedValue is " .. scannedValue)
 			luaunit.assertEquals(scannedValue, expectedValue)
 
