@@ -23,7 +23,7 @@ local descriptions = { -- Taken from wowhead; should be accurate except for the 
 	["itIT"] = "Usa: Fornisce %s Potere Artefatto all'Artefatto attualmente equipaggiato.",
 	["ptBR"] = "Uso: Concede %s de Poder do Artefato ao artefato equipado.",
 	["deDE"] = "Benutzen: Gewährt Eurem derzeit ausgerüsteten Artefakt %s Artefaktmacht.",
-	["koKR"] = "사용 효과: 현재 장착한 유물에 4,000의 유물력을 부여합니다.", 
+	["koKR"] = "사용 효과: 현재 장착한 유물에 %s의 유물력을 부여합니다.", 
 	["zhCN"] = "使用: 将%s点神器能量注入到你当前装备的神器之中。",
 	["zhTW"] = "使用: 将%s点神器能量注入到你当前装备的神器之中。", -- identical to zhCN... although I don't know if this is right? They don't have a zhTW version at wowhead
 }
