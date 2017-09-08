@@ -296,7 +296,7 @@ local localeNumberFormats = {
 
 	-- ptBR: Portuguese (Brazil)
 	["ptBR"] = {	
-		["thousandsSeparator"] = ",",
+		["thousandsSeparator"] = ",", -- TODO: Seems to also use "." ingame!? This is not going to end well...
 		["decimalSeparator"] = ".",
 		["leadingSpace"] = " ",
 		["trailingSpace"] = " ",

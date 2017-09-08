@@ -7,7 +7,7 @@ local locales = { -- Add/remove entry to enable/disable tests for this locale
 	"itIT",
 	"esES",
 	"esMX",
-	"ptBR",
+--	"ptBR",
 	"ruRU",
 	"koKR",
 	"zhTW",
