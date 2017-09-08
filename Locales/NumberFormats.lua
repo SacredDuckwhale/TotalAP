@@ -105,7 +105,7 @@ local localeNumberFormats = {
 	 
 	-- esES: Spanish (Spain)
 	["esES"] = {	
-		["thousandsSeparator"] = ".",
+		["thousandsSeparator"] = " ",
 		["decimalSeparator"] = ",",
 		["leadingSpace"] = " ",
 		["trailingSpace"] = " ",
@@ -296,7 +296,7 @@ local localeNumberFormats = {
 
 	-- ptBR: Portuguese (Brazil)
 	["ptBR"] = {	
-		["thousandsSeparator"] = ",",
+		["thousandsSeparator"] = ",", -- TODO: Seems to also use "." ingame!? This is not going to end well...
 		["decimalSeparator"] = ".",
 		["leadingSpace"] = " ",
 		["trailingSpace"] = " ",
@@ -338,7 +338,7 @@ local localeNumberFormats = {
 	-- ruRU: Russian (Russia) 
 	["ruRU"] = {	
 		["thousandsSeparator"] = " ",
-		["decimalSeparator"] = ".",
+		["decimalSeparator"] = ",",
 		["leadingSpace"] = " ",
 		["trailingSpace"] = " ",
 		["unitsTable"] = {

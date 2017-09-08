@@ -55,6 +55,21 @@ function TestFormat:testTwoParameters()
 	luaunit.assertEquals(T.Utils.FormatShort(550000000, true), "550m")
 	luaunit.assertEquals(T.Utils.FormatShort(5500000000, true), "5.5b")
 	
+	-- Additional tests because items kept breaking some locales, at some AK levels
+	
+	-- Otherworldly Trophy = 75 baseline AP
+	luaunit.assertEquals(T.Utils.FormatShort(3000100, true), "3m")
+	luaunit.assertEquals(T.Utils.FormatShort(12000100, true), "12m")
+	luaunit.assertEquals(T.Utils.FormatShort(15600100, true), "15.6m")
+	luaunit.assertEquals(T.Utils.FormatShort(20280100, true), "20.3m")
+	
+	-- Valiant's Glory = 20 baseline AP
+	luaunit.assertEquals(T.Utils.FormatShort(800000, true), "800k")
+	luaunit.assertEquals(T.Utils.FormatShort(3200000, true), "3.2m")
+	luaunit.assertEquals(T.Utils.FormatShort(4160000, true), "4.16m")
+	luaunit.assertEquals(T.Utils.FormatShort(5408000, true), "5.41m")
+	
+	
 end
 
 -- Given three parameters, the given locale should be used to determine the number format that will then be applied
@@ -72,6 +87,20 @@ function TestFormat:testThreeParameters_enUS()
 	luaunit.assertEquals(T.Utils.FormatShort(55000000, true, "enUS"), "55M")
 	luaunit.assertEquals(T.Utils.FormatShort(550000000, true, "enUS"), "550M")
 	luaunit.assertEquals(T.Utils.FormatShort(5500000000, true, "enUS"), "5.5B")
+	
+	-- Additional tests because items kept breaking some locales, at some AK levels
+	
+	-- Otherworldly Trophy = 75 baseline AP
+	luaunit.assertEquals(T.Utils.FormatShort(3000100, true, "enUS"), "3M")
+	luaunit.assertEquals(T.Utils.FormatShort(12000100, true, "enUS"), "12M")
+	luaunit.assertEquals(T.Utils.FormatShort(15600100, true, "enUS"), "15.6M")
+	luaunit.assertEquals(T.Utils.FormatShort(20280100, true, "enUS"), "20.3M")
+	
+	-- Valiant's Glory = 20 baseline AP
+	luaunit.assertEquals(T.Utils.FormatShort(800000, true, "enUS"), "800K")
+	luaunit.assertEquals(T.Utils.FormatShort(3200000, true, "enUS"), "3.2M")
+	luaunit.assertEquals(T.Utils.FormatShort(4160000, true, "enUS"), "4.2M")
+	luaunit.assertEquals(T.Utils.FormatShort(5408000, true, "enUS"), "5.4M")
 	
 end
 
@@ -107,6 +136,20 @@ function TestFormat:testThreeParameters_frFR()
 	luaunit.assertEquals(T.Utils.FormatShort(550000000, true, "frFR"), "550M")
 	luaunit.assertEquals(T.Utils.FormatShort(5500000000, true, "frFR"), "5,5B")
 	
+		-- Additional tests because items kept breaking some locales, at some AK levels
+	
+	-- Otherworldly Trophy = 75 baseline AP
+	luaunit.assertEquals(T.Utils.FormatShort(3000100, true, "frFR"), "3M")
+	luaunit.assertEquals(T.Utils.FormatShort(12000100, true, "frFR"), "12M")
+	luaunit.assertEquals(T.Utils.FormatShort(15600100, true, "frFR"), "15,6M")
+	luaunit.assertEquals(T.Utils.FormatShort(20280100, true, "frFR"), "20,3M")
+	
+	-- Valiant's Glory = 20 baseline AP
+	luaunit.assertEquals(T.Utils.FormatShort(800000, true, "frFR"), "800K")
+	luaunit.assertEquals(T.Utils.FormatShort(3200000, true, "frFR"), "3,2M")
+	luaunit.assertEquals(T.Utils.FormatShort(4160000, true, "frFR"), "4,2M")
+	luaunit.assertEquals(T.Utils.FormatShort(5408000, true, "frFR"), "5,4M")
+	
 end
 
 function TestFormat:testThreeParameters_ruRU()
@@ -116,14 +159,26 @@ function TestFormat:testThreeParameters_ruRU()
 	luaunit.assertEquals(T.Utils.FormatShort(5.5, true, "ruRU"), "6")
 	luaunit.assertEquals(T.Utils.FormatShort(55, true, "ruRU"), "55")
 	luaunit.assertEquals(T.Utils.FormatShort(550, true, "ruRU"), "550")
-	luaunit.assertEquals(T.Utils.FormatShort(5500, true, "ruRU"), "5.5к")
+	luaunit.assertEquals(T.Utils.FormatShort(5500, true, "ruRU"), "5,5к")
 	luaunit.assertEquals(T.Utils.FormatShort(55000, true, "ruRU"), "55к")
 	luaunit.assertEquals(T.Utils.FormatShort(550000, true, "ruRU"), "550к")
-	luaunit.assertEquals(T.Utils.FormatShort(5500000, true, "ruRU"), "5.5 млн")
+	luaunit.assertEquals(T.Utils.FormatShort(5500000, true, "ruRU"), "5,5 млн")
 	luaunit.assertEquals(T.Utils.FormatShort(55000000, true, "ruRU"), "55 млн")
 	luaunit.assertEquals(T.Utils.FormatShort(550000000, true, "ruRU"), "550 млн")
-	luaunit.assertEquals(T.Utils.FormatShort(5500000000, true, "ruRU"), "5.5 млрд")
-
+	luaunit.assertEquals(T.Utils.FormatShort(5500000000, true, "ruRU"), "5,5 млрд")
+	
+	-- Otherworldly Trophy = 75 baseline AP
+	luaunit.assertEquals(T.Utils.FormatShort(3000100, true, "ruRU"), "3 млн")
+	luaunit.assertEquals(T.Utils.FormatShort(12000100, true, "ruRU"), "12 млн")
+	luaunit.assertEquals(T.Utils.FormatShort(15600100, true, "ruRU"), "15,6 млн")
+	luaunit.assertEquals(T.Utils.FormatShort(20280100, true, "ruRU"), "20,3 млн")
+	
+	-- Valiant's Glory = 20 baseline AP
+	luaunit.assertEquals(T.Utils.FormatShort(800000, true, "ruRU"), "800к")
+	luaunit.assertEquals(T.Utils.FormatShort(3200000, true, "ruRU"), "3,2 млн")
+	luaunit.assertEquals(T.Utils.FormatShort(4160000, true, "ruRU"), "4,2 млн")
+	luaunit.assertEquals(T.Utils.FormatShort(5408000, true, "ruRU"), "5,4 млн")
+	
 end
 
 function TestFormat:testThreeParameters_zhTW()
