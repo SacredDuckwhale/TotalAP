@@ -114,12 +114,6 @@ end
 -- @param self Reference to the caller
 local function Render(self)
 	
-	-- Don't show or hide frames in combat, as actions can potentially be blocked due to taint at this point
-	if InCombatLockdown() or UnitAffectingCombat("player") then
-		TotalAP.Debug("Stopped rendering because player is engaged in combat")
-		return
-	end
-	
 	local FrameObject = self:GetFrameObject()
 	
 	-- Make sure Frame is created properly (and SpecIcon was instantiated at some point)

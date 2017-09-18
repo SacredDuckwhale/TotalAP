@@ -389,8 +389,7 @@ local function SlashCommandHandler(input, usedAlias)
 		
 		elseif command == validCommand then -- Execute individual handler function for this slash command
 			
-					-- Disable keybinds to avoid spreading taint if display is toggled while in combat
-			if InCombatLockdown() or UnitAffectingCombat("player") then
+			if InCombatLockdown() or UnitAffectingCombat("player") then -- Disable keybinds to avoid spreading taint if display is toggled while in combat
 				TotalAP.ChatMsg(L["You cannot use slash commands while in combat."]) -- TODO: Only deactive commands that actually affect the GUI? (But then, which command does NOT do that?)
 				return
 			end

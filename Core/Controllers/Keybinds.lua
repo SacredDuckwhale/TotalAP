@@ -102,8 +102,7 @@ local function KeybindHandler(action, isUserInput)
 		-- Something, something (TODO)
 	end
 	
-		-- Disable keybinds to avoid spreading taint if display is toggled while in combat
-	if InCombatLockdown() or UnitAffectingCombat("player") then
+	if InCombatLockdown() or UnitAffectingCombat("player") then -- Disable keybinds to avoid spreading taint if display is toggled while in combat
 		TotalAP.ChatMsg(L["You cannot use keybinds to change the display while in combat."]) -- TODO: Only deactive commands that actually affect the GUI? (But then, which command does NOT do that?)
 		return
 	end
