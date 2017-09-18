@@ -378,7 +378,10 @@ local function SlashCommandHandler(input, usedAlias)
 		
 			local slashHandlerFunction = slashHandlers[command]
 			slashHandlerFunction() -- Parameter is nil -> There's no need to submit the DB for test commands, really
-						
+		
+			-- Disable keybinds to avoid spreading taint if display is toggled while in combat
+			if InCombatLockdown() or UnitAffectingCombat("player") then	return end -- Only the aligment options are being set here, so it needn't be as sophisticated (just skip Render to avoid taint issues)
+				
 			-- Always update displays to make sure any changes will be displayed immediately (if possible/not locked) -< TODO. DRY
 			TotalAP.Controllers.RenderGUI() 
 			
