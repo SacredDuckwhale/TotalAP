@@ -386,14 +386,19 @@ local function SlashCommandHandler(input, usedAlias)
 		
 		elseif command == validCommand then -- Execute individual handler function for this slash command
 			
+					-- Disable keybinds to avoid spreading taint if display is toggled while in combat
+			if InCombatLockdown() or UnitAffectingCombat("player") then
+				TotalAP.ChatMsg(L["You cannot use slash commands while in combat."]) -- TODO: Only deactive commands that actually affect the GUI? (But then, which command does NOT do that?)
+				return
+			end
+			
 			local slashHandlerFunction = slashHandlers[command]
 			TotalAP.Debug("Recognized slash command: " .. command .. " - executing handler function..." )
 			local settings = TotalAP.Settings.GetReference() 
 			slashHandlerFunction(settings)
 			
 			-- Always update displays to make sure any changes will be displayed immediately (if possible/not locked)
-			if not InCombatLockdown() and not UnitAffectingCombat("player") then TotalAP.Controllers.RenderGUI() end -- Mostly required to avoid taint while toggling /ap autohide while engaged in combat -> normal update afterwards
-			
+			TotalAP.Controllers.RenderGUI() 
 			return
 	
 		end	
