@@ -79,4 +79,5 @@ L["Total Ranks Purchased: %d"] = true
 L["TotalAP - Artifact Power Tracker"] = true
 L["Type %s to reset all currently ignored specs for this character"] = true
 L["Use Next AP Token"] = true
+L["You cannot use keybinds to change the display while in combat."] = true
 L["[List of available commands]"] = true
