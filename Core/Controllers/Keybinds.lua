@@ -102,6 +102,11 @@ local function KeybindHandler(action, isUserInput)
 		-- Something, something (TODO)
 	end
 	
+	if InCombatLockdown() or UnitAffectingCombat("player") then -- Disable keybinds to avoid spreading taint if display is toggled while in combat
+		TotalAP.ChatMsg(L["You cannot use keybinds to change the display while in combat."]) -- TODO: Only deactive commands that actually affect the GUI? (But then, which command does NOT do that?)
+		return
+	end
+	
 	-- Call corresponding action handler (if one exists for the requested keybind action)
 	local actionHandler = keybindHandlers[action] 
 	if actionHandler then
@@ -111,10 +116,9 @@ local function KeybindHandler(action, isUserInput)
 	else
 		TotalAP.Debug("Keybind not recognized: " .. action .. " - skipping call to action handler because none exists for this keybind")
 	end
-		
-	
-	-- Always update displays to make sure any changes will be displayed immediately (if possible/not locked)
-	if not InCombatLockdown() and not UnitAffectingCombat("player") then TotalAP.Controllers.RenderGUI()  end -- Check for combat to avoid taint if display is toggled while in combat
+
+	-- Always update displays to make sure any changes will be displayed immediately
+	TotalAP.Controllers.RenderGUI()
 	
 end
 

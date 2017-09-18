@@ -83,6 +83,12 @@ local function Render(self)
 				end
 			end
 		
+			-- Don't update GUI while combat lockdown is active (to eradicate any taint errors)
+			-- TODO: Remove old handling code in widgets / View if this is tested properly
+			if InCombatLockdown() or UnitAffectingCombat("player") then -- No spreading of taint, please!
+				return
+			end
+			
 --			TotalAP.Debug("Rendering View element " .. index .. ": " .. Element:GetName())
 			Element:Update() -- Prepare internal state to reflect the most current information available to the addon (handled by view)
 			Element:Render() -- Display element according to its internal state (handled by widget class)
