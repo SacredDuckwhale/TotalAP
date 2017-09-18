@@ -185,6 +185,15 @@ local function ScanArtifact()
 	local artifactTier = select(13, aUI.GetEquippedArtifactInfo())
 	local artifactKnowledge = aUI.GetArtifactKnowledgeLevel()
 	
+	-- TODO: Ugly workaround for the issues reported after 7.3 hit - needs more investigation: Why does it happen, and when? Seems entirely random so far, but it might be due to some changes made in 7.3 that I am unaware of...
+	if type(artifactTier) == "number" and artifactTier > 3 then -- This can't be right -> Replace it with tier = 2 for the time being (AFAIK there's no tier 3, and tier 1 is applied automatically after reaching 35 traits?)
+		artifactTier = (numTraitsPurchased >= 35 and 2) or 1 -- Tiers upgrade automatically upon purchasing all the original traits
+		--@debug@
+		-- Add obvious notification in case it ever happens while testing... so far it hasn't, though :/
+		TotalAP.ChatMsg("Cache/artifactTier has become corrupted -> Workaround was applied. How did this happen!? Must... investigate...")
+		--@end-debug@
+	end
+	
 	-- Update the Cache (stored in SavedVars)
 	TotalAP.Cache.SetUnspentAP(unspentAP)
 	TotalAP.Cache.SetNumTraits(numTraitsPurchased)

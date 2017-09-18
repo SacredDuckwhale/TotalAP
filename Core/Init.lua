@@ -25,7 +25,7 @@ if not TotalAP then return end
 -- Shared local variables (usually those used by logic AND display, or different modules) -> Shared by means of the addon Table
 TotalAP.versionString = GetAddOnMetadata("TotalAP", "Version")
 --@debug@
-TotalAP.versionString = "Development"
+TotalAP.versionString = "DEBUG"
 --@end-debug@
 
 -- Core modules
