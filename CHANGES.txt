@@ -16,6 +16,7 @@ r26:
 	Fixed number format for the Korean (koKR) locale
 	Fixed number format for the Spanish (esES and esMX) locales
 	Added some workarounds that should (hopefully) prevent the remaining taint issues
+	Added a workaround for the invalid artifact tier issues (this is currently being investigated further)
 	
 
 r25:
