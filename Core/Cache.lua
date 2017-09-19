@@ -65,11 +65,15 @@ local function IsNumber(value)
 	return type(value) == "number"
 end	
 
+local function IsValidArtifactTier(value)
+	return type(value) == "number" and value <= 3 -- Workaround for the post-7.3 issues where random values seem to be returned (this removes invalid values still in the user's SVars from before the fix to  EventHandlers.ScanArtifact)
+end
+
 -- LUT for validator functions
 local validators = {
 	
 	["isIgnored"] = IsBoolean,
-	["artifactTier"] = IsNumber,
+	["artifactTier"] = IsValidArtifactTier,
 	["thisLevelUnspentAP"] = IsNumber,
 	["numTraitsPurchased"] = IsNumber,
 
