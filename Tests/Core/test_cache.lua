@@ -66,6 +66,9 @@ do
 	-- Invalid caches should always return false as long as they're not filled with bogus data (in which case it can also be nil depending on how the individual entries validate)
 	function Test_Cache_Validate:Test_Invalid()
 	
+		TotalArtifactPowerCache = nil
+		luaunit.assertEquals(TotalAP.Cache.Validate(), false)
+	
 		TotalArtifactPowerCache = {}
 		luaunit.assertEquals(TotalAP.Cache.Validate(), false)
 	
@@ -75,6 +78,7 @@ do
 		TotalArtifactPowerCache = { {}, {}, {} }
 		luaunit.assertEquals(TotalAP.Cache.Validate(), false)
 	
+		TotalArtifactPowerCache = {}
 		TotalArtifactPowerCache[fqcn] = { { isIgnored = true }, { isIgnored = false}, { numTraitsPurchased = 42, isIgnored = false, artifactTier = 1234, thisLevelUnspentAP = 100000} } -- artifactTier is invalid = not a valid cache (this is testing for the post-7.3 bug)
 		luaunit.assertEquals(TotalAP.Cache.Validate(), false)
 
@@ -387,7 +391,7 @@ do
 	function Test_Cache_Initialise:Test_InvalidSpecEntry()
 	
 		-- Create empty cache
-		TotalAP.Cache.Initialise()
+		TotalArtifactPowerCache = { [fqcn] = { { isIgnored = false }, {isIgnored = false }, { isIgnored = false } }}
 		R = TotalArtifactPowerCache
 	
 		-- Fill in some valid data
@@ -407,7 +411,7 @@ do
 	function Test_Cache_Initialise:Test_InvalidKey()
 	
 		-- Create empty cache
-		TotalAP.Cache.Initialise()
+		TotalArtifactPowerCache = { [fqcn] = { { isIgnored = false }, {isIgnored = false }, { isIgnored = false } }}
 			
 		-- Fill in some valid data
 		TotalArtifactPowerCache[fqcn][spec] = { numTraitsPurchased = 28, thisLevelUnspentAP = 100, artifactTier = 1, isIgnored = true } -- the other specs aren't valid here, but this will be rectified during Initialise()
@@ -442,7 +446,7 @@ do
 		end
 		
 		-- Create empty cache
-		TotalAP.Cache.Initialise()
+		TotalArtifactPowerCache = { [fqcn] = { { isIgnored = false }, {isIgnored = false }, { isIgnored = false } }}
 		
 		-- Set some arbitrary, but valid data
 		TotalArtifactPowerCache[fqcn][spec] = { numTraitsPurchased = 28, thisLevelUnspentAP = 100, artifactTier = 1, isIgnored = true }
@@ -467,7 +471,7 @@ end
 	function Test_Cache_Initialise:Test_InvalidData2()
 	
 		-- Create empty cache
-		TotalAP.Cache.Initialise()
+		TotalArtifactPowerCache = { [fqcn] = { { isIgnored = false }, {isIgnored = false }, { isIgnored = false } }}
 		
 		local Entry = { isIgnored = false }
 		
@@ -485,7 +489,7 @@ end
 	function Test_Cache_Initialise:Test_InvalidData3()
 		
 		-- Create empty cache
-		TotalAP.Cache.Initialise()
+		TotalArtifactPowerCache = { [fqcn] = { { isIgnored = false }, {isIgnored = false }, { isIgnored = false } }}
 
 		R = {}
 		TotalArtifactPowerCache = {
@@ -542,7 +546,7 @@ end
 	function Test_Cache_Initialise:Test_IncompleteData()
 
 		-- Create empty cache
-		TotalAP.Cache.Initialise()
+		TotalArtifactPowerCache = { [fqcn] = { { isIgnored = false }, {isIgnored = false }, { isIgnored = false } }}
 		
 		-- Add entries with missing defaults (for specs 2 and 3)
 		TotalArtifactPowerCache[fqcn] = { { isIgnored = true }, {}, {} }
@@ -557,7 +561,7 @@ end
 	function Test_Cache_Initialise:Test_CompleteAndValidData()
 
 		-- Create empty cache
-		TotalAP.Cache.Initialise()
+		TotalArtifactPowerCache = { [fqcn] = { { isIgnored = false }, {isIgnored = false }, { isIgnored = false } }}
 		
 		local S1 =  { numTraitsPurchased = 28, thisLevelUnspentAP = 100, artifactTier = 1, isIgnored = true }
 		TotalArtifactPowerCache[fqcn] = { S1, S1, S1 }
