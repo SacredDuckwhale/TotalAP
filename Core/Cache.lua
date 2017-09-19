@@ -65,11 +65,15 @@ local function IsNumber(value)
 	return type(value) == "number"
 end	
 
+local function IsValidArtifactTier(value)
+	return type(value) == "number" and value <= 3 -- Workaround for the post-7.3 issues where random values seem to be returned (this removes invalid values still in the user's SVars from before the fix to  EventHandlers.ScanArtifact)
+end
+
 -- LUT for validator functions
 local validators = {
 	
 	["isIgnored"] = IsBoolean,
-	["artifactTier"] = IsNumber,
+	["artifactTier"] = IsValidArtifactTier,
 	["thisLevelUnspentAP"] = IsNumber,
 	["numTraitsPurchased"] = IsNumber,
 
@@ -202,7 +206,7 @@ local function Validate()
 	end
 	
 	for key, entry in pairs(cache) do -- Validate entry for this character
-		ValidateChar(key) -- will return on failure
+		if not ValidateChar(entry) then return false end -- will return on failure, but not otherwise
 	end
 	
 	return true -- only occurs on successful validation
@@ -522,7 +526,7 @@ local function Initialise()
 	if bankCache and bankCache[numItems] and bankCache[inBankAP] then -- bankCache was saved on a previous session and can be restored (TODO: Check for empty table is an ugly hotfix, to prevent overwriting the default values after the saved vars have been messed up by the bug hotfixed below)
 		TotalAP.bankCache = bankCache
 	else -- bankCache is invalid -> Drop it (from saved variables) -> Will be saved whenever the bank is accessed
-		if cache and cache[fqcn] then -- drop invalid bank cache
+		if cache and cache[fqcn] and cache[fqcn]["bankCache"] then -- drop invalid bank cache (does nothing if it didn't actually exist)
 			TotalAP.Debug("Cache.Initialise(): bankCache is invalid -> dropping it")
 			cache[fqcn]["bankCache"] = nil
 		end
@@ -580,15 +584,15 @@ local function Initialise()
 										if not isKeyValid then -- Something isn't right -> drop key entirely or replace with default value
 										
 											TotalAP.Debug("Validation of cached entry failed for key = " .. tostring(key) .. ", value = " .. tostring(value))
-											if not defaults[key] then -- Key isn't required and can safely be dropped
+											if defaults[key] == nil then -- Key isn't required and can safely be dropped
 												
 												TotalAP.Debug("No default value exists for this key -> Dropping it")
-												specEntry[key] = nil -- "unset"
+												specEntry[key] = nil -- "unset" -- equal to -> cache[fqcn][spec][key] = nil
 												
 											else -- Key is necessary for proper functioning -> replace it with default value
 											
 												TotalAP.Debug("Loading default value to replace the invalid data")
-												specEntry[key] = defaults[key]
+												specEntry[key] = defaults[key] -- equal to -> cache[fqcn][spec][key] = defaults[key]
 											
 											end
 										

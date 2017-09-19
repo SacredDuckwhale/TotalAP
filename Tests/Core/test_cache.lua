@@ -58,8 +58,16 @@ Test_InventoryCache = {} -- TODO
 Test_Cache_Validate = {}
 do
 
+	local fqcn
+	function Test_Cache_Validate:Setup()
+		fqcn = TotalAP.Utils.GetFQCN()
+	end
+
 	-- Invalid caches should always return false as long as they're not filled with bogus data (in which case it can also be nil depending on how the individual entries validate)
 	function Test_Cache_Validate:Test_Invalid()
+	
+		TotalArtifactPowerCache = nil
+		luaunit.assertEquals(TotalAP.Cache.Validate(), false)
 	
 		TotalArtifactPowerCache = {}
 		luaunit.assertEquals(TotalAP.Cache.Validate(), false)
@@ -70,12 +78,35 @@ do
 		TotalArtifactPowerCache = { {}, {}, {} }
 		luaunit.assertEquals(TotalAP.Cache.Validate(), false)
 	
+		TotalArtifactPowerCache = {}
+		TotalArtifactPowerCache[fqcn] = { { isIgnored = true }, { isIgnored = false}, { numTraitsPurchased = 42, isIgnored = false, artifactTier = 1234, thisLevelUnspentAP = 100000} } -- artifactTier is invalid = not a valid cache (this is testing for the post-7.3 bug)
+		luaunit.assertEquals(TotalAP.Cache.Validate(), false)
+
+		-- Actual example that was not detected
+		TotalArtifactPowerCache = {
+			["Swimmingly - Outland"] = {
+				{
+					["thisLevelUnspentAP"] = 12506270,
+					["artifactTier"] = 1111,
+					["numTraitsPurchased"] = 46,
+					["isIgnored"] = false,
+				}, -- [1]
+				{
+					["thisLevelUnspentAP"] = 1375148,
+					["artifactTier"] = 2,
+					["numTraitsPurchased"] = 43,
+					["isIgnored"] = false,
+				}, -- [2]
+			},
+		}
+	
+		luaunit.assertEquals(TotalAP.Cache.Validate(), false)
+		
 	end
 	
 	-- Valid caches should always return true upon validation
 	function Test_Cache_Validate:Test_Valid()
 	
-		local fqcn = TotalAP.Utils.GetFQCN()
 		TotalArtifactPowerCache = {}
 		TotalArtifactPowerCache[fqcn] = { { isIgnored = true }, { isIgnored = false}, { numTraitsPurchased = 42, isIgnored = false, artifactTier = 2, thisLevelUnspentAP = 100000} }
 		luaunit.assertEquals(TotalAP.Cache.Validate(), true)
@@ -110,6 +141,24 @@ do
 		luaunit.assertEquals(TotalAP.Cache.ValidateChar( { "Some data"} ), false)
 		luaunit.assertEquals(TotalAP.Cache.ValidateChar( { {}, {}, {} } ), false)
 		luaunit.assertEquals(TotalAP.Cache.ValidateChar( { { numTraitsPurchased = 42 } } ), false)
+		
+		-- Actual example that was not detected
+		local T = {
+			{	
+				["thisLevelUnspentAP"] = 12506270,
+				["artifactTier"] = 1111, -- Not allowed
+				["numTraitsPurchased"] = 46,
+				["isIgnored"] = false,
+			}, -- [1]
+			{
+				["thisLevelUnspentAP"] = 1375148,
+				["artifactTier"] = 2,
+				["numTraitsPurchased"] = 43,
+				["isIgnored"] = false,
+			}, -- [2]
+		}
+		luaunit.assertEquals(TotalAP.Cache.ValidateChar( { T } ), false)
+	
 	
 	end
 	
@@ -125,6 +174,7 @@ do
 		}
 		local T2 = {
 			{ numTraitsPurchased = 28, thisLevelUnspentAP = 100, artifactTier = 1 }, -- missing IsIgnored -> should be added on Initialise(), but still return false while validating
+			{ numTraitsPurchased = 28, thisLevelUnspentAP = 100, artifactTier = 1513, isIgnored = false }, -- invalid artifact tier -> should be dropped on Initialise(), but still return false while validating
 			S,
 			S
 		}
@@ -176,18 +226,37 @@ do
 	-- Parameter is a valid table, but may or may not contain invalid entries -> Return boolean value indicating whether or not it's a valid cache entry
 	function Test_Cache_ValidateSpec:Test_ValidParameters()
 	
-		local S = { numTraitsPurchased = 28, thisLevelUnspentAP = 100, artifactTier = 1, isIgnored = true }
-	
+		local S
+		local function Reset() -- Reset entry to a valid state (so that invalid entries can be detected individually)
+			S = { numTraitsPurchased = 28, thisLevelUnspentAP = 100, artifactTier = 1, isIgnored = true }
+		end
+		
 		-- 1st round: Table is valid
+		Reset()
 		luaunit.assertEquals(TotalAP.Cache.ValidateSpec(S), true)
 		
 		-- 2nd round: Table is valid, but contains invalid entries -> return false
 		S.randomKey = "Hey"
 		luaunit.assertEquals(TotalAP.Cache.ValidateSpec(S), false)
+		Reset()
 		S.randomKey = nil
 		S.numTraitsPurchased = "Hello, good sir. How can I help you?"
 		luaunit.assertEquals(TotalAP.Cache.ValidateSpec(S), false)
+		Reset()
 		S.numTraitsPurchased = false
+		luaunit.assertEquals(TotalAP.Cache.ValidateSpec(S), false)
+		Reset()
+		S.artifactTier = 668
+		luaunit.assertEquals(TotalAP.Cache.ValidateSpec(S), false)
+		Reset()
+		
+		-- Actual example that was not detected
+		S =	{
+					["thisLevelUnspentAP"] = 12506270,
+					["artifactTier"] = 42, -- Just no!
+					["numTraitsPurchased"] = 46,
+					["isIgnored"] = false,
+				} -- [1]
 		luaunit.assertEquals(TotalAP.Cache.ValidateSpec(S), false)
 		
 		-- 3rd round: Table is valid and doesn't contain invalid entries, but some default values are missing -> return false
@@ -241,6 +310,7 @@ do
 		luaunit.assertEquals(TotalAP.Cache.ValidateEntry("thisLevelUnspentAP", 100), true)
 		luaunit.assertEquals(TotalAP.Cache.ValidateEntry("numTraitsPurchased", 54), true)
 		luaunit.assertEquals(TotalAP.Cache.ValidateEntry("artifactTier", 1), true)
+		luaunit.assertEquals(TotalAP.Cache.ValidateEntry("artifactTier", 2), true)
 		luaunit.assertEquals(TotalAP.Cache.ValidateEntry("isIgnored", true), true)
 		luaunit.assertEquals(TotalAP.Cache.ValidateEntry("isIgnored", false), true)
 		
@@ -249,6 +319,8 @@ do
 		luaunit.assertEquals(TotalAP.Cache.ValidateEntry("numTraitsPurchased", "Hello"), false)
 		luaunit.assertEquals(TotalAP.Cache.ValidateEntry("artifactTier", function(test) return test end), false)
 		luaunit.assertEquals(TotalAP.Cache.ValidateEntry("artifactTier", nil), false)
+		luaunit.assertEquals(TotalAP.Cache.ValidateEntry("artifactTier", 668), false)
+		luaunit.assertEquals(TotalAP.Cache.ValidateEntry("artifactTier", 1533), false)
 		luaunit.assertEquals(TotalAP.Cache.ValidateEntry("isIgnored", nil), false)
 		luaunit.assertEquals(TotalAP.Cache.ValidateEntry("isIgnored", "Hi"), false)
 		luaunit.assertEquals(TotalAP.Cache.ValidateEntry("isIgnored", function() end), false)
@@ -319,7 +391,7 @@ do
 	function Test_Cache_Initialise:Test_InvalidSpecEntry()
 	
 		-- Create empty cache
-		TotalAP.Cache.Initialise()
+		TotalArtifactPowerCache = { [fqcn] = { { isIgnored = false }, {isIgnored = false }, { isIgnored = false } }}
 		R = TotalArtifactPowerCache
 	
 		-- Fill in some valid data
@@ -339,7 +411,7 @@ do
 	function Test_Cache_Initialise:Test_InvalidKey()
 	
 		-- Create empty cache
-		TotalAP.Cache.Initialise()
+		TotalArtifactPowerCache = { [fqcn] = { { isIgnored = false }, {isIgnored = false }, { isIgnored = false } }}
 			
 		-- Fill in some valid data
 		TotalArtifactPowerCache[fqcn][spec] = { numTraitsPurchased = 28, thisLevelUnspentAP = 100, artifactTier = 1, isIgnored = true } -- the other specs aren't valid here, but this will be rectified during Initialise()
@@ -357,7 +429,7 @@ do
 	end
 	
 	-- Cache exists, but has some invalid data in it -> Replace invalid data with default values (if setting has any) or remove the entry altogether to maintain cache integrity (join valid cache entries with defaults)
-	function Test_Cache_Initialise:Test_InvalidData()
+	function Test_Cache_Initialise:Test_InvalidData1()
 		
 		-- Mess up a cache entry to test if it will be fixed automatically
 		local function MessUpEntry(key)
@@ -368,13 +440,13 @@ do
 		local function MessUpAllTheThings()
 			local keys = { "numTraitsPurchased", "thisLevelUnspentAP", "artifactTier", "isIgnored"}
 			
-			for key in pairs(keys) do -- Mess up stuff, badly
-				MessUpEntry(TotalArtifactPowerCache, key)
+			for _, key in ipairs(keys) do -- Mess up stuff, badly
+				MessUpEntry(key)
 			end
 		end
 		
 		-- Create empty cache
-		TotalAP.Cache.Initialise()
+		TotalArtifactPowerCache = { [fqcn] = { { isIgnored = false }, {isIgnored = false }, { isIgnored = false } }}
 		
 		-- Set some arbitrary, but valid data
 		TotalArtifactPowerCache[fqcn][spec] = { numTraitsPurchased = 28, thisLevelUnspentAP = 100, artifactTier = 1, isIgnored = true }
@@ -382,19 +454,99 @@ do
 		R[fqcn] = { Entry, Entry, Entry }
 		R[fqcn][spec] = { numTraitsPurchased = 28, thisLevelUnspentAP = 100, artifactTier = 1, isIgnored = true }
 		
+		RunTest()
+		-- Cache is valid here
+		
 		-- Mess up all existing entries
 		MessUpAllTheThings()
 
+		-- Cache became corrupted -> is no longer valid
+		R[fqcn][spec] = Entry
+		
 		RunTest()
-	-- Cache should contain either default values or pre-existing, valid data only at this point, with invalid data having been dropped entirely
+		-- Cache should contain either default values or pre-existing, valid data only at this point, with invalid data having been dropped entirely
+		
+end
+	
+	function Test_Cache_Initialise:Test_InvalidData2()
+	
+		-- Create empty cache
+		TotalArtifactPowerCache = { [fqcn] = { { isIgnored = false }, {isIgnored = false }, { isIgnored = false } }}
+		
+		local Entry = { isIgnored = false }
+		
+		R = {}
+		R[fqcn] = { Entry, Entry, Entry }
+		TotalArtifactPowerCache[fqcn][spec] = { numTraitsPurchased = 28, thisLevelUnspentAP = 100, artifactTier = 42, isIgnored = true } -- invalid artifact tier -> must be detected!
+		R[fqcn][spec] = { numTraitsPurchased = 28, thisLevelUnspentAP = 100, isIgnored = true }
+		
+		RunTest()
+		
+		-- Cache should have dropped the invalid entry
+		
+	end
+	
+	function Test_Cache_Initialise:Test_InvalidData3()
+		
+		-- Create empty cache
+		TotalArtifactPowerCache = { [fqcn] = { { isIgnored = false }, {isIgnored = false }, { isIgnored = false } }}
 
+		R = {}
+		TotalArtifactPowerCache = {
+			[fqcn] = {
+				{
+					["thisLevelUnspentAP"] = 12506270,
+					["artifactTier"] = 1111, -- Just no!
+					["numTraitsPurchased"] = 46,
+					["isIgnored"] = false,
+				}, -- [1]
+				{
+					["thisLevelUnspentAP"] = 1375148,
+					["artifactTier"] = 2,
+					["numTraitsPurchased"] = 43,
+					["isIgnored"] = false,
+				}, -- [2]
+				{
+					["thisLevelUnspentAP"] = 1375148,
+					["artifactTier"] = 2,
+					["numTraitsPurchased"] = 43,
+					["isIgnored"] = false,
+				}, -- [3]
+			}
+		}
+		R = {
+			[fqcn] = {
+				{
+					["thisLevelUnspentAP"] = 12506270,
+					["numTraitsPurchased"] = 46,
+					["isIgnored"] = false,
+				}, -- [1]
+				{
+					["thisLevelUnspentAP"] = 1375148,
+					["artifactTier"] = 2,
+					["numTraitsPurchased"] = 43,
+					["isIgnored"] = false,
+				}, -- [2]
+				{
+					["thisLevelUnspentAP"] = 1375148,
+					["artifactTier"] = 2,
+					["numTraitsPurchased"] = 43,
+					["isIgnored"] = false,
+				}, -- [3]
+			}
+		}
+
+		RunTest()
+	
+		-- Invalid artifactTier entry should be removed
+	
 	end
 
 	-- Cache exists, but some of the crucial data (those settings which have a default value) is missing -> Add the missing settings with their default values while leaving the rest unchanged
 	function Test_Cache_Initialise:Test_IncompleteData()
 
 		-- Create empty cache
-		TotalAP.Cache.Initialise()
+		TotalArtifactPowerCache = { [fqcn] = { { isIgnored = false }, {isIgnored = false }, { isIgnored = false } }}
 		
 		-- Add entries with missing defaults (for specs 2 and 3)
 		TotalArtifactPowerCache[fqcn] = { { isIgnored = true }, {}, {} }
@@ -409,11 +561,17 @@ do
 	function Test_Cache_Initialise:Test_CompleteAndValidData()
 
 		-- Create empty cache
-		TotalAP.Cache.Initialise()
+		TotalArtifactPowerCache = { [fqcn] = { { isIgnored = false }, {isIgnored = false }, { isIgnored = false } }}
 		
-		local S =  { numTraitsPurchased = 28, thisLevelUnspentAP = 100, artifactTier = 1, isIgnored = true }
-		TotalArtifactPowerCache[fqcn] = { S, S, S }
-		R[fqcn] = { S, S, S }
+		local S1 =  { numTraitsPurchased = 28, thisLevelUnspentAP = 100, artifactTier = 1, isIgnored = true }
+		TotalArtifactPowerCache[fqcn] = { S1, S1, S1 }
+		R[fqcn] = { S1, S1, S1 }
+		
+		RunTest()
+		
+		local S2 =  { numTraitsPurchased = 28, thisLevelUnspentAP = 100, artifactTier = 2, isIgnored = true }
+		TotalArtifactPowerCache[fqcn] = { S2, S2, S2 }
+		R[fqcn] = { S2, S2, S2 }
 		
 		RunTest()
 		-- Nothing should have changed, really
