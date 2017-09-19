@@ -180,6 +180,12 @@ local function ScanArtifact()
 	end
 	
 	local aUI = C_ArtifactUI
+	
+	if not aUI then -- Can't get valid info -> Skip this scan (usually occurs once when logging in)
+		TotalAP.Debug("ScanArtifact() -> Skipping this update because C_ArtifactUI is not available (yet)")
+		return
+	end
+	
 	local unspentAP = select(5, aUI.GetEquippedArtifactInfo())
 	local numTraitsPurchased = select(6, aUI.GetEquippedArtifactInfo())
 	local artifactTier = select(13, aUI.GetEquippedArtifactInfo())
