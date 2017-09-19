@@ -584,7 +584,7 @@ local function Initialise()
 										if not isKeyValid then -- Something isn't right -> drop key entirely or replace with default value
 										
 											TotalAP.Debug("Validation of cached entry failed for key = " .. tostring(key) .. ", value = " .. tostring(value))
-											if not defaults[key] then -- Key isn't required and can safely be dropped
+											if defaults[key] == nil then -- Key isn't required and can safely be dropped
 												
 												TotalAP.Debug("No default value exists for this key -> Dropping it")
 												specEntry[key] = nil -- "unset"
