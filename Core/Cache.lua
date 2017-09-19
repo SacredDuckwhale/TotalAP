@@ -206,7 +206,7 @@ local function Validate()
 	end
 	
 	for key, entry in pairs(cache) do -- Validate entry for this character
-		ValidateChar(key) -- will return on failure
+		if not ValidateChar(entry) then return false end -- will return on failure, but not otherwise
 	end
 	
 	return true -- only occurs on successful validation
