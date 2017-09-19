@@ -368,8 +368,8 @@ do
 		local function MessUpAllTheThings()
 			local keys = { "numTraitsPurchased", "thisLevelUnspentAP", "artifactTier", "isIgnored"}
 			
-			for key in pairs(keys) do -- Mess up stuff, badly
-				MessUpEntry(TotalArtifactPowerCache, key)
+			for _, key in ipairs(keys) do -- Mess up stuff, badly
+				MessUpEntry(key)
 			end
 		end
 		
