@@ -45,6 +45,7 @@ DB\Init.lua
 DB\Artifacts.lua
 DB\ItemEffects.lua
 #DB\UnderlightAngler.lua
+DB\RelicTraits.lua
 DB\ResearchTomes.lua
 
 ## Localization - needs to be loaded before the initialisation routine ##
