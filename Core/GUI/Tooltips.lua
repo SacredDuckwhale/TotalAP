@@ -83,7 +83,7 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 	 	-- Display recommendations for artifact traits if enabled
 	local settings = TotalAP.Settings.GetReference()
 	if settings.tooltip.showRelicRecommendations then
-		GameTooltip:AddLine("\nRecommended Relics:") -- TODO: L
+		GameTooltip:AddLine("\n" .. L["Recommended Relics"] .. ":")
 		local relicRecommendations = TotalAP.DB.GetRecommendedRelicTraits(nil, specID)
 		
 		for priority, spellID in ipairs(relicRecommendations) do -- Display list item in tooltip
