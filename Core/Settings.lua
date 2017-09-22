@@ -64,7 +64,8 @@ local defaultSettings =	{
 		tooltip = {
 			enabled = true, 
 			showProgressReport = true,
-			showNumItems = true
+			showNumItems = true,
+			showRelicRecommendations = true,
 		},
 		
 		-- Display options for the bar displays
@@ -232,6 +233,7 @@ local validators = {
 	["tooltip.enabled"] = IsBoolean,
 	["tooltip.showNumItems"] = IsBoolean,
 	["tooltip.showProgressReport"] = IsBoolean,
+	["tooltip.showRelicRecommendations"] = IsBoolean,
 	
 }	
 

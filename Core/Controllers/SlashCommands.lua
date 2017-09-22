@@ -42,6 +42,8 @@ local L = TotalAP.L
 local slashCommands = {
 	
 	["counter"] = L["Toggle display of the item counter"],
+	["relics"] = "Toggle display of relic recommendations", -- TODO: L
+	
 	["progress"] = L["Toggle display of the progress report"],
 	["glow"] = L["Toggle spell overlay notification (glow effect) when new traits are available"],
 	["buttontext"] = L["Toggle text display next to the action button"],
@@ -84,6 +86,18 @@ local slashHandlers = {
 		end
 		
 		settings.tooltip.showNumItems = not settings.tooltip.showNumItems;
+	
+	end,
+	
+	["relics"] = function(settings) -- Toggle display of relic recommendations in tooltip
+
+		if not settings.tooltip.showRelicRecommendations then
+			TotalAP.ChatMsg("Relic recommendations enabled.") -- TODO: L
+		else
+			TotalAP.ChatMsg("Relic recommendations disabled.") -- TODO: L
+		end
+		
+		settings.tooltip.showRelicRecommendations = not settings.tooltip.showRelicRecommendations
 	
 	end,
 	
