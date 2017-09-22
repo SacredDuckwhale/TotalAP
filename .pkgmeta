@@ -29,6 +29,9 @@ externals:
     Libs/LibButtonGlow-1.0 :
         url: https://repos.wowace.com/wow/libbuttonglow-1-0
         tag: latest
+    Libs/LibIconPath:
+        url: git://github.com/Ignifazius/libiconpath.git
+        tag: latest
 
 ignore:
  - Docs/

@@ -80,6 +80,22 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 		
 	end
      
+	 	-- Display recommendations for artifact traits if enabled
+	local settings = TotalAP.Settings.GetReference()
+	if settings.tooltip.showRelicRecommendations then
+		GameTooltip:AddLine("\n" .. L["Recommended Relics"] .. ":")
+		local relicRecommendations = TotalAP.DB.GetRecommendedRelicTraits(nil, specID)
+		
+		for priority, spellID in ipairs(relicRecommendations) do -- Display list item in tooltip
+		
+			local name, _, icon = GetSpellInfo(relicRecommendations[priority])
+			local texturePath = LibIconPath_getPath(icon)
+			GameTooltip:AddLine(format("\124T%s:16\124t %s", texturePath, name), 1, 1, 1) -- TODO: Tooltip setting to change the size (via AceConfig later)
+			
+		end
+	
+	end
+	 
 	if knowledgeLevel > 0 then -- AK was cached
 		 
 		if maxAttainableKnowledgeLevel > knowledgeLevel then -- Display maximum available AK level (counting usable tomes but not shipments that haven't been picked up -- TODO: Maybe they should be counted, too? But then they can't immediately be used and would have to be picked up first)
@@ -108,6 +124,7 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 	if timeLeft and timeLeftString then
 		GameTooltip:AddLine(format(L["Next in: %s"],  timeLeftString))
 	end
+	
 	
 	if hide then
 		GameTooltip:Hide()
