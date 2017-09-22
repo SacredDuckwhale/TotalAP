@@ -38,6 +38,7 @@ Libs\AceDB-3.0\AceDB-3.0.xml
 Libs\AceEvent-3.0\AceEvent-3.0.xml
 Libs\AceLocale-3.0\AceLocale-3.0.xml
 Libs\LibButtonGlow-1.0\LibButtonGlow-1.0.lua
+Libs\LibIconPath\Core.lua
 #@end-no-lib-strip@
 
 ## DB - needs to be loaded first ##
