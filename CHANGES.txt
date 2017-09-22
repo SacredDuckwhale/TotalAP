@@ -1,6 +1,10 @@
 ------------------------------------------------------------------------
-## TotalAP v1.5.2 - Recent changes (3 releases)
+## TotalAP v1.5.3 - Recent changes (3 releases)
 ------------------------------------------------------------------------
+
+r27:
+	Added relic recommendations to tooltip (based on icy-veins.com - don't take them for gospel). These can be toggled with the newly-introduced /ap relics slash command
+
 
 r26:
 	Added partial translation for the Korean (koKR) locale - Since this is still incomplete (~58% done), any help is welcome!
@@ -29,13 +33,3 @@ r25:
 	Fixed an issue where changing specializations would not re-scan the player's artifact as intended and update the display accordingly
 
 	
-r24:
-	
-	Artifact Research Notes and similar items (catch-up tomes for alts) will now be ignored for players that haven't reached level 110 yet
-
-	Fixed an issue that could prevent the displays from being dragged to the very bottom of the player's interface
-	Fixed an issue where dropping from an instance group could cause the detection of ignored specs to fail temporarily
-	Fixed a minor graphics glitch pertaining to the buttonText, manifesting only when AP items were stored in the bank
-	Fixed the broken /ap reset slash command (caused by the changes made to saved variables handling in r23)
-	
-
