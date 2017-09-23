@@ -86,10 +86,10 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 		GameTooltip:AddLine("\n" .. L["Recommended Relics"] .. ":")
 		local relicRecommendations = TotalAP.DB.GetRecommendedRelicTraits(nil, specID)
 		
-		for priority, spellID in ipairs(relicRecommendations) do -- Display list item in tooltip
+		for priority, entry in ipairs(relicRecommendations) do -- Display list item in tooltip
 		
-			local name, _, icon = GetSpellInfo(relicRecommendations[priority])
-			local texturePath = LibIconPath_getPath(icon)
+			local name = GetSpellInfo(entry.spellID)
+			local texturePath = "Interface\\Icons\\" .. entry.icon
 			GameTooltip:AddLine(format("\124T%s:16\124t %s", texturePath, name), 1, 1, 1) -- TODO: Tooltip setting to change the size (via AceConfig later)
 			
 		end
