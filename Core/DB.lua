@@ -135,7 +135,7 @@ end
 --- Returns the recommended artifact traits (based on icy-veins.com) for a given class and spec
 -- @param class The class number (1-12)
 -- @param spec The specialization no. (1-4)
--- @return A table containing the three "best" artifact traits as spell ID (in order of importance)
+-- @return A table containing the three "best" artifact traits (in order of importance) as tables containing spellID and icon
 local function GetRecommendedRelicTraits(class, spec)
 
 	-- Use currently logged in character's class and spec if none was given
