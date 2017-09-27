@@ -90,7 +90,7 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 		
 			local name = GetSpellInfo(entry.spellID)
 			local texturePath = "Interface\\Icons\\" .. entry.icon
-			GameTooltip:AddLine(format("\124T%s:16\124t %s", texturePath, name), 1, 1, 1) -- TODO: Tooltip setting to change the size (via AceConfig later)
+			GameTooltip:AddLine(format("\124T%s:18\124t %s", texturePath, name), 1, 1, 1) -- TODO: Tooltip setting to change the size (via AceConfig later)
 			
 		end
 	
