@@ -109,7 +109,7 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 	if maxKnowledgeLevel > knowledgeLevel and shipmentsReady ~= nil and maxKnowledgeLevel > maxAttainableKnowledgeLevel then -- Research isn't maxed yet
 		
 		if shipmentsReady > 0 then -- Shipments are available -> Display current work order progress
-			GameTooltip:AddLine(format(L["Shipments ready for pickup: %d/%d"], shipmentsReady, shipmentsTotal))
+			--GameTooltip:AddLine(format(L["Shipments ready for pickup: %d/%d"], shipmentsReady, shipmentsTotal)) -> Disabled in 7.3. I doubt they'll come back, but who knows... leaving code here for now
 		end
 		
 		if (not shipmentsTotal or shipmentsReady == shipmentsTotal) and maxKnowledgeLevel > (knowledgeLevel + shipmentsReady) then -- More work orders could be queued, and available Research Notes aren't enough to reach the maximum level -> Show reminder
