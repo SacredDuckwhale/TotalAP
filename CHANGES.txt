@@ -5,6 +5,11 @@
 r27:
 	Added relic recommendations to tooltip (based on icy-veins.com - don't take them for gospel). These can be toggled with the newly-introduced /ap relics slash command
 
+	The item tooltip now also displays the percentage that an an artifact power item will add to the currently equipped artifact (experimental)
+	
+	Fixed item tooltip to no longer display that "0 items" are in the player's inventory when there aren't any
+	Fixed /ap autohide command, which was broken by the recently implemented anti-taint measures
+	
 
 r26:
 	Added partial translation for the Korean (koKR) locale - Since this is still incomplete (~58% done), any help is welcome!
