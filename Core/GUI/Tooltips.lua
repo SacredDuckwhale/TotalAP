@@ -235,10 +235,13 @@ local function ActionButtonTooltipFunction(self, button, hide)
 		
 		
 				-- Display AP summary
-				if TotalAP.inventoryCache.numItems > 1 and settings.tooltip.showNumItems then
+				if TotalAP.inventoryCache.numItems > 1 and settings.tooltip.showNumItems then -- Show tooltip for X items
 					self:AddLine(format("\n" .. L["%s Artifact Power in bags (%d items)"], TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat), TotalAP.inventoryCache.numItems), 230/255, 204/255, 128/255);
 				else
-					self:AddLine(format("\n" .. L["%s Artifact Power in bags"], TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat)) , 230/255, 204/255, 128/255);
+					if TotalAP.inventoryCache.numItems > 0 then -- Show tooltip for 1 item
+					self:AddLine(format("\n" .. L["%s Artifact Power in bags"], TotalAP.Utils.FormatShort(TotalAP.inventoryCache.inBagsAP, true, settings.numberFormat)) , 230/255, 204/255, 128/255)
+					end
+					-- Implied: else -> don't show "0 items in bags" as it makes no sense
 				end
 				
 				-- TODO: Bank summary
