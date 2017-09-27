@@ -259,6 +259,10 @@ local traitsByClass = {
 			 {
 				spellID = 193644, -- To the Pain
 				icon = "spell_shadow_shadowwordpain",
+			 },
+ 			 {
+				spellID = 194007, -- Touch of Darkness
+				icon = "spell_shadow_chilltouch",
 			 }, 
 		}
 	},
