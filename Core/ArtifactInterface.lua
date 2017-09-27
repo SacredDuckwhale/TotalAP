@@ -194,6 +194,33 @@ local function GetArtifactProgressPercent()
 	
 end
 
+--- Returns the percentage a given artifact power value would add to the currently equipped artifact
+-- Does NOT consider multiple level ups
+local function GetProgressForValue(value)
+
+	if not aUI or not HasArtifactEquipped() then
+		TotalAP.Debug("ArtifactInterface -> Attempted to calculate progress for value, but the artifact UI was not available (No/wrong artifact weapon?)");
+		return
+	end
+	
+	value = value or 0
+	
+	-- Retrieve current progress
+	local thisLevelUnspentAP, numTraitsPurchased, _, _, _, _, _, _, tier  = select(5, aUI.GetEquippedArtifactInfo())	
+	local nextLevelRequiredAP = aUI.GetCostForPointAtRank(numTraitsPurchased, tier)
+
+	-- Calculate how much the given value would add
+	if type(value) ~= number then -- No monkey business here!
+	
+		if value <= 0 then return 0 end
+		
+		return 100 * value/nextLevelRequiredAP -- If the item gives more than one level up, this can easily be detected by comparing it to 100 (even if the actual number of level ups is not being calculated)
+	
+	end
+	
+end
+
+
 --- Returns whether or not the player is currently wearing their spec's artifact weapon
 -- @return True if the equipped weapon is the right artifact; false otherwise
 local function HasCorrectSpecArtifactEquipped()
@@ -243,6 +270,7 @@ T.ArtifactInterface.GetNumAvailableTraits = GetNumAvailableTraits
 T.ArtifactInterface.GetArtifactProgressPercent = GetArtifactProgressPercent
 T.ArtifactInterface.HasCorrectSpecArtifactEquipped = HasCorrectSpecArtifactEquipped
 T.ArtifactInterface.IsArtifactMaxed = IsArtifactMaxed
+T.ArtifactInterface.GetProgressForValue = GetProgressForValue
 
 -- Keep this private, since it isn't used anywhere else
 -- T.ArtifactInterface.GetResearchNotesShipmentInfo = GetResearchNotesShipmentInfo
