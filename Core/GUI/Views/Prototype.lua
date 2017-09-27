@@ -84,8 +84,8 @@ local function Render(self)
 			end
 		
 			-- Don't update GUI while combat lockdown is active (to eradicate any taint errors)
-			-- TODO: Remove old handling code in widgets / View if this is tested properly
-			if InCombatLockdown() or UnitAffectingCombat("player") then -- No spreading of taint, please!
+			if InCombatLockdown() then -- No spreading of taint, please!
+				TotalAP.Debug("Prevented GUI Updating due to anti-taint measures")
 				return
 			end
 			
