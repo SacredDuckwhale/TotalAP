@@ -62,6 +62,7 @@ L["Spec icons glow effect disabled."] = true
 L["Spec icons glow effect enabled."] = true
 L["Specialization: %s"] = true
 L["Switches between international and localised number formats for textual output"] = true
+L["This item will add: %s%%"] = true
 L["This spec is currently active"] = true
 L["Toggle all displays (will override the individual display's settings)"] = true
 L["Toggle bar display for artifact power progress"] = true

@@ -244,7 +244,7 @@ local function ActionButtonTooltipFunction(self, button, hide)
 					-- Implied: else -> don't show "0 items in bags" as it makes no sense
 				end
 				
-				-- TODO: Bank summary
+				-- Bank summary
 				if settings.scanBank and settings.tooltip.showNumItems then -- Display bank summary as well
 					
 					if TotalAP.bankCache.numItems > 1 then
@@ -263,14 +263,23 @@ local function ActionButtonTooltipFunction(self, button, hide)
 						-- Recalculate progress percentage and number of available traits before actually showing the tooltip
 						local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumAvailableTraits()
 						local artifactProgressPercent = TotalAP.ArtifactInterface.GetArtifactProgressPercent() -- TODO. Is this necessary to display in tooltips, now that the progress bar tooltip is available?
-							
+						
+						-- Calculate how much of the current level the item would give
+						
+						-- Extract AP amount (after AK) from the description
+						local spellID = TotalAP.DB.GetItemSpellEffect(tooltipItemID) 
+						local spellDescription = GetSpellDescription(spellID) -- Always contains the AP number, as only AP tokens are in the LUT 
+						local artifactPowerValue = TotalAP.Scanner.ParseSpellDesc(spellDescription)
+						local percentOfCurrentLevel = TotalAP.ArtifactInterface.GetProgressForValue(artifactPowerValue)
+						
 						-- Display progress in tooltip
 						if numTraitsAvailable > 1 then -- several new traits are available
 							self:AddLine(format(L["%d new traits available - Use AP now to level up!"], numTraitsAvailable), 0/255, 255/255, 0/255);
 						elseif numTraitsAvailable > 0 then -- exactly one new is trait available
 							self:AddLine(format(L["New trait available - Use AP now to level up!"]), 0/255, 255/255, 0/255);
 						else -- No traits available - too bad :(
-							self:AddLine(format(L["Progress towards next trait: %d%%"], artifactProgressPercent));
+							self:AddLine(format(L["Progress towards next trait: %d%%"], artifactProgressPercent))
+							self:AddLine(format(L["This item will add: %s%%"], ((percentOfCurrentLevel > 100 and ">") or "") .. min(100, percentOfCurrentLevel)))
 						end
 				end
 			end
