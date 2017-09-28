@@ -8,6 +8,7 @@
 <li>Number of artifact power tokens in the player's inventory</li>
 <li>Total artifact power in bags, and bank (optional)</li>
 <li>Progress towards next trait</li>
+<li>Percentage that the item will add to the equipped artifact</li>
 <li>Available number of traits (if applicable)</li>
 </ul>
 <p>The tooltip can be customized somewhat, allowing you to decide which parts (if any) you want to include.</p>
