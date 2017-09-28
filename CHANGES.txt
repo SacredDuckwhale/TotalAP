@@ -7,8 +7,9 @@ r27:
 
 	The item tooltip now also displays the percentage that an an artifact power item will add to the currently equipped artifact (experimental)
 	
-	Fixed item tooltip to no longer display that "0 items" are in the player's inventory when there aren't any
-	Fixed /ap autohide command, which was broken by the recently implemented anti-taint measures
+	Fixed missing space between ActionButton and its text - it seems to have gone AWOL, but now it's back
+	Fixed item tooltip to no longer display that "0 items" are in the player's inventory when there aren't any. It's true, but not very useful...
+	Fixed /ap autohide command, which was broken by the recently implemented anti-taint measures. The display should once again hide if this is enabled
 	
 
 r26:
