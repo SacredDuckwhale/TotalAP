@@ -642,9 +642,8 @@ local function CreateNew(self)
 		ActionButtonTextContainer:SetTextAlignment("center")
 		ActionButtonTextContainer.Update = function(self) -- TODO: More options to change the displayed text format - planned once advanced config is implemented via AceConfig
 		
-			local offset = max(hSpace, (maxButtonSize - ActionButton:GetHeight()) / 2 - hSpace) -- Keep at least hSpace pixels between the two elements
-			ActionButtonTextContainer:SetRelativePosition(0, - hSpace + offset)
-		
+			local offset = max(hSpace, (maxButtonSize - ActionButton:GetHeight()) / 2 - hSpace) -- This offset moves the text alongside the button if it changes size
+			ActionButtonTextContainer:SetRelativePosition(0, - hSpace + offset - 5) -- Always keep 5 pixels of space between the two visible elements so that the text remains readable
 			local text = ""
 			
 			if settings.actionButton.showText and not TotalAP.inventoryCache.foundTome and TotalAP.inventoryCache.numItems > 0 then -- Display current item's AP value as text (if enabled)
