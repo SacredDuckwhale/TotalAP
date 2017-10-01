@@ -279,7 +279,7 @@ local function ActionButtonTooltipFunction(self, button, hide)
 							self:AddLine(format(L["New trait available - Use AP now to level up!"]), 0/255, 255/255, 0/255);
 						else -- No traits available - too bad :(
 							self:AddLine(format(L["Progress towards next trait: %d%%"], artifactProgressPercent))
-							self:AddLine(format(L["This item will add: %s%%"], ((percentOfCurrentLevel > 100 and ">") or "") .. min(100, percentOfCurrentLevel)))
+							self:AddLine(format(L["This item will add: %s%%"], ((percentOfCurrentLevel > 100 and ">") or "") .. min(100, math.floor(percentOfCurrentLevel + 0.5))))
 						end
 				end
 			end
