@@ -264,7 +264,7 @@ local function CreateNew(self)
 		-- Script handlers	
 		AnchorFrame:SetScript("OnMouseDown", function(self) -- Show background if user pressed drag modifier to indicate the display can be dragged
 			
-			if IsAltKeyDown() then -- Make background visible
+			if IsAltKeyDown() and not InCombatLockdown() then -- Make background visible
 				
 				AnchorFrameContainer:SetBackdropAlpha(0.5)
 				AnchorFrameContainer:Render()
