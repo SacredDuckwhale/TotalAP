@@ -530,15 +530,17 @@ local function CreateNew(self)
 			if IsAltKeyDown() then -- Make background visible
 				
 				AnchorFrameContainer:SetBackdropAlpha(0.5)
-				AnchorFrameContainer:Render()
-				
+				if not InCombatLockdown() then
+					AnchorFrameContainer:Render()
+				end
 			end
 			
 			if IsShiftKeyDown() then -- Make ActionButton background visible
 		
 				ActionButtonFrameContainer:SetBackdropAlpha(0.5)
-				ActionButtonFrameContainer:Render()
-		
+				if not InCombatLockdown() then
+					ActionButtonFrameContainer:Render()
+				end
 			end
 		
 		end)
@@ -546,7 +548,10 @@ local function CreateNew(self)
 		ActionButton:SetScript("OnMouseUp", function(self) -- Hide background
 
 			ActionButtonFrameContainer:SetBackdropAlpha(0)
-			ActionButtonFrameContainer:Render()
+			
+			if not InCombatLockdown() then
+				ActionButtonFrameContainer:Render()
+			end
 			
 		end)
 		
@@ -589,8 +594,9 @@ local function CreateNew(self)
 				self.isSizing = true
 				-- Show background frame (max size) while dragging
 				ActionButtonFrameContainer:SetBackdropAlpha(0.5)
-				ActionButtonFrameContainer:Render()
-				
+				if not InCombatLockdown() then
+					ActionButtonFrameContainer:Render()
+				end
 			end
 				
 		end)
