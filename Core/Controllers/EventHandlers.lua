@@ -357,6 +357,7 @@ local function OnUnitVehicleEnter(...)
 	local unit = args[2]
 	
 	TotalAP.Debug("OnUnitVehicleEnter triggered for unit = " .. tostring(unit))
+	if unit ~= "player" then return end
 	isPlayerUsingVehicle = true
 	
 	-- Update GUI to show/hide displays when necessary
@@ -371,6 +372,7 @@ local function OnUnitVehicleExit(...)
 	local unit = args[2]
 	
 	TotalAP.Debug("OnUnitVehicleExit triggered for unit = " .. tostring(unit))
+	if unit ~= "player" then return end
 	isPlayerUsingVehicle = false
 	
 	-- Update GUI to show/hide displays when necessary
