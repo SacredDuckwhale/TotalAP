@@ -493,11 +493,11 @@ local function CreateNew(self)
 
 			-- Set current item to button
 			ActionButton.icon:SetTexture(TotalAP.inventoryCache.displayItem.texture)
-			local itemName = GetItemInfo(TotalAP.inventoryCache.displayItem.link) or ""
-			if itemName ~= "" then -- Item is cached and can be used (this can fail upon logging in, in which case the item must be set with the next update instead)
+			local bagSlotString = TotalAP.inventoryCache.displayItem.bag .. " " .. TotalAP.inventoryCache.displayItem.slot -- e.g., 1 5 = bag 1 slot 5 -> refers to the item's position in bags
+			if bagSlotString:match("%d%s%d") then -- Is a valid string that refers to an item in the player's inventory
 			
 				ActionButton:SetAttribute("type", "item")
-				ActionButton:SetAttribute("item", itemName)
+				ActionButton:SetAttribute("item", bagSlotString)
 				
 			end
 			

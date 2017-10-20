@@ -120,6 +120,8 @@ local function ScanInventory(scanBank)
 						displayItem.isToken = isToken
 						displayItem.isTome = isTome
 						displayItem.artifactPowerValue = artifactPowerValue
+						displayItem.bag = bag
+						displayItem.slot = slot
 						
 					end
 				
