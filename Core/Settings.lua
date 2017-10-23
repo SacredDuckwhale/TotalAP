@@ -58,6 +58,7 @@ local defaultSettings =	{
 			size = 18,
 			border = 1,
 			inset = 1,
+			showNumTraits = true,
 		},
 		
 		-- Controls what information is displayed in the tooltip
@@ -228,6 +229,7 @@ local validators = {
 	["specIcons.inset"] = IsNumber,
 	["specIcons.showGlowEffect"] = IsBoolean,
 	["specIcons.size"] = IsNumber,
+	["specIcons.showNumTraits"] = IsBoolean,
 	
 	["tooltip"] = IsTable,
 	["tooltip.enabled"] = IsBoolean,

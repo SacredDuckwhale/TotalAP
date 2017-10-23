@@ -973,6 +973,9 @@ local function CreateNew(self)
 				text = "---" -- TODO: MAX? Empty? Anything else?
 			end
 			
+			if settings.specIcons.showNumTraits then
+				text = "[|cffffffff" .. numTraitsPurchased .. "|r] " .. text 
+			end -- Change text to format: (XX) YY% instead of the old default, YY%
 			self:SetText(text)
 		
 		end

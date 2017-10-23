@@ -48,7 +48,7 @@ local slashCommands = {
 	["glow"] = L["Toggle spell overlay notification (glow effect) when new traits are available"],
 	["buttontext"] = L["Toggle text display next to the action button"],
 	["scanbank"] = L["Include items stored in the bank and show an additional progress bar for them"],
-	
+	["icontext"] = L["Toggle additional display of the weapon's rank next to the icons"],
 	["hide"] = L["Toggle all displays (will override the individual display's settings)"],
 	["button"] = L["Toggle button visibility (tooltip visibility is unaffected)"],
 	["bars"] = L["Toggle bar display for artifact power progress"],
@@ -202,6 +202,18 @@ local slashHandlers = {
 	["icons"] = function(settings) -- Toggle spec icons
 
 		TotalAP.Controllers.KeybindHandler("SpecIconsToggle", false);	
+
+	end,
+	
+	["icontext"] = function(settings) -- Toggle an additional display of artifact rank next to the spec icons
+		
+		if settings.specIcons.showNumTraits then
+			TotalAP.ChatMsg(L["Artifact rank is now hidden."]);
+		else
+			TotalAP.ChatMsg(L["Artifact rank is now shown."]);
+		end
+		
+	settings.specIcons.showNumTraits = not settings.specIcons.showNumTraits;
 
 	end,
 	
