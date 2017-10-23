@@ -49,6 +49,9 @@ local slashCommands = {
 	["buttontext"] = L["Toggle text display next to the action button"],
 	["scanbank"] = L["Include items stored in the bank and show an additional progress bar for them"],
 	["icontext"] = L["Toggle additional display of the weapon's rank next to the icons"],
+	
+	["stateicons"] = L["Toggle icons to indicate when artifact power items can't be used"],
+	
 	["hide"] = L["Toggle all displays (will override the individual display's settings)"],
 	["button"] = L["Toggle button visibility (tooltip visibility is unaffected)"],
 	["bars"] = L["Toggle bar display for artifact power progress"],
@@ -214,6 +217,18 @@ local slashHandlers = {
 		end
 		
 	settings.specIcons.showNumTraits = not settings.specIcons.showNumTraits;
+
+	end,
+	
+	["stateicons"] = function(settings) -- Toggle the icons that indicate AP can't be used due to being in combat, on a flight path, in a vehicle, or in a pet battle
+		
+		if settings.stateIcons.enabled then
+			TotalAP.ChatMsg(L["State icons are now hidden."]);
+		else
+			TotalAP.ChatMsg(L["State icons are now shown."]);
+		end
+		
+	settings.stateIcons.enabled = not settings.stateIcons.enabled;
 
 	end,
 	
