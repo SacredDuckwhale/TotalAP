@@ -308,7 +308,7 @@ local function CreateNew(self)
 		CombatStateIconContainer.Update = function(self)
 		
 			-- Indicate combat is currently in progress
-			self:SetEnabled(TotalAP.eventStates.isPlayerEngagedInCombat)
+			self:SetEnabled(settings.stateIcons.enabled and TotalAP.eventStates.isPlayerEngagedInCombat)
 		
 		end
 		
@@ -334,7 +334,7 @@ local function CreateNew(self)
 		PetBattleStateIconContainer.Update = function(self)
 		
 			-- Indicate combat is currently in progress
-			self:SetEnabled(TotalAP.eventStates.isPetBattleInProgress)
+			self:SetEnabled(settings.stateIcons.enabled and TotalAP.eventStates.isPetBattleInProgress)
 		
 		end
 		
@@ -360,7 +360,7 @@ local function CreateNew(self)
 		VehicleStateIconContainer.Update = function(self)
 		
 			-- Indicate combat is currently in progress
-			self:SetEnabled(TotalAP.eventStates.isPlayerUsingVehicle)
+			self:SetEnabled(settings.stateIcons.enabled and TotalAP.eventStates.isPlayerUsingVehicle)
 		
 		end
 		
@@ -386,7 +386,7 @@ local function CreateNew(self)
 		PlayerControlStateIconContainer.Update = function(self)
 		
 			-- Indicate combat is currently in progress
-			self:SetEnabled(TotalAP.eventStates.hasPlayerLostControl)
+			self:SetEnabled(settings.stateIcons.enabled and TotalAP.eventStates.hasPlayerLostControl)
 		
 		end
 	

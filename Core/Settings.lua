@@ -42,6 +42,10 @@ local defaultSettings =	{
 		numberFormat = GetLocale(),
 		scanBank = true,
 		
+		stateIcons = {
+			enabled = true,
+		},
+		
 		-- Display options for the action button
 		actionButton = {
 			enabled = true,
@@ -237,6 +241,8 @@ local validators = {
 	["tooltip.showProgressReport"] = IsBoolean,
 	["tooltip.showRelicRecommendations"] = IsBoolean,
 	
+	["stateIcons"] = IsTable,
+	["stateIcons.enabled"] = IsBoolean,
 }	
 
 
