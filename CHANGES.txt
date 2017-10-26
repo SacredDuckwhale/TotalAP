@@ -2,6 +2,17 @@
 ## TotalAP v1.5.5 - Recent changes (3 releases)
 ------------------------------------------------------------------------
 
+r28:
+	Added the /ap stateicons command, which can be used to toggle the icons that are shown to indicate combat, flight, pet battles, and vehicle status
+	
+	Renamed the former /ap icons command to /ap specicons to make it less ambiguous
+	Changed the SpecIcon text to also display the current rank. This can be toggled with the newly-added /ap ranks command
+	Changed the automatic hiding (/ap autohide setting) to be disabled by default, as it turned out confusing for at least some users
+	
+	Fixed an issue that could sometimes cause the ActionButton to not update with the correct item (causing it to display the wrong item and become unusable) if the server didn't return valid data when it was queried
+	Fixed the /ap reset command that was broken by the GUI rework. It should once again reset the display's position and restore all settings to their default values
+	
+
 r27:
 	Added relic recommendations to tooltip (based on icy-veins.com - don't take them for gospel). These can be toggled with the newly-introduced /ap relics slash command
 
@@ -30,13 +41,3 @@ r26:
 	Added a workaround for the invalid artifact tier issues (this is currently being investigated further)
 	
 
-r25:
-	Added state indicators (icons) for events that would render the action button unusable or the display to be hidden (depending on the settings), such as engaging in combat, pet battles, vehicular combat, or utilizing a Flight Master's services
-	
-	Reworked the display (GUI) to allow further customization (in future updates). This might temporarily cause some minor problems and glitches that haven't been found yet :(
-	The former /ap combat slash command is now /ap autohide and toggles the automatic hiding of the displays during all relevant events (mentioned above) instead of only detecting combat. More fine-grained settings for this are coming soon (TM)
-	
-	Fixed long-standing taint issues that could manifest in combat and result in seemingly random Lua errors. They were caused by relying on Blizzard's button glow effect functionality, which has been replaced entirely by a third-party library to make sure this won't be a problem in the future
-	Fixed an issue where changing specializations would not re-scan the player's artifact as intended and update the display accordingly
-
-	
