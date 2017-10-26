@@ -57,7 +57,7 @@ local slashCommands = {
 	["bars"] = L["Toggle bar display for artifact power progress"],
 	["minibar"] = L["Toggle the secondary progress bar"],
 	["tooltip"] = L["Toggle tooltip display for artifact power items"],
-	["icons"] = L["Toggle icon and text display for artifact power progress"],
+	["specicons"] = L["Toggle icon and text display for artifact power progress"],
 	
 	["numberformat"] = L["Switches between international and localised number formats for textual output"],
 	
