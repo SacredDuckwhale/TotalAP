@@ -48,7 +48,7 @@ local slashCommands = {
 	["glow"] = L["Toggle spell overlay notification (glow effect) when new traits are available"],
 	["buttontext"] = L["Toggle text display next to the action button"],
 	["scanbank"] = L["Include items stored in the bank and show an additional progress bar for them"],
-	["icontext"] = L["Toggle additional display of the weapon's rank next to the icons"],
+	["ranks"] = L["Toggle additional display of the weapon's rank next to the icons"],
 	
 	["stateicons"] = L["Toggle icons to indicate when artifact power items can't be used"],
 	
