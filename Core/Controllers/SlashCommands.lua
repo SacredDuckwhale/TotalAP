@@ -283,8 +283,8 @@ local slashHandlers = {
 		--RestoreDefaultSettings();
 		TotalAP.ChatMsg(L["Default settings loaded."]);
 		-- TODO: Run UnignoreAllSpecs() also?
-		TotalAPAnchorFrame:ClearAllPoints();
-		TotalAPAnchorFrame:SetPoint("CENTER", UIParent, "CENTER");
+		TotalAP_DefaultView_AnchorFrame:ClearAllPoints(); -- TODO: Support other views (if I ever get around to adding them...)
+		TotalAP_DefaultView_AnchorFrame:SetPoint("CENTER", UIParent, "CENTER");
 
 	end,
 	
