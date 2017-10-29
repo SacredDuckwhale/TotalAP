@@ -70,7 +70,7 @@ local defaultSettings =	{
 			enabled = true, 
 			showProgressReport = true,
 			showNumItems = true,
-			showRelicRecommendations = true,
+			showRelicRecommendations = false,
 		},
 		
 		-- Display options for the bar displays
