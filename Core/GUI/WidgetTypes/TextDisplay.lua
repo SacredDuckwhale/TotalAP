@@ -20,6 +20,10 @@ if not TotalAP then return end
 -- Localized globals
 local _G = _G -- Required to get parent frame references from their names
 
+local round = function(num) 
+        if num >= 0 then return math.floor(num+.5) 
+        else return math.ceil(num-.5) end
+    end
 
 -- Private variables
 local TextDisplay = {}
@@ -148,17 +152,17 @@ local function Render(self)
 		end
 		
 		
-		FrameObject:SetJustifyV("BOTTOM") -- This is the default behaviour of a FontString unless specified otherwise
-		-- yOffset = FrameObject:GetParent():GetHeight() - FrameObject:GetHeight()
-		if verticalAlignment == "center" then -- position to the center of the parentFrame
-			-- yOffset = (FrameObject:GetParent():GetHeight() - FrameObject:GetHeight()) / 2
-			FrameObject:SetJustifyV("CENTER")
-		elseif verticalAlignment == "top" then -- position to the top of the parentFrame
-			--yOffset = 0
-			FrameObject:SetJustifyV("TOP")
-		end
+		FrameObject:SetJustifyV("TOP") -- This is the default behaviour of a FontString unless specified otherwise
+		-- -- yOffset = FrameObject:GetParent():GetHeight() - FrameObject:GetHeight()
+		-- if verticalAlignment == "center" then -- position to the center of the parentFrame
+			-- -- yOffset = (FrameObject:GetParent():GetHeight() - FrameObject:GetHeight()) / 2
+			-- FrameObject:SetJustifyV("CENTER")
+		-- elseif verticalAlignment == "top" then -- position to the top of the parentFrame
+			-- --yOffset = 0
+			-- FrameObject:SetJustifyV("TOP")
+		-- end
 	
-		FrameObject:SetPoint(self:GetAnchorPoint(), self:GetParent(), self:GetTargetAnchorPoint(), posX + xOffset, posY + yOffset)
+		FrameObject:SetPoint(self:GetAnchorPoint(), self:GetParent(), self:GetTargetAnchorPoint(), round(posX + xOffset), round(posY + 1)) -- TODO: Seems still glitched, if the 1px offset is removed OR the justifyH isn't top this doesn't work...
 		
 		
 		-- Recreate if text or template changed (TODO)
