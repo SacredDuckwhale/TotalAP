@@ -8,7 +8,9 @@ r28:
 	Renamed the former /ap icons command to /ap specicons to make it less ambiguous
 	Changed the SpecIcon text to also display the current rank. This can be toggled with the newly-added /ap ranks command
 	Changed the automatic hiding (/ap autohide setting) to be disabled by default, as it turned out confusing for at least some users
+	Relic recommendations are now disabled by default. Some users have (rightfully) lamented their inaccuracy, and as they're not useful to everbody they are now opt-in (Type /ap relics to enable)
 	
+	Fixed a graphics glitch that caused the SpecIcon text to be aligned improperly at times. It still can seem a bit wonky, but that may just be due to UI scaling...
 	Fixed an issue that could sometimes cause the ActionButton to not update with the correct item (causing it to display the wrong item and become unusable) if the server didn't return valid data when it was queried
 	Fixed the /ap reset command that was broken by the GUI rework. It should once again reset the display's position and restore all settings to their default values
 	
