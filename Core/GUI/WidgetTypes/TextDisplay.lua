@@ -147,14 +147,15 @@ local function Render(self)
 			
 		end
 		
+		
+		FrameObject:SetJustifyV("BOTTOM") -- This is the default behaviour of a FontString unless specified otherwise
+		-- yOffset = FrameObject:GetParent():GetHeight() - FrameObject:GetHeight()
 		if verticalAlignment == "center" then -- position to the center of the parentFrame
-		
-			yOffset = (FrameObject:GetParent():GetHeight() - FrameObject:GetHeight()) / 2
-			
+			-- yOffset = (FrameObject:GetParent():GetHeight() - FrameObject:GetHeight()) / 2
+			FrameObject:SetJustifyV("CENTER")
 		elseif verticalAlignment == "top" then -- position to the top of the parentFrame
-		
-			yOffset = (FrameObject:GetParent():GetHeight() - FrameObject:GetHeight())
-			
+			--yOffset = 0
+			FrameObject:SetJustifyV("TOP")
 		end
 	
 		FrameObject:SetPoint(self:GetAnchorPoint(), self:GetParent(), self:GetTargetAnchorPoint(), posX + xOffset, posY + yOffset)
