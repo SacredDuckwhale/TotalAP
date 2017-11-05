@@ -125,6 +125,8 @@ end
 -- @return Number of traits that can be purchased
 local function GetNumRanksPurchasableWithAP(rank, artifactPowerValue, tier)
 
+	tier = 2 -- A bit of a hack; but it works because the AP requirements for <35 traits are identical for all artifact tiers so it automatically calculates the correct amount [Yes, this is the lazy way out]
+	
 	-- The MainMenuBar function returns multiple values, but they aren't needed here. It might be practical, but it is also confusing
 	local availableRanks = select(1, MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(rank, artifactPowerValue, tier))
 	
@@ -162,6 +164,8 @@ end
 -- @param tier Artifact tier (defaults to 1; new tiers unlock additional traits)
 -- @return Percentage towards the next available trait (after buying as many as possible)
 local function GetProgressTowardsNextRank(rank, artifactPowerValue, tier)
+
+	tier = 2 -- A bit of a hack; but it works because the AP requirements for <35 traits are identical for all artifact tiers so it automatically calculates the correct amount [Yes, this is the lazy way out]
 
 	local numPoints, artifactXP, xpForNextPoint = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(rank, artifactPowerValue, tier)
 	
