@@ -13,6 +13,8 @@ r28:
 	Fixed a graphics glitch that caused the SpecIcon text to be aligned improperly at times. It still can seem a bit wonky, but that may just be due to UI scaling...
 	Fixed an issue that could sometimes cause the ActionButton to not update with the correct item (causing it to display the wrong item and become unusable) if the server didn't return valid data when it was queried
 	Fixed the /ap reset command that was broken by the GUI rework. It should once again reset the display's position and restore all settings to their default values
+	Fixed an issue that would lead tier 1 artifacts (e.g., from newly-leveled characters) to display the wrong number of available traits until they reached artifact tier 2 at 35 purchased traits
+	Fixed a glitch that could occur when vehicles were not exited properly. Most notably, this should fix the unexpected behaviour manifesting when using the Lightforged Warframe on Argus
 	
 
 r27:
