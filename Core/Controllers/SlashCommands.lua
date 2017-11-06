@@ -208,7 +208,7 @@ local slashHandlers = {
 
 	end,
 	
-	["icontext"] = function(settings) -- Toggle an additional display of artifact rank next to the spec icons
+	["ranks"] = function(settings) -- Toggle an additional display of artifact rank next to the spec icons
 		
 		if settings.specIcons.showNumTraits then
 			TotalAP.ChatMsg(L["Artifact rank is now hidden."]);
