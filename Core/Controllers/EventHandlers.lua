@@ -227,7 +227,7 @@ local function UpdateGUI()
 	local testState = UnitInVehicle("player")
 	if testState ~= eventStates.isPlayerUsingVehicle then -- This can happen because there are some ways to "exit" vehicles that don't trigger the appropriate event... Before, this would bug the display or hide it
 		TotalAP.Debug("Resetting isPlayerUsingVehicle state flag since a mismatch in vehicle states was detected")
-		eventStates.isPlayerUsingVehicle = false
+		eventStates.isPlayerUsingVehicle = testState
 	end
 	
 	-- Force update, using the most recent available information to render the GUI
