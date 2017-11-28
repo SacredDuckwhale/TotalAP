@@ -202,7 +202,7 @@ local slashHandlers = {
 	
 	end,
 	
-	["icons"] = function(settings) -- Toggle spec icons
+	["specicons"] = function(settings) -- Toggle spec icons
 
 		TotalAP.Controllers.KeybindHandler("SpecIconsToggle", false);	
 
