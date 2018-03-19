@@ -70,7 +70,7 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
       
 	GameTooltip:AddLine(format(L["Total Ranks Purchased: %d"],  numTraitsPurchased), 1, 1, 1)
 	
-     if progressPercent > 0 and maxAttainableRank > numTraitsPurchased  then 
+     if progressPercent > 0 and maxAttainableRank > numTraitsPurchased then 
 		
 		if not TotalAP.ArtifactInterface.IsArtifactMaxed(maxAttainableRank, tier) then  -- Artifact can still be leveled up further -> Display progress
 			GameTooltip:AddLine(format(L["%.2f%% towards Rank %d"],  progressPercent, maxAttainableRank + 1))
