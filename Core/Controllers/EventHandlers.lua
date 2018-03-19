@@ -452,11 +452,11 @@ local function RegisterAllEvents()
 end
 
 -- Unregister listeners for all relevant events
-local function UnregisterAllEvents()
+local function UnregisterAllEvents() -- TODO: Is this still necessary after the rewrite/refactoring of the loader?
 
 	for key, eventHandler in pairs(eventList) do -- Unregister this handler for the respective event (via AceEvent-3.0)
 	
-		TotalAP.Addon:RegisterEvent(key, eventHandler)
+		TotalAP.Addon:UnregisterEvent(key, eventHandler)
 		TotalAP.Debug("Unregistered for event = " .. key)
 	
 	end
