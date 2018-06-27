@@ -72,7 +72,7 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 	
      if progressPercent > 0 and maxAttainableRank > numTraitsPurchased then 
 		
-		if not TotalAP.ArtifactInterface.IsArtifactMaxed(maxAttainableRank, tier) then  -- Artifact can still be leveled up further -> Display progress
+		if not TotalAP.ArtifactInterface.IsArtifactMaxed(maxAttainableRank, tier) then -- Artifact can still be leveled up further -> Display progress
 			GameTooltip:AddLine(format(L["%.2f%% towards Rank %d"],  progressPercent, maxAttainableRank + 1))
 		else
 			GameTooltip:AddLine(format(L["Maximum number of traits unlocked"]), 0/255, 255/255, 0/255) -- TODO. This can't really happen anymore; disable the entire maxed artifact code? I doubt they'll go back from the "virtually unlimited" exponential growth-based design (Edit: Aaaaaand I was proven wrong...)
