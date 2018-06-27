@@ -75,7 +75,7 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 		if not TotalAP.ArtifactInterface.IsArtifactMaxed(maxAttainableRank, tier) then  -- Artifact can still be leveled up further -> Display progress
 			GameTooltip:AddLine(format(L["%.2f%% towards Rank %d"],  progressPercent, maxAttainableRank + 1))
 		else
-			GameTooltip:AddLine(format(L["Maximum number of traits unlocked"]), 0/255, 255/255, 0/255) -- TODO. This can't really happen anymore; disable the entire maxed artifact code? I doubt they'll go back from the "virtually unlimited" exponential growth-based design
+			GameTooltip:AddLine(format(L["Maximum number of traits unlocked"]), 0/255, 255/255, 0/255) -- TODO. This can't really happen anymore; disable the entire maxed artifact code? I doubt they'll go back from the "virtually unlimited" exponential growth-based design (Edit: Aaaaaand I was proven wrong...)
 		end
 		
 	end
@@ -278,8 +278,17 @@ local function ActionButtonTooltipFunction(self, button, hide)
 						elseif numTraitsAvailable > 0 then -- exactly one new is trait available
 							self:AddLine(format(L["New trait available - Use AP now to level up!"]), 0/255, 255/255, 0/255);
 						else -- No traits available - too bad :(
-							self:AddLine(format(L["Progress towards next trait: %d%%"], artifactProgressPercent))
-							self:AddLine(format(L["This item will add: %s%%"], ((percentOfCurrentLevel > 100 and ">") or "") .. min(100, math.floor(percentOfCurrentLevel + 0.5))))
+						
+							-- Check for maxed artifacts (pre-BFA artifact retirement quests made this possible once more)
+							local numTraits = TotalAP.Cache.GetNumTraits(tier)
+							local tier = TotalAP.Cache.GetArtifactTier(spec)
+							local isArtifactMaxed = TotalAP.ArtifactInterface.IsArtifactMaxed(numTraits, tier)
+							if not isArtifactMaxed then -- Display progress text
+								self:AddLine(format(L["Progress towards next trait: %d%%"], artifactProgressPercent))
+								self:AddLine(format(L["This item will add: %s%%"], ((percentOfCurrentLevel > 100 and ">") or "") .. min(100, math.floor(percentOfCurrentLevel + 0.5))))
+							else -- Display no such info
+								self:AddLine(L["Maximum number of traits unlocked"], 0/255, 255/255, 0/255)
+							end
 						end
 				end
 			end
