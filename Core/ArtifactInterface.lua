@@ -253,7 +253,7 @@ end
 -- @returns True if the artifact is already maxed; nil otherwise (also in the case of invalid parameters)
 local function IsArtifactMaxed(numTraits, tier)
 
-	if numTraits and type(numTraits) == "number" and numTraits == 54 and tier == 1 then -- Artifact is maxed tier 1 artifact (before finishing the empowerment quest)
+	if numTraits and type(numTraits) == "number" and ((numTraits == 54 and tier == 1) or numTraits > 125) then -- Artifact is maxed tier 1 artifact (before finishing the empowerment quest) OR is "overloaded" in the course of the pre-BFA artifact retirement quest
 		return true
 	end
 	

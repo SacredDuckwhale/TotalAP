@@ -939,9 +939,9 @@ local function CreateNew(self)
 			
 			local numTraitsAvailable = TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(numTraitsPurchased,  unspentAP + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0), artifactTier)
 			local nextLevelRequiredAP = C_ArtifactUI.GetCostForPointAtRank(numTraitsPurchased, artifactTier)
-			local percentageOfCurrentLevelUp = (unspentAP  + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0)) / nextLevelRequiredAP*100;
+			local percentageOfCurrentLevelUp = (nextLevelRequiredAP > 0) and ((unspentAP  + TotalAP.inventoryCache.inBagsAP + tonumber(settings.scanBank and TotalAP.bankCache.inBankAP or 0)) / nextLevelRequiredAP*100) or 0 -- nextLevelRequiredAP must be > 0, but this won't be the case if the artifact is maxed (after the artifact retirement quests went live, this can happen once more)
 			
-			if numTraitsAvailable > 0  then -- Set text to display number of available traits
+			if numTraitsAvailable > 0 then -- Set text to display number of available traits
 			
 				text = format("x%d", numTraitsAvailable)
 				
@@ -951,7 +951,7 @@ local function CreateNew(self)
 				
 			end
 			
-			if not (numTraitsPurchased < 54 or artifactTier > 1) then -- Artifact is maxed
+			if not (numTraitsPurchased < 54 or artifactTier > 1) or nextLevelRequiredAP == 0 then -- Artifact is maxed
 				text = "---" -- TODO: MAX? Empty? Anything else?
 			end
 			
