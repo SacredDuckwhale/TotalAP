@@ -4,31 +4,31 @@
 		
 	</Binding>
 	
-	<Binding category="ADDONS" name="TOTALAPALLDISPLAYSTOGGLE" header="TOTALAP">
+	<Binding category="ADDONS" name="TOTALAPALLDISPLAYSTOGGLE">
 	
 		TotalAP.Controllers.KeybindHandler("AllDisplaysToggle", true)
 		
 	</Binding>
 	
-	<Binding category="ADDONS" name="TOTALAPBUTTONTOGGLE" header="TOTALAP">
+	<Binding category="ADDONS" name="TOTALAPBUTTONTOGGLE">
 	
 		TotalAP.Controllers.KeybindHandler("ActionButtonToggle", true)
 		
 	</Binding>
 	
-	<Binding category="ADDONS" name="TOTALAPBARDISPLAYTOGGLE" header="TOTALAP">
+	<Binding category="ADDONS" name="TOTALAPBARDISPLAYTOGGLE">
 	
 		TotalAP.Controllers.KeybindHandler("BarDisplayToggle", true)
 		
 	</Binding>
 	
-	<Binding category="ADDONS" name="TOTALAPICONSTOGGLE" header="TOTALAP">
+	<Binding category="ADDONS" name="TOTALAPICONSTOGGLE">
 	
 		TotalAP.Controllers.KeybindHandler("SpecIconsToggle", true)
 		
 	</Binding>
 	
-	<Binding category="ADDONS" name="TOTALAPTOOLTIPTOGGLE" header="TOTALAP">
+	<Binding category="ADDONS" name="TOTALAPTOOLTIPTOGGLE">
 	
 		TotalAP.Controllers.KeybindHandler("TooltipToggle", true)
 
