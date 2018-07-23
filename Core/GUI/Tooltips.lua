@@ -50,7 +50,7 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 	local numTraitsPurchased = TotalAP.Cache.GetNumTraits(specID)
 	local maxAvailableAP = TotalAP.Cache.GetUnspentAP(specID) + TotalAP.inventoryCache.inBagsAP
 	local tier = TotalAP.Cache.GetArtifactTier(specID)
-	local maxKnowledgeLevel = C_ArtifactUI.GetMaxArtifactKnowledgeLevel()
+	local maxKnowledgeLevel = 50 -- C_ArtifactUI.GetMaxArtifactKnowledgeLevel() -- TODO: Removed in 8.0.1
 	
 	-- Calculate progress from cached values
 	local maxAttainableRank = numTraitsPurchased + TotalAP.ArtifactInterface.GetNumRanksPurchasableWithAP(numTraitsPurchased, maxAvailableAP, tier) 
@@ -120,7 +120,7 @@ local function ArtifactKnowledgeTooltipFunction(self, button, hide)
 		end
 		
 	else -- No more research is necessary - yay!
-		GameTooltip:AddLine(L["No further research necessary"], 0/255, 255/255, 0/255)
+		GameTooltip:AddLine(L["No further research necessary"], 0/255, 255/255, 0/255) -- TODO: Phrasing seems a bit off in 7.3 with the global AK "research", but then is it really worth changing at this point?
 	end
 	
 	if timeLeft and timeLeftString then
