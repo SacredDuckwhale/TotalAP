@@ -193,7 +193,7 @@ local function ScanArtifact()
 	local unspentAP = select(5, aUI.GetEquippedArtifactInfo())
 	local numTraitsPurchased = select(6, aUI.GetEquippedArtifactInfo())
 	local artifactTier = select(13, aUI.GetEquippedArtifactInfo())
-	local artifactKnowledge = aUI.GetArtifactKnowledgeLevel()
+	local artifactKnowledge = 0 -- aUI.GetArtifactKnowledgeLevel() -- TODO: Removed in 8.0.1
 	
 	-- TODO: Ugly workaround for the issues reported after 7.3 hit - needs more investigation: Why does it happen, and when? Seems entirely random so far, but it might be due to some changes made in 7.3 that I am unaware of...
 	if type(artifactTier) == "number" and artifactTier > 3 then -- This can't be right -> Replace it with tier = 2 for the time being (AFAIK there's no tier 3, and tier 1 is applied automatically after reaching 35 traits?)
@@ -416,7 +416,7 @@ end
 local eventList = {
 
 	-- Re-scan and update GUI
-	["ARTIFACT_XP"] = OnArtifactUpdate,
+	--["ARTIFACT_XP"] = OnArtifactUpdate,
 	["ARTIFACT_UPDATE"] = OnArtifactUpdate,
 	["BAG_UPDATE_DELAYED"] = OnInventoryUpdate,
 	--["ACTIVE_TALENT_GROUP_CHANGED"] = OnSpecChanged, -- TODO: Not necessary if using

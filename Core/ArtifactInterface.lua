@@ -117,6 +117,20 @@ end
 	
 -- end
 
+-- TODO: Workaround for 8.0.1 (will be changed in the BFA rework)
+local function MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(pointsSpent, artifactXP, artifactTier)
+	local numPoints = 0;
+	local xpForNextPoint = C_ArtifactUI.GetCostForPointAtRank(pointsSpent, artifactTier);
+	while artifactXP >= xpForNextPoint and xpForNextPoint > 0 do
+		artifactXP = artifactXP - xpForNextPoint;
+
+		pointsSpent = pointsSpent + 1;
+		numPoints = numPoints + 1;
+
+		xpForNextPoint = C_ArtifactUI.GetCostForPointAtRank(pointsSpent, artifactTier);
+	end
+	return numPoints, artifactXP, xpForNextPoint;
+end
 
 --- Returns the number of traits that can be purchased
 -- @param rank The current artifact level (number of purchased traits)
@@ -128,7 +142,7 @@ local function GetNumRanksPurchasableWithAP(rank, artifactPowerValue, tier)
 	tier = 2 -- A bit of a hack; but it works because the AP requirements for <35 traits are identical for all artifact tiers so it automatically calculates the correct amount [Yes, this is the lazy way out]
 	
 	-- The MainMenuBar function returns multiple values, but they aren't needed here. It might be practical, but it is also confusing
-	local availableRanks = select(1, MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(rank, artifactPowerValue, tier))
+	local availableRanks = select(1, MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(rank, artifactPowerValue, tier)) -- TODO: Removed in 8.0.1?
 	
 	-- Tier 1 artifacts are limited to 54 traits, but the API does not consider this cap [This is now obsolete, but again laziness reigns supreme]
 	if tier == 1 then
