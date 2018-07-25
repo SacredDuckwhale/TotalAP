@@ -50,7 +50,9 @@ local function ParseSpellDesc(spellDescription, localeString)
 	
 	-- 8.0.1. "quick and dirty" fix, since AP was essentially removed from the game...
 	return 0
-	
+
+end
+--[[	
 	-- 7.2 AP number format detection (should work for > 1 billion and all locales)
 	
 	-- Obtain locale-specific details such as separators and the words used to indicate the textual format (> 1 mil)
@@ -86,7 +88,7 @@ local function ParseSpellDesc(spellDescription, localeString)
 	return n
 	
 end				
-				
+]]				
 				
 if not TotalAP then return end
 TotalAP.Scanner.ParseSpellDesc = ParseSpellDesc
